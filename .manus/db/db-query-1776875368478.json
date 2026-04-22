@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `ab_impressions` (`id` int AUTO_INCREMENT NOT NULL, `sessionId` varchar(128) NOT NULL, `testName` varchar(64) NOT NULL, `variant` varchar(8) NOT NULL, `converted` boolean NOT NULL DEFAULT false, `page` varchar(64), `createdAt` timestamp NOT NULL DEFAULT (now()), CONSTRAINT `ab_impressions_id` PRIMARY KEY(`id`))",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute CREATE TABLE IF NOT EXISTS `ab_impressions` (`id` int AUTO_INCREMENT NOT NULL, `sessionId` varchar(128) NOT NULL, `testName` varchar(64) NOT NULL, `variant` varchar(8) NOT NULL, `converted` boolean NOT NULL DEFAULT false, `page` varchar(64), `createdAt` timestamp NOT NULL DEFAULT (now()), CONSTRAINT `ab_impressions_id` PRIMARY KEY(`id`))",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 205
+}
