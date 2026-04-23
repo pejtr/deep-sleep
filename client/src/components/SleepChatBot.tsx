@@ -175,6 +175,9 @@ export default function SleepChatBot() {
   const { data: redditCampaigns } = trpc.reddit.campaigns.useQuery(undefined, {
     enabled: isAdminMode && open,
   });
+  const { data: campaignPerformance } = trpc.reddit.campaignPerformance.useQuery(redditDateRange, {
+    enabled: isAdminMode && open,
+  });
 
   // ── Get welcome message ────────────────────────────────────────────────────
   const getWelcome = useCallback((triggerType: "manual" | "proactive" | "exit_intent"): string => {
@@ -254,7 +257,17 @@ export default function SleepChatBot() {
       redditCtr: redditReport?.avgCtr ?? 0,
       redditSpend: redditReport?.totalSpend ?? 0,
       redditCpc: redditReport?.avgCpc ?? 0,
-      campaigns: (redditCampaigns ?? []).slice(0, 5).map((c: { name: string; status: string }) => ({ name: c.name, status: c.status })),
+      campaigns: (campaignPerformance ?? redditCampaigns ?? []).slice(0, 8).map((c: { name: string; status: string; impressions?: number; clicks?: number; ctr?: number; spend?: number; cpc?: number; score?: number; rank?: string }) => ({
+        name: c.name,
+        status: c.status,
+        impressions: (c as { impressions?: number }).impressions ?? 0,
+        clicks: (c as { clicks?: number }).clicks ?? 0,
+        ctr: (c as { ctr?: number }).ctr ?? 0,
+        spend: (c as { spend?: number }).spend ?? 0,
+        cpc: (c as { cpc?: number }).cpc ?? 0,
+        score: (c as { score?: number }).score ?? 0,
+        rank: (c as { rank?: string }).rank ?? 'mid',
+      })),
     } : undefined;
     chatMutation.mutate({
       message: text,
@@ -263,7 +276,7 @@ export default function SleepChatBot() {
       adminData: adminDataPayload,
       history: messages.slice(-12).map(m => ({ role: m.role, content: m.content })),
     });
-  }, [input, chatMutation, messages, lang, isAdminMode, isAffiliateMode, adminStats, redditReport, redditCampaigns]);
+  }, [input, chatMutation, messages, lang, isAdminMode, isAffiliateMode, adminStats, redditReport, redditCampaigns, campaignPerformance]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -316,7 +329,7 @@ export default function SleepChatBot() {
   const proactiveMsg = lang === "cs" ? persona.proactiveCs : persona.proactiveEn;
 
   const quickQuestions = isAdminMode
-    ? ["How many sales today?", "What's the conversion rate?", "Show AI insights"]
+    ? ["How many sales today?", "Compare campaigns", "Which campaign is best?", "What's the conversion rate?", "Show AI insights"]
     : isAffiliateMode
     ? ["How much can I earn?", "What converts best?", "How to promote?"]
     : lang === "cs"
@@ -507,12 +520,35 @@ export default function SleepChatBot() {
                         const newHistory = [...messages, { role: "user" as const, content: q }];
                         setMessages(newHistory);
                         setInput("");
-                        const systemContext = isSalesMode
-                          ? persona.style + ` The product is "Deep Sleep Reset" — a $5 sleep guide using CBT-I. Language: ${lang === "cs" ? "Czech" : "English"}.`
-                          : undefined;
+                        const qMode = isAdminMode ? "admin" : isAffiliateMode ? "affiliate" : "sales";
                         chatMutation.mutate({
-                          message: systemContext ? `[CONTEXT: ${systemContext}]\n\nUser: ${q}` : q,
+                          message: q,
                           lang,
+                          mode: qMode,
+                          adminData: isAdminMode ? {
+                            revenue: adminStats?.revenue ?? 0,
+                            orders: adminStats?.orderCount ?? 0,
+                            leads: adminStats?.leadCount ?? 0,
+                            quizStarts: adminStats?.quizCount ?? 0,
+                            avgRating: adminStats?.avgRating ?? 0,
+                            feedbacks: adminStats?.feedbackCount ?? 0,
+                            behaviorEvents: adminStats?.behaviorCount ?? 0,
+                            redditImpressions: redditReport?.totalImpressions ?? 0,
+                            redditClicks: redditReport?.totalClicks ?? 0,
+                            redditCtr: redditReport?.avgCtr ?? 0,
+                            redditSpend: redditReport?.totalSpend ?? 0,
+                            redditCpc: redditReport?.avgCpc ?? 0,
+                            campaigns: (campaignPerformance ?? redditCampaigns ?? []).slice(0, 8).map((c: { name: string; status: string; impressions?: number; clicks?: number; ctr?: number; spend?: number; cpc?: number; score?: number; rank?: string }) => ({
+                              name: c.name, status: c.status,
+                              impressions: (c as { impressions?: number }).impressions ?? 0,
+                              clicks: (c as { clicks?: number }).clicks ?? 0,
+                              ctr: (c as { ctr?: number }).ctr ?? 0,
+                              spend: (c as { spend?: number }).spend ?? 0,
+                              cpc: (c as { cpc?: number }).cpc ?? 0,
+                              score: (c as { score?: number }).score ?? 0,
+                              rank: (c as { rank?: string }).rank ?? 'mid',
+                            })),
+                          } : undefined,
                           history: [],
                         });
                       };

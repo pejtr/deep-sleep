@@ -239,3 +239,131 @@ export async function getCampaignSummary(
     days,
   };
 }
+
+
+// -- Per-campaign performance --
+
+export interface CampaignPerformance {
+  id: string;
+  name: string;
+  status: string;
+  objective: string;
+  impressions: number;
+  clicks: number;
+  ctr: number;
+  spend: number;
+  cpc: number;
+  ecpm: number;
+  score: number;
+  rank: "top" | "mid" | "low";
+}
+
+/**
+ * Get per-campaign performance metrics for a date range.
+ * Fetches campaigns list + report with campaign_id breakdown, then merges.
+ */
+export async function getCampaignPerformance(
+  startDate: string,
+  endDate: string
+): Promise<CampaignPerformance[]> {
+  const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+  if (!accountId) throw new Error("REDDIT_ADS_ACCOUNT_ID not set");
+
+  const campaigns = await getCampaigns();
+  if (campaigns.length === 0) return [];
+
+  const token = await getAccessToken();
+  const username = process.env.REDDIT_ADS_USERNAME;
+
+  const reportBody = {
+    start_time: startDate,
+    end_time: endDate,
+    granularity: "TOTAL",
+    fields: ["impressions", "clicks", "ctr", "spend", "ecpm", "cpc"],
+    breakdowns: ["campaign_id"],
+  };
+
+  const response = await fetch(
+    `${REDDIT_ADS_BASE}/ad_accounts/${accountId}/reports`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": `DeepSleepReset/1.0 by ${username || "DeepSleeper"}`,
+      },
+      body: JSON.stringify(reportBody),
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Reddit Ads per-campaign report error ${response.status}: ${text}`);
+  }
+
+  const data = (await response.json()) as {
+    data?: {
+      results?: Array<{
+        campaign_id?: string;
+        metrics?: Record<string, number>;
+      }>;
+    };
+  };
+
+  const results = data.data?.results ?? [];
+  const metricsMap = new Map<string, Record<string, number>>();
+  for (const row of results) {
+    if (row.campaign_id) {
+      metricsMap.set(row.campaign_id, row.metrics ?? {});
+    }
+  }
+
+  const merged: CampaignPerformance[] = campaigns.map((c) => {
+    const m = metricsMap.get(c.id) ?? {};
+    const impressions = m.impressions ?? 0;
+    const clicks = m.clicks ?? 0;
+    const spend = m.spend ?? 0;
+    const ctr = impressions > 0 ? (clicks / impressions) * 100 : (m.ctr ?? 0);
+    const cpc = clicks > 0 ? spend / clicks : (m.cpc ?? 0);
+    const ecpm = impressions > 0 ? (spend / impressions) * 1000 : (m.ecpm ?? 0);
+    return {
+      id: c.id,
+      name: c.name,
+      status: c.status,
+      objective: c.objective,
+      impressions,
+      clicks,
+      ctr,
+      spend,
+      cpc,
+      ecpm,
+      score: 0,
+      rank: "mid" as const,
+    };
+  });
+
+  const maxImpressions = Math.max(...merged.map((c) => c.impressions), 1);
+  const maxClicks = Math.max(...merged.map((c) => c.clicks), 1);
+  const maxCtr = Math.max(...merged.map((c) => c.ctr), 0.001);
+  const activeCpcs = merged.filter((c) => c.cpc > 0).map((c) => c.cpc);
+  const minCpc = activeCpcs.length > 0 ? Math.min(...activeCpcs) : 999;
+
+  for (const c of merged) {
+    const ctrScore = maxCtr > 0 ? (c.ctr / maxCtr) * 40 : 0;
+    const volumeScore =
+      (c.impressions / maxImpressions) * 15 + (c.clicks / maxClicks) * 15;
+    const efficiencyScore =
+      c.cpc > 0 && minCpc > 0 ? (minCpc / c.cpc) * 30 : 0;
+    c.score = Math.round(ctrScore + volumeScore + efficiencyScore);
+  }
+
+  merged.sort((a, b) => b.score - a.score);
+  const n = merged.length;
+  merged.forEach((c, i) => {
+    if (i < Math.ceil(n / 3)) c.rank = "top";
+    else if (i < Math.ceil((2 * n) / 3)) c.rank = "mid";
+    else c.rank = "low";
+  });
+
+  return merged;
+}

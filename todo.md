@@ -174,3 +174,11 @@
 - [ ] tRPC procedure: reddit.getReports - impressions, clicks, CTR, spend
 - [ ] Admin Dashboard: Reddit Ads tab s grafy a live daty
 - [ ] Auto-refresh každých 30 minut
+
+## TikTok Ads Integration (Apr 23)
+- [ ] TikTok Ads API backend (OAuth2 client credentials + campaigns + spend report)
+- [ ] TikTok Ads tRPC endpoints (account, campaigns, report, campaignPerformance)
+- [ ] TikTok Ads tab v AdminDashboard s KPI kartami a grafy
+- [ ] TikTok data v admin Luně (system prompt + adminData payload)
+- [ ] Vitest testy pro TikTok Ads API
+- [ ] Uložit TikTok Ads credentials jako secrets (TIKTOK_ADS_APP_ID, TIKTOK_ADS_SECRET, TIKTOK_ADS_ACCESS_TOKEN, TIKTOK_ADS_ADVERTISER_ID)

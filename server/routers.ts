@@ -4,7 +4,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
-import { getCampaigns, getCampaignSummary, getAdAccount } from "./redditAds";
+import { getCampaigns, getCampaignSummary, getAdAccount, getCampaignPerformance } from "./redditAds";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -231,7 +231,7 @@ export const appRouter = router({
           redditCtr: z.number().optional(),
           redditSpend: z.number().optional(),
           redditCpc: z.number().optional(),
-          campaigns: z.array(z.object({ name: z.string(), status: z.string() })).optional(),
+          campaigns: z.array(z.object({ name: z.string(), status: z.string(), impressions: z.number().optional(), clicks: z.number().optional(), ctr: z.number().optional(), spend: z.number().optional(), cpc: z.number().optional(), score: z.number().optional(), rank: z.string().optional() })).optional(),
         }).optional(),
         history: z.array(z.object({
           role: z.enum(["user", "assistant"]),
@@ -252,8 +252,10 @@ export const appRouter = router({
           const revenuePerLead = (d.leads ?? 0) > 0
             ? ((d.revenue ?? 0) / (d.leads ?? 1)).toFixed(2)
             : "0.00";
-          const campaignList = d.campaigns
-            ? d.campaigns.map((c: { name: string; status: string }) => `${c.name} [${c.status}]`).join(", ")
+          const campaignList = d.campaigns && d.campaigns.length > 0
+            ? d.campaigns.map((c: { name: string; status: string; impressions?: number; clicks?: number; ctr?: number; spend?: number; cpc?: number; score?: number; rank?: string }) =>
+                `${c.name} [${c.status}] — impressions:${c.impressions ?? 0}, clicks:${c.clicks ?? 0}, CTR:${c.ctr?.toFixed(2) ?? 0}%, spend:€${c.spend?.toFixed(2) ?? 0}, CPC:€${c.cpc?.toFixed(3) ?? 0}, score:${c.score ?? 0}/100 (${c.rank ?? 'mid'})`
+              ).join("\n  ")
             : "none loaded";
 
           systemPrompt = `You are Luna — an elite AI performance marketing analyst for Deep Sleep Reset, a $5 CBT-I sleep protocol product.
@@ -361,6 +363,20 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
             days: [],
             error: String(e),
           };
+        }
+      }),
+    campaignPerformance: protectedProcedure
+      .input(
+        z.object({
+          startDate: z.string(),
+          endDate: z.string(),
+        })
+      )
+      .query(async ({ input }) => {
+        try {
+          return await getCampaignPerformance(input.startDate, input.endDate);
+        } catch (e) {
+          return [];
         }
       }),
   }),
