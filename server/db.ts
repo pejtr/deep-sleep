@@ -13,6 +13,8 @@ import {
   InsertAbImpression,
   behaviorEvents,
   InsertBehaviorEvent,
+  feedbacks,
+  InsertFeedback,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -139,6 +141,13 @@ export async function trackBehaviorEvent(data: InsertBehaviorEvent) {
   const db = await getDb();
   if (!db) return null;
   return db.insert(behaviorEvents).values(data);
+}
+
+// ── Feedback ─────────────────────────────────────────────────────────────────
+export async function saveFeedback(data: InsertFeedback) {
+  const db = await getDb();
+  if (!db) return null;
+  return db.insert(feedbacks).values(data);
 }
 
 export async function getAdminStats() {

@@ -13,6 +13,7 @@ import {
   markAbConverted,
   trackBehaviorEvent,
   getAdminStats,
+  saveFeedback,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -181,6 +182,30 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await trackBehaviorEvent(input);
         return { success: true };
+      }),
+  }),
+
+  // ── Feedback ─────────────────────────────────────────────────────────────────
+  feedback: router({
+    submit: publicProcedure
+      .input(z.object({
+        sessionId: z.string(),
+        rating: z.number().int().min(1).max(5),
+        liked: z.string().optional(),
+        improved: z.string().optional(),
+        email: z.string().email().optional(),
+        rewardCode: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        await saveFeedback({
+          sessionId: input.sessionId,
+          rating: input.rating,
+          liked: input.liked,
+          improved: input.improved,
+          email: input.email,
+          rewardCode: input.rewardCode,
+        });
+        return { success: true, rewardCode: input.rewardCode };
       }),
   }),
 

@@ -137,11 +137,18 @@ export default function ThankYou() {
               ))}
             </div>
             {rating > 0 && (
-              <p className="text-xs text-center" style={{ color: "oklch(0.55 0.04 265)" }}>
-                {rating === 5 ? "🎉 Amazing! Thank you so much!" :
-                 rating >= 3 ? "Thanks for the feedback!" :
-                 "We're sorry to hear that — we'll do better!"}
-              </p>
+              <div className="text-center">
+                <p className="text-xs mb-3" style={{ color: "oklch(0.55 0.04 265)" }}>
+                  {rating === 5 ? "🎉 Amazing! Thank you so much!" :
+                   rating >= 3 ? "Thanks for the feedback!" :
+                   "We're sorry to hear that — we'll do better!"}
+                </p>
+                <a href={`/feedback?rating=${rating}`}
+                  className="inline-block rounded-xl px-5 py-2.5 text-xs font-bold"
+                  style={{ background: "oklch(0.78 0.18 65 / 0.15)", border: "1px solid oklch(0.78 0.18 65 / 0.3)", color: "oklch(0.82 0.16 65)" }}>
+                  Share full feedback &amp; claim your reward →
+                </a>
+              </div>
             )}
           </div>
         )}

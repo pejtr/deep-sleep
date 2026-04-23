@@ -97,3 +97,18 @@ export const behaviorEvents = mysqlTable("behavior_events", {
 
 export type BehaviorEvent = typeof behaviorEvents.$inferSelect;
 export type InsertBehaviorEvent = typeof behaviorEvents.$inferInsert;
+
+// ── Feedback ─────────────────────────────────────────────────────────────────
+export const feedbacks = mysqlTable("feedbacks", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 128 }).notNull(),
+  rating: int("rating").notNull(), // 1-5
+  liked: text("liked"),
+  improved: text("improved"),
+  email: varchar("email", { length: 320 }),
+  rewardCode: varchar("rewardCode", { length: 32 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Feedback = typeof feedbacks.$inferSelect;
+export type InsertFeedback = typeof feedbacks.$inferInsert;

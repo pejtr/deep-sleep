@@ -1,0 +1,220 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+export type Lang = "en" | "cs" | "de" | "es" | "fr" | "pt" | "hi";
+
+export const LANGUAGES: { code: Lang; label: string; flag: string }[] = [
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "cs", label: "Čeština", flag: "🇨🇿" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "pt", label: "Português", flag: "🇧🇷" },
+  { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+];
+
+export type Translations = {
+  hero_eyebrow: string;
+  hero_h1_line1: string;
+  hero_h1_line2: string;
+  hero_sub: string;
+  hero_cta: string;
+  hero_guarantee: string;
+  nav_cta: string;
+  quiz_cta: string;
+  footer_privacy: string;
+  footer_terms: string;
+  footer_affiliates: string;
+  footer_contact: string;
+  footer_feedback: string;
+  asmr_badge: string;
+  asmr_h2: string;
+  asmr_sub: string;
+  feedback_badge: string;
+  feedback_h2: string;
+};
+
+const T: Record<Lang, Translations> = {
+  en: {
+    hero_eyebrow: "SCIENCE-BACKED SLEEP PROTOCOL",
+    hero_h1_line1: "You're Not Tired.",
+    hero_h1_line2: "You're Sleep-Deprived.",
+    hero_sub: "The 7-night protocol that fixes insomnia without pills, supplements, or willpower.",
+    hero_cta: "Fix My Sleep Tonight — $5",
+    hero_guarantee: "30-day money-back guarantee · Instant access · No subscription",
+    nav_cta: "Change My Sleep — $5",
+    quiz_cta: "Take the Free Sleep Quiz →",
+    footer_privacy: "Privacy Policy",
+    footer_terms: "Terms of Service",
+    footer_affiliates: "Affiliates",
+    footer_contact: "Contact",
+    footer_feedback: "Feedback",
+    asmr_badge: "🎧 Free ASMR Sleep Sounds",
+    asmr_h2: "Fall Asleep Faster Tonight",
+    asmr_sub: "Science-backed sleep sounds engineered to slow your brainwaves from beta to delta. Try 2 free tracks now.",
+    feedback_badge: "💬 Share Your Experience",
+    feedback_h2: "How Did We Do?",
+  },
+  cs: {
+    hero_eyebrow: "VĚDECKY OVĚŘENÝ SPÁNKOVÝ PROTOKOL",
+    hero_h1_line1: "Nejsi unavený.",
+    hero_h1_line2: "Trpíš nedostatkem spánku.",
+    hero_sub: "7noční protokol, který vyřeší nespavost bez prášků, doplňků nebo vůle.",
+    hero_cta: "Oprav můj spánek dnes — $5",
+    hero_guarantee: "30denní záruka vrácení peněz · Okamžitý přístup · Bez předplatného",
+    nav_cta: "Změň svůj spánek — $5",
+    quiz_cta: "Udělej bezplatný spánkový kvíz →",
+    footer_privacy: "Zásady ochrany soukromí",
+    footer_terms: "Podmínky služby",
+    footer_affiliates: "Affiliate program",
+    footer_contact: "Kontakt",
+    footer_feedback: "Zpětná vazba",
+    asmr_badge: "🎧 Bezplatné ASMR zvuky pro spánek",
+    asmr_h2: "Usni rychleji dnes večer",
+    asmr_sub: "Vědecky podložené zvuky pro spánek, které zpomalí tvoje mozkové vlny z beta na delta. Vyzkoušej 2 stopy zdarma.",
+    feedback_badge: "💬 Sdílej svůj zážitek",
+    feedback_h2: "Jak jsme si vedli?",
+  },
+  de: {
+    hero_eyebrow: "WISSENSCHAFTLICH FUNDIERTES SCHLAFPROTOKOLL",
+    hero_h1_line1: "Du bist nicht müde.",
+    hero_h1_line2: "Du leidest unter Schlafmangel.",
+    hero_sub: "Das 7-Nächte-Protokoll, das Schlaflosigkeit ohne Pillen, Nahrungsergänzungsmittel oder Willenskraft behebt.",
+    hero_cta: "Meinen Schlaf heute Nacht reparieren — $5",
+    hero_guarantee: "30-Tage-Geld-zurück-Garantie · Sofortiger Zugang · Kein Abonnement",
+    nav_cta: "Meinen Schlaf ändern — $5",
+    quiz_cta: "Kostenloses Schlaf-Quiz machen →",
+    footer_privacy: "Datenschutzrichtlinie",
+    footer_terms: "Nutzungsbedingungen",
+    footer_affiliates: "Partnerprogramm",
+    footer_contact: "Kontakt",
+    footer_feedback: "Feedback",
+    asmr_badge: "🎧 Kostenlose ASMR-Schlafklänge",
+    asmr_h2: "Heute Nacht schneller einschlafen",
+    asmr_sub: "Wissenschaftlich fundierte Schlafklänge, die deine Gehirnwellen von Beta auf Delta verlangsamen. Probiere jetzt 2 kostenlose Tracks.",
+    feedback_badge: "💬 Teile deine Erfahrung",
+    feedback_h2: "Wie haben wir abgeschnitten?",
+  },
+  es: {
+    hero_eyebrow: "PROTOCOLO DE SUEÑO RESPALDADO POR LA CIENCIA",
+    hero_h1_line1: "No estás cansado.",
+    hero_h1_line2: "Tienes privación de sueño.",
+    hero_sub: "El protocolo de 7 noches que soluciona el insomnio sin pastillas, suplementos ni fuerza de voluntad.",
+    hero_cta: "Arreglar mi sueño esta noche — $5",
+    hero_guarantee: "Garantía de devolución de 30 días · Acceso instantáneo · Sin suscripción",
+    nav_cta: "Cambiar mi sueño — $5",
+    quiz_cta: "Hacer el quiz de sueño gratis →",
+    footer_privacy: "Política de privacidad",
+    footer_terms: "Términos de servicio",
+    footer_affiliates: "Afiliados",
+    footer_contact: "Contacto",
+    footer_feedback: "Comentarios",
+    asmr_badge: "🎧 Sonidos ASMR para dormir gratis",
+    asmr_h2: "Duerme más rápido esta noche",
+    asmr_sub: "Sonidos de sueño respaldados por la ciencia diseñados para ralentizar tus ondas cerebrales de beta a delta. Prueba 2 pistas gratis ahora.",
+    feedback_badge: "💬 Comparte tu experiencia",
+    feedback_h2: "¿Cómo lo hicimos?",
+  },
+  fr: {
+    hero_eyebrow: "PROTOCOLE DE SOMMEIL SOUTENU PAR LA SCIENCE",
+    hero_h1_line1: "Tu n'es pas fatigué.",
+    hero_h1_line2: "Tu souffres de privation de sommeil.",
+    hero_sub: "Le protocole de 7 nuits qui résout l'insomnie sans pilules, suppléments ou volonté.",
+    hero_cta: "Réparer mon sommeil ce soir — $5",
+    hero_guarantee: "Garantie de remboursement 30 jours · Accès instantané · Sans abonnement",
+    nav_cta: "Changer mon sommeil — $5",
+    quiz_cta: "Faire le quiz de sommeil gratuit →",
+    footer_privacy: "Politique de confidentialité",
+    footer_terms: "Conditions d'utilisation",
+    footer_affiliates: "Affiliés",
+    footer_contact: "Contact",
+    footer_feedback: "Commentaires",
+    asmr_badge: "🎧 Sons ASMR pour dormir gratuits",
+    asmr_h2: "S'endormir plus vite ce soir",
+    asmr_sub: "Sons de sommeil scientifiquement prouvés conçus pour ralentir vos ondes cérébrales du bêta au delta. Essayez 2 pistes gratuites maintenant.",
+    feedback_badge: "💬 Partagez votre expérience",
+    feedback_h2: "Comment avons-nous fait?",
+  },
+  pt: {
+    hero_eyebrow: "PROTOCOLO DE SONO BASEADO EM CIÊNCIA",
+    hero_h1_line1: "Você não está cansado.",
+    hero_h1_line2: "Você tem privação de sono.",
+    hero_sub: "O protocolo de 7 noites que resolve a insônia sem pílulas, suplementos ou força de vontade.",
+    hero_cta: "Consertar meu sono esta noite — $5",
+    hero_guarantee: "Garantia de devolução de 30 dias · Acesso instantâneo · Sem assinatura",
+    nav_cta: "Mudar meu sono — $5",
+    quiz_cta: "Fazer o quiz de sono grátis →",
+    footer_privacy: "Política de privacidade",
+    footer_terms: "Termos de serviço",
+    footer_affiliates: "Afiliados",
+    footer_contact: "Contato",
+    footer_feedback: "Feedback",
+    asmr_badge: "🎧 Sons ASMR para dormir grátis",
+    asmr_h2: "Adormeça mais rápido esta noite",
+    asmr_sub: "Sons de sono com respaldo científico projetados para desacelerar suas ondas cerebrais de beta para delta. Experimente 2 faixas grátis agora.",
+    feedback_badge: "💬 Compartilhe sua experiência",
+    feedback_h2: "Como nos saímos?",
+  },
+  hi: {
+    hero_eyebrow: "विज्ञान-समर्थित नींद प्रोटोकॉल",
+    hero_h1_line1: "आप थके नहीं हैं।",
+    hero_h1_line2: "आप नींद से वंचित हैं।",
+    hero_sub: "7-रात का प्रोटोकॉल जो बिना गोलियों, सप्लीमेंट्स या इच्छाशक्ति के अनिद्रा को ठीक करता है।",
+    hero_cta: "आज रात मेरी नींद ठीक करें — $5",
+    hero_guarantee: "30-दिन की मनी-बैक गारंटी · तत्काल पहुंच · कोई सदस्यता नहीं",
+    nav_cta: "मेरी नींद बदलें — $5",
+    quiz_cta: "मुफ्त नींद क्विज़ लें →",
+    footer_privacy: "गोपनीयता नीति",
+    footer_terms: "सेवा की शर्तें",
+    footer_affiliates: "सहयोगी",
+    footer_contact: "संपर्क",
+    footer_feedback: "प्रतिक्रिया",
+    asmr_badge: "🎧 मुफ्त ASMR नींद की आवाजें",
+    asmr_h2: "आज रात जल्दी सो जाएं",
+    asmr_sub: "विज्ञान-समर्थित नींद की आवाजें जो आपकी मस्तिष्क तरंगों को बीटा से डेल्टा तक धीमा करती हैं। अभी 2 मुफ्त ट्रैक आज़माएं।",
+    feedback_badge: "💬 अपना अनुभव साझा करें",
+    feedback_h2: "हमने कैसा किया?",
+  },
+};
+
+interface I18nContextType {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: Translations;
+}
+
+const I18nContext = createContext<I18nContextType>({
+  lang: "en",
+  setLang: () => {},
+  t: T.en,
+});
+
+const LANG_KEY = "dsr_lang";
+
+function detectBrowserLang(): Lang {
+  const nav = navigator.language.toLowerCase().split("-")[0];
+  const supported: Lang[] = ["en", "cs", "de", "es", "fr", "pt", "hi"];
+  return supported.includes(nav as Lang) ? (nav as Lang) : "en";
+}
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>(() => {
+    const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+    if (stored && T[stored]) return stored;
+    return detectBrowserLang();
+  });
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    localStorage.setItem(LANG_KEY, l);
+  };
+
+  return (
+    <I18nContext.Provider value={{ lang, setLang, t: T[lang] }}>
+      {children}
+    </I18nContext.Provider>
+  );
+}
+
+export function useI18n() {
+  return useContext(I18nContext);
+}

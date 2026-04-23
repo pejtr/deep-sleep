@@ -104,3 +104,17 @@
 ## Bug Fixes
 - [x] Fix Support button overlapping with FloatingSocialProofBar and LiveSalesNotification
 - [x] Fix all Gumroad fallback URLs in Upsell1, Upsell2, Upsell3, ThankYou (petrmatej → deepsleepreset)
+
+## New Features (Apr 23)
+- [x] Fix footer broken links (Privacy Policy, Terms of Service, Affiliates, Contact) — create real pages
+- [x] Add feedback system with automatic rewards (discount coupon, 1-month premium free, community access)
+- [x] Add ASMR section on Home page + ASMR upsell (premium audio pack)
+- [x] Add language switcher (CS, DE, ES, FR, PT, HI) with translations
+- [ ] Test bonus downloads from Gumroad (PDF, audio files)
+- [x] Add feedback router in server/routers.ts (submitFeedback mutation with reward generation)
+- [x] Create Privacy Policy page (/privacy)
+- [x] Create Terms of Service page (/terms)
+- [x] Create Affiliates page (/affiliates)
+- [x] Create Contact page (/contact)
+- [x] Add i18n context/hook for language switching
+- [x] Add ASMR audio player component with sleep sounds

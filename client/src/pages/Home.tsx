@@ -5,7 +5,10 @@ import LiveSalesNotification from "@/components/LiveSalesNotification";
 import FloatingSocialProofBar from "@/components/FloatingSocialProofBar";
 import SupportButton from "@/components/SupportButton";
 import FAQSection from "@/components/FAQSection";
+import ASMRPlayer from "@/components/ASMRPlayer";
 import { getAbVariant, getSessionId, useTrackBehavior } from "@/hooks/useSession";
+import { useI18n } from "@/contexts/I18nContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { trpc } from "@/lib/trpc";
 
 const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc";
@@ -119,6 +122,7 @@ export default function Home() {
   const [, navigate] = useLocation();
   const variant = getAbVariant();
   const { track } = useTrackBehavior();
+  const { t } = useI18n();
   const abMutation = trpc.abTest.track.useMutation();
   const tracked = useRef(false);
   const [purchaseCount] = useState(() => Math.floor(Math.random() * 4) + 7);
@@ -180,14 +184,17 @@ export default function Home() {
               Deep Sleep Reset
             </span>
           </div>
-          <a
-            href={GUMROAD_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cta-gold cta-shimmer rounded-lg px-4 py-2 text-xs font-bold inline-flex items-center gap-1.5"
-          >
-            Change My Sleep — $5
-          </a>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <a
+              href={GUMROAD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cta-gold cta-shimmer rounded-lg px-4 py-2 text-xs font-bold inline-flex items-center gap-1.5"
+            >
+              {t.nav_cta}
+            </a>
+          </div>
         </nav>
 
         {/* Hero content */}
@@ -195,20 +202,20 @@ export default function Home() {
           {/* Subheadline */}
           <p className="text-xs md:text-sm font-semibold tracking-[0.2em] uppercase mb-6 animate-reveal"
             style={{ color: "oklch(0.82 0.16 65)" }}>
-            Science-Backed Sleep Protocol
+            {t.hero_eyebrow}
           </p>
 
           {/* Main headline — Hormozi style: specific, outcome-driven */}
           <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 animate-reveal stagger-1 max-w-5xl mx-auto">
-            <span style={{ color: "oklch(0.95 0.01 265)" }}>You're Not Tired.</span>
+            <span style={{ color: "oklch(0.95 0.01 265)" }}>{t.hero_h1_line1}</span>
             <br />
-            <span className="text-gradient-gold-italic">You're Sleep-Deprived.</span>
+            <span className="text-gradient-gold-italic">{t.hero_h1_line2}</span>
           </h1>
 
           {/* Sub — specific promise */}
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-4 animate-reveal stagger-2 leading-relaxed"
             style={{ color: "oklch(0.70 0.04 265)" }}>
-            The 7-night protocol that fixes insomnia without pills, supplements, or willpower.
+            {t.hero_sub}
           </p>
           <p className="text-sm max-w-xl mx-auto mb-8 animate-reveal stagger-2"
             style={{ color: "oklch(0.50 0.04 265)" }}>
@@ -223,11 +230,11 @@ export default function Home() {
               rel="noopener noreferrer"
               className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3"
             >
-              <span>Fix My Sleep Tonight — $5</span>
+              <span>{t.hero_cta}</span>
               <ArrowRight className="w-5 h-5" />
             </a>
             <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
-              30-day money-back guarantee · Instant access · No subscription
+              {t.hero_guarantee}
             </p>
           </div>
 
@@ -487,7 +494,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
               >
-                <span>Fix My Sleep Tonight — $5</span>
+                <span>{t.hero_cta}</span>
                 <ArrowRight className="w-5 h-5" />
               </a>
               <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
@@ -553,6 +560,29 @@ export default function Home() {
         </section>
       </AnimatedSection>
 
+      {/* ═══════════════ ASMR SLEEP SOUNDS ═══════════════ */}
+      <AnimatedSection>
+        <section className="relative z-10 container py-16">
+          <div className="section-divider mb-12" />
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 text-xs font-semibold"
+              style={{ background: "oklch(0.78 0.18 65 / 0.1)", border: "1px solid oklch(0.78 0.18 65 / 0.3)", color: "oklch(0.82 0.16 65)" }}>
+              {t.asmr_badge}
+            </div>
+            <h2 className="font-display font-bold text-3xl md:text-4xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
+              {t.asmr_h2.split(' ').slice(0,-1).join(' ')}{" "}
+              <span className="text-gradient-gold-italic">{t.asmr_h2.split(' ').slice(-1)[0]}</span>
+            </h2>
+            <p className="text-sm max-w-md mx-auto" style={{ color: "oklch(0.55 0.04 265)" }}>
+              {t.asmr_sub}
+            </p>
+          </div>
+          <div className="max-w-xl mx-auto">
+            <ASMRPlayer onUpgradeClick={() => window.open('https://deepsleepreset.gumroad.com/l/premium', '_blank')} />
+          </div>
+        </section>
+      </AnimatedSection>
+
       {/* ═══════════════ FAQ ═══════════════ */}
       <FAQSection />
 
@@ -598,10 +628,11 @@ export default function Home() {
           © 2026 Deep Sleep Reset. All rights reserved.
         </p>
         <div className="flex items-center justify-center gap-4 mt-2">
-          <a href="#" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Privacy Policy</a>
-          <a href="#" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Terms of Service</a>
-          <a href="#" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Affiliates</a>
-          <a href="#" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Contact</a>
+          <a href="/privacy" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_privacy}</a>
+          <a href="/terms" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_terms}</a>
+          <a href="/affiliates" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_affiliates}</a>
+          <a href="/contact" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_contact}</a>
+          <a href="/feedback" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_feedback}</a>
         </div>
       </footer>
 
