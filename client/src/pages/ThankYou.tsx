@@ -163,7 +163,7 @@ export default function ThankYou() {
               <div className="badge-popular">66% OFF</div>
             </div>
             <button
-              onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.open("https://petrmatej.gumroad.com/l/premium", "_blank"); }}
+              onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.open("https://deepsleepreset.gumroad.com/l/premium", "_blank"); }}
               className="w-full cta-gold cta-shimmer rounded-xl py-3 text-sm flex items-center justify-center gap-2">
               Upgrade to Premium — $9.99/mo
             </button>

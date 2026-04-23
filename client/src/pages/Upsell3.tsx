@@ -29,7 +29,7 @@ export default function Upsell3() {
       const result = await orderMutation.mutateAsync({ sessionId: getSessionId(), productId: "oto3", chronotype });
       window.location.href = result.gumroadUrl;
     } catch {
-      window.location.href = "https://petrmatej.gumroad.com/l/ubsxk";
+      window.location.href = "https://deepsleepreset.gumroad.com/l/ubsxk";
     }
   };
 

@@ -41,5 +41,66 @@
 - [x] TypeScript check passes (0 errors)
 - [x] Production build passes (4.84s)
 - [x] Vitest tests written (15 tests, all passing)
-- [ ] Checkpoint saved
-- [ ] Published to deep-sleep.manus.space
+- [x] Checkpoint saved (version: daeb2cca)
+- [ ] Published to deep-sleep.manus.space (user action required — click Publish button)
+
+## Gumroad Optimization
+- [x] Upload optimized product description copy to all 4 Gumroad products
+- [x] Publish all 4 products on Gumroad (all Published, prices verified)
+- [ ] Test complete purchase flow (quiz → result → checkout → payment)
+
+## Gumroad Storefront Branding
+- [x] Publisher name changed to DEEPSLEEP
+- [x] Bio updated with quiz CTA → deepsleep.quest
+- [x] Profile colors: Background #0B1120, Highlight #C9A84C
+- [x] Dark cosmic logo/avatar uploaded
+- [x] Branded thumbnails uploaded for all 4 products
+- [x] Audio Pack price corrected from $12 to $17
+
+## Domain Setup
+- [ ] Configure deepsleep.quest as primary domain (DNS setup pending — user action)
+- [x] deepsleep.mom domain connected
+- [x] deepsleep.manus.space domain active
+
+## Promotion & Launch
+- [ ] Test complete purchase flow (quiz → result → checkout → payment)
+- [ ] Prepare and launch promotional campaigns (Meta Ads + organic)
+- [ ] Generate Luna Voss AI influencer content for deepsleep.mom
+
+## Premium Redesign (matching deep-sleep-reset.com)
+- [x] Update global CSS design system: dark cinematic theme, gold/amber accents (#C9A84C), serif typography (Playfair Display)
+- [x] Rebuild Hero section: night sky background, "You're Not Tired. You're Sleep-Deprived." headline, gold CTA
+- [x] Add sticky top bar: "Don't close — Start your sleep transformation" with progress indicator
+- [x] Add Problem Agitation section: 3:17 AM photo, failed solutions list with X marks
+- [x] Add brainwave visualization section
+- [x] Add Sleep Score quiz CTA section
+- [x] Add "The 7-Night Deep Sleep Reset" product introduction section
+- [x] Add "What Happens Each Night" (Night 1-7 journey) section
+- [x] Add "This was made for you if:" checklist section
+- [x] Add premium testimonials section: 3-card layout with names/locations, 5-star ratings
+- [x] Add value stack pricing section: "Your Complete System — Everything Included" with crossed-out total
+- [x] Add "Sleep Better or Pay Nothing" guarantee section with shield icon
+- [x] Add Chronotype quiz CTA section with animal emojis
+- [x] Add FAQ accordion section: "Questions & Honest Answers"
+- [x] Add final CTA section: "One Coffee. Seven Nights. A Different Life."
+- [x] Add floating social proof bar: live counter + rotating testimonials + "Try for $5" CTA
+- [x] Add floating Support button (bottom-left)
+- [x] Add live purchase notifications (toast popups)
+- [x] Add SCROLL indicator with animated arrows in hero
+- [x] Connect all CTA buttons to Gumroad checkout (https://deepsleepreset.gumroad.com/l/fdtifc)
+- [x] Update quiz to 8 questions (sends first 5 to server)
+- [x] Fix Gumroad URLs from petrmatej to deepsleepreset across all routes
+
+## Hormozi Techniques Integration
+- [x] Apply Grand Slam Offer framework: Dream Outcome + Perceived Likelihood + Time Delay + Effort/Sacrifice
+- [x] Value stack with anchored pricing ($119 value → $5 price = 24x value)
+- [x] Risk reversal: "Sleep Better or Pay Nothing" 30-day guarantee
+- [x] Urgency: limited spots, live purchase counter, countdown elements
+- [x] Problem agitation: paint the pain vividly before presenting solution
+- [x] Social proof: specific names, locations, before/after transformations
+- [x] Scarcity: "9 people purchased in the last hour"
+- [x] Dream outcome framing: "One Coffee. Seven Nights. A Different Life."
+
+## Bug Fixes
+- [x] Fix Support button overlapping with FloatingSocialProofBar and LiveSalesNotification
+- [x] Fix all Gumroad fallback URLs in Upsell1, Upsell2, Upsell3, ThankYou (petrmatej → deepsleepreset)

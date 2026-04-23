@@ -46,7 +46,7 @@ export default function Order() {
     } catch (err) {
       console.error(err);
       // Fallback direct link
-      window.location.href = "https://petrmatej.gumroad.com/l/fdtifc";
+      window.location.href = "https://deepsleepreset.gumroad.com/l/fdtifc";
     }
   };
 

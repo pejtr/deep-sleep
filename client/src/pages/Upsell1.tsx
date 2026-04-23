@@ -37,7 +37,7 @@ export default function Upsell1() {
       });
       window.location.href = result.gumroadUrl;
     } catch {
-      window.location.href = "https://petrmatej.gumroad.com/l/ttrsd";
+      window.location.href = "https://deepsleepreset.gumroad.com/l/ttrsd";
     }
   };
 

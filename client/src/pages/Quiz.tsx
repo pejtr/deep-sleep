@@ -61,6 +61,36 @@ const QUESTIONS: Question[] = [
       "🔄 Completely unpredictable — it varies wildly",
     ],
   },
+  {
+    id: 6,
+    text: "How do you feel about exercise and physical activity?",
+    options: [
+      "💪 I love morning workouts — they energize my whole day",
+      "🏃 I prefer midday or early afternoon exercise",
+      "🌆 I feel strongest exercising in the evening",
+      "🧘 I struggle to find energy for exercise at any time",
+    ],
+  },
+  {
+    id: 7,
+    text: "What happens when you eat a big meal late at night?",
+    options: [
+      "😣 I feel terrible and can't sleep — I avoid it",
+      "😐 It doesn't bother me much, I sleep okay",
+      "😋 I actually enjoy late dinners and sleep fine after",
+      "🤔 My appetite is unpredictable — sometimes I'm starving at midnight",
+    ],
+  },
+  {
+    id: 8,
+    text: "How do you handle stress and anxiety before bed?",
+    options: [
+      "😌 I rarely feel stressed at bedtime — I process things early",
+      "📝 I sometimes worry but can usually let it go",
+      "🎵 I need distraction (music, TV, phone) to wind down",
+      "😰 My mind races — I can't stop thinking about tomorrow",
+    ],
+  },
 ];
 
 export default function Quiz() {
@@ -95,14 +125,14 @@ export default function Quiz() {
       setCurrent(c => c + 1);
       setSelected(null);
     } else {
-      // Submit quiz
+      // Submit quiz — only send first 5 answers to server (matches schema)
       setSubmitting(true);
       try {
         const sessionId = getSessionId();
         const abVariant = getAbVariant();
         const result = await submitMutation.mutateAsync({
           sessionId,
-          answers: newAnswers,
+          answers: newAnswers.slice(0, 5),
           abVariant,
         });
         setChronotype(result.chronotype);
