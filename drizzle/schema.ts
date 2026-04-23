@@ -48,6 +48,9 @@ export const orders = mysqlTable("orders", {
   chronotype: mysqlEnum("chronotype", ["Lion", "Bear", "Wolf", "Dolphin"]),
   status: mysqlEnum("status", ["pending", "completed", "declined"]).default("pending").notNull(),
   gumroadPermalink: varchar("gumroadPermalink", { length: 64 }),
+  stripeSessionId: varchar("stripeSessionId", { length: 128 }),
+  stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 128 }),
+  currency: varchar("currency", { length: 8 }).default("usd"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

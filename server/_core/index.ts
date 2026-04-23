@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { registerBehaviorRoutes } from "../behaviorRoutes";
+import { registerStripeWebhook } from "../stripeWebhook";
 import { appRouter } from "../routers";
 import { scheduleNightlyOptimization } from "../jobs/nightlyOptimization";
 import { createContext } from "./context";
@@ -33,12 +34,15 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  // Stripe webhook MUST receive raw body — register BEFORE express.json()
+  app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   registerBehaviorRoutes(app);
+  registerStripeWebhook(app);
   // tRPC API
   app.use(
     "/api/trpc",

@@ -9,6 +9,7 @@ import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
+import { CheckoutButton } from "@/components/CheckoutButton";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -29,29 +30,9 @@ export default function Order() {
   const { track } = useTrackBehavior();
   const { formatPrice, currency } = useCurrency();
 
-  const orderMutation = trpc.orders.create.useMutation();
-
   useEffect(() => {
     track("page_view", { page: "order", value: { chronotype } });
   }, []);
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    track("checkout_click", { page: "order", element: "main_cta", value: { chronotype } });
-    try {
-      const result = await orderMutation.mutateAsync({
-        sessionId: getSessionId(),
-        productId: "main",
-        chronotype,
-      });
-      // Redirect to Gumroad
-      window.location.href = result.gumroadUrl;
-    } catch (err) {
-      console.error(err);
-      // Fallback direct link
-      window.location.href = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
-    }
-  };
 
   return (
     <div className="min-h-screen pb-32 md:pb-0" style={{ background: "oklch(0.07 0.025 255)" }}>
@@ -154,16 +135,18 @@ export default function Order() {
             <CountdownTimer variant="inline" label="Price locks in:" />
           </div>
 
-          {/* CTA */}
-          <button
-            onClick={handleCheckout}
-            disabled={loading}
-            className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg flex items-center justify-center gap-3 disabled:opacity-60"
+          {/* CTA — Native Stripe Checkout */}
+          <CheckoutButton
+            productId="main"
+            sessionId={getSessionId()}
+            chronotype={chronotype}
+            className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg"
+            variant="primary"
           >
             <Lock className="w-5 h-5" />
-            <span>{loading ? "Redirecting..." : `Get My ${chronotype} Protocol — ${formatPrice(5)}`}</span>
+            <span>Get My {chronotype} Protocol — {formatPrice(5)}</span>
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </CheckoutButton>
 
           {/* Payment methods */}
           <div className="flex items-center justify-center gap-3 mt-4">
@@ -234,8 +217,8 @@ export default function Order() {
       {/* Sticky mobile CTA */}
       <StickyMobileCTA
         label={`Get My ${chronotype} Protocol`}
-        price="$5"
-        onClick={handleCheckout}
+        price={formatPrice(5)}
+        onClick={() => track("checkout_click", { page: "order", element: "sticky_cta", value: { chronotype } })}
       />
 
       {/* FOMO */}

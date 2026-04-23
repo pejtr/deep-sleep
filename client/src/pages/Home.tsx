@@ -14,7 +14,8 @@ import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 
-const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
+// Gumroad URL kept as fallback — replaced by native Stripe checkout
+// const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp";
 const CLOCK_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/3am-clock-XJszaQCHaCqerz7QvxDA8P.webp";
@@ -163,7 +164,7 @@ export default function Home() {
 
   const handleBuyNow = () => {
     track("cta_click", { page: "home", element: "buy_now" });
-    window.open(GUMROAD_URL, "_blank");
+    navigate("/order");
   };
 
   return (
@@ -208,14 +209,12 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <CurrencySwitcher />
             <LanguageSwitcher />
-            <a
-              href={GUMROAD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={handleBuyNow}
               className="cta-gold cta-shimmer rounded-lg px-4 py-2 text-xs font-bold inline-flex items-center gap-1.5"
             >
               {t.nav_cta}
-            </a>
+            </button>
           </div>
         </nav>
 
@@ -246,15 +245,13 @@ export default function Home() {
 
           {/* CTA */}
           <div className="animate-reveal stagger-3">
-            <a
-              href={GUMROAD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={handleBuyNow}
               className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3"
             >
               <span>{t.hero_cta}</span>
               <ArrowRight className="w-5 h-5" />
-            </a>
+            </button>
             <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
               {t.hero_guarantee}
             </p>
@@ -510,15 +507,13 @@ export default function Home() {
             </div>
 
             <div className="text-center mt-8">
-              <a
-                href={GUMROAD_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={handleBuyNow}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
               >
                 <span>{t.hero_cta}</span>
                 <ArrowRight className="w-5 h-5" />
-              </a>
+              </button>
               <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
                 <span className="inline-flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
@@ -623,14 +618,12 @@ export default function Home() {
             More energy. Sharper thinking. Better mood. Calmer relationships. The version of yourself that shows up when you're not running on empty. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $5.</strong>
           </p>
 
-          <a
-            href={GUMROAD_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-12 py-6 text-xl inline-flex items-center gap-3 animate-pulse-glow"
           >
             <span>CHANGE MY SLEEP — $5</span>
-          </a>
+          </button>
 
           <p className="text-sm italic mt-10 max-w-lg mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>
             <strong style={{ color: "oklch(0.55 0.04 265)" }}>P.S.</strong>{" "}

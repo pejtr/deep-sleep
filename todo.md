@@ -194,6 +194,18 @@
 - [ ] Auto-detekce měny při prvním načtení (podle jazyka/IP)
 - [ ] Vitest test pro currency endpoint
 
+## Nativní Stripe Checkout (Apr 23)
+- [ ] Aktivovat Stripe integraci přes webdev_add_feature
+- [ ] Nastavit STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY a STRIPE_WEBHOOK_SECRET
+- [ ] Backend: createCheckoutSession tRPC endpoint (price $5, product metadata, currency support)
+- [ ] Backend: Stripe webhook handler pro checkout.session.completed → fulfillment
+- [ ] Backend: DB tabulka stripe_orders pro tracking plateb
+- [ ] Frontend: CheckoutModal nebo přímý Stripe Checkout redirect
+- [ ] Frontend: /checkout/success stránka s download linkem a potvrzením
+- [ ] Propojit všechna CTA tlačítka na nativní checkout (Home, Order, FloatingSocialProofBar, Quiz)
+- [ ] Odstranit Gumroad URL nebo ponechat jako fallback
+- [ ] Vitest testy pro checkout endpoint
+
 ## CRO Opravy — Konverzní funnel (Apr 23)
 - [ ] Quiz: zkrátit z 8 na 5 otázek (méně friction) nebo přidat progress bar s % completion
 - [ ] Quiz: přidat "Quick Buy" bypass — tlačítko "Skip quiz, just get it for $5" na quiz stránce
@@ -204,3 +216,21 @@
 - [ ] Order stránka: přidat "As seen on TikTok" badge
 - [ ] Gumroad: ověřit že checkout funguje správně na mobilu s price=5
 - [ ] Analytics: přidat custom events pro quiz_start, quiz_complete, order_click do admin dashboardu
+
+## Native Stripe Checkout (replacing Gumroad)
+- [x] Stripe sandbox activated via webdev_add_feature
+- [x] Stripe packages installed (stripe, @stripe/stripe-js)
+- [x] DB schema updated: orders table has stripeSessionId, stripePaymentIntentId, currency columns
+- [x] server/products.ts created with Stripe product/price definitions
+- [x] server/stripeWebhook.ts created with webhook handler for checkout.session.completed
+- [x] Stripe webhook registered in server/_core/index.ts with raw body parser
+- [x] checkout.createSession tRPC endpoint added to server/routers.ts
+- [x] client/src/components/CheckoutButton.tsx created
+- [x] client/src/pages/CheckoutSuccess.tsx created (/checkout/success route)
+- [x] /checkout/success route added to App.tsx
+- [x] Order.tsx updated: replaced Gumroad CTA with CheckoutButton component
+- [x] Home.tsx: all Gumroad URLs replaced with navigate('/order')
+- [x] FloatingSocialProofBar.tsx: Gumroad URL replaced with navigate('/order')
+- [x] Quiz.tsx: skip-quiz Gumroad URL replaced with navigate('/order')
+- [ ] User needs to claim Stripe sandbox at https://dashboard.stripe.com/claim_sandbox/...
+- [ ] Test with card 4242 4242 4242 4242

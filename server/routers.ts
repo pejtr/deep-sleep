@@ -1,4 +1,5 @@
 import { z } from "zod";
+import Stripe from "stripe";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -453,6 +454,93 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
   // ── Admin ─────────────────────────────────────────────────────────────────────────────────────────
   admin: router({
     stats: protectedProcedure.query(async () => getAdminStats()),
+  }),
+
+  // ── Stripe Checkout ───────────────────────────────────────────────────────────────────────
+  checkout: router({
+    createSession: publicProcedure
+      .input(
+        z.object({
+          productId: z.enum(["main", "oto1", "oto2", "oto3"]).default("main"),
+          sessionId: z.string(),
+          email: z.string().email().optional(),
+          chronotype: z.string().optional(),
+          currency: z.string().default("usd"),
+          origin: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+        const PRODUCT_PRICES: Record<string, number> = {
+          main: 500, oto1: 700, oto2: 1700, oto3: 2700,
+        };
+        const PRODUCT_NAMES: Record<string, string> = {
+          main: "Deep Sleep Reset — 7-Night Protocol",
+          oto1: "Deep Sleep Reset — Chronotype Optimizer",
+          oto2: "Deep Sleep Reset — ASMR Audio Pack",
+          oto3: "Deep Sleep Reset — Complete Bundle",
+        };
+        const amountCents = PRODUCT_PRICES[input.productId] ?? 500;
+        const productName = PRODUCT_NAMES[input.productId] ?? "Deep Sleep Reset";
+        // Supported Stripe currencies (subset of all)
+        const stripeSupportedCurrencies = ["usd","eur","gbp","cad","aud","pln","czk","inr","brl","mxn","chf","sek","nok","dkk","sgd","nzd","zar","jpy"];
+        const currency = stripeSupportedCurrencies.includes(input.currency.toLowerCase()) ? input.currency.toLowerCase() : "usd";
+        // Convert amount from USD cents to target currency
+        const RATES: Record<string, number> = {
+          usd: 1, eur: 0.853, gbp: 0.741, czk: 20.77, cad: 1.366,
+          aud: 1.548, pln: 3.82, inr: 83.5, brl: 4.97, mxn: 17.15,
+          chf: 0.899, sek: 10.32, nok: 10.58, dkk: 6.36, sgd: 1.34,
+          nzd: 1.67, zar: 18.63, jpy: 154.2,
+        };
+        // Zero-decimal currencies (Stripe expects whole units, not cents)
+        const zeroDecimal = ["jpy"];
+        const rate = RATES[currency] ?? 1;
+        let finalAmount: number;
+        if (zeroDecimal.includes(currency)) {
+          finalAmount = Math.round((amountCents / 100) * rate);
+        } else {
+          finalAmount = Math.round(amountCents * rate);
+        }
+        // Create pending order in DB
+        const orderId = await createOrder({
+          sessionId: input.sessionId,
+          productId: input.productId,
+          amount: (finalAmount / (zeroDecimal.includes(currency) ? 1 : 100)).toFixed(2),
+          email: input.email,
+          chronotype: (input.chronotype as "Lion" | "Bear" | "Wolf" | "Dolphin" | undefined),
+          status: "pending",
+          currency,
+        });
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: [
+            {
+              price_data: {
+                currency,
+                product_data: {
+                  name: productName,
+                  description: "Instant digital download. Science-backed sleep protocol.",
+                },
+                unit_amount: finalAmount,
+              },
+              quantity: 1,
+            },
+          ],
+          mode: "payment",
+          allow_promotion_codes: true,
+          customer_email: input.email,
+          success_url: `${input.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}`,
+          cancel_url: `${input.origin}/order`,
+          metadata: {
+            sessionId: input.sessionId,
+            productId: input.productId,
+            orderId: String(orderId),
+            chronotype: input.chronotype ?? "",
+          },
+          client_reference_id: input.sessionId,
+        });
+        return { url: session.url, sessionId: session.id };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

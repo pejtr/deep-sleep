@@ -4,7 +4,8 @@ import { Moon, ArrowLeft, Zap } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, getAbVariant, setChronotype, useTrackBehavior } from "@/hooks/useSession";
 
-const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
+// Gumroad URL replaced by native Stripe checkout
+// const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 interface Question {
   id: number;
@@ -187,11 +188,8 @@ export default function Quiz() {
           </span>
         </div>
         {/* Skip quiz — direct buy for impulsive TikTok visitors */}
-        <a
-          href={GUMROAD_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => track("cta_click", { page: "quiz", element: "skip_quiz" })}
+        <button
+          onClick={() => { track("cta_click", { page: "quiz", element: "skip_quiz" }); navigate("/order"); }}
           className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full font-semibold"
           style={{
             color: "oklch(0.78 0.18 65)",
@@ -201,7 +199,7 @@ export default function Quiz() {
         >
           <Zap className="w-3 h-3" />
           Buy $5
-        </a>
+        </button>
       </div>
 
       {/* Progress bar */}

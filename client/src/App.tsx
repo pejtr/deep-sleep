@@ -19,6 +19,7 @@ import Affiliates from "./pages/Affiliates";
 import Contact from "./pages/Contact";
 import Feedback from "./pages/Feedback";
 import AdminDashboard from "./pages/AdminDashboard";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 import SleepChatBot from "./components/SleepChatBot";
 
 function Router() {
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/feedback" component={Feedback} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

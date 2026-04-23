@@ -10,7 +10,8 @@ const TESTIMONIALS = [
   { text: "Night shift nurse. This program gave me my sleep back.", name: "Maria L.", location: "Toronto, CA" },
 ];
 
-const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
+// Gumroad URL replaced by native Stripe checkout
+// const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 export default function FloatingSocialProofBar() {
   const [liveCount, setLiveCount] = useState(849);
@@ -104,15 +105,13 @@ export default function FloatingSocialProofBar() {
         </div>
 
         {/* Right: CTA */}
-        <a
-          href={GUMROAD_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={() => navigate("/order")}
           className="cta-gold cta-shimmer rounded-lg px-4 py-2 text-xs font-bold inline-flex items-center gap-1.5 flex-shrink-0"
         >
           Try for $5
           <ChevronRight className="w-3.5 h-3.5" />
-        </a>
+        </button>
       </div>
     </div>
   );
