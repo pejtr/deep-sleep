@@ -110,7 +110,7 @@
 - [x] Add feedback system with automatic rewards (discount coupon, 1-month premium free, community access)
 - [x] Add ASMR section on Home page + ASMR upsell (premium audio pack)
 - [x] Add language switcher (CS, DE, ES, FR, PT, HI) with translations
-- [ ] Test bonus downloads from Gumroad (PDF, audio files)
+- [x] Test bonus downloads from Gumroad (PDF, audio files)
 - [x] Add feedback router in server/routers.ts (submitFeedback mutation with reward generation)
 - [x] Create Privacy Policy page (/privacy)
 - [x] Create Terms of Service page (/terms)
