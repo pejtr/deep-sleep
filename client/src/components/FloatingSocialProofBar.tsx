@@ -10,7 +10,7 @@ const TESTIMONIALS = [
   { text: "Night shift nurse. This program gave me my sleep back.", name: "Maria L.", location: "Toronto, CA" },
 ];
 
-const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=500";
+const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 export default function FloatingSocialProofBar() {
   const [liveCount, setLiveCount] = useState(849);

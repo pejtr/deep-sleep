@@ -113,7 +113,7 @@ export const appRouter = router({
           gumroadPermalink: product.gumroad,
         });
         return {
-          gumroadUrl: `https://deepsleepreset.gumroad.com/l/${product.gumroad}`,
+          gumroadUrl: `https://deepsleepreset.gumroad.com/l/${product.gumroad}${input.productId === 'main' ? '?price=5' : ''}`,
           amount: product.amount,
         };
       }),

@@ -157,7 +157,7 @@
 - [ ] Luna Affiliate mód na /affiliates stránce (ne ADMIN mód)
 - [ ] Email kontaktní formulář směrovat na petr.matej@gmail.com
 - [ ] Zjistit možnost emailu na deepsleep.quest doméně
-- [x] Gumroad URL: pevná cena $5 (přidat ?price=500 parametr)
+- [x] Gumroad URL: pevná cena $5 (opraveno z ?price=500 na ?price=5 — Gumroad zobrazuje v dolarech, ne centech)
 - [ ] Luna ADMIN mód: zobrazovat POUZE na /admin stránce, na landing page vždy prodejní persona
 - [ ] Personalizované chatbot persony: Luna (empatická), Petra (vědecká), Lucie (přímá) — random výběr per session
 - [ ] Admin Dashboard: kruhové grafy (device, language, funnel)
