@@ -112,3 +112,31 @@ export const feedbacks = mysqlTable("feedbacks", {
 
 export type Feedback = typeof feedbacks.$inferSelect;
 export type InsertFeedback = typeof feedbacks.$inferInsert;
+
+// ── AI Insights (nightly optimization results) ─────────────────────────────────────────
+export const aiInsights = mysqlTable("ai_insights", {
+  id: int("id").autoincrement().primaryKey(),
+  date: varchar("date", { length: 16 }).notNull(), // YYYY-MM-DD
+  summary: text("summary").notNull(), // AI-generated summary
+  recommendations: text("recommendations").notNull(), // JSON array of recommendations
+  metrics: text("metrics").notNull(), // JSON snapshot of key metrics
+  applied: boolean("applied").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AiInsight = typeof aiInsights.$inferSelect;
+export type InsertAiInsight = typeof aiInsights.$inferInsert;
+
+// ── Chat Messages (Luna conversation log) ────────────────────────────────────────
+export const chatMessages = mysqlTable("chat_messages", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 128 }).notNull(),
+  role: mysqlEnum("role", ["user", "assistant"]).notNull(),
+  content: text("content").notNull(),
+  lang: varchar("lang", { length: 8 }).default("en"),
+  isAdmin: boolean("isAdmin").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type InsertChatMessage = typeof chatMessages.$inferInsert;

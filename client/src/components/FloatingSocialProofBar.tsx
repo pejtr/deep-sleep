@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Star, ChevronRight } from "lucide-react";
+import { Star, ChevronRight, ArrowRight } from "lucide-react";
+import { useLocation } from "wouter";
 
 const TESTIMONIALS = [
   { text: "4 years of broken sleep. Fixed in 7 nights. This is not normal for me.", name: "Maria L.", location: "Toronto, CA" },
@@ -9,11 +10,12 @@ const TESTIMONIALS = [
   { text: "Night shift nurse. This program gave me my sleep back.", name: "Maria L.", location: "Toronto, CA" },
 ];
 
-const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc";
+const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=500";
 
 export default function FloatingSocialProofBar() {
   const [liveCount, setLiveCount] = useState(849);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [, navigate] = useLocation();
 
   // Slowly increment live count
   useEffect(() => {
@@ -40,10 +42,10 @@ export default function FloatingSocialProofBar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 social-proof-bar">
-      <div className="container py-2.5 flex items-center justify-between gap-4">
+      <div className="container py-2.5 flex items-center justify-between gap-3">
         {/* Left: Live counter */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5 flex-shrink-0">
+          <div className="flex items-center gap-1.5">
             <svg className="w-4 h-4" style={{ color: "oklch(0.70 0.04 265)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
@@ -55,19 +57,50 @@ export default function FloatingSocialProofBar() {
           <span className="text-xs hidden sm:inline" style={{ color: "oklch(0.50 0.04 265)" }}>lives changed<br />this week</span>
         </div>
 
-        {/* Center: Rotating testimonial */}
-        <div className="flex-1 min-w-0 hidden md:flex items-center gap-3 justify-center">
-          <div className="flex gap-0.5">
-            {[1,2,3,4,5].map(i => (
-              <Star key={i} className="w-3 h-3 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
-            ))}
+        {/* Center: Quiz button (mobile) + Testimonial (desktop) */}
+        <div className="flex-1 min-w-0 flex items-center justify-center gap-3">
+          {/* Quiz button — visible on mobile/tablet where testimonial is hidden */}
+          <button
+            onClick={() => navigate("/quiz")}
+            className="flex sm:hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            style={{
+              background: "oklch(0.14 0.04 265)",
+              border: "1px solid oklch(0.55 0.18 65 / 0.4)",
+              color: "oklch(0.82 0.16 65)",
+            }}
+          >
+            <span>Find my type</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
+
+          {/* Rotating testimonial — desktop only */}
+          <div className="hidden md:flex items-center gap-3 flex-1 min-w-0 justify-center">
+            <div className="flex gap-0.5 flex-shrink-0">
+              {[1,2,3,4,5].map(i => (
+                <Star key={i} className="w-3 h-3 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
+              ))}
+            </div>
+            <p className="text-xs truncate" style={{ color: "oklch(0.70 0.04 265)" }}>
+              "{currentTestimonial.text}"
+            </p>
+            <span className="text-xs flex-shrink-0" style={{ color: "oklch(0.50 0.04 265)" }}>
+              — {currentTestimonial.name}, {currentTestimonial.location}
+            </span>
           </div>
-          <p className="text-xs truncate" style={{ color: "oklch(0.70 0.04 265)" }}>
-            "{currentTestimonial.text}"
-          </p>
-          <span className="text-xs flex-shrink-0" style={{ color: "oklch(0.50 0.04 265)" }}>
-            — {currentTestimonial.name}, {currentTestimonial.location}
-          </span>
+
+          {/* Quiz button — visible on sm (between mobile and md) */}
+          <button
+            onClick={() => navigate("/quiz")}
+            className="hidden sm:flex md:hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            style={{
+              background: "oklch(0.14 0.04 265)",
+              border: "1px solid oklch(0.55 0.18 65 / 0.4)",
+              color: "oklch(0.82 0.16 65)",
+            }}
+          >
+            <span>Take the Quiz</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
         </div>
 
         {/* Right: CTA */}

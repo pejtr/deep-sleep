@@ -7,6 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { registerBehaviorRoutes } from "../behaviorRoutes";
 import { appRouter } from "../routers";
+import { scheduleNightlyOptimization } from "../jobs/nightlyOptimization";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -62,6 +63,8 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    // Start nightly AI optimization scheduler
+    scheduleNightlyOptimization();
   });
 }
 

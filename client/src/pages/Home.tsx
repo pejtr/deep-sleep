@@ -7,11 +7,12 @@ import SupportButton from "@/components/SupportButton";
 import FAQSection from "@/components/FAQSection";
 import ASMRPlayer from "@/components/ASMRPlayer";
 import { getAbVariant, getSessionId, useTrackBehavior } from "@/hooks/useSession";
+import { useBehaviorTracker } from "@/hooks/useBehaviorTracker";
 import { useI18n } from "@/contexts/I18nContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { trpc } from "@/lib/trpc";
 
-const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc";
+const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=500";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp";
 const CLOCK_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/3am-clock-XJszaQCHaCqerz7QvxDA8P.webp";
@@ -122,6 +123,7 @@ export default function Home() {
   const [, navigate] = useLocation();
   const variant = getAbVariant();
   const { track } = useTrackBehavior();
+  useBehaviorTracker("home"); // Extended auto-tracking: scroll, time, rage clicks, exit intent, UTM
   const { t } = useI18n();
   const abMutation = trpc.abTest.track.useMutation();
   const tracked = useRef(false);
@@ -133,6 +135,23 @@ export default function Home() {
     const sessionId = getSessionId();
     track("page_view", { page: "home", value: { variant } });
     abMutation.mutate({ sessionId, testName: "headline", variant, page: "home" });
+  }, []);
+
+  // SEO: set title and keywords dynamically
+  useEffect(() => {
+    document.title = "Deep Sleep Reset: Fix Insomnia in 7 Nights — $5";
+    // Add keywords meta tag if not present
+    let kwMeta = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
+    if (!kwMeta) {
+      kwMeta = document.createElement("meta");
+      kwMeta.name = "keywords";
+      document.head.appendChild(kwMeta);
+    }
+    kwMeta.content = "insomnia cure, fix insomnia, sleep better, deep sleep, CBT-I, sleep protocol, sleep guide, chronotype, sleep deprivation, natural sleep remedy, 7 night sleep reset, sleep improvement";
+    return () => {
+      // Restore default title on unmount
+      document.title = "Deep Sleep Reset";
+    };
   }, []);
 
   const handleStartQuiz = () => {
@@ -149,7 +168,7 @@ export default function Home() {
     <div className="min-h-screen relative overflow-hidden pb-14" style={{ background: "oklch(0.07 0.025 255)" }}>
 
       {/* ═══════════════ STICKY TOP BAR ═══════════════ */}
-      <div className="sticky top-0 z-50 sticky-top-bar">
+      <div className="sticky top-0 z-30 sticky-top-bar">
         <div className="container py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs" style={{ color: "oklch(0.60 0.04 265)" }}>
             <span style={{ color: "oklch(0.82 0.16 65)" }}>Don't close</span>
@@ -171,13 +190,13 @@ export default function Home() {
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0">
-          <img src={HERO_BG} alt="" className="w-full h-full object-cover opacity-40" />
+          <img src={HERO_BG} alt="Night sky with stars — Deep Sleep Reset background" className="w-full h-full object-cover opacity-40" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, oklch(0.07 0.025 255 / 0.3), oklch(0.07 0.025 255 / 0.8) 70%, oklch(0.07 0.025 255))" }} />
         </div>
         <StarField />
 
         {/* Nav */}
-        <nav className="absolute top-12 left-0 right-0 z-10 container flex items-center justify-between">
+        <nav className="absolute top-0 left-0 right-0 z-[60] container flex items-center justify-between" style={{ paddingTop: "calc(2.5rem + 36px)" }}>
           <div className="flex items-center gap-2">
             <Moon className="w-5 h-5" style={{ color: "oklch(0.82 0.16 65)" }} />
             <span className="font-display font-bold text-lg" style={{ color: "oklch(0.95 0.01 265)" }}>
@@ -198,7 +217,7 @@ export default function Home() {
         </nav>
 
         {/* Hero content */}
-        <div className="relative z-10 container text-center pt-28 pb-16">
+        <div className="relative z-10 container text-center pt-36 pb-16">
           {/* Subheadline */}
           <p className="text-xs md:text-sm font-semibold tracking-[0.2em] uppercase mb-6 animate-reveal"
             style={{ color: "oklch(0.82 0.16 65)" }}>

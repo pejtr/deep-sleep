@@ -5,7 +5,9 @@ import { useI18n, LANGUAGES, Lang } from "@/contexts/I18nContext";
 export default function LanguageSwitcher() {
   const { lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const current = LANGUAGES.find(l => l.code === lang) ?? LANGUAGES[0]!;
 
@@ -17,10 +19,22 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + window.scrollY + 6,
+        right: window.innerWidth - rect.right,
+      });
+    }
+    setOpen(o => !o);
+  };
+
   return (
     <div ref={ref} className="relative">
       <button
-        onClick={() => setOpen(o => !o)}
+        ref={btnRef}
+        onClick={handleOpen}
         className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all hover:opacity-80"
         style={{ background: "oklch(0.12 0.025 255)", border: "1px solid oklch(0.22 0.04 265)", color: "oklch(0.65 0.04 265)" }}
       >
@@ -32,21 +46,31 @@ export default function LanguageSwitcher() {
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-1.5 rounded-xl z-[9999] min-w-[160px] overflow-y-auto"
+          className="rounded-xl min-w-[160px] overflow-y-auto"
           style={{
-            background: "oklch(0.10 0.025 255)",
+            position: "fixed",
+            top: dropdownPos.top,
+            right: dropdownPos.right,
+            zIndex: 99999,
+            background: "rgb(8, 10, 20)",
             border: "1px solid oklch(0.30 0.06 265)",
-            boxShadow: "0 16px 48px oklch(0 0 0 / 0.85), 0 0 0 1px oklch(0.20 0.04 265)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.08)",
             maxHeight: "min(400px, 70vh)",
             backdropFilter: "none",
+            WebkitBackdropFilter: "none",
           }}
         >
           {LANGUAGES.map(l => (
             <button
               key={l.code}
               onClick={() => { setLang(l.code as Lang); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-left transition-colors hover:bg-white/5"
-              style={{ color: l.code === lang ? "oklch(0.82 0.16 65)" : "oklch(0.65 0.04 265)" }}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-left"
+              style={{
+                color: l.code === lang ? "oklch(0.82 0.16 65)" : "oklch(0.75 0.04 265)",
+                background: l.code === lang ? "rgba(255,255,255,0.06)" : "transparent",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+              onMouseLeave={e => (e.currentTarget.style.background = l.code === lang ? "rgba(255,255,255,0.06)" : "transparent")}
             >
               <span className="text-base">{l.flag}</span>
               <span>{l.label}</span>

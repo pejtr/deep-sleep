@@ -138,3 +138,31 @@
 - [ ] Create SleepChatBot floating component (chat bubble, message history, streaming)
 - [ ] Integrate chatbot into Home.tsx
 - [ ] Test chatbot in multiple languages
+
+## Advanced Analytics & AI Optimization (Apr 23)
+- [ ] Fix feedbacks DB migration (apply SQL to DB)
+- [ ] Fix language switcher dropdown (position:fixed, solid background)
+- [ ] Extend behavior tracking: scroll depth, time on page, rage clicks, exit intent, UTM params, device type
+- [ ] Add ai_insights table to DB for storing nightly optimization results
+- [ ] Proactive Luna chatbot: 60s trigger, exit intent popup, feedback collection, suggestions
+- [ ] Luna admin mode: access to stats, insights, campaign data
+- [ ] Midnight cron job: analyze behavior data, generate AI recommendations, notify admin
+- [ ] Master Admin Dashboard: all data synthesis, funnel visualization, AI insights panel, heatmap
+- [ ] CSV export of feedback in admin
+- [ ] Real-time notifications for new orders and high-value feedback
+
+## UI Fixes (User Requests)
+- [ ] Sticky bar: přidat Quiz tlačítko do prázdného prostoru
+- [ ] Pomalejší smooth scroll na celém webu
+- [ ] Luna Affiliate mód na /affiliates stránce (ne ADMIN mód)
+- [ ] Email kontaktní formulář směrovat na petr.matej@gmail.com
+- [ ] Zjistit možnost emailu na deepsleep.quest doméně
+- [x] Gumroad URL: pevná cena $5 (přidat ?price=500 parametr)
+- [ ] Luna ADMIN mód: zobrazovat POUZE na /admin stránce, na landing page vždy prodejní persona
+- [ ] Personalizované chatbot persony: Luna (empatická), Petra (vědecká), Lucie (přímá) — random výběr per session
+- [ ] Admin Dashboard: kruhové grafy (device, language, funnel)
+- [ ] Admin Dashboard: sloupcové grafy (revenue/day, events/day)
+- [ ] Admin Dashboard: porovnávací grafy (conversion rate over time)
+- [ ] Admin Dashboard: časové filtry (dnes, 7d, 30d, vše)
+- [ ] Admin Dashboard: AI insights panel s tlačítkem "Apply" pro každé doporučení
+- [ ] Admin Dashboard: možnost potvrdit/aplikovat AI doporučení (uloží do DB jako applied=true)

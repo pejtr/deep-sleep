@@ -153,16 +153,20 @@ export async function saveFeedback(data: InsertFeedback) {
 export async function getAdminStats() {
   const db = await getDb();
   if (!db) return { quizCount: 0, orderCount: 0, leadCount: 0, revenue: 0, feedbackCount: 0, avgRating: 0, behaviorCount: 0, recentOrders: [], recentFeedbacks: [] };
-  const [quiz, ord, leads, fbs, behaviors] = await Promise.all([
-    db.select().from(quizResults),
-    db.select().from(orders).where(eq(orders.status, "completed")),
-    db.select().from(emailLeads),
-    db.select().from(feedbacks),
-    db.select().from(behaviorEvents),
+  // Run core queries first, then optional tables with fallback
+  const [quiz, ord, leads] = await Promise.all([
+    db.select().from(quizResults).catch(() => []),
+    db.select().from(orders).where(eq(orders.status, "completed")).catch(() => []),
+    db.select().from(emailLeads).catch(() => []),
+  ]);
+  // Feedbacks and behavior may not exist yet — graceful fallback
+  const [fbs, behaviors] = await Promise.all([
+    db.select().from(feedbacks).catch(() => []),
+    db.select().from(behaviorEvents).catch(() => []),
   ]);
   const revenue = ord.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
   const avgRating = fbs.length > 0 ? fbs.reduce((sum, f) => sum + (f.rating ?? 0), 0) / fbs.length : 0;
   const recentOrders = ord.slice(-5).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, createdAt: o.createdAt }));
-  const recentFeedbacks = fbs.slice(-5).reverse().map(f => ({ id: f.id, rating: f.rating, liked: f.liked, improved: f.improved, createdAt: f.createdAt }));
+  const recentFeedbacks = fbs.slice(-5).reverse().map((f: typeof fbs[0]) => ({ id: f.id, rating: f.rating, liked: f.liked, improved: f.improved, createdAt: f.createdAt }));
   return { quizCount: quiz.length, orderCount: ord.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks };
 }
