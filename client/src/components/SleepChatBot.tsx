@@ -163,6 +163,18 @@ export default function SleepChatBot() {
   const { data: adminStats } = trpc.admin.stats.useQuery(undefined, {
     enabled: isAdminMode && open,
   });
+  // Reddit Ads report (only when admin mode)
+  const [redditDateRange] = useState(() => {
+    const end = new Date().toISOString().split("T")[0]!;
+    const start = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0]!;
+    return { startDate: start, endDate: end };
+  });
+  const { data: redditReport } = trpc.reddit.report.useQuery(redditDateRange, {
+    enabled: isAdminMode && open,
+  });
+  const { data: redditCampaigns } = trpc.reddit.campaigns.useQuery(undefined, {
+    enabled: isAdminMode && open,
+  });
 
   // ── Get welcome message ────────────────────────────────────────────────────
   const getWelcome = useCallback((triggerType: "manual" | "proactive" | "exit_intent"): string => {
@@ -227,22 +239,31 @@ export default function SleepChatBot() {
     setInput("");
     setShowFeedbackStars(false);
 
-    // Build system context
-    let systemContext: string | undefined;
-    if (isAdminMode && adminStats) {
-      systemContext = `ADMIN CONTEXT: Revenue=$${adminStats.revenue?.toFixed(2)}, Orders=${adminStats.orderCount}, Leads=${adminStats.leadCount}, Quiz starts=${adminStats.quizCount}, Avg rating=${adminStats.avgRating}/5, Feedbacks=${adminStats.feedbackCount}. Answer admin questions directly.`;
-    } else if (isSalesMode) {
-      systemContext = persona.style + ` The product is "Deep Sleep Reset" — a $5 sleep guide using CBT-I. Gumroad link: https://deepsleepreset.gumroad.com/l/fdtifc?price=500. Always mention the $5 price when guiding to purchase. Language: ${lang === "cs" ? "Czech" : "English"}.`;
-    } else if (isAffiliateMode) {
-      systemContext = `You are Luna, an affiliate guide for Deep Sleep Reset. The program pays 50% commission ($2.50 per sale), has a 30-day cookie window, and converts well due to the $5 price point. Help affiliates maximize their earnings. Be specific and actionable.`;
-    }
-
+    // Determine mode and build admin data payload
+    const mode = isAdminMode ? "admin" : isAffiliateMode ? "affiliate" : "sales";
+    const adminDataPayload = isAdminMode ? {
+      revenue: adminStats?.revenue ?? 0,
+      orders: adminStats?.orderCount ?? 0,
+      leads: adminStats?.leadCount ?? 0,
+      quizStarts: adminStats?.quizCount ?? 0,
+      avgRating: adminStats?.avgRating ?? 0,
+      feedbacks: adminStats?.feedbackCount ?? 0,
+      behaviorEvents: adminStats?.behaviorCount ?? 0,
+      redditImpressions: redditReport?.totalImpressions ?? 0,
+      redditClicks: redditReport?.totalClicks ?? 0,
+      redditCtr: redditReport?.avgCtr ?? 0,
+      redditSpend: redditReport?.totalSpend ?? 0,
+      redditCpc: redditReport?.avgCpc ?? 0,
+      campaigns: (redditCampaigns ?? []).slice(0, 5).map((c: { name: string; status: string }) => ({ name: c.name, status: c.status })),
+    } : undefined;
     chatMutation.mutate({
-      message: systemContext ? `[CONTEXT: ${systemContext}]\n\nUser: ${text}` : text,
+      message: text,
       lang,
-      history: messages.slice(-8).map(m => ({ role: m.role, content: m.content })),
+      mode,
+      adminData: adminDataPayload,
+      history: messages.slice(-12).map(m => ({ role: m.role, content: m.content })),
     });
-  }, [input, chatMutation, messages, lang, isAdminMode, isAffiliateMode, isSalesMode, adminStats, persona]);
+  }, [input, chatMutation, messages, lang, isAdminMode, isAffiliateMode, adminStats, redditReport, redditCampaigns]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {

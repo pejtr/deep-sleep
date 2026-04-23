@@ -211,45 +211,108 @@ export const appRouter = router({
       }),
   }),
 
-  // ── AI Chat ───────────────────────────────────────────────────────────────
+  // ── AI Chat ─────────────────────────────────────────────────────────────────────────
   chat: router({
     message: publicProcedure
       .input(z.object({
-        message: z.string().min(1).max(500),
+        message: z.string().min(1).max(1000),
         lang: z.string().default("en"),
+        mode: z.enum(["sales", "admin", "affiliate"]).default("sales"),
+        adminData: z.object({
+          revenue: z.number().optional(),
+          orders: z.number().optional(),
+          leads: z.number().optional(),
+          quizStarts: z.number().optional(),
+          avgRating: z.number().optional(),
+          feedbacks: z.number().optional(),
+          behaviorEvents: z.number().optional(),
+          redditImpressions: z.number().optional(),
+          redditClicks: z.number().optional(),
+          redditCtr: z.number().optional(),
+          redditSpend: z.number().optional(),
+          redditCpc: z.number().optional(),
+          campaigns: z.array(z.object({ name: z.string(), status: z.string() })).optional(),
+        }).optional(),
         history: z.array(z.object({
           role: z.enum(["user", "assistant"]),
           content: z.string(),
-        })).max(10).default([]),
+        })).max(20).default([]),
       }))
       .mutation(async ({ input }) => {
-        const SLEEP_GUIDE_CONTEXT = `You are Luna, the friendly AI sleep coach for Deep Sleep Reset — a $5 science-backed 7-night sleep protocol based on CBT-I (Cognitive Behavioral Therapy for Insomnia), the #1 clinician-recommended insomnia treatment with 80% success rate.
+        let systemPrompt: string;
+
+        if (input.mode === "admin") {
+          const d = input.adminData ?? {};
+          const convRate = (d.quizStarts ?? 0) > 0
+            ? (((d.orders ?? 0) / (d.quizStarts ?? 1)) * 100).toFixed(1)
+            : "0.0";
+          const emailRate = (d.quizStarts ?? 0) > 0
+            ? (((d.leads ?? 0) / (d.quizStarts ?? 1)) * 100).toFixed(1)
+            : "0.0";
+          const revenuePerLead = (d.leads ?? 0) > 0
+            ? ((d.revenue ?? 0) / (d.leads ?? 1)).toFixed(2)
+            : "0.00";
+          const campaignList = d.campaigns
+            ? d.campaigns.map((c: { name: string; status: string }) => `${c.name} [${c.status}]`).join(", ")
+            : "none loaded";
+
+          systemPrompt = `You are Luna — an elite AI performance marketing analyst for Deep Sleep Reset, a $5 CBT-I sleep protocol product.
+
+## YOUR ROLE
+You are the admin's personal data analyst and growth strategist. You have FULL REAL-TIME ACCESS to all business metrics listed below. Answer EVERY question DIRECTLY using this data. NEVER say you don't have access to data — you have it all right here.
+
+## LIVE BUSINESS DATA (real-time)
+### Revenue & Sales
+- Total Revenue: $${(d.revenue ?? 0).toFixed(2)}
+- Completed Orders: ${d.orders ?? 0}
+- Email Leads Captured: ${d.leads ?? 0}
+- Quiz Starts (funnel entries): ${d.quizStarts ?? 0}
+- Average Customer Rating: ${(d.avgRating ?? 0) > 0 ? `${d.avgRating}/5` : "no ratings yet"}
+- Customer Feedbacks Received: ${d.feedbacks ?? 0}
+- Behavior Events Tracked: ${d.behaviorEvents ?? 0}
+
+### Calculated Conversion Metrics
+- Quiz → Order conversion rate: ${convRate}%
+- Quiz → Email capture rate: ${emailRate}%
+- Revenue per lead: $${revenuePerLead}
+- Average order value: $${(d.orders ?? 0) > 0 ? ((d.revenue ?? 0) / (d.orders ?? 1)).toFixed(2) : "0.00"}
+
+### Reddit Ads Performance (last 7 days)
+- Impressions: ${(d.redditImpressions ?? 0).toLocaleString()}
+- Clicks: ${(d.redditClicks ?? 0).toLocaleString()}
+- CTR: ${(d.redditCtr ?? 0) > 0 ? `${(d.redditCtr ?? 0).toFixed(2)}%` : "0% (campaign warming up — normal for first 24-48h)"}
+- Total Spend: €${(d.redditSpend ?? 0).toFixed(2)}
+- Avg CPC: €${(d.redditCpc ?? 0).toFixed(3)}
+- Active Campaigns: ${campaignList}
+
+## HOW TO RESPOND
+1. ALWAYS answer with specific numbers from the data above
+2. If a metric is 0, say so honestly and explain WHY (e.g., "0 orders — Reddit campaign is in the 24-48h warm-up phase, data delay is normal")
+3. Use Hormozi-style analysis: direct, specific, no fluff
+4. For "what should I do" questions: give TOP 3 prioritized actions with expected impact
+5. For Reddit showing 0s: explain the 24-48h data delay is normal for new campaigns
+6. Suggest A/B tests, budget optimizations, funnel improvements based on actual numbers
+7. Keep responses concise: 3-6 sentences or a short numbered list
+8. Respond in the SAME LANGUAGE as the admin's message (Czech if they write in Czech, English if English)`;
+
+        } else if (input.mode === "affiliate") {
+          systemPrompt = `You are Luna, an affiliate guide for Deep Sleep Reset ($5 product, 50% commission = $2.50/sale, 30-day cookie). Help affiliates maximize earnings with specific, actionable advice. Respond in the same language as the user.`;
+
+        } else {
+          systemPrompt = `You are Luna, the friendly AI sleep coach for Deep Sleep Reset — a $5 science-backed 7-night sleep protocol based on CBT-I (Cognitive Behavioral Therapy for Insomnia), the #1 clinician-recommended insomnia treatment with 80% success rate.
 
 About the product:
 - Price: $5 (one-time, no subscription)
-- What's included: 7-Night Deep Sleep Protocol PDF, Sleep Environment Optimization Checklist, Chronotype Assessment Guide, 4 ASMR Sleep Sound Tracks, 30-Day Sleep Habit Tracker
-- Based on CBT-I — clinically proven, no pills needed
+- Includes: 7-Night Protocol PDF, Sleep Environment Checklist, Chronotype Guide, 4 ASMR tracks, 30-Day Tracker
+- CBT-I based — clinically proven, no pills needed
 - 30-day money-back guarantee
-- Instant digital download via Gumroad
-- Purchase link: https://deepsleepreset.gumroad.com/l/fdtifc
+- Purchase: https://deepsleepreset.gumroad.com/l/fdtifc
 
-Key benefits:
-- Falls asleep faster (most users see results by Night 3)
-- Fixes root cause of insomnia, not just symptoms
-- Works for all chronotypes: Lion (early bird), Bear (normal), Wolf (night owl), Dolphin (light sleeper)
-- No melatonin, no sleeping pills, no expensive gadgets
-
-Your personality:
-- Warm, empathetic, science-backed
-- Use Hormozi-style directness: clear, no fluff, value-first
-- Always answer the question first, then softly mention the product if relevant
-- Never be pushy — educate first, sell second
-- Keep responses concise (2-4 sentences max)
-- Respond in the SAME LANGUAGE as the user's message
-- If asked about price, always say $5 with the purchase link`;
+Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention product softly if relevant. 2-4 sentences max. Respond in the SAME LANGUAGE as the user.`;
+        }
 
         const messages = [
-          { role: "system" as const, content: SLEEP_GUIDE_CONTEXT },
+          { role: "system" as const, content: systemPrompt },
           ...input.history.map(h => ({ role: h.role as "user" | "assistant", content: h.content })),
           { role: "user" as const, content: input.message },
         ];
