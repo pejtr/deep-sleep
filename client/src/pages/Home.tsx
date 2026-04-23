@@ -10,6 +10,8 @@ import { getAbVariant, getSessionId, useTrackBehavior } from "@/hooks/useSession
 import { useBehaviorTracker } from "@/hooks/useBehaviorTracker";
 import { useI18n } from "@/contexts/I18nContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 
 const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
@@ -204,6 +206,7 @@ export default function Home() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <CurrencySwitcher />
             <LanguageSwitcher />
             <a
               href={GUMROAD_URL}

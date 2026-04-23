@@ -182,3 +182,25 @@
 - [ ] TikTok data v admin Luně (system prompt + adminData payload)
 - [ ] Vitest testy pro TikTok Ads API
 - [ ] Uložit TikTok Ads credentials jako secrets (TIKTOK_ADS_APP_ID, TIKTOK_ADS_SECRET, TIKTOK_ADS_ACCESS_TOKEN, TIKTOK_ADS_ADVERTISER_ID)
+
+## Currency Switcher (Apr 23)
+- [ ] Backend tRPC endpoint: currency.getRates — live kurzy z exchangerate API
+- [ ] Backend: geo-detekce měny podle Accept-Language / IP
+- [ ] Frontend CurrencyContext + useCurrency hook
+- [ ] CurrencySwitcher komponenta (dropdown vedle language switcheru)
+- [ ] Integrace do Home.tsx CTA tlačítek — zobrazit cenu v lokální měně
+- [ ] Integrace do Order.tsx, FloatingSocialProofBar.tsx, sticky bar
+- [ ] Podporované měny: USD, EUR, GBP, CZK, CAD, AUD, PLN, HUF, RON, INR, BRL, MXN
+- [ ] Auto-detekce měny při prvním načtení (podle jazyka/IP)
+- [ ] Vitest test pro currency endpoint
+
+## CRO Opravy — Konverzní funnel (Apr 23)
+- [ ] Quiz: zkrátit z 8 na 5 otázek (méně friction) nebo přidat progress bar s % completion
+- [ ] Quiz: přidat "Quick Buy" bypass — tlačítko "Skip quiz, just get it for $5" na quiz stránce
+- [ ] Homepage: přidat mobilní sticky CTA bar (vždy viditelný dole na mobilu)
+- [ ] Homepage: přidat exit-intent popup pro mobilní uživatele (scroll-up detection)
+- [ ] Homepage: video testimonial sekce nebo GIF animace výsledků
+- [ ] Order stránka: přidat countdown timer "Offer expires in X:XX" pro urgency
+- [ ] Order stránka: přidat "As seen on TikTok" badge
+- [ ] Gumroad: ověřit že checkout funguje správně na mobilu s price=5
+- [ ] Analytics: přidat custom events pro quiz_start, quiz_complete, order_click do admin dashboardu

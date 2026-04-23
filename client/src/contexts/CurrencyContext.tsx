@@ -1,0 +1,134 @@
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { trpc } from "@/lib/trpc";
+
+// ── Supported currencies ──────────────────────────────────────────────────────
+export const SUPPORTED_CURRENCIES = [
+  { code: "USD", symbol: "$",  name: "US Dollar",        flag: "🇺🇸" },
+  { code: "EUR", symbol: "€",  name: "Euro",              flag: "🇪🇺" },
+  { code: "GBP", symbol: "£",  name: "British Pound",     flag: "🇬🇧" },
+  { code: "CZK", symbol: "Kč", name: "Czech Koruna",      flag: "🇨🇿" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar",   flag: "🇨🇦" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar", flag: "🇦🇺" },
+  { code: "PLN", symbol: "zł", name: "Polish Zloty",      flag: "🇵🇱" },
+  { code: "HUF", symbol: "Ft", name: "Hungarian Forint",  flag: "🇭🇺" },
+  { code: "RON", symbol: "lei",name: "Romanian Leu",      flag: "🇷🇴" },
+  { code: "INR", symbol: "₹",  name: "Indian Rupee",      flag: "🇮🇳" },
+  { code: "BRL", symbol: "R$", name: "Brazilian Real",    flag: "🇧🇷" },
+  { code: "MXN", symbol: "MX$",name: "Mexican Peso",      flag: "🇲🇽" },
+  { code: "CHF", symbol: "Fr", name: "Swiss Franc",       flag: "🇨🇭" },
+  { code: "SEK", symbol: "kr", name: "Swedish Krona",     flag: "🇸🇪" },
+  { code: "NOK", symbol: "kr", name: "Norwegian Krone",   flag: "🇳🇴" },
+  { code: "DKK", symbol: "kr", name: "Danish Krone",      flag: "🇩🇰" },
+  { code: "SGD", symbol: "S$", name: "Singapore Dollar",  flag: "🇸🇬" },
+  { code: "NZD", symbol: "NZ$",name: "New Zealand Dollar",flag: "🇳🇿" },
+  { code: "ZAR", symbol: "R",  name: "South African Rand",flag: "🇿🇦" },
+  { code: "JPY", symbol: "¥",  name: "Japanese Yen",      flag: "🇯🇵" },
+] as const;
+
+export type CurrencyCode = typeof SUPPORTED_CURRENCIES[number]["code"];
+
+interface CurrencyInfo {
+  code: CurrencyCode;
+  symbol: string;
+  name: string;
+  flag: string;
+}
+
+interface CurrencyContextValue {
+  currency: CurrencyInfo;
+  setCurrency: (code: CurrencyCode) => void;
+  convertPrice: (usdAmount: number) => string;
+  formatPrice: (usdAmount: number) => string;
+  rates: Record<string, number>;
+  isLoading: boolean;
+}
+
+const CurrencyContext = createContext<CurrencyContextValue | null>(null);
+
+const STORAGE_KEY = "dsr_currency";
+
+// Format price nicely for each currency
+function formatAmount(amount: number, code: string, symbol: string): string {
+  // Currencies with no decimals
+  const noDecimals = ["JPY", "HUF", "INR", "CZK", "RON"];
+  // Currencies where symbol goes after
+  const symbolAfter = ["CZK", "HUF", "RON", "PLN", "SEK", "NOK", "DKK"];
+
+  const rounded = noDecimals.includes(code)
+    ? Math.round(amount)
+    : Math.round(amount * 100) / 100;
+
+  const formatted = noDecimals.includes(code)
+    ? rounded.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    : rounded.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  return symbolAfter.includes(code)
+    ? `${formatted} ${symbol}`
+    : `${symbol}${formatted}`;
+}
+
+export function CurrencyProvider({ children }: { children: React.ReactNode }) {
+  const [selectedCode, setSelectedCode] = useState<CurrencyCode>("USD");
+  const [hasLoaded, setHasLoaded] = useState(false);
+
+  const { data: ratesData, isLoading } = trpc.currency.getRates.useQuery(
+    { base: "USD" },
+    { staleTime: 1000 * 60 * 30 } // cache 30 min
+  );
+
+  // On first load: use saved preference or server-detected currency
+  useEffect(() => {
+    if (!hasLoaded && ratesData) {
+      const saved = localStorage.getItem(STORAGE_KEY) as CurrencyCode | null;
+      if (saved && SUPPORTED_CURRENCIES.find(c => c.code === saved)) {
+        setSelectedCode(saved);
+      } else if (ratesData.detectedCurrency) {
+        const detected = ratesData.detectedCurrency as CurrencyCode;
+        if (SUPPORTED_CURRENCIES.find(c => c.code === detected)) {
+          setSelectedCode(detected);
+        }
+      }
+      setHasLoaded(true);
+    }
+  }, [ratesData, hasLoaded]);
+
+  const setCurrency = useCallback((code: CurrencyCode) => {
+    setSelectedCode(code);
+    localStorage.setItem(STORAGE_KEY, code);
+  }, []);
+
+  const rates = ratesData?.rates ?? {};
+
+  const convertPrice = useCallback((usdAmount: number): string => {
+    const rate = rates[selectedCode] ?? 1;
+    return (usdAmount * rate).toFixed(2);
+  }, [rates, selectedCode]);
+
+  const formatPrice = useCallback((usdAmount: number): string => {
+    const rate = rates[selectedCode] ?? 1;
+    const converted = usdAmount * rate;
+    const info = SUPPORTED_CURRENCIES.find(c => c.code === selectedCode)!;
+    return formatAmount(converted, selectedCode, info.symbol);
+  }, [rates, selectedCode]);
+
+  const currency = SUPPORTED_CURRENCIES.find(c => c.code === selectedCode)!;
+
+  return (
+    <CurrencyContext.Provider value={{
+      currency,
+      setCurrency,
+      convertPrice,
+      formatPrice,
+      rates,
+      isLoading,
+    }}>
+      {children}
+    </CurrencyContext.Provider>
+  );
+}
+
+export function useCurrency() {
+  const ctx = useContext(CurrencyContext);
+  if (!ctx) throw new Error("useCurrency must be used inside CurrencyProvider");
+  return ctx;
+}

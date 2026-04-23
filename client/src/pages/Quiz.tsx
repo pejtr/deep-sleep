@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
-import { Moon, ArrowLeft, ArrowRight } from "lucide-react";
+import { Moon, ArrowLeft, Zap } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, getAbVariant, setChronotype, useTrackBehavior } from "@/hooks/useSession";
+
+const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 interface Question {
   id: number;
@@ -100,32 +102,29 @@ export default function Quiz() {
   const [selected, setSelected] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { track } = useTrackBehavior();
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const submitMutation = trpc.quiz.submit.useMutation();
 
   useEffect(() => {
     track("page_view", { page: "quiz" });
+    return () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    };
   }, []);
 
   const progress = ((current) / QUESTIONS.length) * 100;
   const question = QUESTIONS[current];
 
-  const handleSelect = (idx: number) => {
-    setSelected(idx);
-  };
-
-  const handleNext = async () => {
-    if (selected === null) return;
-
-    const newAnswers = [...answers, selected];
+  const advanceQuiz = async (sel: number, currentIdx: number, currentAnswers: number[]) => {
+    const newAnswers = [...currentAnswers, sel];
     setAnswers(newAnswers);
-    track("quiz_answer", { page: "quiz", value: { question: current + 1, answer: selected } });
+    track("quiz_answer", { page: "quiz", value: { question: currentIdx + 1, answer: sel } });
 
-    if (current < QUESTIONS.length - 1) {
+    if (currentIdx < QUESTIONS.length - 1) {
       setCurrent(c => c + 1);
       setSelected(null);
     } else {
-      // Submit quiz — only send first 5 answers to server (matches schema)
       setSubmitting(true);
       try {
         const sessionId = getSessionId();
@@ -145,7 +144,18 @@ export default function Quiz() {
     }
   };
 
+  const handleSelect = (idx: number) => {
+    if (submitting) return;
+    setSelected(idx);
+    // Auto-advance after 350ms — feels snappy, not accidental
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => {
+      advanceQuiz(idx, current, answers);
+    }, 350);
+  };
+
   const handleBack = () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
     if (current === 0) {
       navigate("/");
     } else {
@@ -176,48 +186,64 @@ export default function Quiz() {
             Deep Sleep Reset
           </span>
         </div>
-        <span className="text-sm" style={{ color: "oklch(0.50 0.04 265)" }}>
-          {current + 1} / {QUESTIONS.length}
-        </span>
+        {/* Skip quiz — direct buy for impulsive TikTok visitors */}
+        <a
+          href={GUMROAD_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track("cta_click", { page: "quiz", element: "skip_quiz" })}
+          className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full font-semibold"
+          style={{
+            color: "oklch(0.78 0.18 65)",
+            background: "oklch(0.78 0.18 65 / 0.12)",
+            border: "1px solid oklch(0.78 0.18 65 / 0.35)",
+          }}
+        >
+          <Zap className="w-3 h-3" />
+          Buy $5
+        </a>
       </div>
 
       {/* Progress bar */}
       <div className="relative z-10 container pb-2">
         <div className="progress-bar">
-          <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
+          <div
+            className="progress-bar-fill transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
         </div>
+        <p className="text-center text-xs mt-1" style={{ color: "oklch(0.45 0.04 265)" }}>
+          {current + 1} of {QUESTIONS.length} — takes 2 minutes
+        </p>
       </div>
 
       {/* Question */}
-      <div className="relative z-10 flex-1 container py-10 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
+      <div className="relative z-10 flex-1 container py-8 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
         <div className="w-full">
-          {/* Step indicator */}
-          <div className="flex items-center gap-2 mb-6">
-            <span className="badge-popular">Question {current + 1}</span>
-          </div>
-
           {/* Question text */}
-          <h2 className="font-display font-bold text-xl md:text-2xl mb-8 leading-snug"
+          <h2 className="font-display font-bold text-xl md:text-2xl mb-6 leading-snug"
             style={{ color: "oklch(0.95 0.01 265)" }}>
             {question.text}
           </h2>
 
-          {/* Options */}
-          <div className="flex flex-col gap-3 mb-8">
+          {/* Options — tap to auto-advance */}
+          <div className="flex flex-col gap-3">
             {question.options.map((option, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSelect(idx)}
-                className="w-full text-left rounded-xl p-4 transition-all"
+                disabled={submitting}
+                className="w-full text-left rounded-xl p-4 transition-all duration-200 active:scale-[0.98]"
                 style={{
                   background: selected === idx
-                    ? "oklch(0.78 0.18 65 / 0.15)"
+                    ? "oklch(0.78 0.18 65 / 0.18)"
                     : "oklch(0.10 0.025 255)",
                   border: `1px solid ${selected === idx
-                    ? "oklch(0.78 0.18 65 / 0.5)"
-                    : "oklch(0.78 0.18 65 / 0.1)"}`,
+                    ? "oklch(0.78 0.18 65 / 0.6)"
+                    : "oklch(0.78 0.18 65 / 0.12)"}`,
                   color: "oklch(0.95 0.01 265)",
-                  transform: selected === idx ? "scale(1.01)" : "scale(1)",
+                  transform: selected === idx ? "scale(1.015)" : "scale(1)",
+                  boxShadow: selected === idx ? "0 0 16px oklch(0.78 0.18 65 / 0.15)" : "none",
                 }}
               >
                 <span className="text-sm md:text-base">{option}</span>
@@ -225,26 +251,23 @@ export default function Quiz() {
             ))}
           </div>
 
-          {/* Next button */}
-          <button
-            onClick={handleNext}
-            disabled={selected === null || submitting}
-            className="w-full cta-gold cta-shimmer rounded-xl py-4 flex items-center justify-center gap-2 text-base disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {submitting ? (
-              <span>Analyzing your chronotype...</span>
-            ) : current === QUESTIONS.length - 1 ? (
-              <>
-                <span>Reveal My Chronotype</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            ) : (
-              <>
-                <span>Next Question</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
+          {/* Tap hint */}
+          {selected === null && !submitting && (
+            <p className="text-center text-xs mt-5" style={{ color: "oklch(0.40 0.04 265)" }}>
+              Tap an answer to continue automatically
+            </p>
+          )}
+
+          {/* Submitting state */}
+          {submitting && (
+            <div className="mt-6 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
+                style={{ background: "oklch(0.78 0.18 65 / 0.1)", color: "oklch(0.78 0.18 65)" }}>
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <span className="text-sm font-medium">Analyzing your chronotype...</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

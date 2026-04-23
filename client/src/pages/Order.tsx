@@ -5,6 +5,8 @@ import CountdownTimer from "@/components/CountdownTimer";
 import TrustBar from "@/components/TrustBar";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import LiveSalesNotification from "@/components/LiveSalesNotification";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 
@@ -25,6 +27,7 @@ export default function Order() {
   const [viewers] = useState(() => Math.floor(Math.random() * 60) + 180);
   const [loading, setLoading] = useState(false);
   const { track } = useTrackBehavior();
+  const { formatPrice, currency } = useCurrency();
 
   const orderMutation = trpc.orders.create.useMutation();
 
@@ -87,6 +90,14 @@ export default function Order() {
           </div>
         </div>
 
+        {/* TikTok viral badge */}
+        <div className="flex items-center justify-center gap-2 mb-5 px-4 py-2 rounded-full mx-auto w-fit"
+          style={{ background: "oklch(0.12 0.03 290)", border: "1px solid oklch(0.55 0.15 290 / 0.5)" }}>
+          <span className="text-sm">&#127909;</span>
+          <span className="text-xs font-bold" style={{ color: "oklch(0.80 0.14 290)" }}>As seen on TikTok</span>
+          <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>· 244K+ views</span>
+        </div>
+
         {/* Product card */}
         <div className="glass-card rounded-3xl p-8 mb-6 relative overflow-hidden"
           style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
@@ -124,14 +135,18 @@ export default function Order() {
             ))}
           </div>
 
-          {/* Price */}
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$75</span>
-            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>$5</span>
+          {/* Price with currency switcher */}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(75)}</span>
+            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(5)}</span>
             <div>
               <div className="badge-popular">93% OFF</div>
               <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
             </div>
+          </div>
+          <div className="flex items-center gap-2 mb-6">
+            <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>Price shown in:</span>
+            <CurrencySwitcher />
           </div>
 
           {/* Countdown */}
@@ -146,7 +161,7 @@ export default function Order() {
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg flex items-center justify-center gap-3 disabled:opacity-60"
           >
             <Lock className="w-5 h-5" />
-            <span>{loading ? "Redirecting..." : `Get My ${chronotype} Protocol — $5`}</span>
+            <span>{loading ? "Redirecting..." : `Get My ${chronotype} Protocol — ${formatPrice(5)}`}</span>
             <ArrowRight className="w-5 h-5" />
           </button>
 

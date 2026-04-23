@@ -52,6 +52,44 @@ const PRODUCTS = {
   oto3:  { amount: "27.00", gumroad: "ubsxk"  },
 } as const;
 
+
+// ── Currency detection helpers ────────────────────────────────────────────────
+const LANG_TO_CURRENCY: Record<string, string> = {
+  cs: "CZK", sk: "CZK",
+  de: "EUR", fr: "EUR", it: "EUR", es: "EUR", pt: "EUR", nl: "EUR",
+  "en-gb": "GBP", "en-GB": "GBP",
+  "en-ca": "CAD", "en-CA": "CAD",
+  "en-au": "AUD", "en-AU": "AUD",
+  "en-nz": "NZD", "en-NZ": "NZD",
+  "en-sg": "SGD", "en-SG": "SGD",
+  pl: "PLN", hu: "HUF", ro: "RON",
+  hi: "INR", bn: "INR", ur: "INR",
+  "pt-br": "BRL", "pt-BR": "BRL",
+  "es-mx": "MXN", "es-MX": "MXN",
+  ja: "JPY",
+  sv: "SEK", nb: "NOK", da: "DKK",
+  "de-ch": "CHF", "fr-ch": "CHF",
+  af: "ZAR", zu: "ZAR",
+};
+
+function detectCurrencyFromLang(acceptLang: string): string {
+  if (!acceptLang) return "USD";
+  const langs = acceptLang.split(",").map(l => l.split(";")[0].trim().toLowerCase());
+  for (const lang of langs) {
+    if (LANG_TO_CURRENCY[lang]) return LANG_TO_CURRENCY[lang];
+    const base = lang.split("-")[0];
+    if (base && LANG_TO_CURRENCY[base]) return LANG_TO_CURRENCY[base];
+  }
+  return "USD";
+}
+
+const FALLBACK_RATES: Record<string, number> = {
+  USD: 1, EUR: 0.853, GBP: 0.741, CZK: 20.77, CAD: 1.366,
+  AUD: 1.548, PLN: 3.82, HUF: 356, RON: 4.24, INR: 83.5,
+  BRL: 4.97, MXN: 17.15, CHF: 0.899, SEK: 10.32, NOK: 10.58,
+  DKK: 6.36, SGD: 1.34, NZD: 1.67, ZAR: 18.63, JPY: 154.2,
+};
+
 export const appRouter = router({
   system: systemRouter,
 
@@ -380,7 +418,39 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         }
       }),
   }),
-  // ── Admin ─────────────────────────────────────────────────────────────────────────────────
+  // ── Currency ─────────────────────────────────────────────────────────────────────────────────────────
+  currency: router({
+    getRates: publicProcedure
+      .input(z.object({ base: z.string().default("USD") }))
+      .query(async ({ input, ctx }) => {
+        // Detect currency from Accept-Language header
+        const acceptLang = (ctx.req.headers["accept-language"] ?? "") as string;
+        const detectedCurrency = detectCurrencyFromLang(acceptLang);
+
+        // Fetch live rates from open.er-api.com (free, no key needed)
+        let rates: Record<string, number> = FALLBACK_RATES;
+        try {
+          const res = await fetch(`https://open.er-api.com/v6/latest/${input.base}`);
+          if (res.ok) {
+            const data = await res.json() as { result: string; rates: Record<string, number> };
+            if (data.result === "success") rates = data.rates;
+          }
+        } catch {
+          // use fallback rates
+        }
+
+        // Filter to supported currencies only
+        const supported = ["USD","EUR","GBP","CZK","CAD","AUD","PLN","HUF","RON","INR","BRL","MXN","CHF","SEK","NOK","DKK","SGD","NZD","ZAR","JPY"];
+        const filteredRates: Record<string, number> = {};
+        for (const c of supported) {
+          if (rates[c]) filteredRates[c] = rates[c];
+        }
+
+        return { rates: filteredRates, detectedCurrency, base: input.base };
+      }),
+  }),
+
+  // ── Admin ─────────────────────────────────────────────────────────────────────────────────────────
   admin: router({
     stats: protectedProcedure.query(async () => getAdminStats()),
   }),
