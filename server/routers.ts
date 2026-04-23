@@ -4,6 +4,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
+import { getCampaigns, getCampaignSummary, getAdAccount } from "./redditAds";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -260,10 +261,49 @@ Your personality:
       }),
   }),
 
-  // ── Admin ─────────────────────────────────────────────────────────────────
+  // ── Reddit Ads ───────────────────────────────────────────────────────────────────────────
+  reddit: router({
+    account: protectedProcedure.query(async () => {
+      try {
+        return await getAdAccount();
+      } catch (e) {
+        return { id: "", name: "DeepSleeper", currency: "EUR", status: "ACTIVE", error: String(e) };
+      }
+    }),
+    campaigns: protectedProcedure.query(async () => {
+      try {
+        return await getCampaigns();
+      } catch (e) {
+        return [];
+      }
+    }),
+    report: protectedProcedure
+      .input(
+        z.object({
+          startDate: z.string(), // YYYY-MM-DD
+          endDate: z.string(),   // YYYY-MM-DD
+        })
+      )
+      .query(async ({ input }) => {
+        try {
+          return await getCampaignSummary(input.startDate, input.endDate);
+        } catch (e) {
+          return {
+            totalImpressions: 0,
+            totalClicks: 0,
+            totalSpend: 0,
+            avgCtr: 0,
+            avgCpc: 0,
+            avgEcpm: 0,
+            days: [],
+            error: String(e),
+          };
+        }
+      }),
+  }),
+  // ── Admin ─────────────────────────────────────────────────────────────────────────────────
   admin: router({
     stats: protectedProcedure.query(async () => getAdminStats()),
   }),
 });
-
 export type AppRouter = typeof appRouter;
