@@ -18,6 +18,8 @@ import TermsOfService from "./pages/TermsOfService";
 import Affiliates from "./pages/Affiliates";
 import Contact from "./pages/Contact";
 import Feedback from "./pages/Feedback";
+import AdminDashboard from "./pages/AdminDashboard";
+import SleepChatBot from "./components/SleepChatBot";
 
 function Router() {
   return (
@@ -35,6 +37,7 @@ function Router() {
       <Route path="/affiliates" component={Affiliates} />
       <Route path="/contact" component={Contact} />
       <Route path="/feedback" component={Feedback} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
@@ -49,6 +52,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
+            <SleepChatBot />
           </TooltipProvider>
         </ThemeProvider>
       </I18nProvider>

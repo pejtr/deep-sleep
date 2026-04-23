@@ -3,6 +3,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { invokeLLM } from "./_core/llm";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -206,6 +207,56 @@ export const appRouter = router({
           rewardCode: input.rewardCode,
         });
         return { success: true, rewardCode: input.rewardCode };
+      }),
+  }),
+
+  // ── AI Chat ───────────────────────────────────────────────────────────────
+  chat: router({
+    message: publicProcedure
+      .input(z.object({
+        message: z.string().min(1).max(500),
+        lang: z.string().default("en"),
+        history: z.array(z.object({
+          role: z.enum(["user", "assistant"]),
+          content: z.string(),
+        })).max(10).default([]),
+      }))
+      .mutation(async ({ input }) => {
+        const SLEEP_GUIDE_CONTEXT = `You are Luna, the friendly AI sleep coach for Deep Sleep Reset — a $5 science-backed 7-night sleep protocol based on CBT-I (Cognitive Behavioral Therapy for Insomnia), the #1 clinician-recommended insomnia treatment with 80% success rate.
+
+About the product:
+- Price: $5 (one-time, no subscription)
+- What's included: 7-Night Deep Sleep Protocol PDF, Sleep Environment Optimization Checklist, Chronotype Assessment Guide, 4 ASMR Sleep Sound Tracks, 30-Day Sleep Habit Tracker
+- Based on CBT-I — clinically proven, no pills needed
+- 30-day money-back guarantee
+- Instant digital download via Gumroad
+- Purchase link: https://deepsleepreset.gumroad.com/l/fdtifc
+
+Key benefits:
+- Falls asleep faster (most users see results by Night 3)
+- Fixes root cause of insomnia, not just symptoms
+- Works for all chronotypes: Lion (early bird), Bear (normal), Wolf (night owl), Dolphin (light sleeper)
+- No melatonin, no sleeping pills, no expensive gadgets
+
+Your personality:
+- Warm, empathetic, science-backed
+- Use Hormozi-style directness: clear, no fluff, value-first
+- Always answer the question first, then softly mention the product if relevant
+- Never be pushy — educate first, sell second
+- Keep responses concise (2-4 sentences max)
+- Respond in the SAME LANGUAGE as the user's message
+- If asked about price, always say $5 with the purchase link`;
+
+        const messages = [
+          { role: "system" as const, content: SLEEP_GUIDE_CONTEXT },
+          ...input.history.map(h => ({ role: h.role as "user" | "assistant", content: h.content })),
+          { role: "user" as const, content: input.message },
+        ];
+
+        const response = await invokeLLM({ messages });
+        const rawContent = response.choices?.[0]?.message?.content;
+        const reply = typeof rawContent === "string" ? rawContent : "I'm having trouble responding right now. Please try again!";
+        return { reply };
       }),
   }),
 

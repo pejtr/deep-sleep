@@ -32,8 +32,14 @@ export default function LanguageSwitcher() {
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-1.5 rounded-xl overflow-hidden z-50 min-w-[140px]"
-          style={{ background: "oklch(0.10 0.025 255)", border: "1px solid oklch(0.22 0.04 265)", boxShadow: "0 8px 32px oklch(0 0 0 / 0.4)" }}
+          className="absolute right-0 top-full mt-1.5 rounded-xl z-[9999] min-w-[160px] overflow-y-auto"
+          style={{
+            background: "oklch(0.10 0.025 255)",
+            border: "1px solid oklch(0.30 0.06 265)",
+            boxShadow: "0 16px 48px oklch(0 0 0 / 0.85), 0 0 0 1px oklch(0.20 0.04 265)",
+            maxHeight: "min(400px, 70vh)",
+            backdropFilter: "none",
+          }}
         >
           {LANGUAGES.map(l => (
             <button

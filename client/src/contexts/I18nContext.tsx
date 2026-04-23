@@ -338,9 +338,11 @@ const I18nContext = createContext<I18nContextType>({
 const LANG_KEY = "dsr_lang";
 
 function detectBrowserLang(): Lang {
+  // Always default to English — user can manually switch language
+  // Auto-detect only for non-Latin script languages where user likely can't read English
   const nav = navigator.language.toLowerCase().split("-")[0];
-  const supported: Lang[] = ["en", "cs", "de", "es", "fr", "pt", "hi", "id", "tl", "bn", "ur", "vi", "yo", "sw"];
-  return supported.includes(nav as Lang) ? (nav as Lang) : "en";
+  const autoDetect: Lang[] = ["hi", "bn", "ur", "vi"];
+  return autoDetect.includes(nav as Lang) ? (nav as Lang) : "en";
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {

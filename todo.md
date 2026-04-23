@@ -118,3 +118,23 @@
 - [x] Create Contact page (/contact)
 - [x] Add i18n context/hook for language switching
 - [x] Add ASMR audio player component with sleep sounds
+
+## Multilingual Expansion (Apr 23)
+- [x] Add 7 low-tier country languages: Indonesian (ID), Filipino/Tagalog (PH), Bengali (BD), Urdu (PK), Vietnamese (VN), Yoruba (NG), Swahili (KE)
+- [x] Total 14 languages in language switcher
+- [x] Auto-detect browser language for all 14 supported languages
+- [x] Language switcher reordered: low-tier first, Tier 1 last
+
+## Google Ads & Traffic (Apr 23)
+- [ ] Pause/remove old Google Ads campaign (deep-sleep-reset.com)
+- [ ] Create new Google Search campaign targeting deepsleep.mom
+- [ ] Set up conversion tracking for Gumroad purchases
+- [ ] Microsoft Advertising appeal email sent (account suspended, ~3000 CZK balance)
+- [ ] Reddit organic traffic — update links from deep-sleep-reset.com to deepsleep.mom
+
+## AI Chatbot (Apr 23)
+- [x] Fix language default to English (ignore browser CS/DE/etc, only auto-detect non-Latin scripts)
+- [ ] Add tRPC chat.message procedure with invokeLLM + sleep guide system prompt
+- [ ] Create SleepChatBot floating component (chat bubble, message history, streaming)
+- [ ] Integrate chatbot into Home.tsx
+- [ ] Test chatbot in multiple languages
