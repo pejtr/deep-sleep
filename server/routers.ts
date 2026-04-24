@@ -520,7 +520,14 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           currency,
         });
         const session = await stripe.checkout.sessions.create({
-          payment_method_types: ["card"],
+          // Enable all payment methods including Apple Pay, Google Pay, Link
+          payment_method_types: ["card", "link"],
+          payment_method_options: {
+            card: {
+              // Enable Apple Pay / Google Pay via wallets
+              setup_future_usage: undefined,
+            },
+          },
           line_items: [
             {
               price_data: {

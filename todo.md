@@ -252,3 +252,10 @@
 - [x] ExitIntentPopup: dynamické ceny z formatPrice()
 - [x] Opraveny všechny $1 → $5 v UI (Home, Order, FAQ, SleepChatBot, FloatingSocialProofBar)
 - [x] Přidán Zap + Lock import do Home.tsx (fix ReferenceError)
+
+## Apple Pay & Google Pay Integration
+- [x] Povolit Apple Pay / Google Pay / Link v Stripe checkout sessions (payment_method_types)
+- [x] Přidat ExpressCheckoutElement (Apple Pay / Google Pay / Link) na Order stránku
+- [x] Ověřit kompatibilitu s geo-pricing a currency switcherem
+- [x] Nainstalovat @stripe/react-stripe-js
+- [x] "or pay with card" divider mezi express checkout a klasickým CTA

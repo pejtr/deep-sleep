@@ -10,6 +10,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import ExpressCheckout from "@/components/ExpressCheckout";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -172,6 +173,23 @@ export default function Order() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Express Checkout — Apple Pay / Google Pay / Link */}
+          <div className="mb-4">
+            <ExpressCheckout
+              productId={bumpSelected ? "oto1" : "main"}
+              sessionId={getSessionId()}
+              chronotype={chronotype}
+              amount={bumpSelected ? 8 : 5}
+              label={bumpSelected ? "Protocol + Optimizer" : "Deep Sleep Protocol"}
+            />
+          </div>
+
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px" style={{ background: "oklch(0.25 0.02 265)" }} />
+            <span className="text-xs font-medium" style={{ color: "oklch(0.45 0.04 265)" }}>or pay with card</span>
+            <div className="flex-1 h-px" style={{ background: "oklch(0.25 0.02 265)" }} />
           </div>
 
           {/* CTA — Native Stripe Checkout */}
