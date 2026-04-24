@@ -281,3 +281,4 @@
 - [ ] Luna Premium členství — Stripe subscription produkt + DB schema
 - [ ] Aplikovat AI optimization suggestions z dashboardu (budget, retargeting, video, targeting, scheduling)
 - [ ] Přidat Revenue v CZK do horního sticky panelu v Admin Dashboardu
+- [ ] Admin Dashboard: timeline grafy — návštěvy/nákupy/revenue po hodinách a dnech s přepínačem
