@@ -217,6 +217,10 @@
 - [ ] Gumroad: ověřit že checkout funguje správně na mobilu s price=5
 - [ ] Analytics: přidat custom events pro quiz_start, quiz_complete, order_click do admin dashboardu
 
+## FAQ v zápatí
+- [ ] Přidat FAQ sekci do zápatí Home.tsx s alespoň 3 otázkami o platbě a přístupu k produktu
+- [ ] Otázky: "How do I access the program?", "Is my payment secure?", "What if it doesn't work for me?", "Do I need any special equipment?"
+
 ## Native Stripe Checkout (replacing Gumroad)
 - [x] Stripe sandbox activated via webdev_add_feature
 - [x] Stripe packages installed (stripe, @stripe/stripe-js)

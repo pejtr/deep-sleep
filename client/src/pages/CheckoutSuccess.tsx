@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
+import { getSessionId } from "@/hooks/useSession";
+import { CheckoutButton } from "@/components/CheckoutButton";
+import { ArrowRight, Mail, Download, Check } from "lucide-react";
+import { toast } from "sonner";
 
 const DOWNLOAD_LINKS: Record<string, string> = {
   main: "https://deepsleepreset.gumroad.com/l/fdtifc",
@@ -11,24 +16,38 @@ const DOWNLOAD_LINKS: Record<string, string> = {
 export default function CheckoutSuccess() {
   const [productId, setProductId] = useState("main");
   const [orderId, setOrderId] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(5);
+  const [email, setEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+
+  const captureLead = trpc.leads.capture.useMutation({
+    onSuccess: () => {
+      setEmailSubmitted(true);
+      toast.success("✅ Protocol sent to your inbox!");
+    },
+    onError: () => toast.error("Couldn't save email. Please try again."),
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const pid = params.get("product_id") ?? "main";
     const oid = params.get("order_id");
+    const em = params.get("email");
     setProductId(pid);
     setOrderId(oid);
+    // Auto-capture email if Stripe passes it via success URL
+    if (em && em.includes("@")) {
+      setEmail(em);
+      captureLead.mutate({ email: em, sessionId: getSessionId(), source: "stripe_success" });
+    }
   }, []);
 
-  // Auto-redirect countdown to download
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [countdown]);
-
   const downloadUrl = DOWNLOAD_LINKS[productId] ?? DOWNLOAD_LINKS.main;
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes("@")) return;
+    captureLead.mutate({ email, sessionId: getSessionId(), source: "checkout_success" });
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center px-4">
@@ -72,16 +91,76 @@ export default function CheckoutSuccess() {
           href={downloadUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="block w-full py-5 px-8 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-xl rounded-2xl shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mb-4"
+          className="flex items-center justify-center gap-2 w-full py-5 px-8 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-xl rounded-2xl shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mb-6"
         >
-          ⬇️ Download Your Protocol Now
+          <Download className="w-6 h-6" />
+          Download Your Protocol Now
         </a>
 
-        <p className="text-white/40 text-sm mb-8">
-          {countdown > 0
-            ? `Auto-downloading in ${countdown}s...`
-            : "Click the button above to download"}
-        </p>
+        {/* Email capture */}
+        {!emailSubmitted ? (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 text-left">
+            <div className="flex items-center gap-2 mb-2">
+              <Mail className="w-5 h-5 text-amber-400" />
+              <p className="text-white font-bold">Get it in your inbox + 7-night reminders</p>
+            </div>
+            <p className="text-white/50 text-sm mb-4">We'll send the protocol to your email + a daily reminder for each night so you never miss a step.</p>
+            <form onSubmit={handleEmailSubmit} className="flex gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-amber-400/60"
+              />
+              <button
+                type="submit"
+                disabled={captureLead.isPending}
+                className="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl text-sm transition-all disabled:opacity-60"
+              >
+                {captureLead.isPending ? "..." : "Send"}
+              </button>
+            </form>
+          </div>
+        ) : (
+          <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-4 mb-6 flex items-center gap-3">
+            <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+            <p className="text-green-300 text-sm font-semibold">Protocol sent to {email} — check your inbox!</p>
+          </div>
+        )}
+
+        {/* ONE-TIME UPSELL — ASMR Audio Pack $7 */}
+        {productId === "main" && (
+          <div className="bg-gradient-to-br from-purple-900/40 to-indigo-900/40 border border-purple-500/30 rounded-2xl p-6 mb-6 text-left">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🎧</span>
+              <div>
+                <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/30 text-purple-300">One-Time Offer</span>
+                <p className="text-white font-bold text-lg mt-1">ASMR Sleep Audio Pack</p>
+              </div>
+            </div>
+            <p className="text-white/60 text-sm mb-4 leading-relaxed">
+              7 premium ASMR tracks designed to trigger sleep within 20 minutes. Pairs perfectly with your protocol.
+              <span className="text-purple-300 font-semibold"> 89% of users fall asleep 2x faster with this.</span>
+            </p>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-white/30 text-sm line-through">$27</span>
+              <span className="text-2xl font-black text-purple-300">$7</span>
+              <span className="text-xs text-white/40">one-time, instant download</span>
+            </div>
+            <CheckoutButton
+              productId="oto2"
+              sessionId={getSessionId()}
+              className="w-full py-4 rounded-xl font-bold text-base bg-purple-600 hover:bg-purple-500 text-white"
+              variant="secondary"
+            >
+              <span>Add ASMR Pack for $7</span>
+              <ArrowRight className="w-4 h-4" />
+            </CheckoutButton>
+            <p className="text-white/30 text-xs text-center mt-2">This offer disappears when you leave this page</p>
+          </div>
+        )}
 
         {/* What's next */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-left mb-6">

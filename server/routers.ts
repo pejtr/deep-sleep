@@ -47,10 +47,10 @@ function calculateChronotype(answers: number[]): "Lion" | "Bear" | "Wolf" | "Dol
 
 // ── Product config ────────────────────────────────────────────────────────────
 const PRODUCTS = {
-  main:  { amount: "5.00",  gumroad: "fdtifc" },
-  oto1:  { amount: "7.00",  gumroad: "ttrsd"  },
-  oto2:  { amount: "17.00", gumroad: "cuhln"  },
-  oto3:  { amount: "27.00", gumroad: "ubsxk"  },
+  main:  { amount: "1.00",  gumroad: "fdtifc" },
+  oto1:  { amount: "3.00",  gumroad: "ttrsd"  },
+  oto2:  { amount: "7.00", gumroad: "cuhln"  },
+  oto3:  { amount: "10.00", gumroad: "ubsxk"  },
 } as const;
 
 
@@ -152,7 +152,7 @@ export const appRouter = router({
           gumroadPermalink: product.gumroad,
         });
         return {
-          gumroadUrl: `https://deepsleepreset.gumroad.com/l/${product.gumroad}${input.productId === 'main' ? '?price=5' : ''}`,
+          gumroadUrl: `https://deepsleepreset.gumroad.com/l/${product.gumroad}${input.productId === 'main' ? '?price=1' : ''}`,
           amount: product.amount,
         };
       }),
@@ -297,7 +297,7 @@ export const appRouter = router({
               ).join("\n  ")
             : "none loaded";
 
-          systemPrompt = `You are Luna — an elite AI performance marketing analyst for Deep Sleep Reset, a $5 CBT-I sleep protocol product.
+          systemPrompt = `You are Luna — an elite AI performance marketing analyst for Deep Sleep Reset, a $1 CBT-I sleep protocol product.
 
 ## YOUR ROLE
 You are the admin's personal data analyst and growth strategist. You have FULL REAL-TIME ACCESS to all business metrics listed below. Answer EVERY question DIRECTLY using this data. NEVER say you don't have access to data — you have it all right here.
@@ -340,7 +340,7 @@ You are the admin's personal data analyst and growth strategist. You have FULL R
           systemPrompt = `You are Luna, an affiliate guide for Deep Sleep Reset ($5 product, 50% commission = $2.50/sale, 30-day cookie). Help affiliates maximize earnings with specific, actionable advice. Respond in the same language as the user.`;
 
         } else {
-          systemPrompt = `You are Luna, the friendly AI sleep coach for Deep Sleep Reset — a $5 science-backed 7-night sleep protocol based on CBT-I (Cognitive Behavioral Therapy for Insomnia), the #1 clinician-recommended insomnia treatment with 80% success rate.
+          systemPrompt = `You are Luna, the friendly AI sleep coach for Deep Sleep Reset — a $1 science-backed 7-night sleep protocol based on CBT-I (Cognitive Behavioral Therapy for Insomnia), the #1 clinician-recommended insomnia treatment with 80% success rate.
 
 About the product:
 - Price: $5 (one-time, no subscription)
@@ -472,7 +472,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          main: 500, oto1: 700, oto2: 1700, oto3: 2700,
+          main: 100, oto1: 300, oto2: 700, oto3: 1000,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           main: "Deep Sleep Reset — 7-Night Protocol",
@@ -480,7 +480,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           oto2: "Deep Sleep Reset — ASMR Audio Pack",
           oto3: "Deep Sleep Reset — Complete Bundle",
         };
-        const amountCents = PRODUCT_PRICES[input.productId] ?? 500;
+        const amountCents = PRODUCT_PRICES[input.productId] ?? 100;
         const productName = PRODUCT_NAMES[input.productId] ?? "Deep Sleep Reset";
         // Supported Stripe currencies (subset of all)
         const stripeSupportedCurrencies = ["usd","eur","gbp","cad","aud","pln","czk","inr","brl","mxn","chf","sek","nok","dkk","sgd","nzd","zar","jpy"];

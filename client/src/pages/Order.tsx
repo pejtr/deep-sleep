@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
-import { Lock, Shield, Star, ArrowRight, Users, CreditCard } from "lucide-react";
+import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import TrustBar from "@/components/TrustBar";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
@@ -27,6 +27,7 @@ export default function Order() {
   const [buyers] = useState(() => Math.floor(Math.random() * 15) + 8);
   const [viewers] = useState(() => Math.floor(Math.random() * 60) + 180);
   const [loading, setLoading] = useState(false);
+  const [bumpSelected, setBumpSelected] = useState(false);
   const { track } = useTrackBehavior();
   const { formatPrice, currency } = useCurrency();
 
@@ -118,10 +119,10 @@ export default function Order() {
 
           {/* Price with currency switcher */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(75)}</span>
-            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(5)}</span>
+            <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
+            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(1)}</span>
             <div>
-              <div className="badge-popular">93% OFF</div>
+              <div className="badge-popular">98% OFF</div>
               <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
             </div>
           </div>
@@ -135,16 +136,54 @@ export default function Order() {
             <CountdownTimer variant="inline" label="Price locks in:" />
           </div>
 
+          {/* Order Bump — OTO1 Chronotype Optimizer $3 */}
+          <div
+            onClick={() => setBumpSelected(b => !b)}
+            className="mb-5 rounded-2xl p-4 cursor-pointer transition-all duration-200 select-none"
+            style={{
+              background: bumpSelected ? "oklch(0.78 0.18 65 / 0.12)" : "oklch(0.12 0.03 290 / 0.8)",
+              border: bumpSelected ? "2px solid oklch(0.78 0.18 65 / 0.7)" : "2px dashed oklch(0.35 0.08 65 / 0.6)",
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <div
+                className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center mt-0.5 transition-all"
+                style={{
+                  background: bumpSelected ? "oklch(0.78 0.18 65)" : "oklch(0.18 0.03 290)",
+                  border: bumpSelected ? "none" : "2px solid oklch(0.40 0.08 65)",
+                }}
+              >
+                {bumpSelected && <Check className="w-4 h-4 text-black" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>YES! Add this</span>
+                  <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Special one-time offer</span>
+                </div>
+                <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.90 0.04 265)" }}>
+                  Chronotype Optimizer — Personalized 30-Day Plan
+                </p>
+                <p className="text-xs leading-relaxed mb-2" style={{ color: "oklch(0.55 0.04 265)" }}>
+                  Get a fully personalized sleep schedule, meal timing, and light exposure plan built specifically for your {chronotype} chronotype. Most people see 2x faster results.
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(17)}</span>
+                  <span className="text-base font-black" style={{ color: "oklch(0.78 0.18 65)" }}>Add for just {formatPrice(3)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
-            productId="main"
+            productId={bumpSelected ? "oto1" : "main"}
             sessionId={getSessionId()}
             chronotype={chronotype}
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg"
             variant="primary"
           >
             <Lock className="w-5 h-5" />
-            <span>Get My {chronotype} Protocol — {formatPrice(5)}</span>
+            <span>{bumpSelected ? `Get Protocol + Optimizer — ${formatPrice(1)} + ${formatPrice(3)}` : `Get My ${chronotype} Protocol — ${formatPrice(1)}`}</span>
             <ArrowRight className="w-5 h-5" />
           </CheckoutButton>
 
@@ -186,7 +225,7 @@ export default function Order() {
                 ))}
               </div>
               <p className="text-xs leading-relaxed" style={{ color: "oklch(0.65 0.04 265)" }}>
-                "I was skeptical about a $5 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
+                "I was skeptical about a $1 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
               </p>
               <p className="text-xs mt-1.5 font-semibold" style={{ color: "oklch(0.50 0.04 265)" }}>
                 — Verified {chronotype} customer
@@ -203,7 +242,7 @@ export default function Order() {
           {[
             { q: "How do I receive the protocol?", a: "Instantly after purchase — you'll get a download link via email and on the confirmation page." },
             { q: "What if it doesn't work for me?", a: "Full 30-day money-back guarantee. Email us and we'll refund you immediately, no questions asked." },
-            { q: "Is this really just $5?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
+            { q: "Is this really just $1?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
           ].map((faq, i) => (
             <div key={i} className="glass-card rounded-xl p-4">
               <p className="text-sm font-semibold mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>Q: {faq.q}</p>
@@ -217,7 +256,7 @@ export default function Order() {
       {/* Sticky mobile CTA */}
       <StickyMobileCTA
         label={`Get My ${chronotype} Protocol`}
-        price={formatPrice(5)}
+        price={formatPrice(1)}
         onClick={() => track("checkout_click", { page: "order", element: "sticky_cta", value: { chronotype } })}
       />
 

@@ -501,9 +501,9 @@ export default function AdminDashboard() {
               <>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <StatCard icon={DollarSign} label="Revenue" value={`$${stats?.revenue?.toFixed(2) ?? "0.00"}`} sub="Completed orders" color={C.green} trend="+∞%" trendUp />
-                  <StatCard icon={ShoppingCart} label="Orders" value={stats?.orderCount ?? 0} sub="Completed" color={C.gold} />
+                  <StatCard icon={ShoppingCart} label="Orders" value={stats?.orderCount ?? 0} sub="All orders" color={C.gold} />
                   <StatCard icon={Users} label="Email Leads" value={stats?.leadCount ?? 0} sub="Captured" color={C.purple} />
-                  <StatCard icon={Activity} label="Quiz Starts" value={stats?.quizCount ?? 0} sub="Funnel entries" color={C.teal} />
+                  <StatCard icon={Activity} label="Quiz Starts" value={stats?.quizStarts ?? stats?.quizCount ?? 0} sub="Funnel entries" color={C.teal} />
                   <StatCard icon={Star} label="Avg Rating" value={stats?.avgRating ? `${stats.avgRating}/5` : "—"} sub={`${stats?.feedbackCount ?? 0} reviews`} color={C.gold} />
                   <StatCard icon={MessageSquare} label="Feedbacks" value={stats?.feedbackCount ?? 0} sub="Submitted" color={C.pink} />
                   <StatCard icon={Zap} label="Events" value={stats?.behaviorCount ?? 0} sub="Behavior tracked" color={C.teal} />
@@ -713,9 +713,9 @@ export default function AdminDashboard() {
                 {[
                   { step: "1", label: "Ad Click (TikTok/Reddit/Google)", value: "—", note: "Tracking via ad platforms", color: C.purple },
                   { step: "2", label: "Landing Page Visit", value: "—", note: "deep-sleep-reset.com", color: C.blue },
-                  { step: "3", label: "Quiz Started", value: String(stats?.quizCount ?? 0), note: "Chronotype assessment", color: C.teal },
+                  { step: "3", label: "Quiz Started", value: String(stats?.quizStarts ?? stats?.quizCount ?? 0), note: "Chronotype assessment", color: C.teal },
                   { step: "4", label: "Email Captured", value: String(stats?.leadCount ?? 0), note: "Lead magnet", color: C.green },
-                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$5 main product", color: C.gold },
+                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$1 main product", color: C.gold },
                   { step: "6", label: "Feedback Submitted", value: String(stats?.feedbackCount ?? 0), note: "Post-purchase", color: C.pink },
                 ].map(step => (
                   <div key={step.step} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>

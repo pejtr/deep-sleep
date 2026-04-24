@@ -152,10 +152,11 @@ export async function saveFeedback(data: InsertFeedback) {
 
 export async function getAdminStats() {
   const db = await getDb();
-  if (!db) return { quizCount: 0, orderCount: 0, leadCount: 0, revenue: 0, feedbackCount: 0, avgRating: 0, behaviorCount: 0, recentOrders: [], recentFeedbacks: [] };
-  // Run core queries first, then optional tables with fallback
-  const [quiz, ord, leads] = await Promise.all([
+  if (!db) return { quizCount: 0, orderCount: 0, completedOrderCount: 0, leadCount: 0, revenue: 0, feedbackCount: 0, avgRating: 0, behaviorCount: 0, recentOrders: [], recentFeedbacks: [], quizStarts: 0, checkoutClicks: 0 };
+  // Count ALL orders (not just completed) to show real funnel data
+  const [quiz, allOrders, completedOrders, leads] = await Promise.all([
     db.select().from(quizResults).catch(() => []),
+    db.select().from(orders).catch(() => []),
     db.select().from(orders).where(eq(orders.status, "completed")).catch(() => []),
     db.select().from(emailLeads).catch(() => []),
   ]);
@@ -164,9 +165,12 @@ export async function getAdminStats() {
     db.select().from(feedbacks).catch(() => []),
     db.select().from(behaviorEvents).catch(() => []),
   ]);
-  const revenue = ord.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
+  // Quiz starts = page_view on quiz page tracked via behavior events
+  const quizStarts = behaviors.filter((b: { event: string; page?: string | null }) => b.event === 'page_view' && b.page === 'quiz').length;
+  const checkoutClicks = behaviors.filter((b: { event: string }) => b.event === 'checkout_click').length;
+  const revenue = completedOrders.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
   const avgRating = fbs.length > 0 ? fbs.reduce((sum, f) => sum + (f.rating ?? 0), 0) / fbs.length : 0;
-  const recentOrders = ord.slice(-5).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, createdAt: o.createdAt }));
+  const recentOrders = allOrders.slice(-5).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt }));
   const recentFeedbacks = fbs.slice(-5).reverse().map((f: typeof fbs[0]) => ({ id: f.id, rating: f.rating, liked: f.liked, improved: f.improved, createdAt: f.createdAt }));
-  return { quizCount: quiz.length, orderCount: ord.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks };
+  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks };
 }

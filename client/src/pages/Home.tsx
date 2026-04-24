@@ -142,7 +142,7 @@ export default function Home() {
 
   // SEO: set title and keywords dynamically
   useEffect(() => {
-    document.title = "Deep Sleep Reset: Fix Insomnia in 7 Nights — $5";
+    document.title = "Deep Sleep Reset: Fix Insomnia in 7 Nights — $1";
     // Add keywords meta tag if not present
     let kwMeta = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
     if (!kwMeta) {
@@ -178,7 +178,7 @@ export default function Home() {
             <span>— Start your sleep transformation today</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$5</span>
+            <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$1</span>
             <div className="w-px h-3" style={{ background: "oklch(0.78 0.18 65 / 0.3)" }} />
             <div className="flex items-center gap-0.5">
               {[1,2,3,4,5].map(i => (
@@ -475,7 +475,7 @@ export default function Home() {
             The Complete Deep Sleep Reset System
           </h2>
           <p className="text-base text-center max-w-2xl mx-auto mb-12" style={{ color: "oklch(0.60 0.04 265)" }}>
-            Less than the price of one coffee. That's the deliberate choice. Not because this is worth $5 — the value stack below shows exactly what you're getting. I priced it at $5 because I want the barrier to be zero. Your only job is to try it.
+            Less than the price of one coffee. That's the deliberate choice. Not because this is worth $1 — the value stack below shows exactly what you're getting. I priced it at $1 because I want the barrier to be zero. Your only job is to try it.
           </p>
 
           <div className="max-w-2xl mx-auto glass-card rounded-2xl p-8 md:p-10">
@@ -502,7 +502,7 @@ export default function Home() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>Your Price Today:</span>
-                <span className="font-display font-bold text-3xl text-gradient-gold">Just $5 — Less Than One Coffee</span>
+                <span className="font-display font-bold text-3xl text-gradient-gold">Just $1 — Less Than One Coffee</span>
               </div>
             </div>
 
@@ -539,7 +539,7 @@ export default function Home() {
                 <span style={{ color: "oklch(0.82 0.16 65)" }}>Guarantee</span>
               </h2>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "oklch(0.65 0.04 265)" }}>
-                Go through the 7-night protocol. If you don't sleep noticeably better within 30 days, email me and I'll refund your $5 immediately. No forms. No questions. No waiting.
+                Go through the 7-night protocol. If you don't sleep noticeably better within 30 days, email me and I'll refund your $1 immediately. No forms. No questions. No waiting.
               </p>
               <p className="text-sm leading-relaxed" style={{ color: "oklch(0.55 0.04 265)" }}>
                 I can offer this because the protocol works. CBT-I has an 80% clinical success rate. You have nothing to lose — and a completely different kind of morning to gain.
@@ -615,19 +615,19 @@ export default function Home() {
             Imagine waking up tomorrow and thinking: "I actually slept."
           </p>
           <p className="text-sm mb-10 max-w-xl mx-auto" style={{ color: "oklch(0.55 0.04 265)" }}>
-            More energy. Sharper thinking. Better mood. Calmer relationships. The version of yourself that shows up when you're not running on empty. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $5.</strong>
+            More energy. Sharper thinking. Better mood. Calmer relationships. The version of yourself that shows up when you're not running on empty. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $1.</strong>
           </p>
 
           <button
             onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-12 py-6 text-xl inline-flex items-center gap-3 animate-pulse-glow"
           >
-            <span>CHANGE MY SLEEP — $5</span>
+            <span>CHANGE MY SLEEP — $1</span>
           </button>
 
           <p className="text-sm italic mt-10 max-w-lg mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>
             <strong style={{ color: "oklch(0.55 0.04 265)" }}>P.S.</strong>{" "}
-            <em>P.S. — You've spent more than $5 on a coffee that made you more anxious. This is $5 to permanently change how you sleep — and how every day feels after. The only question is: are you curious enough to find out?</em>
+            <em>P.S. — You've spent more than $1 on a coffee that made you more anxious. This is $1 to permanently change how you sleep — and how every day feels after. The only question is: are you curious enough to find out?</em>
           </p>
         </section>
       </AnimatedSection>
