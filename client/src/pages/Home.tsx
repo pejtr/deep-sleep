@@ -175,7 +175,7 @@ export default function Home() {
         <div className="container py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs" style={{ color: "oklch(0.60 0.04 265)" }}>
             <span style={{ color: "oklch(0.82 0.16 65)" }}>Don't close</span>
-            <span>— Start your sleep transformation today</span>
+            <span className="hidden sm:inline">— Start your sleep transformation today</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$1</span>
@@ -199,21 +199,24 @@ export default function Home() {
         <StarField />
 
         {/* Nav */}
-        <nav className="absolute top-0 left-0 right-0 z-[60] container flex items-center justify-between" style={{ paddingTop: "calc(2.5rem + 36px)" }}>
-          <div className="flex items-center gap-2">
-            <Moon className="w-5 h-5" style={{ color: "oklch(0.82 0.16 65)" }} />
-            <span className="font-display font-bold text-lg" style={{ color: "oklch(0.95 0.01 265)" }}>
+        <nav className="absolute top-0 left-0 right-0 z-[60] container flex items-center justify-between gap-2" style={{ paddingTop: "calc(2.5rem + 36px)" }}>
+          <div className="flex items-center gap-2 min-w-0 shrink">
+            <Moon className="w-5 h-5 shrink-0" style={{ color: "oklch(0.82 0.16 65)" }} />
+            <span className="font-display font-bold text-base sm:text-lg truncate" style={{ color: "oklch(0.95 0.01 265)" }}>
               Deep Sleep Reset
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <CurrencySwitcher />
-            <LanguageSwitcher />
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div className="hidden sm:flex items-center gap-1.5">
+              <CurrencySwitcher />
+              <LanguageSwitcher />
+            </div>
             <button
               onClick={handleBuyNow}
-              className="cta-gold cta-shimmer rounded-lg px-4 py-2 text-xs font-bold inline-flex items-center gap-1.5"
+              className="cta-gold cta-shimmer rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold inline-flex items-center gap-1 whitespace-nowrap"
             >
-              {t.nav_cta}
+              <span className="hidden sm:inline">{t.nav_cta}</span>
+              <span className="sm:hidden">$1 →</span>
             </button>
           </div>
         </nav>
@@ -577,25 +580,22 @@ export default function Home() {
         </section>
       </AnimatedSection>
 
-      {/* ═══════════════ ASMR SLEEP SOUNDS ═══════════════ */}
+      {/* ═══════════════ ASMR TEASER (post-purchase upsell only) ═══════════════ */}
       <AnimatedSection>
-        <section className="relative z-10 container py-16">
-          <div className="section-divider mb-12" />
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 text-xs font-semibold"
-              style={{ background: "oklch(0.78 0.18 65 / 0.1)", border: "1px solid oklch(0.78 0.18 65 / 0.3)", color: "oklch(0.82 0.16 65)" }}>
-              {t.asmr_badge}
+        <section className="relative z-10 container py-10">
+          <div className="section-divider mb-10" />
+          <div className="max-w-2xl mx-auto rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-5"
+            style={{ background: "oklch(0.10 0.025 255)", border: "1px solid oklch(0.78 0.18 65 / 0.2)" }}>
+            <div className="text-4xl shrink-0">🎧</div>
+            <div className="flex-1 text-center sm:text-left">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>Bonus included after purchase</p>
+              <h3 className="font-display font-bold text-lg mb-1" style={{ color: "oklch(0.95 0.01 265)" }}>5 Guided Sleep Audio Sessions</h3>
+              <p className="text-sm" style={{ color: "oklch(0.55 0.04 265)" }}>Body scan, breath work &amp; sleep onset audio — unlocked instantly after your $1 purchase.</p>
             </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
-              {t.asmr_h2.split(' ').slice(0,-1).join(' ')}{" "}
-              <span className="text-gradient-gold-italic">{t.asmr_h2.split(' ').slice(-1)[0]}</span>
-            </h2>
-            <p className="text-sm max-w-md mx-auto" style={{ color: "oklch(0.55 0.04 265)" }}>
-              {t.asmr_sub}
-            </p>
-          </div>
-          <div className="max-w-xl mx-auto">
-            <ASMRPlayer onUpgradeClick={() => window.open('https://deepsleepreset.gumroad.com/l/premium', '_blank')} />
+            <button onClick={handleBuyNow}
+              className="cta-gold cta-shimmer rounded-lg px-5 py-2.5 text-sm font-bold whitespace-nowrap shrink-0">
+              Get Access — $1
+            </button>
           </div>
         </section>
       </AnimatedSection>

@@ -88,8 +88,10 @@ export async function getQuizResultBySession(sessionId: string) {
 export async function createOrder(data: InsertOrder) {
   const db = await getDb();
   if (!db) return null;
+  // Drizzle MySQL insert returns [ResultSetHeader, FieldPacket[]] — res[0].insertId is the new row ID
   const result = await db.insert(orders).values(data);
-  return result;
+  const insertId = (result as unknown as [{ insertId: number }])[0]?.insertId;
+  return insertId ?? null;
 }
 
 export async function getOrdersBySession(sessionId: string) {
@@ -168,9 +170,14 @@ export async function getAdminStats() {
   // Quiz starts = page_view on quiz page tracked via behavior events
   const quizStarts = behaviors.filter((b: { event: string; page?: string | null }) => b.event === 'page_view' && b.page === 'quiz').length;
   const checkoutClicks = behaviors.filter((b: { event: string }) => b.event === 'checkout_click').length;
-  const revenue = completedOrders.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
+  // Revenue: count completed orders (webhook sets status=completed after Stripe payment)
+  // Also show total pending revenue for visibility
+  const completedRevenue = completedOrders.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
+  const totalRevenue = allOrders.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
+  const revenue = completedRevenue > 0 ? completedRevenue : totalRevenue; // fallback to all if webhook not yet active
   const avgRating = fbs.length > 0 ? fbs.reduce((sum, f) => sum + (f.rating ?? 0), 0) / fbs.length : 0;
-  const recentOrders = allOrders.slice(-5).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt }));
+  // Include createdAt timestamp in recentOrders for time display
+  const recentOrders = allOrders.slice(-10).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt, currency: o.currency ?? undefined }));
   const recentFeedbacks = fbs.slice(-5).reverse().map((f: typeof fbs[0]) => ({ id: f.id, rating: f.rating, liked: f.liked, improved: f.improved, createdAt: f.createdAt }));
   return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks };
 }

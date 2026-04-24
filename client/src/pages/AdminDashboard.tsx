@@ -531,16 +531,23 @@ export default function AdminDashboard() {
                 {stats?.recentOrders && stats.recentOrders.length > 0 && (
                   <ChartCard title="Recent Orders">
                     <div className="space-y-2">
-                      {stats.recentOrders.map((order: { id: number; amount: string; product: string; createdAt: Date }) => (
+                      {stats.recentOrders.map((order: { id: number; amount: string; product: string; status?: string; currency?: string; createdAt: Date }) => (
                         <div key={order.id} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
                           <div className="flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4" style={{ color: C.green }} />
-                            <span className="text-xs" style={{ color: C.textSecondary }}>{order.product}</span>
+                            <CheckCircle2 className="w-4 h-4" style={{ color: order.status === 'completed' ? C.green : C.gold }} />
+                            <div>
+                              <span className="text-xs font-medium" style={{ color: C.textSecondary }}>{order.product}</span>
+                              {order.status && order.status !== 'completed' && (
+                                <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: 'oklch(0.78 0.18 65 / 0.15)', color: C.gold }}>{order.status}</span>
+                              )}
+                            </div>
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="text-xs font-semibold" style={{ color: C.green }}>${order.amount}</span>
+                            <span className="text-xs font-semibold" style={{ color: order.status === 'completed' ? C.green : C.gold }}>
+                              {order.currency ? order.currency.toUpperCase() : 'USD'} {order.amount}
+                            </span>
                             <span className="text-xs" style={{ color: C.textMuted }}>
-                              {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "—"}
+                              {order.createdAt ? new Date(order.createdAt).toLocaleString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : "—"}
                             </span>
                           </div>
                         </div>
