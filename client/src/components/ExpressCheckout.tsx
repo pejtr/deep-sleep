@@ -16,6 +16,8 @@ const stripePromise = loadStripe(
 
 interface ExpressCheckoutProps {
   productId?: "main" | "oto1" | "oto2" | "oto3" | "discount";
+  /** When set, adds this product as a 2nd line item alongside the main product */
+  includeUpsell?: "oto1" | "oto2" | "oto3";
   sessionId: string;
   email?: string;
   chronotype?: string;
@@ -25,6 +27,7 @@ interface ExpressCheckoutProps {
 
 function ExpressCheckoutInner({
   productId = "main",
+  includeUpsell,
   sessionId,
   email,
   chronotype,
@@ -47,6 +50,7 @@ function ExpressCheckoutInner({
     try {
       const result = await createSession.mutateAsync({
         productId,
+        includeUpsell,
         sessionId,
         email,
         chronotype,
@@ -67,7 +71,7 @@ function ExpressCheckoutInner({
       toast.error("Payment failed. Please try the card option below.");
       setLoading(false);
     }
-  }, [stripe, elements, loading, productId, sessionId, email, chronotype, currency, isLowTier, createSession]);
+  }, [stripe, elements, loading, productId, includeUpsell, sessionId, email, chronotype, currency, isLowTier, createSession]);
 
   // If ExpressCheckoutElement doesn't render any buttons (no wallets available),
   // it fires onReady but with no available payment methods. We detect this via

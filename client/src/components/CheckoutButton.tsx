@@ -4,7 +4,9 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 
 interface CheckoutButtonProps {
-  productId?: "main" | "oto1" | "oto2" | "oto3";
+  productId?: "main" | "discount" | "oto1" | "oto2" | "oto3";
+  /** When set, adds this product as a 2nd line item alongside the main product */
+  includeUpsell?: "oto1" | "oto2" | "oto3";
   sessionId: string;
   email?: string;
   chronotype?: string;
@@ -15,6 +17,7 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({
   productId = "main",
+  includeUpsell,
   sessionId,
   email,
   chronotype,
@@ -45,6 +48,7 @@ export function CheckoutButton({
     setIsLoading(true);
     createSession.mutate({
       productId,
+      includeUpsell,
       sessionId,
       email,
       chronotype,

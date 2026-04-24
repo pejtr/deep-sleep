@@ -282,3 +282,4 @@
 - [ ] Aplikovat AI optimization suggestions z dashboardu (budget, retargeting, video, targeting, scheduling)
 - [ ] Přidat Revenue v CZK do horního sticky panelu v Admin Dashboardu
 - [ ] Admin Dashboard: timeline grafy — návštěvy/nákupy/revenue po hodinách a dnech s přepínačem
+- [x] BUG: Stripe checkout s upsell checkboxem — opraveno: productId=main + includeUpsell=oto1 → 2 line_items v Stripe session

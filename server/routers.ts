@@ -520,6 +520,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .input(
         z.object({
           productId: z.enum(["main", "discount", "oto1", "oto2", "oto3"]).default("main"),
+          includeUpsell: z.string().optional(), // e.g. "oto1" — adds upsell as 2nd line item alongside main
           sessionId: z.string(),
           email: z.string().email().optional(),
           chronotype: z.string().optional(),
@@ -561,17 +562,49 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         // Zero-decimal currencies (Stripe expects whole units, not cents)
         const zeroDecimal = ["jpy"];
         const rate = RATES[currency] ?? 1;
-        let finalAmount: number;
-        if (zeroDecimal.includes(currency)) {
-          finalAmount = Math.round((amountCents / 100) * rate);
-        } else {
-          finalAmount = Math.round(amountCents * rate);
+        const convertCents = (cents: number) => zeroDecimal.includes(currency)
+          ? Math.round((cents / 100) * rate)
+          : Math.round(cents * rate);
+        let finalAmount: number = convertCents(amountCents);
+        // Build line items — always include main product, optionally add upsell
+        const lineItems: { price_data: { currency: string; product_data: { name: string; description: string }; unit_amount: number }; quantity: number }[] = [
+          {
+            price_data: {
+              currency,
+              product_data: {
+                name: productName,
+                description: "Instant digital download. Science-backed sleep protocol.",
+              },
+              unit_amount: finalAmount,
+            },
+            quantity: 1,
+          },
+        ];
+        // If includeUpsell is set, add upsell as 2nd line item (e.g. bump on Order page)
+        let upsellAmount = 0;
+        if (input.includeUpsell && PRODUCT_PRICES[input.includeUpsell]) {
+          const upsellCents = input.isLowTier
+            ? (LOW_TIER_PRICES[input.includeUpsell] ?? 100)
+            : (PRODUCT_PRICES[input.includeUpsell] ?? 300);
+          upsellAmount = convertCents(upsellCents);
+          lineItems.push({
+            price_data: {
+              currency,
+              product_data: {
+                name: PRODUCT_NAMES[input.includeUpsell] ?? "Upsell",
+                description: "Bonus add-on included with your order.",
+              },
+              unit_amount: upsellAmount,
+            },
+            quantity: 1,
+          });
         }
-        // Create pending order in DB
+        // Create pending order in DB (total amount = main + upsell)
+        const totalAmount = finalAmount + upsellAmount;
         const orderId = await createOrder({
           sessionId: input.sessionId,
-          productId: input.productId,
-          amount: (finalAmount / (zeroDecimal.includes(currency) ? 1 : 100)).toFixed(2),
+          productId: input.includeUpsell ? `${input.productId}+${input.includeUpsell}` : input.productId,
+          amount: (totalAmount / (zeroDecimal.includes(currency) ? 1 : 100)).toFixed(2),
           email: input.email,
           chronotype: (input.chronotype as "Lion" | "Bear" | "Wolf" | "Dolphin" | undefined),
           status: "pending",
@@ -586,19 +619,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
               setup_future_usage: undefined,
             },
           },
-          line_items: [
-            {
-              price_data: {
-                currency,
-                product_data: {
-                  name: productName,
-                  description: "Instant digital download. Science-backed sleep protocol.",
-                },
-                unit_amount: finalAmount,
-              },
-              quantity: 1,
-            },
-          ],
+          line_items: lineItems,
           mode: "payment",
           allow_promotion_codes: true,
           customer_email: input.email,

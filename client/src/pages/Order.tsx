@@ -178,7 +178,8 @@ export default function Order() {
           {/* Express Checkout — Apple Pay / Google Pay / Link */}
           <div className="mb-4">
             <ExpressCheckout
-              productId={bumpSelected ? "oto1" : "main"}
+              productId="main"
+              includeUpsell={bumpSelected ? "oto1" : undefined}
               sessionId={getSessionId()}
               chronotype={chronotype}
               amount={bumpSelected ? 8 : 5}
@@ -194,7 +195,8 @@ export default function Order() {
 
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
-            productId={bumpSelected ? "oto1" : "main"}
+            productId="main"
+            includeUpsell={bumpSelected ? "oto1" : undefined}
             sessionId={getSessionId()}
             chronotype={chronotype}
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg"
