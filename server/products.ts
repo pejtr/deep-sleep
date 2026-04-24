@@ -14,7 +14,7 @@ export const PRODUCTS: Record<string, Product> = {
     id: "main",
     name: "Deep Sleep Reset — 7-Night Protocol",
     description: "Science-backed 7-night sleep reset protocol. Instant PDF download.",
-    amountUsd: 100, // $1.00
+    amountUsd: 500, // $5.00
     downloadUrl: "https://deepsleepreset.gumroad.com/l/fdtifc",
   },
   oto1: {

@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { ArrowRight, Moon, Star, Check, X, ChevronDown, Shield } from "lucide-react";
 import LiveSalesNotification from "@/components/LiveSalesNotification";
 import FloatingSocialProofBar from "@/components/FloatingSocialProofBar";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 import SupportButton from "@/components/SupportButton";
 import FAQSection from "@/components/FAQSection";
 import ASMRPlayer from "@/components/ASMRPlayer";
@@ -654,6 +655,7 @@ export default function Home() {
       {/* ═══════════════ FLOATING ELEMENTS ═══════════════ */}
       <LiveSalesNotification />
       <FloatingSocialProofBar />
+      <ExitIntentPopup />
       <SupportButton />
     </div>
   );

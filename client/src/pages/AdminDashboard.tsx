@@ -500,7 +500,7 @@ export default function AdminDashboard() {
             ) : (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <StatCard icon={DollarSign} label="Revenue" value={`$${stats?.revenue?.toFixed(2) ?? "0.00"}`} sub="Completed orders" color={C.green} trend="+∞%" trendUp />
+                  <StatCard icon={DollarSign} label="Revenue" value={`$${(stats?.revenue ?? 0).toFixed(2)}`} sub={(stats?.completedOrderCount ?? 0) > 0 ? "Confirmed orders" : "All orders"} color={C.green} trend="+∞%" trendUp />
                   <StatCard icon={ShoppingCart} label="Orders" value={stats?.orderCount ?? 0} sub="All orders" color={C.gold} />
                   <StatCard icon={Users} label="Email Leads" value={stats?.leadCount ?? 0} sub="Captured" color={C.purple} />
                   <StatCard icon={Activity} label="Quiz Starts" value={stats?.quizStarts ?? stats?.quizCount ?? 0} sub="Funnel entries" color={C.teal} />

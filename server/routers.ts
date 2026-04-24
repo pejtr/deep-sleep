@@ -47,7 +47,7 @@ function calculateChronotype(answers: number[]): "Lion" | "Bear" | "Wolf" | "Dol
 
 // ── Product config ────────────────────────────────────────────────────────────
 const PRODUCTS = {
-  main:  { amount: "1.00",  gumroad: "fdtifc" },
+  main:  { amount: "5.00",  gumroad: "fdtifc" },
   oto1:  { amount: "3.00",  gumroad: "ttrsd"  },
   oto2:  { amount: "7.00", gumroad: "cuhln"  },
   oto3:  { amount: "10.00", gumroad: "ubsxk"  },
@@ -461,7 +461,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
     createSession: publicProcedure
       .input(
         z.object({
-          productId: z.enum(["main", "oto1", "oto2", "oto3"]).default("main"),
+          productId: z.enum(["main", "discount", "oto1", "oto2", "oto3"]).default("main"),
           sessionId: z.string(),
           email: z.string().email().optional(),
           chronotype: z.string().optional(),
@@ -472,15 +472,16 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          main: 100, oto1: 300, oto2: 700, oto3: 1000,
+          main: 500, discount: 400, oto1: 300, oto2: 700, oto3: 1000,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           main: "Deep Sleep Reset — 7-Night Protocol",
+          discount: "Deep Sleep Reset — 7-Night Protocol (Special Offer)",
           oto1: "Deep Sleep Reset — Chronotype Optimizer",
           oto2: "Deep Sleep Reset — ASMR Audio Pack",
           oto3: "Deep Sleep Reset — Complete Bundle",
         };
-        const amountCents = PRODUCT_PRICES[input.productId] ?? 100;
+        const amountCents = PRODUCT_PRICES[input.productId] ?? 500;
         const productName = PRODUCT_NAMES[input.productId] ?? "Deep Sleep Reset";
         // Supported Stripe currencies (subset of all)
         const stripeSupportedCurrencies = ["usd","eur","gbp","cad","aud","pln","czk","inr","brl","mxn","chf","sek","nok","dkk","sgd","nzd","zar","jpy"];
