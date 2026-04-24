@@ -555,6 +555,103 @@ export default function AdminDashboard() {
                     </div>
                   </ChartCard>
                 )}
+
+                {/* ── Purchase Intelligence ─────────────────────────────────── */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Buyer Stats */}
+                  <ChartCard title="Buyer Intelligence">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
+                        <span className="text-xs" style={{ color: C.textSecondary }}>Unique Buyers</span>
+                        <span className="text-lg font-bold" style={{ color: C.green }}>{stats?.uniqueBuyers ?? 0}</span>
+                      </div>
+                      <div className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
+                        <span className="text-xs" style={{ color: C.textSecondary }}>Duplicate Attempts</span>
+                        <span className="text-lg font-bold" style={{ color: stats?.duplicateAttempts ? C.gold : C.textMuted }}>{stats?.duplicateAttempts ?? 0}</span>
+                      </div>
+                      <div className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
+                        <span className="text-xs" style={{ color: C.textSecondary }}>Avg Time to Checkout</span>
+                        <span className="text-lg font-bold" style={{ color: C.teal }}>{stats?.avgTimeToCheckout ? `${stats.avgTimeToCheckout}m` : "—"}</span>
+                      </div>
+                      <div className="flex items-center justify-between py-2">
+                        <span className="text-xs" style={{ color: C.textSecondary }}>Conversion Rate</span>
+                        <span className="text-lg font-bold" style={{ color: C.gold }}>
+                          {stats?.quizStarts && stats.quizStarts > 0 ? `${((stats.orderCount / stats.quizStarts) * 100).toFixed(1)}%` : stats?.behaviorCount && stats.behaviorCount > 0 ? `${((stats.orderCount / (stats.behaviorCount / 10)) * 100).toFixed(1)}%` : "—"}
+                        </span>
+                      </div>
+                    </div>
+                  </ChartCard>
+
+                  {/* Traffic Sources */}
+                  <ChartCard title="Traffic Sources">
+                    {stats?.referrerBreakdown && stats.referrerBreakdown.length > 0 ? (
+                      <div className="space-y-2">
+                        {(stats.referrerBreakdown as { source: string; visits: number }[]).map((r, i) => {
+                          const maxVisits = Math.max(...(stats.referrerBreakdown as { source: string; visits: number }[]).map(x => x.visits));
+                          const pct = maxVisits > 0 ? (r.visits / maxVisits) * 100 : 0;
+                          const colors = [C.gold, C.green, C.blue, C.purple, C.teal, C.pink, C.red, C.textSecondary];
+                          return (
+                            <div key={r.source} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-medium truncate max-w-[140px]" style={{ color: C.textPrimary }}>{r.source}</span>
+                                <span className="text-xs font-bold" style={{ color: colors[i % colors.length] }}>{r.visits}</span>
+                              </div>
+                              <div className="h-1.5 rounded-full" style={{ background: C.cardInner }}>
+                                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: colors[i % colors.length] }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No referrer data yet</p>
+                    )}
+                  </ChartCard>
+
+                  {/* Device Breakdown */}
+                  <ChartCard title="Devices">
+                    {stats?.deviceBreakdown && (stats.deviceBreakdown as { device: string; count: number }[]).length > 0 ? (
+                      <ResponsiveContainer width="100%" height={140}>
+                        <PieChart>
+                          <Pie
+                            data={(stats.deviceBreakdown as { device: string; count: number }[]).map(d => ({ name: d.device, value: d.count }))}
+                            cx="50%" cy="50%" innerRadius={35} outerRadius={55}
+                            paddingAngle={3} dataKey="value"
+                          >
+                            {(stats.deviceBreakdown as { device: string; count: number }[]).map((_, index) => (
+                              <Cell key={`cell-${index}`} fill={[C.gold, C.teal, C.purple, C.green][index % 4]} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend wrapperStyle={{ fontSize: 10, color: C.textMuted }} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No device data yet</p>
+                    )}
+                  </ChartCard>
+                </div>
+
+                {/* Order Timeline */}
+                {stats?.orderTimeline && (stats.orderTimeline as { hour: string; count: number }[]).length > 0 && (
+                  <ChartCard title="Order Timeline (last 48h)">
+                    <ResponsiveContainer width="100%" height={120}>
+                      <AreaChart data={stats.orderTimeline as { hour: string; count: number }[]} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+                        <defs>
+                          <linearGradient id="orderGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={C.green} stopOpacity={0.3} />
+                            <stop offset="95%" stopColor={C.green} stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" />
+                        <XAxis dataKey="hour" tick={{ fill: C.textMuted, fontSize: 10 }} />
+                        <YAxis tick={{ fill: C.textMuted, fontSize: 10 }} allowDecimals={false} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area type="monotone" dataKey="count" name="Orders" stroke={C.green} fill="url(#orderGrad)" strokeWidth={2} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
               </>
             )}
           </div>
@@ -722,7 +819,7 @@ export default function AdminDashboard() {
                   { step: "2", label: "Landing Page Visit", value: "—", note: "deep-sleep-reset.com", color: C.blue },
                   { step: "3", label: "Quiz Started", value: String(stats?.quizStarts ?? stats?.quizCount ?? 0), note: "Chronotype assessment", color: C.teal },
                   { step: "4", label: "Email Captured", value: String(stats?.leadCount ?? 0), note: "Lead magnet", color: C.green },
-                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$1 main product", color: C.gold },
+                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$5 main product", color: C.gold },
                   { step: "6", label: "Feedback Submitted", value: String(stats?.feedbackCount ?? 0), note: "Post-purchase", color: C.pink },
                 ].map(step => (
                   <div key={step.step} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>

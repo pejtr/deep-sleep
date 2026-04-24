@@ -34,11 +34,26 @@ interface CurrencyInfo {
   flag: string;
 }
 
+// Low-tier countries get $1 pricing instead of $5
+const LOW_TIER_CURRENCIES: CurrencyCode[] = ["INR", "BRL", "MXN", "ZAR", "PLN", "HUF", "RON"];
+
+// Geo-pricing: maps standard USD price to low-tier price
+const GEO_PRICE_MAP: Record<number, number> = {
+  5: 1,   // main product: $5 → $1
+  3: 1,   // OTO1: $3 → $1
+  7: 2,   // OTO2: $7 → $2
+  10: 3,  // OTO3 bundle: $10 → $3
+  4: 1,   // exit-intent discount: $4 → $1
+};
+
 interface CurrencyContextValue {
   currency: CurrencyInfo;
   setCurrency: (code: CurrencyCode) => void;
   convertPrice: (usdAmount: number) => string;
   formatPrice: (usdAmount: number) => string;
+  /** Returns the geo-adjusted USD base price (e.g. $5→$1 for low-tier) */
+  getGeoPrice: (usdAmount: number) => number;
+  isLowTier: boolean;
   rates: Record<string, number>;
   isLoading: boolean;
 }
@@ -104,12 +119,20 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     return (usdAmount * rate).toFixed(2);
   }, [rates, selectedCode]);
 
+  const isLowTier = LOW_TIER_CURRENCIES.includes(selectedCode);
+
+  const getGeoPrice = useCallback((usdAmount: number): number => {
+    if (!isLowTier) return usdAmount;
+    return GEO_PRICE_MAP[usdAmount] ?? Math.max(1, Math.round(usdAmount * 0.2));
+  }, [isLowTier]);
+
   const formatPrice = useCallback((usdAmount: number): string => {
+    const geoAdjusted = isLowTier ? (GEO_PRICE_MAP[usdAmount] ?? Math.max(1, Math.round(usdAmount * 0.2))) : usdAmount;
     const rate = rates[selectedCode] ?? 1;
-    const converted = usdAmount * rate;
+    const converted = geoAdjusted * rate;
     const info = SUPPORTED_CURRENCIES.find(c => c.code === selectedCode)!;
     return formatAmount(converted, selectedCode, info.symbol);
-  }, [rates, selectedCode]);
+  }, [rates, selectedCode, isLowTier]);
 
   const currency = SUPPORTED_CURRENCIES.find(c => c.code === selectedCode)!;
 
@@ -119,6 +142,8 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
       setCurrency,
       convertPrice,
       formatPrice,
+      getGeoPrice,
+      isLowTier,
       rates,
       isLoading,
     }}>

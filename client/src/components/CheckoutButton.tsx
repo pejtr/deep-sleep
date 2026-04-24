@@ -23,7 +23,7 @@ export function CheckoutButton({
   variant = "primary",
 }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { currency } = useCurrency();
+  const { currency, isLowTier } = useCurrency();
 
   const createSession = trpc.checkout.createSession.useMutation({
     onSuccess: (data) => {
@@ -49,6 +49,7 @@ export function CheckoutButton({
       email,
       chronotype,
       currency: currency.code.toLowerCase(),
+      isLowTier,
       origin: window.location.origin,
     });
   };

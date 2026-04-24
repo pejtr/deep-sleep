@@ -238,3 +238,17 @@
 - [x] Quiz.tsx: skip-quiz Gumroad URL replaced with navigate('/order')
 - [ ] User needs to claim Stripe sandbox at https://dashboard.stripe.com/claim_sandbox/...
 - [ ] Test with card 4242 4242 4242 4242
+
+## Purchase Intelligence Dashboard
+- [x] Rozšířit getAdminStats - přidat uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline
+- [x] Přidat Purchase Intelligence sekci do AdminDashboard - timeline, zdroje, unikátní kupující
+- [ ] Opravit referrer tracking na /order stránce - propojit s home referrerem
+
+## Geo-Pricing ($5 Tier 1, $1 Low-Tier)
+- [x] CurrencyContext: isLowTier flag, getGeoPrice(), GEO_PRICE_MAP
+- [x] formatPrice() automaticky adjustuje cenu pro low-tier země
+- [x] Backend: LOW_TIER_PRICES v checkout.createSession, isLowTier input
+- [x] CheckoutButton: předává isLowTier do Stripe checkout
+- [x] ExitIntentPopup: dynamické ceny z formatPrice()
+- [x] Opraveny všechny $1 → $5 v UI (Home, Order, FAQ, SleepChatBot, FloatingSocialProofBar)
+- [x] Přidán Zap + Lock import do Home.tsx (fix ReferenceError)

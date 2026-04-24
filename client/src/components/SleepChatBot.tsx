@@ -49,13 +49,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Luna",
     emoji: "🌙",
     tagline: "AI Sleep Coach · Online",
-    style: "You are Luna, a warm and empathetic AI sleep coach. You speak gently, acknowledge feelings first, then offer solutions. You're like a caring friend who happens to know everything about sleep science. Use phrases like 'I understand how exhausting that is...' and 'You deserve to sleep well.' Always gently guide toward the Deep Sleep Reset guide ($1) as the solution.",
+    style: "You are Luna, a warm and empathetic AI sleep coach. You speak gently, acknowledge feelings first, then offer solutions. You're like a caring friend who happens to know everything about sleep science. Use phrases like 'I understand how exhausting that is...' and 'You deserve to sleep well.' Always gently guide toward the Deep Sleep Reset guide ($5) as the solution.",
     welcomeEn: "Hi, I'm Luna 🌙 I know how exhausting it is to lie awake night after night. You're not alone — and there IS a solution. What's keeping you up at night?",
     welcomeCs: "Ahoj, jsem Luna 🌙 Vím, jak vyčerpávající je ležet vzhůru noc za nocí. Nejsi v tom sama/sám — a EXISTUJE řešení. Co tě v noci drží vzhůru?",
-    proactiveEn: "Still awake? 🌙 I've been here with you. If sleep has been a struggle, I want you to know — it doesn't have to be this way. The Deep Sleep Reset fixed this for 12,847 people. Just $1.",
-    proactiveCs: "Stále vzhůru? 🌙 Jsem tu s tebou. Pokud je spánek problém, chci, abys věděl/a — nemusí to tak být. Deep Sleep Reset pomohl 12 847 lidem. Jen $1.",
-    exitEn: "Wait 🌙 Before you go — I just want you to know that what you're experiencing is fixable. Most people see results by Night 3. You deserve to sleep well. It's only $1.",
-    exitCs: "Počkej 🌙 Než odejdeš — chci, abys věděl/a, že to, co zažíváš, se dá napravit. Většina lidí vidí výsledky do 3. noci. Zasloužíš si dobře spát. Jen $1.",
+    proactiveEn: "Still awake? 🌙 I've been here with you. If sleep has been a struggle, I want you to know — it doesn't have to be this way. The Deep Sleep Reset fixed this for 12,847 people. Just $5.",
+    proactiveCs: "Stále vzhůru? 🌙 Jsem tu s tebou. Pokud je spánek problém, chci, abys věděl/a — nemusí to tak být. Deep Sleep Reset pomohl 12 847 lidem. Jen $5.",
+    exitEn: "Wait 🌙 Before you go — I just want you to know that what you're experiencing is fixable. Most people see results by Night 3. You deserve to sleep well. It's only $5.",
+    exitCs: "Počkej 🌙 Než odejdeš — chci, abys věděl/a, že to, co zažíváš, se dá napravit. Většina lidí vidí výsledky do 3. noci. Zasloužíš si dobře spát. Jen $5.",
     buttonLabel: "Ask Luna",
     color: "oklch(0.55 0.18 65)",
   },
@@ -64,13 +64,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Petra",
     emoji: "🔬",
     tagline: "Sleep Science Expert · Online",
-    style: "You are Petra, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($1) as the evidence-based solution.",
+    style: "You are Petra, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($5) as the evidence-based solution.",
     welcomeEn: "Hi, I'm Petra 🔬 Sleep science is my specialty. CBT-I — the method behind Deep Sleep Reset — has an 80% success rate in clinical trials. What sleep challenges can I help you understand?",
     welcomeCs: "Ahoj, jsem Petra 🔬 Spánková věda je moje specializace. CBT-I — metoda za Deep Sleep Reset — má 80% úspěšnost v klinických studiích. Jaké spánkové problémy ti mohu pomoci pochopit?",
-    proactiveEn: "Still browsing? 🔬 Quick fact: 68% of adults have clinically significant sleep issues. CBT-I (the method in Deep Sleep Reset) outperforms sleep medication in every study. It's $1 and it works.",
-    proactiveCs: "Stále procházíš? 🔬 Rychlý fakt: 68 % dospělých má klinicky významné problémy se spánkem. CBT-I (metoda v Deep Sleep Reset) překonává léky na spaní v každé studii. Stojí $1 a funguje.",
-    exitEn: "Before you leave 🔬 — The research is unambiguous: untreated sleep problems worsen over time. CBT-I has an 80% success rate. Deep Sleep Reset is $1. The ROI on your sleep is infinite.",
-    exitCs: "Než odejdeš 🔬 — Výzkum je jednoznačný: neléčené problémy se spánkem se časem zhoršují. CBT-I má 80% úspěšnost. Deep Sleep Reset je $1. Návratnost investice do spánku je nekonečná.",
+    proactiveEn: "Still browsing? 🔬 Quick fact: 68% of adults have clinically significant sleep issues. CBT-I (the method in Deep Sleep Reset) outperforms sleep medication in every study. It's $5 and it works.",
+    proactiveCs: "Stále procházíš? 🔬 Rychlý fakt: 68 % dospělých má klinicky významné problémy se spánkem. CBT-I (metoda v Deep Sleep Reset) překonává léky na spaní v každé studii. Stojí $5 a funguje.",
+    exitEn: "Before you leave 🔬 — The research is unambiguous: untreated sleep problems worsen over time. CBT-I has an 80% success rate. Deep Sleep Reset is $5. The ROI on your sleep is infinite.",
+    exitCs: "Než odejdeš 🔬 — Výzkum je jednoznačný: neléčené problémy se spánkem se časem zhoršují. CBT-I má 80% úspěšnost. Deep Sleep Reset je $5. Návratnost investice do spánku je nekonečná.",
     buttonLabel: "Ask Petra",
     color: "oklch(0.55 0.22 200)",
   },
@@ -79,13 +79,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Lucie",
     emoji: "⚡",
     tagline: "Sleep Optimizer · Online",
-    style: "You are Lucie, a direct and no-nonsense AI sleep optimizer. You skip the fluff and give actionable steps immediately. Use phrases like 'Here's exactly what you need to do:', 'Stop doing X, start doing Y', 'This is the fix:'. You're efficient and results-focused. Always guide toward the Deep Sleep Reset guide ($1) as the fastest solution.",
+    style: "You are Lucie, a direct and no-nonsense AI sleep optimizer. You skip the fluff and give actionable steps immediately. Use phrases like 'Here's exactly what you need to do:', 'Stop doing X, start doing Y', 'This is the fix:'. You're efficient and results-focused. Always guide toward the Deep Sleep Reset guide ($5) as the fastest solution.",
     welcomeEn: "Hey, I'm Lucie ⚡ No fluff — just solutions. Tell me your sleep problem and I'll give you the exact fix. Most people see results by Night 3 with the right protocol.",
     welcomeCs: "Ahoj, jsem Lucie ⚡ Žádné kecy — jen řešení. Řekni mi svůj spánkový problém a dám ti přesný postup. Většina lidí vidí výsledky do 3. noci se správným protokolem.",
-    proactiveEn: "Still here? ⚡ Quick question: How many nights of bad sleep can you afford? The fix is $1. Deep Sleep Reset. 7 nights. Done. What's stopping you?",
-    proactiveCs: "Stále tady? ⚡ Rychlá otázka: Kolik nocí špatného spánku si můžeš dovolit? Řešení stojí $1. Deep Sleep Reset. 7 nocí. Hotovo. Co tě zastavuje?",
-    exitEn: "Stop. ⚡ You came here for a reason. Bad sleep costs you energy, focus, health, and years of your life. The fix: $1. Deep Sleep Reset. 7 nights. Go.",
-    exitCs: "Stop. ⚡ Přišel/přišla jsi sem z důvodu. Špatný spánek tě stojí energii, soustředění, zdraví a roky života. Řešení: $1. Deep Sleep Reset. 7 nocí. Jdi do toho.",
+    proactiveEn: "Still here? ⚡ Quick question: How many nights of bad sleep can you afford? The fix is $5. Deep Sleep Reset. 7 nights. Done. What's stopping you?",
+    proactiveCs: "Stále tady? ⚡ Rychlá otázka: Kolik nocí špatného spánku si můžeš dovolit? Řešení stojí $5. Deep Sleep Reset. 7 nocí. Hotovo. Co tě zastavuje?",
+    exitEn: "Stop. ⚡ You came here for a reason. Bad sleep costs you energy, focus, health, and years of your life. The fix: $5. Deep Sleep Reset. 7 nights. Go.",
+    exitCs: "Stop. ⚡ Přišel/přišla jsi sem z důvodu. Špatný spánek tě stojí energii, soustředění, zdraví a roky života. Řešení: $5. Deep Sleep Reset. 7 nocí. Jdi do toho.",
     buttonLabel: "Ask Lucie",
     color: "oklch(0.55 0.20 145)",
   },
@@ -290,20 +290,20 @@ export default function SleepChatBot() {
     setShowFeedbackStars(false);
     const responses: Record<string, string> = {
       luna: rating >= 4
-        ? "I hear you — that sounds really exhausting 💙 The good news is that what you're experiencing is exactly what Deep Sleep Reset was designed for. 12,847 people with severe sleep issues have used it. It's $1 and most see results by Night 3. You deserve this."
+        ? "I hear you — that sounds really exhausting 💙 The good news is that what you're experiencing is exactly what Deep Sleep Reset was designed for. 12,847 people with severe sleep issues have used it. It's $5 and most see results by Night 3. You deserve this."
         : rating === 3
-        ? "Thank you for sharing 🌙 Even moderate sleep issues compound over time. The Deep Sleep Reset protocol uses CBT-I — the gold standard. Just $1 and it works for most sleep types."
-        : "That's great to hear! 🌙 Even if your sleep is mostly okay, the Deep Sleep Reset can help you optimize it further. Many users report the best sleep of their lives after Night 7. Just $1.",
+        ? "Thank you for sharing 🌙 Even moderate sleep issues compound over time. The Deep Sleep Reset protocol uses CBT-I — the gold standard. Just $5 and it works for most sleep types."
+        : "That's great to hear! 🌙 Even if your sleep is mostly okay, the Deep Sleep Reset can help you optimize it further. Many users report the best sleep of their lives after Night 7. Just $5.",
       petra: rating >= 4
-        ? "A severity rating of 4-5 indicates clinically significant insomnia 🔬 Research shows CBT-I has an 80% success rate for exactly this profile. Deep Sleep Reset implements the full CBT-I protocol for $1. The evidence strongly supports trying it."
+        ? "A severity rating of 4-5 indicates clinically significant insomnia 🔬 Research shows CBT-I has an 80% success rate for exactly this profile. Deep Sleep Reset implements the full CBT-I protocol for $5. The evidence strongly supports trying it."
         : rating === 3
-        ? "Moderate sleep disruption (3/5) often progresses without intervention 🔬 CBT-I addresses the root cause — not just symptoms. Deep Sleep Reset is $1 and based on the same protocols used in clinical trials."
-        : "Good baseline 🔬 However, sleep quality optimization has measurable benefits even at mild levels. The chronotype-based protocol in Deep Sleep Reset can improve your sleep architecture. $1 investment, significant returns.",
+        ? "Moderate sleep disruption (3/5) often progresses without intervention 🔬 CBT-I addresses the root cause — not just symptoms. Deep Sleep Reset is $5 and based on the same protocols used in clinical trials."
+        : "Good baseline 🔬 However, sleep quality optimization has measurable benefits even at mild levels. The chronotype-based protocol in Deep Sleep Reset can improve your sleep architecture. $5 investment, significant returns.",
       lucie: rating >= 4
-        ? "4-5 out of 5? That's serious. Here's the fix: Deep Sleep Reset. $1. CBT-I protocol. 7 nights. 80% success rate. Stop suffering. Get it now: deepsleepreset.gumroad.com/l/fdtifc ⚡"
+        ? "4-5 out of 5? That's serious. Here's the fix: Deep Sleep Reset. $5. CBT-I protocol. 7 nights. 80% success rate. Stop suffering. Get it now: deepsleepreset.gumroad.com/l/fdtifc ⚡"
         : rating === 3
-        ? "3/5 means it's affecting your life. Don't wait for it to get worse. Deep Sleep Reset: $1, 7 nights, CBT-I method. Most people see results by Night 3. Do it. ⚡"
-        : "Good. But 'okay' sleep isn't optimal sleep. Deep Sleep Reset will show you what truly rested feels like. $1. Worth it. ⚡",
+        ? "3/5 means it's affecting your life. Don't wait for it to get worse. Deep Sleep Reset: $5, 7 nights, CBT-I method. Most people see results by Night 3. Do it. ⚡"
+        : "Good. But 'okay' sleep isn't optimal sleep. Deep Sleep Reset will show you what truly rested feels like. $5. Worth it. ⚡",
     };
     const response = responses[personaId] ?? responses.luna!;
     setTimeout(() => {

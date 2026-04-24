@@ -120,9 +120,9 @@ export default function Order() {
           {/* Price with currency switcher */}
           <div className="flex items-center gap-3 mb-4">
             <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
-            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(1)}</span>
+            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(5)}</span>
             <div>
-              <div className="badge-popular">98% OFF</div>
+              <div className="badge-popular">89% OFF</div>
               <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
             </div>
           </div>
@@ -183,7 +183,7 @@ export default function Order() {
             variant="primary"
           >
             <Lock className="w-5 h-5" />
-            <span>{bumpSelected ? `Get Protocol + Optimizer — ${formatPrice(1)} + ${formatPrice(3)}` : `Get My ${chronotype} Protocol — ${formatPrice(1)}`}</span>
+            <span>{bumpSelected ? `Get Protocol + Optimizer — ${formatPrice(5)} + ${formatPrice(3)}` : `Get My ${chronotype} Protocol — ${formatPrice(5)}`}</span>
             <ArrowRight className="w-5 h-5" />
           </CheckoutButton>
 
@@ -225,7 +225,7 @@ export default function Order() {
                 ))}
               </div>
               <p className="text-xs leading-relaxed" style={{ color: "oklch(0.65 0.04 265)" }}>
-                "I was skeptical about a $1 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
+                "I was skeptical about a $5 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
               </p>
               <p className="text-xs mt-1.5 font-semibold" style={{ color: "oklch(0.50 0.04 265)" }}>
                 — Verified {chronotype} customer
@@ -242,7 +242,7 @@ export default function Order() {
           {[
             { q: "How do I receive the protocol?", a: "Instantly after purchase — you'll get a download link via email and on the confirmation page." },
             { q: "What if it doesn't work for me?", a: "Full 30-day money-back guarantee. Email us and we'll refund you immediately, no questions asked." },
-            { q: "Is this really just $1?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
+            { q: "Is this really just $5?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
           ].map((faq, i) => (
             <div key={i} className="glass-card rounded-xl p-4">
               <p className="text-sm font-semibold mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>Q: {faq.q}</p>
@@ -256,7 +256,7 @@ export default function Order() {
       {/* Sticky mobile CTA */}
       <StickyMobileCTA
         label={`Get My ${chronotype} Protocol`}
-        price={formatPrice(1)}
+        price={formatPrice(5)}
         onClick={() => track("checkout_click", { page: "order", element: "sticky_cta", value: { chronotype } })}
       />
 

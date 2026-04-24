@@ -466,6 +466,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           email: z.string().email().optional(),
           chronotype: z.string().optional(),
           currency: z.string().default("usd"),
+          isLowTier: z.boolean().default(false),
           origin: z.string(),
         })
       )
@@ -481,7 +482,13 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           oto2: "Deep Sleep Reset — ASMR Audio Pack",
           oto3: "Deep Sleep Reset — Complete Bundle",
         };
-        const amountCents = PRODUCT_PRICES[input.productId] ?? 500;
+        // Geo-pricing: low-tier countries get reduced prices
+        const LOW_TIER_PRICES: Record<string, number> = {
+          main: 100, discount: 100, oto1: 100, oto2: 200, oto3: 300,
+        };
+        const amountCents = input.isLowTier
+          ? (LOW_TIER_PRICES[input.productId] ?? 100)
+          : (PRODUCT_PRICES[input.productId] ?? 500);
         const productName = PRODUCT_NAMES[input.productId] ?? "Deep Sleep Reset";
         // Supported Stripe currencies (subset of all)
         const stripeSupportedCurrencies = ["usd","eur","gbp","cad","aud","pln","czk","inr","brl","mxn","chf","sek","nok","dkk","sgd","nzd","zar","jpy"];

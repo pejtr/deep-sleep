@@ -14,7 +14,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { currency } = useCurrency();
+  const { currency, isLowTier, formatPrice } = useCurrency();
 
   const checkoutMutation = trpc.checkout.createSession.useMutation();
   const leadMutation = trpc.leads.capture.useMutation();
@@ -76,6 +76,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
         sessionId,
         email: email || undefined,
         currency: currency.code.toLowerCase(),
+        isLowTier,
         origin: window.location.origin,
       });
       if (result.url) {
@@ -156,8 +157,8 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
               Exit Discount — Today Only
             </p>
             <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl line-through" style={{ color: "oklch(0.45 0.04 265)" }}>$5</span>
-              <span className="text-4xl font-display font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>$4</span>
+              <span className="text-2xl line-through" style={{ color: "oklch(0.45 0.04 265)" }}>{formatPrice(5)}</span>
+              <span className="text-4xl font-display font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(4)}</span>
               <span
                 className="text-xs font-bold px-2 py-1 rounded-full"
                 style={{ background: "oklch(0.78 0.18 65 / 0.2)", color: "oklch(0.82 0.16 65)" }}
@@ -203,7 +204,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
               boxShadow: loading ? "none" : "0 4px 20px oklch(0.78 0.18 65 / 0.35)",
             }}
           >
-            {loading ? "Opening checkout..." : "Claim $4 Access — Tonight Only →"}
+            {loading ? "Opening checkout..." : `Claim ${formatPrice(4)} Access — Tonight Only →`}
           </button>
 
           {/* Trust */}

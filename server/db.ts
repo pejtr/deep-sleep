@@ -154,7 +154,7 @@ export async function saveFeedback(data: InsertFeedback) {
 
 export async function getAdminStats() {
   const db = await getDb();
-  if (!db) return { quizCount: 0, orderCount: 0, completedOrderCount: 0, leadCount: 0, revenue: 0, feedbackCount: 0, avgRating: 0, behaviorCount: 0, recentOrders: [], recentFeedbacks: [], quizStarts: 0, checkoutClicks: 0 };
+  if (!db) return { quizCount: 0, orderCount: 0, completedOrderCount: 0, leadCount: 0, revenue: 0, feedbackCount: 0, avgRating: 0, behaviorCount: 0, recentOrders: [], recentFeedbacks: [], quizStarts: 0, checkoutClicks: 0, uniqueBuyers: 0, duplicateAttempts: 0, referrerBreakdown: [] as { source: string; visits: number }[], orderTimeline: [] as { hour: string; count: number }[], deviceBreakdown: [] as { device: string; count: number }[], avgTimeToCheckout: 0 };
   // Count ALL orders (not just completed) to show real funnel data
   const [quiz, allOrders, completedOrders, leads] = await Promise.all([
     db.select().from(quizResults).catch(() => []),
@@ -179,5 +179,70 @@ export async function getAdminStats() {
   // Include createdAt timestamp in recentOrders for time display
   const recentOrders = allOrders.slice(-10).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt, currency: o.currency ?? undefined }));
   const recentFeedbacks = fbs.slice(-5).reverse().map((f: typeof fbs[0]) => ({ id: f.id, rating: f.rating, liked: f.liked, improved: f.improved, createdAt: f.createdAt }));
-  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks };
+
+  // === PURCHASE INTELLIGENCE ===
+  // Unique buyers (unique session IDs)
+  const uniqueBuyerSessions = new Set(allOrders.map(o => o.sessionId).filter(Boolean));
+  const uniqueBuyers = uniqueBuyerSessions.size;
+  const duplicateAttempts = allOrders.length - uniqueBuyers;
+
+  // Referrer breakdown from behavior events (home page_view with referrer in value)
+  const referrerMap = new Map<string, number>();
+  behaviors.forEach((b: { event: string; page?: string | null; value?: string | null }) => {
+    if (b.event === 'page_view' && b.page === 'home' && b.value) {
+      try {
+        const v = JSON.parse(b.value);
+        const ref = v.referrer ? (() => { try { return new URL(v.referrer).hostname.replace('www.', ''); } catch { return 'direct'; } })() : 'direct';
+        referrerMap.set(ref, (referrerMap.get(ref) ?? 0) + 1);
+      } catch { referrerMap.set('direct', (referrerMap.get('direct') ?? 0) + 1); }
+    }
+  });
+  const referrerBreakdown = Array.from(referrerMap.entries())
+    .sort((a, b) => b[1] - a[1]).slice(0, 8)
+    .map(([source, visits]) => ({ source, visits }));
+
+  // Hourly order timeline (last 48h)
+  const now = Date.now();
+  const hourlyMap = new Map<string, number>();
+  allOrders.forEach(o => {
+    const ts = new Date(o.createdAt).getTime();
+    if (now - ts < 48 * 60 * 60 * 1000) {
+      const hour = new Date(ts).toISOString().slice(0, 13) + ':00';
+      hourlyMap.set(hour, (hourlyMap.get(hour) ?? 0) + 1);
+    }
+  });
+  const orderTimeline = Array.from(hourlyMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([hour, count]) => ({ hour: hour.slice(11, 16), count }));
+
+  // Device breakdown
+  const deviceMap = new Map<string, number>();
+  behaviors.forEach((b: { event: string; page?: string | null; value?: string | null }) => {
+    if (b.event === 'page_view' && b.page === 'home' && b.value) {
+      try {
+        const v = JSON.parse(b.value);
+        const device = v.device ?? 'unknown';
+        deviceMap.set(device, (deviceMap.get(device) ?? 0) + 1);
+      } catch {}
+    }
+  });
+  const deviceBreakdown = Array.from(deviceMap.entries()).map(([device, count]) => ({ device, count }));
+
+  // Average time from first page_view to checkout_click (in minutes)
+  const sessionFirstView = new Map<string, number>();
+  const sessionCheckout = new Map<string, number>();
+  behaviors.forEach((b: { sessionId?: string | null; event: string; createdAt: Date | string }) => {
+    if (!b.sessionId) return;
+    const ts = new Date(b.createdAt).getTime();
+    if (b.event === 'page_view' && (!sessionFirstView.has(b.sessionId) || ts < sessionFirstView.get(b.sessionId)!)) sessionFirstView.set(b.sessionId, ts);
+    if (b.event === 'checkout_click' && (!sessionCheckout.has(b.sessionId) || ts < sessionCheckout.get(b.sessionId)!)) sessionCheckout.set(b.sessionId, ts);
+  });
+  let totalTimeMin = 0, timeCount = 0;
+  sessionCheckout.forEach((checkoutTs, sid) => {
+    const viewTs = sessionFirstView.get(sid);
+    if (viewTs && checkoutTs > viewTs) { totalTimeMin += (checkoutTs - viewTs) / 60000; timeCount++; }
+  });
+  const avgTimeToCheckout = timeCount > 0 ? Math.round(totalTimeMin / timeCount * 10) / 10 : 0;
+
+  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
 }
