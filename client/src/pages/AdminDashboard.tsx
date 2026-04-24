@@ -7,8 +7,10 @@ import {
   Activity, ExternalLink, RefreshCw, Moon, Zap, Globe, ShoppingCart,
   ChevronRight, AlertCircle, CheckCircle2, Clock, Cpu, Target,
   ArrowUpRight, ArrowDownRight, BarChart2, PieChart as PieChartIcon,
-  LineChart as LineChartIcon, Sparkles, Play, ThumbsUp, ThumbsDown
+  LineChart as LineChartIcon, Sparkles, Play, ThumbsUp, ThumbsDown,
+  Mail, Send, Copy, Check
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -398,7 +400,8 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "funnel">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "funnel" | "email">("overview");
+
 
   const { data: stats, isLoading, refetch } = trpc.admin.stats.useQuery(undefined, {
     refetchInterval: 30000,
@@ -436,6 +439,7 @@ export default function AdminDashboard() {
     { id: "reddit", label: "Reddit Ads", icon: Target },
     { id: "feedback", label: "Feedback", icon: MessageSquare },
     { id: "funnel", label: "Funnel", icon: Activity },
+    { id: "email", label: "Email", icon: Mail },
   ] as const;
 
   // Funnel conversion data for bar chart
@@ -459,6 +463,22 @@ export default function AdminDashboard() {
             <p className="text-xs" style={{ color: C.textSecondary }}>Admin Dashboard · {user.name}</p>
           </div>
         </div>
+        {/* Revenue quick stats in header */}
+        {stats && (
+          <div className="hidden sm:flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: "oklch(0.55 0.18 145 / 0.12)", border: "1px solid oklch(0.55 0.18 145 / 0.25)" }}>
+              <DollarSign className="w-3.5 h-3.5" style={{ color: C.green }} />
+              <div className="text-left">
+                <p className="text-xs font-bold leading-none" style={{ color: C.green }}>${(stats.revenue ?? 0).toFixed(2)}</p>
+                <p className="text-xs leading-none mt-0.5" style={{ color: C.textMuted }}>≈ {((stats.revenue ?? 0) * 23.5).toFixed(0)} Kč</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: "oklch(0.78 0.18 65 / 0.12)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}>
+              <ShoppingCart className="w-3.5 h-3.5" style={{ color: C.gold }} />
+              <p className="text-xs font-bold" style={{ color: C.gold }}>{stats.orderCount} orders</p>
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <button onClick={() => refetch()} className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80" style={{ background: "oklch(0.12 0.025 255)", border: `1px solid ${C.cardBorder}` }}>
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} style={{ color: C.textSecondary }} />
@@ -804,12 +824,17 @@ export default function AdminDashboard() {
                 <MessageSquare className="w-8 h-8 mx-auto mb-3" style={{ color: C.textMuted }} />
                 <p className="text-sm" style={{ color: C.textSecondary }}>No feedback yet</p>
                 <p className="text-xs mt-1" style={{ color: C.textMuted }}>Feedback will appear here after customers submit reviews</p>
-              </div>
+          </div>
             )}
           </div>
         )}
 
-        {/* ── Funnel Tab ───────────────────────────────────────────────────── */}
+        {/* ── Email Broadcast Tab ──────────────────────────────────────────────── */}
+        {activeTab === "email" && (
+          <EmailBroadcastTab />
+        )}
+
+        {/* ── Funnel Tab ─────────────────────────────────────────────────────────────────── */}
         {activeTab === "funnel" && (
           <div className="space-y-4">
             <ChartCard title="Full Funnel Overview">
@@ -871,6 +896,129 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ── Email Broadcast Tab Component ────────────────────────────────────────────
+function EmailBroadcastTab() {
+  const [subject, setSubject] = useState("Your Deep Sleep Protocol is now available online");
+  const [body, setBody] = useState("Hi,\n\nGreat news! Your 7-Night Deep Sleep Reset Protocol is now available as a full interactive web experience.\n\nYou can access it anytime at the link below — no download needed. We've also added a PDF version for offline use.\n\nSleep well,\nDeep Sleep Reset Team");
+  const [audience, setAudience] = useState<"buyers" | "leads" | "all">("buyers");
+  const [result, setResult] = useState<{ emails: string[]; subject: string; body: string; count: number } | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const { data: emailData } = trpc.admin.getBuyerEmails.useQuery();
+  const broadcastMutation = trpc.admin.sendBroadcast.useMutation({
+    onSuccess: (data) => {
+      setResult(data);
+      toast.success(`📧 Email list prepared for ${data.count} recipients!`);
+    },
+    onError: () => toast.error("Failed to prepare broadcast"),
+  });
+
+  const handleCopy = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result.emails.join(", "));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <div className="flex items-center gap-2 mb-1">
+            <ShoppingCart className="w-4 h-4" style={{ color: C.gold }} />
+            <p className="text-xs" style={{ color: C.textSecondary }}>Buyers with email</p>
+          </div>
+          <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{emailData?.buyerCount ?? 0}</p>
+        </div>
+        <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <div className="flex items-center gap-2 mb-1">
+            <Users className="w-4 h-4" style={{ color: C.purple }} />
+            <p className="text-xs" style={{ color: C.textSecondary }}>Email leads</p>
+          </div>
+          <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{emailData?.leadCount ?? 0}</p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold" style={{ color: C.textPrimary }}>📧 Compose Broadcast Email</h3>
+
+        <div>
+          <p className="text-xs mb-2" style={{ color: C.textSecondary }}>Audience</p>
+          <div className="flex gap-2">
+            {(["buyers", "leads", "all"] as const).map(a => (
+              <button key={a} onClick={() => setAudience(a)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize"
+                style={audience === a
+                  ? { background: C.gold + "33", color: C.gold, border: `1px solid ${C.gold}55` }
+                  : { background: C.cardInner, color: C.textSecondary, border: `1px solid ${C.cardBorder}` }}>
+                {a === "buyers" ? `🛋️ Buyers (${emailData?.buyerCount ?? 0})` : a === "leads" ? `📌 Leads (${emailData?.leadCount ?? 0})` : `🌍 All (${(emailData?.buyerCount ?? 0) + (emailData?.leadCount ?? 0)})`}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs mb-1" style={{ color: C.textSecondary }}>Subject</p>
+          <input value={subject} onChange={e => setSubject(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl text-sm"
+            style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }} />
+        </div>
+
+        <div>
+          <p className="text-xs mb-1" style={{ color: C.textSecondary }}>Message body</p>
+          <textarea value={body} onChange={e => setBody(e.target.value)} rows={6}
+            className="w-full px-3 py-2 rounded-xl text-sm resize-none"
+            style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }} />
+          <p className="text-xs mt-1" style={{ color: C.textMuted }}>Protocol + PDF links will be appended automatically.</p>
+        </div>
+
+        <button
+          onClick={() => broadcastMutation.mutate({ subject, body, audience, includeDownloadLink: true })}
+          disabled={broadcastMutation.isPending}
+          className="w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-60"
+          style={{ background: `linear-gradient(135deg, ${C.gold}, oklch(0.65 0.18 55))`, color: "black" }}>
+          <Send className="w-4 h-4" />
+          {broadcastMutation.isPending ? "Preparing..." : "Prepare Email List & Preview"}
+        </button>
+      </div>
+
+      {result && (
+        <div className="rounded-2xl p-5 space-y-3" style={{ background: C.card, border: `1px solid oklch(0.55 0.18 145 / 0.3)` }}>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" style={{ color: C.green }} />
+            <p className="text-sm font-semibold" style={{ color: C.green }}>{result.count} email addresses prepared</p>
+          </div>
+          <p className="text-xs" style={{ color: C.textSecondary }}>Subject: {result.subject}</p>
+
+          <div className="rounded-xl p-3" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+            <p className="text-xs font-mono break-all" style={{ color: C.textMuted }}>
+              {result.emails.slice(0, 10).join(", ")}{result.emails.length > 10 ? ` ... +${result.emails.length - 10} more` : ""}
+            </p>
+          </div>
+
+          <button onClick={handleCopy}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+            style={{ background: C.gold + "22", color: C.gold, border: `1px solid ${C.gold}44` }}>
+            {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? "Copied!" : "Copy all emails"}
+          </button>
+
+          <div className="rounded-xl p-3" style={{ background: "oklch(0.55 0.18 65 / 0.08)", border: `1px solid ${C.gold}22` }}>
+            <p className="text-xs font-semibold mb-1" style={{ color: C.gold }}>Email body preview:</p>
+            <pre className="text-xs whitespace-pre-wrap" style={{ color: C.textSecondary }}>
+              {result.body.slice(0, 400)}{result.body.length > 400 ? "..." : ""}
+            </pre>
+          </div>
+
+          <p className="text-xs" style={{ color: C.textMuted }}>
+            Paste the email list into Mailchimp, SendGrid, or your email provider to send.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

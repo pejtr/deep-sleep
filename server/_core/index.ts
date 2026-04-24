@@ -9,6 +9,7 @@ import { registerBehaviorRoutes } from "../behaviorRoutes";
 import { registerStripeWebhook } from "../stripeWebhook";
 import { appRouter } from "../routers";
 import { scheduleNightlyOptimization } from "../jobs/nightlyOptimization";
+import { registerProtocolPdfRoute } from "../protocolPdf";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -43,6 +44,7 @@ async function startServer() {
   registerOAuthRoutes(app);
   registerBehaviorRoutes(app);
   registerStripeWebhook(app);
+  registerProtocolPdfRoute(app);
   // tRPC API
   app.use(
     "/api/trpc",

@@ -18,7 +18,7 @@ export default function ThankYou() {
   const [rating, setRating] = useState(0);
   const [copied, setCopied] = useState(false);
 
-  const referralUrl = `https://deep-sleep.manus.space/?ref=${chronotype.toLowerCase()}`;
+  const referralUrl = `${window.location.origin}/?ref=${chronotype.toLowerCase()}`;
 
   useEffect(() => {
     track("page_view", { page: "thankyou", value: { chronotype } });
@@ -170,7 +170,7 @@ export default function ThankYou() {
               <div className="badge-popular">66% OFF</div>
             </div>
             <button
-              onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.open("https://deepsleepreset.gumroad.com/l/premium", "_blank"); }}
+              onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.location.href = `/upsell3?chronotype=${chronotype}`; }}
               className="w-full cta-gold cta-shimmer rounded-xl py-3 text-sm flex items-center justify-center gap-2">
               Upgrade to Premium — $9.99/mo
             </button>
@@ -225,7 +225,7 @@ export default function ThankYou() {
 
         {/* Footer */}
         <p className="text-xs text-center" style={{ color: "oklch(0.35 0.04 265)" }}>
-          Questions? Email us at support@deepsleepquest.com
+          Questions? Email us at petr.matej@gmail.com
         </p>
       </div>
     </div>

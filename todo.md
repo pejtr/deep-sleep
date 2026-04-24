@@ -259,3 +259,25 @@
 - [x] Ověřit kompatibilitu s geo-pricing a currency switcherem
 - [x] Nainstalovat @stripe/react-stripe-js
 - [x] "or pay with card" divider mezi express checkout a klasickým CTA
+
+## Kritické opravy (Apr 24)
+- [x] Opravit Revenue bug — konverze CZK/GBP/EUR na USD v getAdminStats
+- [x] Přidat Revenue v CZK do horního sticky panelu v Admin Dashboardu
+- [x] Support button přesunout doleva jako ikonu, mailto petr.matej@gmail.com
+- [x] Vytvořit /protocol stránku s 7-nočním protokolem v 14 jazycích
+- [x] PDF download endpoint /api/protocol/download
+- [x] CheckoutSuccess.tsx — nahradit Gumroad, přidat /protocol + PDF download + OTO sekvenci
+- [x] Upsell1 ($3 Chronotype), Upsell2 ($7 ASMR), Upsell3 (Luna Premium $9.99/mo) — Stripe checkout
+- [x] Admin Email Broadcast tab — připravit email list buyers/leads/all s download linkem
+- [ ] Reddit Ads OAuth — nové credentials od uživatele (čekáme na Client ID + Secret)
+- [ ] AI Optimization suggestions — Apply tlačítko funkční (aktuálně placeholder)
+- [ ] Opravit Revenue bug — konverze CZK/GBP/EUR na USD v getAdminStats
+- [ ] Vytvořit /protocol webovou stránku s plným obsahem 7-nočního protokolu
+- [ ] Vytvořit PDF download endpoint /api/protocol/download
+- [ ] Nahradit Gumroad URL v CheckoutSuccess.tsx za /protocol + PDF download
+- [ ] Přidat Admin Dashboard funkci pro odeslání emailu past buyers s novým download linkem
+- [ ] Opravit Reddit Ads OAuth 401 — nové credentials
+- [ ] Přidat OTO upsell stránky: /upsell/1 (Chronotype $3), /upsell/2 (ASMR $7), /upsell/3 (Luna Premium $9.99/mo)
+- [ ] Luna Premium členství — Stripe subscription produkt + DB schema
+- [ ] Aplikovat AI optimization suggestions z dashboardu (budget, retargeting, video, targeting, scheduling)
+- [ ] Přidat Revenue v CZK do horního sticky panelu v Admin Dashboardu

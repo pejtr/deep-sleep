@@ -170,10 +170,22 @@ export async function getAdminStats() {
   // Quiz starts = page_view on quiz page tracked via behavior events
   const quizStarts = behaviors.filter((b: { event: string; page?: string | null }) => b.event === 'page_view' && b.page === 'quiz').length;
   const checkoutClicks = behaviors.filter((b: { event: string }) => b.event === 'checkout_click').length;
-  // Revenue: count completed orders (webhook sets status=completed after Stripe payment)
-  // Also show total pending revenue for visibility
-  const completedRevenue = completedOrders.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
-  const totalRevenue = allOrders.reduce((sum, o) => sum + parseFloat(String(o.amount)), 0);
+  // Revenue: convert all amounts to USD using approximate exchange rates
+  // Orders are stored in local currency (e.g. CZK 103.85 = $5 USD)
+  const APPROX_RATES_TO_USD: Record<string, number> = {
+    usd: 1, eur: 1.172, gbp: 1.349, czk: 0.0482, cad: 0.732, aud: 0.645,
+    pln: 0.262, huf: 0.00281, ron: 0.236, inr: 0.012, brl: 0.201, mxn: 0.058,
+    chf: 1.112, sek: 0.097, nok: 0.095, dkk: 0.157, sgd: 0.746, nzd: 0.599,
+    zar: 0.054, jpy: 0.0065,
+  };
+  const toUsd = (amount: string | number, currency?: string | null): number => {
+    const amt = parseFloat(String(amount));
+    if (!currency || currency.toLowerCase() === 'usd') return amt;
+    const rate = APPROX_RATES_TO_USD[currency.toLowerCase()] ?? 1;
+    return amt * rate;
+  };
+  const completedRevenue = completedOrders.reduce((sum, o) => sum + toUsd(o.amount, o.currency), 0);
+  const totalRevenue = allOrders.reduce((sum, o) => sum + toUsd(o.amount, o.currency), 0);
   const revenue = completedRevenue > 0 ? completedRevenue : totalRevenue; // fallback to all if webhook not yet active
   const avgRating = fbs.length > 0 ? fbs.reduce((sum, f) => sum + (f.rating ?? 0), 0) / fbs.length : 0;
   // Include createdAt timestamp in recentOrders for time display
@@ -245,4 +257,25 @@ export async function getAdminStats() {
   const avgTimeToCheckout = timeCount > 0 ? Math.round(totalTimeMin / timeCount * 10) / 10 : 0;
 
   return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
+}
+
+// ── Email broadcast helpers ───────────────────────────────────────────────────
+export async function getAllLeads() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(emailLeads);
+}
+
+export async function getAllBuyerEmails() {
+  const db = await getDb();
+  if (!db) return [];
+  const completed = await db.select().from(orders).where(eq(orders.status, "completed"));
+  // Deduplicate emails
+  const seen = new Set<string>();
+  return completed.filter(o => {
+    if (!o.email) return false;
+    if (seen.has(o.email)) return false;
+    seen.add(o.email);
+    return true;
+  }).map(o => ({ email: o.email!, productId: o.productId, chronotype: o.chronotype }));
 }

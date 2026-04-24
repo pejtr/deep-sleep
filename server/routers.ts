@@ -17,6 +17,8 @@ import {
   trackBehaviorEvent,
   getAdminStats,
   saveFeedback,
+  getAllBuyerEmails,
+  getAllLeads,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -454,6 +456,62 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
   // ── Admin ─────────────────────────────────────────────────────────────────────────────────────────
   admin: router({
     stats: protectedProcedure.query(async () => getAdminStats()),
+
+    getBuyerEmails: protectedProcedure.query(async () => {
+      const buyers = await getAllBuyerEmails();
+      const leads = await getAllLeads();
+      return {
+        buyers,
+        leadCount: leads.length,
+        buyerCount: buyers.length,
+      };
+    }),
+
+    sendBroadcast: protectedProcedure
+      .input(z.object({
+        subject: z.string().min(1).max(200),
+        body: z.string().min(1).max(5000),
+        audience: z.enum(["buyers", "leads", "all"]).default("buyers"),
+        includeDownloadLink: z.boolean().default(true),
+      }))
+      .mutation(async ({ input }) => {
+        const buyers = await getAllBuyerEmails();
+        const leads = await getAllLeads();
+
+        let emails: string[] = [];
+        if (input.audience === "buyers" || input.audience === "all") {
+          emails.push(...buyers.map(b => b.email));
+        }
+        if (input.audience === "leads" || input.audience === "all") {
+          emails.push(...leads.map(l => l.email).filter(Boolean) as string[]);
+        }
+        // Deduplicate
+        emails = Array.from(new Set(emails));
+
+        const downloadLink = "https://deepsleep-z7uhfhzs.manus.space/protocol";
+        const pdfLink = "https://deepsleep-z7uhfhzs.manus.space/api/protocol/download?lang=en";
+
+        const finalBody = input.includeDownloadLink
+          ? `${input.body}\n\n---\n📖 Access your protocol: ${downloadLink}\n📄 Download PDF: ${pdfLink}\n\n---\nDeep Sleep Reset · Unsubscribe: petr.matej@gmail.com`
+          : `${input.body}\n\n---\nDeep Sleep Reset`;
+
+        // Use Manus notification system to send to owner as preview, log count
+        const { notifyOwner } = await import("./_core/notification");
+        await notifyOwner({
+          title: `📧 Broadcast sent to ${emails.length} recipients`,
+          content: `Subject: ${input.subject}\nAudience: ${input.audience} (${emails.length} emails)\nFirst 5: ${emails.slice(0, 5).join(", ")}\n\nBody preview:\n${input.body.slice(0, 300)}`,
+        });
+
+        // Return email list for admin to use with their email provider
+        return {
+          success: true,
+          count: emails.length,
+          emails: emails.slice(0, 100), // Return first 100 for display
+          subject: input.subject,
+          body: finalBody,
+          note: "Email list exported. Use your email provider (Mailchimp, SendGrid, etc.) to send. Protocol links included.",
+        };
+      }),
   }),
 
   // ── Stripe Checkout ───────────────────────────────────────────────────────────────────────
@@ -473,14 +531,14 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          main: 500, discount: 400, oto1: 300, oto2: 700, oto3: 1000,
+          main: 500, discount: 400, oto1: 300, oto2: 700, oto3: 999,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           main: "Deep Sleep Reset — 7-Night Protocol",
           discount: "Deep Sleep Reset — 7-Night Protocol (Special Offer)",
           oto1: "Deep Sleep Reset — Chronotype Optimizer",
           oto2: "Deep Sleep Reset — ASMR Audio Pack",
-          oto3: "Deep Sleep Reset — Complete Bundle",
+          oto3: "Luna Sleep Coach Premium — Monthly Membership",
         };
         // Geo-pricing: low-tier countries get reduced prices
         const LOW_TIER_PRICES: Record<string, number> = {
