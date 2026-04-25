@@ -1,6 +1,6 @@
 /**
  * Reddit Ads API v3 helper
- * Uses OAuth2 client_credentials flow (script app type)
+ * Uses OAuth2 Authorization Code flow with refresh token
  * Docs: https://ads-api.reddit.com/docs/v3/
  */
 
@@ -9,25 +9,21 @@ const REDDIT_TOKEN_URL = "https://www.reddit.com/api/v1/access_token";
 
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
-async function getAccessToken(): Promise<string> {
-  // Return cached token if still valid (with 60s buffer)
-  if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
-    return cachedToken.token;
-  }
-
+async function refreshAccessToken(): Promise<string> {
   const clientId = process.env.REDDIT_ADS_CLIENT_ID;
   const clientSecret = process.env.REDDIT_ADS_CLIENT_SECRET;
+  const refreshToken = process.env.REDDIT_ADS_REFRESH_TOKEN;
   const username = process.env.REDDIT_ADS_USERNAME;
 
-  if (!clientId || !clientSecret) {
-    throw new Error("Reddit Ads API credentials not configured");
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error("Reddit Ads OAuth credentials not configured");
   }
 
   const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
-  // Use client_credentials grant (works for script apps without password)
   const body = new URLSearchParams({
-    grant_type: "client_credentials",
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
   });
 
   const response = await fetch(REDDIT_TOKEN_URL, {
@@ -42,7 +38,7 @@ async function getAccessToken(): Promise<string> {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(`Reddit OAuth2 failed: ${response.status} ${text}`);
+    throw new Error(`Reddit OAuth2 refresh failed: ${response.status} ${text}`);
   }
 
   const data = (await response.json()) as { access_token: string; expires_in: number };
@@ -52,6 +48,26 @@ async function getAccessToken(): Promise<string> {
   };
 
   return cachedToken.token;
+}
+
+async function getAccessToken(): Promise<string> {
+  // Return cached token if still valid (with 60s buffer)
+  if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
+    return cachedToken.token;
+  }
+
+  // Try to use stored access token first (from initial OAuth)
+  const storedToken = process.env.REDDIT_ADS_ACCESS_TOKEN;
+  if (storedToken) {
+    cachedToken = {
+      token: storedToken,
+      expiresAt: Date.now() + 86400 * 1000, // 24h
+    };
+    return storedToken;
+  }
+
+  // Fall back to refresh token to get new access token
+  return refreshAccessToken();
 }
 
 async function redditAdsRequest<T>(

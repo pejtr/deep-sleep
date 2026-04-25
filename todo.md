@@ -168,9 +168,8 @@
 - [ ] Admin Dashboard: možnost potvrdit/aplikovat AI doporučení (uloží do DB jako applied=true)
 
 ## Reddit Ads API Integration
-- [ ] Uložit REDDIT_ADS_CLIENT_ID a REDDIT_ADS_CLIENT_SECRET jako secrets
-- [ ] Implementovat OAuth2 token flow (script type - username/password grant)
-- [ ] tRPC procedure: reddit.getCampaigns - seznam kampaní
+- [x] OAuth2 token flow: access_token + refresh_token uloženy, redditAds.ts aktualizován
+- [ ] tRPC procedure: reddit.getCampaigns - seznam kampaňí
 - [ ] tRPC procedure: reddit.getReports - impressions, clicks, CTR, spend
 - [ ] Admin Dashboard: Reddit Ads tab s grafy a live daty
 - [ ] Auto-refresh každých 30 minut
