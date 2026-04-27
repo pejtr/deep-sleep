@@ -188,8 +188,8 @@ export async function getAdminStats() {
   const totalRevenue = allOrders.reduce((sum, o) => sum + toUsd(o.amount, o.currency), 0);
   const revenue = completedRevenue > 0 ? completedRevenue : totalRevenue; // fallback to all if webhook not yet active
   const avgRating = fbs.length > 0 ? fbs.reduce((sum, f) => sum + (f.rating ?? 0), 0) / fbs.length : 0;
-  // Include createdAt timestamp in recentOrders for time display
-  const recentOrders = allOrders.slice(-10).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt, currency: o.currency ?? undefined }));
+  // Include createdAt timestamp in recentOrders for time display — ONLY COMPLETED ORDERS
+  const recentOrders = completedOrders.slice(-10).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt, currency: o.currency ?? undefined }));
   const recentFeedbacks = fbs.slice(-5).reverse().map((f: typeof fbs[0]) => ({ id: f.id, rating: f.rating, liked: f.liked, improved: f.improved, createdAt: f.createdAt }));
 
   // === PURCHASE INTELLIGENCE ===
@@ -294,6 +294,20 @@ export async function getHourlyMetrics(startDate: number, endDate: number) {
     and(gte(behaviorEvents.createdAt, new Date(startDate)), lte(behaviorEvents.createdAt, new Date(endDate)))
   );
   
+  // Currency conversion rates (same as in getAdminStats)
+  const APPROX_RATES_TO_USD: Record<string, number> = {
+    usd: 1, eur: 1.172, gbp: 1.349, czk: 0.0482, cad: 0.732, aud: 0.645,
+    pln: 0.262, huf: 0.00281, ron: 0.236, inr: 0.012, brl: 0.201, mxn: 0.058,
+    chf: 1.112, sek: 0.097, nok: 0.095, dkk: 0.157, sgd: 0.746, nzd: 0.599,
+    zar: 0.054, jpy: 0.0065,
+  };
+  const toUsd = (amount: string | number, currency?: string | null): number => {
+    const amt = parseFloat(String(amount));
+    if (!currency || currency.toLowerCase() === 'usd') return amt;
+    const rate = APPROX_RATES_TO_USD[currency.toLowerCase()] ?? 1;
+    return amt * rate;
+  };
+  
   // Group by hour
   const hourMap = new Map<string, { visits: number; orders: number; revenue: number }>();
   
@@ -302,18 +316,17 @@ export async function getHourlyMetrics(startDate: number, endDate: number) {
     const hour = new Date(b.createdAt).toISOString().slice(0, 13) + ':00:00Z';
     if (!hourMap.has(hour)) hourMap.set(hour, { visits: 0, orders: 0, revenue: 0 });
     const h = hourMap.get(hour)!;
-    if (b.event === 'pageview') h.visits++;
+    if (b.event === 'page_view') h.visits++;
   });
   
-  // Process orders
+  // Process orders (only COMPLETED)
   allOrders.forEach(o => {
     const hour = new Date(o.createdAt).toISOString().slice(0, 13) + ':00:00Z';
     if (!hourMap.has(hour)) hourMap.set(hour, { visits: 0, orders: 0, revenue: 0 });
     const h = hourMap.get(hour)!;
     if (o.status === 'completed') {
       h.orders++;
-      const amount = parseFloat(o.amount) || 0;
-      h.revenue += amount;
+      h.revenue += toUsd(o.amount, o.currency);
     }
   });
   
@@ -334,6 +347,20 @@ export async function getDailyMetrics(startDate: number, endDate: number) {
     and(gte(behaviorEvents.createdAt, new Date(startDate)), lte(behaviorEvents.createdAt, new Date(endDate)))
   );
   
+  // Currency conversion rates (same as in getAdminStats)
+  const APPROX_RATES_TO_USD: Record<string, number> = {
+    usd: 1, eur: 1.172, gbp: 1.349, czk: 0.0482, cad: 0.732, aud: 0.645,
+    pln: 0.262, huf: 0.00281, ron: 0.236, inr: 0.012, brl: 0.201, mxn: 0.058,
+    chf: 1.112, sek: 0.097, nok: 0.095, dkk: 0.157, sgd: 0.746, nzd: 0.599,
+    zar: 0.054, jpy: 0.0065,
+  };
+  const toUsd = (amount: string | number, currency?: string | null): number => {
+    const amt = parseFloat(String(amount));
+    if (!currency || currency.toLowerCase() === 'usd') return amt;
+    const rate = APPROX_RATES_TO_USD[currency.toLowerCase()] ?? 1;
+    return amt * rate;
+  };
+  
   // Group by day
   const dayMap = new Map<string, { visits: number; orders: number; revenue: number }>();
   
@@ -342,18 +369,17 @@ export async function getDailyMetrics(startDate: number, endDate: number) {
     const day = new Date(b.createdAt).toISOString().slice(0, 10);
     if (!dayMap.has(day)) dayMap.set(day, { visits: 0, orders: 0, revenue: 0 });
     const d = dayMap.get(day)!;
-    if (b.event === 'pageview') d.visits++;
+    if (b.event === 'page_view') d.visits++;
   });
   
-  // Process orders
+  // Process orders (only COMPLETED)
   allOrders.forEach(o => {
     const day = new Date(o.createdAt).toISOString().slice(0, 10);
     if (!dayMap.has(day)) dayMap.set(day, { visits: 0, orders: 0, revenue: 0 });
     const d = dayMap.get(day)!;
     if (o.status === 'completed') {
       d.orders++;
-      const amount = parseFloat(o.amount) || 0;
-      d.revenue += amount;
+      d.revenue += toUsd(o.amount, o.currency);
     }
   });
   

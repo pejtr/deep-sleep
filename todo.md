@@ -167,11 +167,18 @@
 - [ ] Admin Dashboard: AI insights panel s tlačítkem "Apply" pro každé doporučení
 - [ ] Admin Dashboard: možnost potvrdit/aplikovat AI doporučení (uloží do DB jako applied=true)
 
-## Timeline Metrics (Apr 25)
+## Timeline Metrics (Apr 25-28)
 - [x] DB helpers: getHourlyMetrics, getDailyMetrics
 - [x] tRPC procedure: admin.getTimelineMetrics (granularity: hourly|daily, days: 1-90)
 - [x] TimelineCharts komponenta: 3 grafy (Visits, Orders, Revenue) s Recharts
 - [x] Admin Dashboard Timeline tab s přepínačem granularity a date range
+- [x] Filter only COMPLETED orders in getHourlyMetrics/getDailyMetrics
+- [x] Normalize revenue to USD in timeline metrics (CZK/EUR/GBP conversion)
+- [x] Fix event name from 'pageview' to 'page_view' for visit counting
+- [x] Vitest tests for timeline metrics (6 tests, all passing)
+- [x] Fix recentOrders to show only COMPLETED orders in admin dashboard
+- [x] Vitest tests for admin stats (8 tests, all passing)
+- [x] Delete all pending orders from database
 
 ## Reddit Ads API Integration
 - [x] OAuth2 token flow: access_token + refresh_token uloženy, redditAds.ts aktualizován
