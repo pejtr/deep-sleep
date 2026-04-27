@@ -1,5 +1,5 @@
-import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { and, gte, lte, eq } from "drizzle-orm";
 import {
   InsertUser,
   users,
@@ -278,4 +278,86 @@ export async function getAllBuyerEmails() {
     seen.add(o.email);
     return true;
   }).map(o => ({ email: o.email!, productId: o.productId, chronotype: o.chronotype }));
+}
+
+
+/// ── Timeline Metrics ─────────────────────────────────────────────────────
+export async function getHourlyMetrics(startDate: number, endDate: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const allOrders = await db.select().from(orders).where(
+    and(gte(orders.createdAt, new Date(startDate)), lte(orders.createdAt, new Date(endDate)))
+  );
+  
+  const allBehaviors = await db.select().from(behaviorEvents).where(
+    and(gte(behaviorEvents.createdAt, new Date(startDate)), lte(behaviorEvents.createdAt, new Date(endDate)))
+  );
+  
+  // Group by hour
+  const hourMap = new Map<string, { visits: number; orders: number; revenue: number }>();
+  
+  // Process behavior events (visits/pageviews)
+  allBehaviors.forEach(b => {
+    const hour = new Date(b.createdAt).toISOString().slice(0, 13) + ':00:00Z';
+    if (!hourMap.has(hour)) hourMap.set(hour, { visits: 0, orders: 0, revenue: 0 });
+    const h = hourMap.get(hour)!;
+    if (b.event === 'pageview') h.visits++;
+  });
+  
+  // Process orders
+  allOrders.forEach(o => {
+    const hour = new Date(o.createdAt).toISOString().slice(0, 13) + ':00:00Z';
+    if (!hourMap.has(hour)) hourMap.set(hour, { visits: 0, orders: 0, revenue: 0 });
+    const h = hourMap.get(hour)!;
+    if (o.status === 'completed') {
+      h.orders++;
+      const amount = parseFloat(o.amount) || 0;
+      h.revenue += amount;
+    }
+  });
+  
+  return Array.from(hourMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([hour, data]) => ({ hour, ...data }));
+}
+
+export async function getDailyMetrics(startDate: number, endDate: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const allOrders = await db.select().from(orders).where(
+    and(gte(orders.createdAt, new Date(startDate)), lte(orders.createdAt, new Date(endDate)))
+  );
+  
+  const allBehaviors = await db.select().from(behaviorEvents).where(
+    and(gte(behaviorEvents.createdAt, new Date(startDate)), lte(behaviorEvents.createdAt, new Date(endDate)))
+  );
+  
+  // Group by day
+  const dayMap = new Map<string, { visits: number; orders: number; revenue: number }>();
+  
+  // Process behavior events (visits/pageviews)
+  allBehaviors.forEach(b => {
+    const day = new Date(b.createdAt).toISOString().slice(0, 10);
+    if (!dayMap.has(day)) dayMap.set(day, { visits: 0, orders: 0, revenue: 0 });
+    const d = dayMap.get(day)!;
+    if (b.event === 'pageview') d.visits++;
+  });
+  
+  // Process orders
+  allOrders.forEach(o => {
+    const day = new Date(o.createdAt).toISOString().slice(0, 10);
+    if (!dayMap.has(day)) dayMap.set(day, { visits: 0, orders: 0, revenue: 0 });
+    const d = dayMap.get(day)!;
+    if (o.status === 'completed') {
+      d.orders++;
+      const amount = parseFloat(o.amount) || 0;
+      d.revenue += amount;
+    }
+  });
+  
+  return Array.from(dayMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([day, data]) => ({ day, ...data }));
 }

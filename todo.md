@@ -167,6 +167,12 @@
 - [ ] Admin Dashboard: AI insights panel s tlačítkem "Apply" pro každé doporučení
 - [ ] Admin Dashboard: možnost potvrdit/aplikovat AI doporučení (uloží do DB jako applied=true)
 
+## Timeline Metrics (Apr 25)
+- [x] DB helpers: getHourlyMetrics, getDailyMetrics
+- [x] tRPC procedure: admin.getTimelineMetrics (granularity: hourly|daily, days: 1-90)
+- [x] TimelineCharts komponenta: 3 grafy (Visits, Orders, Revenue) s Recharts
+- [x] Admin Dashboard Timeline tab s přepínačem granularity a date range
+
 ## Reddit Ads API Integration
 - [x] OAuth2 token flow: access_token + refresh_token uloženy, redditAds.ts aktualizován
 - [ ] tRPC procedure: reddit.getCampaigns - seznam kampaňí
@@ -282,3 +288,10 @@
 - [ ] Přidat Revenue v CZK do horního sticky panelu v Admin Dashboardu
 - [ ] Admin Dashboard: timeline grafy — návštěvy/nákupy/revenue po hodinách a dnech s přepínačem
 - [x] BUG: Stripe checkout s upsell checkboxem — opraveno: productId=main + includeUpsell=oto1 → 2 line_items v Stripe session
+- [x] BUG: Reload tlačítko v Admin Dashboardu nefunguje — opraveno: refetch() bez parametrů
+
+## Timeline Metrics — Gaps to Fix
+- [ ] Opravit timeline revenue výpočet: převádět CZK/EUR/GBP a další měny do jednotné měny stejně jako v getAdminStats
+- [ ] Přidat error state do TimelineCharts pro selhání trpc.admin.getTimelineMetrics
+- [ ] Přidat skutečný date-range picker do Timeline tabu (ne jen preset 1/7/14/30 dní)
+- [ ] Ověřit timeline data na mixed-currency objednávkách a doplnit testy pro hourly/daily revenue agregaci

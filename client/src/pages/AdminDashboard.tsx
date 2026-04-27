@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
+import { TimelineCharts } from "@/components/TimelineCharts";
 import {
   BarChart3, DollarSign, Users, MessageSquare, Star, TrendingUp,
   Activity, ExternalLink, RefreshCw, Moon, Zap, Globe, ShoppingCart,
@@ -192,7 +193,7 @@ function RedditAdsTab() {
               </button>
             ))}
           </div>
-          <button onClick={() => refetch()} className="p-2 rounded-lg transition-all hover:opacity-80" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+          <button onClick={() => { refetch(); }} className="p-2 rounded-lg transition-all hover:opacity-80" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} style={{ color: C.textSecondary }} />
           </button>
           <a href="https://ads.reddit.com" target="_blank" rel="noopener noreferrer"
@@ -400,7 +401,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "funnel" | "email">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email">("overview");
 
 
   const { data: stats, isLoading, refetch } = trpc.admin.stats.useQuery(undefined, {
@@ -438,6 +439,7 @@ export default function AdminDashboard() {
     { id: "campaigns", label: "Campaigns", icon: TrendingUp },
     { id: "reddit", label: "Reddit Ads", icon: Target },
     { id: "feedback", label: "Feedback", icon: MessageSquare },
+    { id: "timeline", label: "Timeline", icon: TrendingUp },
     { id: "funnel", label: "Funnel", icon: Activity },
     { id: "email", label: "Email", icon: Mail },
   ] as const;
@@ -832,6 +834,13 @@ export default function AdminDashboard() {
         {/* ── Email Broadcast Tab ──────────────────────────────────────────────── */}
         {activeTab === "email" && (
           <EmailBroadcastTab />
+        )}
+
+        {/* ── Timeline Tab ─────────────────────────────────────────────────────────────────── */}
+        {activeTab === "timeline" && (
+          <div className="space-y-4">
+            <TimelineCharts />
+          </div>
         )}
 
         {/* ── Funnel Tab ─────────────────────────────────────────────────────────────────── */}

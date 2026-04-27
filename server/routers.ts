@@ -457,6 +457,23 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
   admin: router({
     stats: protectedProcedure.query(async () => getAdminStats()),
 
+    getTimelineMetrics: protectedProcedure
+      .input(z.object({
+        granularity: z.enum(["hourly", "daily"]).default("daily"),
+        days: z.number().int().min(1).max(90).default(7),
+      }))
+      .query(async ({ input }) => {
+        const { getHourlyMetrics, getDailyMetrics } = await import("./db");
+        const now = Date.now();
+        const startDate = now - input.days * 24 * 60 * 60 * 1000;
+        
+        if (input.granularity === "hourly") {
+          return await getHourlyMetrics(startDate, now);
+        } else {
+          return await getDailyMetrics(startDate, now);
+        }
+      }),
+
     getBuyerEmails: protectedProcedure.query(async () => {
       const buyers = await getAllBuyerEmails();
       const leads = await getAllLeads();
