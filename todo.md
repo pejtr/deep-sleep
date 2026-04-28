@@ -180,12 +180,20 @@
 - [x] Vitest tests for admin stats (8 tests, all passing)
 - [x] Delete all pending orders from database
 
+## Backend Integration from deepsleep4 (Apr 28)
+- [x] Klonován deepsleep4 repo a analyzován backend
+- [x] Zkopírovány emailService.ts a products.ts
+- [x] DB schema upgrade: subscriptions, discount_codes, affiliates, email_sequences tabulky
+- [x] DB migration aplikována (4 nové tabulky)
+- [x] DB helpers: getSubscriptionByUserId, upsertSubscription, getDiscountByCode, getAffiliateByCode, createEmailSequence
+- [x] Brevo API key nastavena a testována (✅ valid)
+
 ## Reddit Ads API Integration
 - [x] OAuth2 token flow: access_token + refresh_token uloženy, redditAds.ts aktualizován
-- [ ] tRPC procedure: reddit.getCampaigns - seznam kampaňí
-- [ ] tRPC procedure: reddit.getReports - impressions, clicks, CTR, spend
-- [ ] Admin Dashboard: Reddit Ads tab s grafy a live daty
-- [ ] Auto-refresh každých 30 minut
+- [x] tRPC procedure: reddit.getCampaigns - seznam kampání
+- [x] tRPC procedure: reddit.getReports - impressions, clicks, CTR, spend
+- [x] Admin Dashboard: Reddit Ads tab s grafy a live daty (KPI karty, performance chart, date range)
+- [x] Auto-refresh každých 30 minut (implementováno)
 
 ## TikTok Ads Integration (Apr 23)
 - [ ] TikTok Ads API backend (OAuth2 client credentials + campaigns + spend report)

@@ -15,6 +15,14 @@ import {
   InsertBehaviorEvent,
   feedbacks,
   InsertFeedback,
+  subscriptions,
+  InsertSubscription,
+  discountCodes,
+  InsertDiscountCode,
+  affiliates,
+  InsertAffiliate,
+  emailSequences,
+  InsertEmailSequence,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -386,4 +394,60 @@ export async function getDailyMetrics(startDate: number, endDate: number) {
   return Array.from(dayMap.entries())
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([day, data]) => ({ day, ...data }));
+}
+
+// ── Subscriptions ────────────────────────────────────────────────────────────
+export async function getSubscriptionByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function upsertSubscription(data: InsertSubscription) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.insert(subscriptions).values(data).onDuplicateKeyUpdate({ set: data });
+  return result;
+}
+
+// ── Discount Codes ──────────────────────────────────────────────────────────
+export async function getDiscountByCode(code: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(discountCodes).where(eq(discountCodes.code, code)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function createDiscountCode(data: InsertDiscountCode) {
+  const db = await getDb();
+  if (!db) return null;
+  return db.insert(discountCodes).values(data);
+}
+
+// ── Affiliates ──────────────────────────────────────────────────────────────
+export async function getAffiliateByCode(code: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(affiliates).where(eq(affiliates.code, code)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function createAffiliate(data: InsertAffiliate) {
+  const db = await getDb();
+  if (!db) return null;
+  return db.insert(affiliates).values(data);
+}
+
+// ── Email Sequences ────────────────────────────────────────────────────────
+export async function createEmailSequence(data: InsertEmailSequence) {
+  const db = await getDb();
+  if (!db) return null;
+  return db.insert(emailSequences).values(data);
+}
+
+export async function getEmailSequences(leadId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(emailSequences).where(eq(emailSequences.leadId, leadId));
 }

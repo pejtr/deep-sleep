@@ -143,3 +143,66 @@ export const chatMessages = mysqlTable("chat_messages", {
 
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertChatMessage = typeof chatMessages.$inferInsert;
+
+// ── Subscriptions (recurring membership) ─────────────────────────────────────
+export const subscriptions = mysqlTable("subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  plan: varchar("plan", { length: 64 }).notNull(), // monthly, annual, lifetime
+  status: mysqlEnum("subStatus", ["active", "past_due", "cancelled", "expired", "trialing"]).default("active").notNull(),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
+  currentPeriodEnd: decimal("currentPeriodEnd", { precision: 15, scale: 0 }), // Unix timestamp
+  cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").default(false),
+  chronotype: varchar("chronotype", { length: 50 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Subscription = typeof subscriptions.$inferSelect;
+export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+// ── Discount Codes (for email leads) ─────────────────────────────────────────
+export const discountCodes = mysqlTable("discount_codes", {
+  id: int("id").autoincrement().primaryKey(),
+  code: varchar("code", { length: 64 }).notNull().unique(),
+  percentOff: int("percentOff").notNull(),
+  maxUses: int("maxUses").default(1),
+  usedCount: int("usedCount").default(0),
+  expiresAt: timestamp("expiresAt"),
+  leadId: int("leadId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DiscountCode = typeof discountCodes.$inferSelect;
+export type InsertDiscountCode = typeof discountCodes.$inferInsert;
+
+// ── Affiliates (referral program) ────────────────────────────────────────────
+export const affiliates = mysqlTable("affiliates", {
+  id: int("id").autoincrement().primaryKey(),
+  code: varchar("code", { length: 64 }).notNull().unique(),
+  email: varchar("email", { length: 320 }).notNull(),
+  name: varchar("name", { length: 255 }),
+  commissionPercent: int("commissionPercent").default(20),
+  totalCommission: decimal("totalCommission", { precision: 10, scale: 2 }).default("0"),
+  status: mysqlEnum("affStatus", ["active", "inactive", "pending"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Affiliate = typeof affiliates.$inferSelect;
+export type InsertAffiliate = typeof affiliates.$inferInsert;
+
+// ── Email Sequences (automation templates) ───────────────────────────────────
+export const emailSequences = mysqlTable("email_sequences", {
+  id: int("id").autoincrement().primaryKey(),
+  leadId: int("leadId").notNull(),
+  sequenceType: varchar("sequenceType", { length: 64 }).notNull(), // welcome, 7day, upsell, retention
+  emailNumber: int("emailNumber").notNull(), // 1, 2, 3, etc.
+  sentAt: timestamp("sentAt"),
+  openedAt: timestamp("openedAt"),
+  clickedAt: timestamp("clickedAt"),
+  status: mysqlEnum("emailStatus", ["pending", "sent", "opened", "clicked", "bounced"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailSequence = typeof emailSequences.$inferSelect;
+export type InsertEmailSequence = typeof emailSequences.$inferInsert;
