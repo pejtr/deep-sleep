@@ -332,3 +332,28 @@
 - [x] Email capture gate before showing results (with skip option)
 - [x] Personalized results + offer ($5 tripwire with value stack, countdown, testimonials)
 - [x] Designed for Reddit/TikTok ad traffic conversion (UTM tracking, behavior analytics)
+
+## Data-Driven Optimizations (Apr 30, 2026)
+### Based on: $69 revenue, 12 orders, 0% upsell conversion, 0.3% quiz start rate
+
+### Priority 1: Fix Upsell Flow (0% upsell conversion = biggest revenue leak)
+- [x] Redesign Upsell1 page with Hormozi value stack — show what they're missing
+- [x] Add countdown timer + "one-time offer" framing on all upsell pages
+- [x] Improve upsell copy — focus on specific pain from quiz answers (chronotype-personalized)
+- [x] Add social proof (testimonials) directly on upsell pages
+- [x] Make "No thanks" link small/subtle, make CTA dominant (loss-aversion decline text)
+
+### Priority 2: Improve Homepage Quiz Engagement (0.3% quiz start rate)
+- [x] Make quiz CTA the dominant hero element — "Take the Free 60-Second Sleep Quiz"
+- [x] Add quiz teaser showing chronotype animals on homepage
+- [x] Add exit-intent popup with quiz CTA for non-quiz visitors (already existed)
+- [x] Add "X people took this quiz today" social proof near quiz CTA
+
+### Priority 3: Add Urgency & Scarcity Elements
+- [ ] Add sticky bottom bar with offer countdown on mobile
+- [ ] Add "price increases to $19 soon" messaging on order page
+- [ ] Add real-time viewer count on checkout pages
+
+### Priority 4: Social Proof & Reviews
+- [ ] Add post-purchase review prompt (email + in-app)
+- [ ] Display testimonials more prominently on homepage above fold

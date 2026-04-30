@@ -2,9 +2,17 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { getSessionId } from "@/hooks/useSession";
-import { CheckoutButton } from "@/components/CheckoutButton";
-import { ArrowRight, Mail, Download, Check, Moon } from "lucide-react";
+import { ArrowRight, Mail, Download, Check, Moon, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+
+// Upsell sequence: main → upsell1, oto1 → upsell2, oto2 → upsell3, subscription → thankyou
+const NEXT_STEP: Record<string, string> = {
+  main: "/upsell1",
+  oto1: "/upsell2",
+  oto2: "/upsell3",
+  subscription: "/thankyou",
+  discount: "/upsell1",
+};
 
 export default function CheckoutSuccess() {
   const [, navigate] = useLocation();
@@ -13,6 +21,7 @@ export default function CheckoutSuccess() {
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [chronotype, setChronotype] = useState("Bear");
+  const [countdown, setCountdown] = useState(5);
 
   const captureLead = trpc.leads.capture.useMutation({
     onSuccess: () => {
@@ -37,16 +46,47 @@ export default function CheckoutSuccess() {
     }
   }, []);
 
+  // Auto-redirect to next upsell step after countdown
+  useEffect(() => {
+    if (!productId) return;
+    const nextStep = NEXT_STEP[productId];
+    if (!nextStep) return;
+
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          navigate(`${nextStep}?chronotype=${chronotype}`);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [productId, chronotype, navigate]);
+
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) return;
     captureLead.mutate({ email, sessionId: getSessionId(), source: "checkout_success" });
   };
 
-  // After main purchase → redirect to OTO upsell sequence
-  const goToUpsell = () => {
-    navigate(`/upsell1?chronotype=${chronotype}`);
+  const goToNextStep = () => {
+    const nextStep = NEXT_STEP[productId] ?? "/thankyou";
+    navigate(`${nextStep}?chronotype=${chronotype}`);
   };
+
+  // Product-specific success messages
+  const successMessages: Record<string, { title: string; subtitle: string; emoji: string }> = {
+    main: { title: "Payment Successful!", subtitle: "Your 7-Night Deep Sleep Reset is ready", emoji: "🎉" },
+    oto1: { title: "Chronotype Toolkit Added!", subtitle: "Your personalized optimizer is unlocked", emoji: "🎯" },
+    oto2: { title: "ASMR Pack Added!", subtitle: "7 premium sleep tracks are yours", emoji: "🎧" },
+    subscription: { title: "Welcome to Premium!", subtitle: "Your Sleep Optimizer membership is active", emoji: "👑" },
+    discount: { title: "Payment Successful!", subtitle: "Your Deep Sleep Reset is ready", emoji: "🎉" },
+  };
+
+  const msg = successMessages[productId] ?? successMessages.main;
 
   return (
     <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center px-4">
@@ -66,32 +106,38 @@ export default function CheckoutSuccess() {
           </svg>
         </div>
 
-        <h1 className="text-4xl font-black text-white mb-3">🎉 Payment Successful!</h1>
-        <p className="text-xl text-amber-300 font-semibold mb-2">Welcome to Deep Sleep Reset</p>
-        <p className="text-white/60 mb-8">Your 7-night protocol is ready. Start tonight and wake up refreshed.</p>
+        <h1 className="text-4xl font-black text-white mb-3">{msg.emoji} {msg.title}</h1>
+        <p className="text-xl text-amber-300 font-semibold mb-2">{msg.subtitle}</p>
 
-        {/* Primary CTA — View Protocol */}
-        <Link href="/protocol"
-          className="flex items-center justify-center gap-2 w-full py-5 px-8 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-xl rounded-2xl shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mb-3">
-          <Moon className="w-6 h-6" />
-          Open Your 7-Night Protocol
-        </Link>
+        {/* Show protocol access only for main/discount purchases */}
+        {(productId === "main" || productId === "discount") && (
+          <>
+            <p className="text-white/60 mb-6">Your protocol is ready. Start tonight and wake up refreshed.</p>
 
-        {/* PDF Download link */}
-        <a href="/api/protocol/download?lang=en" target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-3 px-6 border border-amber-500/40 hover:border-amber-500/70 text-amber-300 hover:text-amber-200 font-semibold text-sm rounded-xl transition-all mb-8">
-          <Download className="w-4 h-4" />
-          Download PDF (offline copy)
-        </a>
+            {/* Primary CTA — View Protocol */}
+            <Link href="/protocol"
+              className="flex items-center justify-center gap-2 w-full py-5 px-8 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-xl rounded-2xl shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mb-3">
+              <Moon className="w-6 h-6" />
+              Open Your 7-Night Protocol
+            </Link>
 
-        {/* Email capture */}
-        {!emailSubmitted ? (
+            {/* PDF Download */}
+            <a href="/api/protocol/download?lang=en" target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 px-6 border border-amber-500/40 hover:border-amber-500/70 text-amber-300 hover:text-amber-200 font-semibold text-sm rounded-xl transition-all mb-6">
+              <Download className="w-4 h-4" />
+              Download PDF (offline copy)
+            </a>
+          </>
+        )}
+
+        {/* Email capture for main purchase */}
+        {(productId === "main" || productId === "discount") && !emailSubmitted ? (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 text-left">
             <div className="flex items-center gap-2 mb-2">
               <Mail className="w-5 h-5 text-amber-400" />
               <p className="text-white font-bold">Get it in your inbox + 7-night reminders</p>
             </div>
-            <p className="text-white/50 text-sm mb-4">We'll send the protocol + a daily reminder for each night so you never miss a step.</p>
+            <p className="text-white/50 text-sm mb-4">We'll send the protocol + a daily reminder for each night.</p>
             <form onSubmit={handleEmailSubmit} className="flex gap-2">
               <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="your@email.com" required
@@ -102,97 +148,38 @@ export default function CheckoutSuccess() {
               </button>
             </form>
           </div>
-        ) : (
+        ) : (productId === "main" || productId === "discount") && emailSubmitted ? (
           <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-4 mb-6 flex items-center gap-3">
             <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
             <p className="text-green-300 text-sm font-semibold">Protocol sent to {email} — check your inbox!</p>
           </div>
-        )}
+        ) : null}
 
-        {/* ONE-TIME UPSELL — Chronotype Accelerator $3 */}
-        {productId === "main" && (
-          <div className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 border border-amber-500/30 rounded-2xl p-6 mb-4 text-left">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🎯</span>
-              <div>
-                <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-300">One-Time Offer · Expires when you leave</span>
-                <p className="text-white font-bold text-lg mt-1">Chronotype Optimizer Toolkit</p>
-              </div>
+        {/* Auto-redirect notice — the key conversion driver */}
+        {NEXT_STEP[productId] && (
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-6 mb-6 animate-pulse">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+              <p className="text-amber-300 font-bold text-lg">Wait — We Have a Special Offer for You!</p>
             </div>
-            <p className="text-white/60 text-sm mb-3 leading-relaxed">
-              Personalized sleep stack for your <strong className="text-amber-300">{chronotype}</strong> chronotype — supplement guide, habit tracker, and morning activation protocol.
-              <span className="text-amber-300 font-semibold"> 3x faster results in the first week.</span>
+            <p className="text-white/60 text-sm mb-4">
+              {productId === "main" || productId === "discount"
+                ? "Because you just got the 7-Night Protocol, you've unlocked an exclusive one-time offer..."
+                : productId === "oto1"
+                ? "Great choice! You've unlocked another exclusive deal..."
+                : "Almost done! One more thing that pairs perfectly with your purchase..."
+              }
             </p>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-white/30 text-sm line-through">$37</span>
-              <span className="text-2xl font-black text-amber-300">$3</span>
-              <span className="text-xs text-white/40">one-time, instant access</span>
-              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-300">92% OFF</span>
-            </div>
-            <CheckoutButton productId="oto1" sessionId={getSessionId()}
-              className="w-full py-4 rounded-xl font-bold text-base bg-amber-500 hover:bg-amber-400 text-black"
-              variant="secondary">
-              <span>Yes! Add Chronotype Toolkit — $3</span>
-              <ArrowRight className="w-4 h-4" />
-            </CheckoutButton>
-            <p className="text-white/30 text-xs text-center mt-2">This offer disappears when you leave this page</p>
-          </div>
-        )}
-
-        {/* ONE-TIME UPSELL 2 — ASMR Audio Pack $7 */}
-        {productId === "main" && (
-          <div className="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 border border-purple-500/30 rounded-2xl p-6 mb-6 text-left">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🎧</span>
-              <div>
-                <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/30 text-purple-300">Upgrade Offer</span>
-                <p className="text-white font-bold text-lg mt-1">ASMR Sleep Audio Pack</p>
-              </div>
-            </div>
-            <p className="text-white/60 text-sm mb-3 leading-relaxed">
-              7 premium ASMR tracks designed to trigger sleep within 20 minutes. Pairs perfectly with your protocol.
-              <span className="text-purple-300 font-semibold"> 89% of users fall asleep 2x faster.</span>
+            <button onClick={goToNextStep}
+              className="w-full py-4 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-lg rounded-2xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2">
+              <span>See Your Exclusive Offer</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <p className="text-white/40 text-xs mt-3">
+              Redirecting automatically in <span className="text-amber-300 font-bold">{countdown}s</span>...
             </p>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-white/30 text-sm line-through">$27</span>
-              <span className="text-2xl font-black text-purple-300">$7</span>
-              <span className="text-xs text-white/40">one-time, instant download</span>
-              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-purple-500/30 text-purple-300">74% OFF</span>
-            </div>
-            <CheckoutButton productId="oto2" sessionId={getSessionId()}
-              className="w-full py-4 rounded-xl font-bold text-base bg-purple-600 hover:bg-purple-500 text-white"
-              variant="secondary">
-              <span>Add ASMR Pack for $7</span>
-              <ArrowRight className="w-4 h-4" />
-            </CheckoutButton>
           </div>
         )}
-
-        {/* Luna Premium membership CTA */}
-        {productId === "main" && (
-          <button onClick={goToUpsell}
-            className="w-full py-4 px-6 rounded-2xl border border-white/10 hover:border-amber-500/30 text-white/60 hover:text-white transition-all text-sm mb-6 flex items-center justify-center gap-2">
-            <span>👑 See Luna Sleep Coach Premium membership →</span>
-          </button>
-        )}
-
-        {/* What's next */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-left mb-6">
-          <h3 className="text-white font-bold text-lg mb-4">🌙 Your 7-Night Plan</h3>
-          <div className="space-y-3">
-            {[
-              { night: "Night 1", action: "Read the protocol & set your sleep window" },
-              { night: "Night 2", action: "Apply the temperature & light protocol" },
-              { night: "Night 3", action: "Start the wind-down ritual (30 min before bed)" },
-              { night: "Night 7", action: "Full reset complete — track your results" },
-            ].map(({ night, action }) => (
-              <div key={night} className="flex gap-3 items-start">
-                <span className="text-amber-400 font-bold text-sm shrink-0 mt-0.5">{night}</span>
-                <span className="text-white/70 text-sm">{action}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Guarantee */}
         <div className="flex items-center justify-center gap-3 text-white/50 text-sm mb-6">

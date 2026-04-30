@@ -639,8 +639,18 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           mode: "payment",
           allow_promotion_codes: true,
           customer_email: input.email,
-          success_url: `${input.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}`,
-          cancel_url: `${input.origin}/order`,
+          // Route success based on product: main → upsell1, oto1 → upsell2, oto2 → thankyou
+          success_url: (() => {
+            const base = `${input.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}&productId=${input.productId}&chronotype=${input.chronotype ?? "Bear"}`;
+            return base;
+          })(),
+          cancel_url: (() => {
+            // If declining an upsell, skip to next step
+            if (input.productId === "oto1") return `${input.origin}/upsell2?chronotype=${input.chronotype ?? "Bear"}`;
+            if (input.productId === "oto2") return `${input.origin}/upsell3?chronotype=${input.chronotype ?? "Bear"}`;
+            if (input.productId === "subscription") return `${input.origin}/thankyou?chronotype=${input.chronotype ?? "Bear"}`;
+            return `${input.origin}/order`;
+          })(),
           metadata: {
             sessionId: input.sessionId,
             productId: input.productId,
