@@ -28,8 +28,8 @@
 - [x] Order page ($5, FOMO indicators, sticky mobile CTA, trust badges, payment methods)
 - [x] Upsell1 page ($7, urgency, chronotype personalization, tracking)
 - [x] Upsell2 page ($17, urgency, chronotype personalization, tracking)
-- [x] Upsell3 page ($27, urgency, chronotype personalization, tracking)
-- [x] ThankYou page (review prompt, premium upsell $9.99/mo, referral + social share)
+- [x] Upsell3 page ($8/mo subscription, urgency, chronotype personalization, tracking)
+- [x] ThankYou page (review prompt, premium upsell $8/mo, referral + social share)
 
 ## Routing & Integration
 - [x] App.tsx routes wired for all funnel pages
@@ -312,23 +312,23 @@
 - [ ] Ověřit timeline data na mixed-currency objednávkách a doplnit testy pro hourly/daily revenue agregaci
 
 ## Legal Documents & Stripe Products Update (Apr 30)
-- [ ] Terms of Service page (/terms) — update for Stripe
-- [ ] Privacy Policy page (/privacy) — update for Stripe
-- [ ] Refund & Return Policy page (/refund) — NEW for Stripe
-- [ ] Update products.ts with new prices ($5, $17, $27, $8/month)
-- [ ] Remove old membership tiers (Pro $27/month, Elite $47/month)
+- [x] Terms of Service page (/terms) — update for Stripe (Petr Matěj, IČO 02558220, EU compliance)
+- [x] Privacy Policy page (/privacy) — update for Stripe (GDPR, Stripe, Brevo, data controller info)
+- [x] Refund & Return Policy page (/refund) — NEW for Stripe (30-day guarantee, EU consumer rights)
+- [x] Update products.ts with new prices ($5, $17, $27, $8/month)
+- [x] Remove old membership tiers (Pro $27/month, Elite $47/month) — single $8/month tier
 - [ ] Add Stripe URLs to Stripe settings (Terms, Privacy, Refund)
 
 ## Reddit Ads OAuth Re-authorization (Apr 30)
 - [x] Created /api/reddit/auth endpoint (initiates OAuth flow)
 - [x] Created /api/reddit/callback endpoint (exchanges code for tokens)
-- [ ] Deploy checkpoint so callback works on production domain
+- [x] Deploy checkpoint so callback works on production domain (ae3961d4)
 - [ ] User completes Reddit OAuth re-authorization
 - [ ] Save new REDDIT_ADS_ACCESS_TOKEN and REDDIT_ADS_REFRESH_TOKEN to secrets
 
 ## Quiz Funnel Landing Page (Apr 30)
-- [ ] Create /quiz-funnel route — standalone quiz for ad traffic
-- [ ] 5-7 sleep questions (no navigation/shop)
-- [ ] Email capture gate before showing results
-- [ ] Personalized results + offer (discount on $5 tripwire or $8/month membership)
-- [ ] Designed for Reddit/TikTok ad traffic conversion
+- [x] Create /quiz-funnel route — standalone quiz for ad traffic (also /sleep-quiz alias)
+- [x] 5 sleep questions (no navigation/shop, 60-second completion)
+- [x] Email capture gate before showing results (with skip option)
+- [x] Personalized results + offer ($5 tripwire with value stack, countdown, testimonials)
+- [x] Designed for Reddit/TikTok ad traffic conversion (UTM tracking, behavior analytics)

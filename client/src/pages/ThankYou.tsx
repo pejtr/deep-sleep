@@ -159,20 +159,20 @@ export default function ThankYou() {
             style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
             <div className="badge-popular mb-3">Exclusive for Protocol Owners</div>
             <h3 className="font-bold text-base mb-2" style={{ color: "oklch(0.82 0.16 65)" }}>
-              👑 Upgrade to Deep Sleep Premium
+              👑 Upgrade to Sleep Optimizer Membership
             </h3>
             <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
               Get monthly new chronotype protocols, live Q&As with sleep experts, and access to our private community — all for less than a coffee per week.
             </p>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$29/mo</span>
-              <span className="font-black text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>$9.99/mo</span>
-              <div className="badge-popular">66% OFF</div>
+              <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$47/mo</span>
+              <span className="font-black text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>$8/mo</span>
+              <div className="badge-popular">83% OFF</div>
             </div>
             <button
               onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.location.href = `/upsell3?chronotype=${chronotype}`; }}
               className="w-full cta-gold cta-shimmer rounded-xl py-3 text-sm flex items-center justify-center gap-2">
-              Upgrade to Premium — $9.99/mo
+              Join Sleep Optimizer — $8/mo
             </button>
           </div>
         )}
@@ -225,7 +225,7 @@ export default function ThankYou() {
 
         {/* Footer */}
         <p className="text-xs text-center" style={{ color: "oklch(0.35 0.04 265)" }}>
-          Questions? Email us at petr.matej@gmail.com
+          Questions? Email us at support@deep-sleep-reset.com
         </p>
       </div>
     </div>

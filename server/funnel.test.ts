@@ -68,38 +68,38 @@ describe("quiz.submit — chronotype scoring", () => {
 });
 
 describe("orders.create — product prices", () => {
-  it("returns $5 gumroad URL for main product", async () => {
+  it("returns $5 for main product", async () => {
     const result = await caller.orders.create({
       sessionId: "test-order-main",
       productId: "main",
       chronotype: "Bear",
     });
     expect(result.amount).toBe("5.00");
-    expect(result.gumroadUrl).toContain("gumroad.com");
   });
 
-  it("returns $7 for OTO1", async () => {
+  it("returns $17 for OTO1", async () => {
     const result = await caller.orders.create({
       sessionId: "test-oto1",
       productId: "oto1",
     });
-    expect(result.amount).toBe("7.00");
+    expect(result.amount).toBe("17.00");
   });
 
-  it("returns $17 for OTO2", async () => {
+  it("returns $27 for OTO2", async () => {
     const result = await caller.orders.create({
       sessionId: "test-oto2",
       productId: "oto2",
     });
-    expect(result.amount).toBe("17.00");
+    expect(result.amount).toBe("27.00");
   });
 
-  it("returns $27 for OTO3", async () => {
-    const result = await caller.orders.create({
-      sessionId: "test-oto3",
-      productId: "oto3",
-    });
-    expect(result.amount).toBe("27.00");
+  it("rejects invalid productId (oto3 removed)", async () => {
+    await expect(
+      caller.orders.create({
+        sessionId: "test-oto3",
+        productId: "oto3" as any,
+      })
+    ).rejects.toThrow();
   });
 });
 

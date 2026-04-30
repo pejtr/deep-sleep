@@ -9,7 +9,7 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const body = `Name: ${form.name}\nEmail: ${form.email}\nSubject: ${form.subject}\n\n${form.message}`;
-    window.location.href = `mailto:support@deepsleepquest.com?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:support@deep-sleep-reset.com?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
 
@@ -45,7 +45,7 @@ export default function Contact() {
         {/* Info cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {[
-            { icon: <Mail className="w-5 h-5" />, title: "Email", value: "support@deepsleepquest.com" },
+            { icon: <Mail className="w-5 h-5" />, title: "Email", value: "support@deep-sleep-reset.com" },
             { icon: <Clock className="w-5 h-5" />, title: "Response Time", value: "Within 24 hours" },
             { icon: <MessageCircle className="w-5 h-5" />, title: "Refunds", value: "30-day guarantee, no questions" },
           ].map((item, i) => (

@@ -15,9 +15,9 @@ const stripePromise = loadStripe(
 );
 
 interface ExpressCheckoutProps {
-  productId?: "main" | "oto1" | "oto2" | "oto3" | "discount";
+  productId?: "main" | "oto1" | "oto2" | "subscription" | "discount";
   /** When set, adds this product as a 2nd line item alongside the main product */
-  includeUpsell?: "oto1" | "oto2" | "oto3";
+  includeUpsell?: "oto1" | "oto2";
   sessionId: string;
   email?: string;
   chronotype?: string;

@@ -94,7 +94,7 @@ export default function Affiliates() {
               e.preventDefault();
               const form = e.target as HTMLFormElement;
               const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-              window.location.href = `mailto:affiliates@deepsleepquest.com?subject=Affiliate Application&body=Email: ${email}`;
+              window.location.href = `mailto:affiliates@deep-sleep-reset.com?subject=Affiliate Application&body=Email: ${email}`;
             }}
             className="flex flex-col gap-4"
           >
@@ -123,7 +123,7 @@ export default function Affiliates() {
             </button>
           </form>
           <p className="text-xs text-center mt-4" style={{ color: "oklch(0.40 0.04 265)" }}>
-            Questions? Email affiliates@deepsleepquest.com
+            Questions? Email affiliates@deep-sleep-reset.com
           </p>
         </div>
       </div>

@@ -21,6 +21,8 @@ import Feedback from "./pages/Feedback";
 import AdminDashboard from "./pages/AdminDashboard";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Protocol from "./pages/Protocol";
+import RefundPolicy from "./pages/RefundPolicy";
+import QuizFunnel from "./pages/QuizFunnel";
 import SleepChatBot from "./components/SleepChatBot";
 
 function Router() {
@@ -36,12 +38,15 @@ function Router() {
       <Route path="/thankyou" component={ThankYou} />
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/terms" component={TermsOfService} />
+      <Route path="/refund" component={RefundPolicy} />
       <Route path="/affiliates" component={Affiliates} />
       <Route path="/contact" component={Contact} />
       <Route path="/feedback" component={Feedback} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route path="/protocol" component={Protocol} />
+      <Route path="/quiz-funnel" component={QuizFunnel} />
+      <Route path="/sleep-quiz" component={QuizFunnel} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

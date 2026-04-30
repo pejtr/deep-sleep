@@ -6,7 +6,7 @@
 //   Tripwire: $5  → irresistible entry, HIGH/MID countries pay full, LOW pay ~$2
 //   OTO1:    $17  → 30-day transformation
 //   OTO2:    $27  → toolkit + audio
-//   OTO3:    $47  → elite bundle
+//   Membership: $8/month → single subscription tier
 export const FUNNEL_PRODUCTS = {
   tripwire: {
     key: "tripwire",
@@ -38,19 +38,8 @@ export const FUNNEL_PRODUCTS = {
     displayPrice: "$27",
     originalPrice: "$127",
     discountPercent: 79,
-    successRedirect: "/upsell/3",
-    cancelRedirect: "/upsell/3",
-  },
-  oto3: {
-    key: "oto3",
-    name: "Sleep Optimizer Elite Bundle",
-    description: "Everything — all protocols, audio pack, toolkit + lifetime updates",
-    price: 4700, // $47.00
-    displayPrice: "$47",
-    originalPrice: "$297",
-    discountPercent: 84,
-    successRedirect: "/thank-you",
-    cancelRedirect: "/thank-you",
+    successRedirect: "/thankyou",
+    cancelRedirect: "/thankyou",
   },
 } as const;
 export type ProductKey = keyof typeof FUNNEL_PRODUCTS;
@@ -124,108 +113,47 @@ export const PRODUCTS = {
     originalPrice: "$127",
     currency: "usd",
   },
-  "sleep-elite-bundle": {
-    name: "Sleep Optimizer Elite Bundle",
-    description: "Everything — all protocols, audio pack, toolkit + lifetime updates",
-    basePrice: 4700, // $47.00
-    displayPrice: "$47",
-    originalPrice: "$297",
-    currency: "usd",
-  },
 } as const;
 export type ProductId = keyof typeof PRODUCTS;
 
-// ─── Membership Subscription Plans ───────────────────────────────────────────
-export const MEMBERSHIP_PLANS = {
-  basic: {
-    name: "Sleep Optimizer Basic",
-    description: "Monthly sleep protocol updates + community access",
-    basePrice: 999, // $9.99/month
-    interval: "month" as const,
-    features: [
-      "Monthly Sleep Protocol Update (PDF)",
-      "Weekly Sleep Tips Email",
-      "Chronotype-specific meal timing guide",
-      "Access to Sleep Optimizer community",
-      "Cancel anytime",
-    ],
-  },
-  pro: {
-    name: "Sleep Optimizer Pro",
-    description: "The complete sleep system with AI coaching",
-    basePrice: 2700, // $27/month
-    interval: "month" as const,
-    features: [
-      "Everything in Basic",
-      "Weekly AI Sleep Score Report",
-      "Monthly Protocol Deep-Dive",
-      "Exclusive Bonus Guides (2/month)",
-      "Private Sleep Optimizers Community",
-      "Priority email support",
-      "Early access to new protocols",
-    ],
-    badge: "MOST POPULAR",
-  },
-  elite: {
-    name: "Sleep Optimizer Elite",
-    description: "Maximum performance, maximum results",
-    basePrice: 4700, // $47/month
-    interval: "month" as const,
-    features: [
-      "Everything in Pro",
-      "Personal Sleep Score Dashboard",
-      "Monthly AI Sleep Audit",
-      "VIP community badge & recognition",
-      "Lifetime access to all past protocols",
-      "First access to new products (free)",
-      "Quarterly deep-dive sleep analysis",
-    ],
-    badge: "BEST VALUE",
-  },
+// ─── Single Membership Subscription Plan ($8/month) ─────────────────────────
+export const MEMBERSHIP_PLAN = {
+  name: "Sleep Optimizer Membership",
+  description: "Monthly sleep protocol updates, community access, and AI coaching",
+  basePrice: 800, // $8.00/month
+  displayPrice: "$8",
+  originalPrice: "$47",
+  discountPercent: 83,
+  interval: "month" as const,
+  features: [
+    "Monthly Sleep Protocol Update (PDF)",
+    "Weekly Sleep Tips Email",
+    "Chronotype-specific meal timing guide",
+    "Access to Sleep Optimizer community",
+    "Weekly AI Sleep Score Report",
+    "Priority email support",
+    "Cancel anytime",
+  ],
 } as const;
-export type MembershipPlanId = keyof typeof MEMBERSHIP_PLANS;
 
-// ─── Subscription Tiers (used by v2 frontend pages) ──────────────────────────
+// Legacy aliases for backward compatibility
+export const MEMBERSHIP_PLANS = {
+  basic: MEMBERSHIP_PLAN,
+} as const;
+export type MembershipPlanId = "basic";
+
 export const SUBSCRIPTION_TIERS = {
   basic: {
     key: "basic",
-    name: "Sleep Optimizer Basic",
-    tagline: "Start your sleep transformation",
-    price: 999,
-    displayPrice: "$9.99",
-    originalPrice: "$47",
-    discountPercent: 79,
+    name: MEMBERSHIP_PLAN.name,
+    tagline: "Your complete sleep optimization system",
+    price: MEMBERSHIP_PLAN.basePrice,
+    displayPrice: MEMBERSHIP_PLAN.displayPrice,
+    originalPrice: MEMBERSHIP_PLAN.originalPrice,
+    discountPercent: MEMBERSHIP_PLAN.discountPercent,
     interval: "month" as const,
-    features: MEMBERSHIP_PLANS.basic.features,
-    valueStack: "$97 value",
-    badge: null,
-    color: "blue",
-  },
-  pro: {
-    key: "pro",
-    name: "Sleep Optimizer Pro",
-    tagline: "The complete sleep system",
-    price: 2700,
-    displayPrice: "$27",
-    originalPrice: "$275",
-    discountPercent: 90,
-    interval: "month" as const,
-    features: MEMBERSHIP_PLANS.pro.features,
-    valueStack: "$275 value",
-    badge: "MOST POPULAR",
-    color: "purple",
-  },
-  elite: {
-    key: "elite",
-    name: "Sleep Optimizer Elite",
-    tagline: "Maximum performance, maximum results",
-    price: 4700,
-    displayPrice: "$47",
-    originalPrice: "$497",
-    discountPercent: 91,
-    interval: "month" as const,
-    features: MEMBERSHIP_PLANS.elite.features,
-    valueStack: "$497 value",
+    features: MEMBERSHIP_PLAN.features,
+    valueStack: "$47 value",
     badge: "BEST VALUE",
     color: "gold",
   },

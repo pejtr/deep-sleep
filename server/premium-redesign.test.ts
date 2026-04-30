@@ -25,38 +25,30 @@ function createPublicContext(): TrpcContext {
 
 const caller = appRouter.createCaller(createPublicContext());
 
-describe("Gumroad URL — uses deepsleepreset.gumroad.com", () => {
-  it("main product URL points to deepsleepreset.gumroad.com", async () => {
+describe("Product structure — Stripe-based (Gumroad deprecated)", () => {
+  it("main product returns $5.00 amount", async () => {
     const result = await caller.orders.create({
-      sessionId: "test-url-main",
+      sessionId: "test-main",
       productId: "main",
       chronotype: "Bear",
     });
-    expect(result.gumroadUrl).toBe("https://deepsleepreset.gumroad.com/l/fdtifc");
+    expect(result.amount).toBe("5.00");
   });
 
-  it("OTO1 product URL points to deepsleepreset.gumroad.com", async () => {
+  it("OTO1 returns $17.00 amount", async () => {
     const result = await caller.orders.create({
-      sessionId: "test-url-oto1",
+      sessionId: "test-oto1",
       productId: "oto1",
     });
-    expect(result.gumroadUrl).toBe("https://deepsleepreset.gumroad.com/l/ttrsd");
+    expect(result.amount).toBe("17.00");
   });
 
-  it("OTO2 product URL points to deepsleepreset.gumroad.com", async () => {
+  it("OTO2 returns $27.00 amount", async () => {
     const result = await caller.orders.create({
-      sessionId: "test-url-oto2",
+      sessionId: "test-oto2",
       productId: "oto2",
     });
-    expect(result.gumroadUrl).toBe("https://deepsleepreset.gumroad.com/l/cuhln");
-  });
-
-  it("OTO3 product URL points to deepsleepreset.gumroad.com", async () => {
-    const result = await caller.orders.create({
-      sessionId: "test-url-oto3",
-      productId: "oto3",
-    });
-    expect(result.gumroadUrl).toBe("https://deepsleepreset.gumroad.com/l/ubsxk");
+    expect(result.amount).toBe("27.00");
   });
 });
 
@@ -91,9 +83,8 @@ describe("Quiz — accepts 5-answer array (from 8-question frontend)", () => {
 describe("Product pricing integrity", () => {
   const EXPECTED_PRICES = [
     { productId: "main" as const, amount: "5.00" },
-    { productId: "oto1" as const, amount: "7.00" },
-    { productId: "oto2" as const, amount: "17.00" },
-    { productId: "oto3" as const, amount: "27.00" },
+    { productId: "oto1" as const, amount: "17.00" },
+    { productId: "oto2" as const, amount: "27.00" },
   ];
 
   EXPECTED_PRICES.forEach(({ productId, amount }) => {
@@ -104,5 +95,14 @@ describe("Product pricing integrity", () => {
       });
       expect(result.amount).toBe(amount);
     });
+  });
+
+  it("rejects oto3 as invalid product (removed)", async () => {
+    await expect(
+      caller.orders.create({
+        sessionId: "test-oto3-removed",
+        productId: "oto3" as any,
+      })
+    ).rejects.toThrow();
   });
 });

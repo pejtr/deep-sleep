@@ -2,7 +2,7 @@
 // Handles: purchase confirmation, download delivery, 7-day follow-up sequence
 
 const BREVO_API_URL = "https://api.brevo.com/v3";
-const SENDER = { name: "Deep Sleep Reset", email: "petr.matej@gmail.com" };
+const SENDER = { name: "Deep Sleep Reset", email: "support@deep-sleep-reset.com" };
 
 const PRODUCT_DOWNLOADS: Record<string, { name: string; url: string }> = {
   tripwire: {
@@ -166,7 +166,7 @@ export async function sendPurchaseConfirmation({
     <!-- Support -->
     <div style="text-align:center;margin-bottom:24px;">
       <p style="color:#6b5f8a;font-size:13px;margin:0;">
-        Questions? Reply to this email or write to <a href="mailto:petr.matej@gmail.com" style="color:#c4a8ff;">petr.matej@gmail.com</a>
+        Questions? Reply to this email or write to <a href="mailto:support@deep-sleep-reset.com" style="color:#c4a8ff;">support@deep-sleep-reset.com</a>
       </p>
     </div>
 

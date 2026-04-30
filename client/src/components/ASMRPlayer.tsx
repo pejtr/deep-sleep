@@ -190,7 +190,7 @@ export default function ASMRPlayer({ onUpgradeClick }: { onUpgradeClick?: () => 
         </p>
         <button onClick={onUpgradeClick}
           className="cta-gold rounded-lg px-5 py-2 text-xs font-bold">
-          Unlock Premium ASMR — $9.99/mo
+          Unlock Premium ASMR — $8/mo
         </button>
       </div>
     </div>

@@ -667,6 +667,7 @@ export default function Home() {
         <div className="flex items-center justify-center gap-4 mt-2">
           <a href="/privacy" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_privacy}</a>
           <a href="/terms" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_terms}</a>
+          <a href="/refund" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Refund Policy</a>
           <a href="/affiliates" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_affiliates}</a>
           <a href="/contact" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_contact}</a>
           <a href="/feedback" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_feedback}</a>

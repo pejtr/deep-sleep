@@ -2,7 +2,7 @@ import { MessageSquare } from "lucide-react";
 
 export default function SupportButton() {
   const handleClick = () => {
-    window.location.href = "mailto:petr.matej@gmail.com?subject=Deep Sleep Reset - Support";
+    window.location.href = "mailto:support@deep-sleep-reset.com?subject=Deep Sleep Reset - Support";
   };
 
   return (

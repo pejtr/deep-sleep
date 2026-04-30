@@ -16,7 +16,6 @@ export default function Upsell3() {
   const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
   const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
   const [loading, setLoading] = useState(false);
-  const [plan, setPlan] = useState<"monthly" | "annual">("annual");
   const { track } = useTrackBehavior();
   const checkoutMutation = trpc.checkout.createSession.useMutation();
 
@@ -26,11 +25,10 @@ export default function Upsell3() {
 
   const handleAccept = async () => {
     setLoading(true);
-    const price = plan === "annual" ? 49 : 9.99;
-    track("upsell_accept", { page: "upsell3", value: { chronotype, price, plan } });
+    track("upsell_accept", { page: "upsell3", value: { chronotype, price: 8 } });
     try {
       const result = await checkoutMutation.mutateAsync({
-        productId: "oto3",
+        productId: "subscription",
         sessionId: getSessionId(),
         chronotype,
         origin: window.location.origin,
@@ -64,13 +62,13 @@ export default function Upsell3() {
     <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-purple w-80 h-80 opacity-15" style={{ top: "-5%", right: "-5%" }} />
       <div className="orb orb-gold w-64 h-64 opacity-10" style={{ bottom: "20%", left: "-10%" }} />
-      <CountdownTimer variant="banner" label="Premium membership offer expires in:" />
+      <CountdownTimer variant="banner" label="Membership offer expires in:" />
 
       <div className="relative z-10 container max-w-lg mx-auto py-10">
         <div className="text-center mb-8">
           <div className="mb-3 flex items-center justify-center gap-2">
             <Crown className="w-5 h-5 text-amber-400" />
-            <span className="badge-popular">Luna Sleep Coach Premium</span>
+            <span className="badge-popular">Sleep Optimizer Membership</span>
             <Crown className="w-5 h-5 text-amber-400" />
           </div>
           <div className="text-5xl mb-4">{icon}</div>
@@ -78,30 +76,11 @@ export default function Upsell3() {
             Never Sleep Badly Again
           </h1>
           <p className="text-sm" style={{ color: "oklch(0.60 0.04 265)" }}>
-            Your 7-night protocol is just the beginning. <strong style={{ color: "oklch(0.82 0.16 65)" }}>Luna Premium</strong> gives you an AI sleep coach, monthly protocols, and a community of 12,847+ optimizers — all for less than a cup of coffee per week.
+            Your 7-night protocol is just the beginning. <strong style={{ color: "oklch(0.82 0.16 65)" }}>Sleep Optimizer Membership</strong> gives you an AI sleep coach, monthly protocols, and a community of 12,847+ optimizers — all for less than a cup of coffee per week.
           </p>
         </div>
 
         <div className="glass-card rounded-3xl p-8 mb-6" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
-          {/* Plan toggle */}
-          <div className="flex gap-2 mb-6 p-1 rounded-xl" style={{ background: "oklch(0.10 0.025 255)" }}>
-            <button onClick={() => setPlan("annual")}
-              className="flex-1 py-3 rounded-lg text-sm font-bold transition-all"
-              style={plan === "annual"
-                ? { background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }
-                : { color: "oklch(0.55 0.04 265)" }}>
-              Annual — $49/yr
-              <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full" style={{ background: "oklch(0.55 0.18 145 / 0.3)", color: "oklch(0.70 0.18 145)" }}>SAVE 59%</span>
-            </button>
-            <button onClick={() => setPlan("monthly")}
-              className="flex-1 py-3 rounded-lg text-sm font-medium transition-all"
-              style={plan === "monthly"
-                ? { background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }
-                : { color: "oklch(0.55 0.04 265)" }}>
-              Monthly — $9.99/mo
-            </button>
-          </div>
-
           {/* Features */}
           <div className="flex flex-col gap-3 mb-6">
             {FEATURES.map((f, i) => (
@@ -124,36 +103,26 @@ export default function Upsell3() {
               {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
             </div>
             <p className="text-xs" style={{ color: "oklch(0.70 0.04 265)" }}>
-              <strong style={{ color: "oklch(0.82 0.16 65)" }}>4.9/5</strong> from 847 Premium members · avg 6.8 hrs deep sleep after 30 days
+              <strong style={{ color: "oklch(0.82 0.16 65)" }}>4.9/5</strong> from 847 members · avg 6.8 hrs deep sleep after 30 days
             </p>
           </div>
 
           {/* Price */}
           <div className="flex items-center gap-3 mb-6">
-            {plan === "annual" ? (
-              <>
-                <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$120/yr</span>
-                <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>$49</span>
-                <div>
-                  <div className="badge-popular">59% OFF</div>
-                  <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 265)" }}>= $4.08/month</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$24.99/mo</span>
-                <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>$9.99</span>
-                <div className="badge-popular">60% OFF</div>
-              </>
-            )}
+            <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$47/mo</span>
+            <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>$8</span>
+            <div>
+              <div className="badge-popular">83% OFF</div>
+              <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 265)" }}>/month · cancel anytime</p>
+            </div>
           </div>
 
-          <CountdownTimer variant="inline" label="Premium offer expires in:" />
+          <CountdownTimer variant="inline" label="Membership offer expires in:" />
 
           <button onClick={handleAccept} disabled={loading}
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-base flex items-center justify-center gap-2 mt-6 disabled:opacity-60">
             <Lock className="w-4 h-4" />
-            <span>{loading ? "Processing..." : plan === "annual" ? "Join Luna Premium — $49/yr" : "Join Luna Premium — $9.99/mo"}</span>
+            <span>{loading ? "Processing..." : "Join Sleep Optimizer — $8/mo"}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 

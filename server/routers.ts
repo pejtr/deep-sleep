@@ -50,9 +50,8 @@ function calculateChronotype(answers: number[]): "Lion" | "Bear" | "Wolf" | "Dol
 // ── Product config ────────────────────────────────────────────────────────────
 const PRODUCTS = {
   main:  { amount: "5.00",  gumroad: "fdtifc" },
-  oto1:  { amount: "3.00",  gumroad: "ttrsd"  },
-  oto2:  { amount: "7.00", gumroad: "cuhln"  },
-  oto3:  { amount: "10.00", gumroad: "ubsxk"  },
+  oto1:  { amount: "17.00", gumroad: "ttrsd"  },
+  oto2:  { amount: "27.00", gumroad: "cuhln"  },
 } as const;
 
 
@@ -138,7 +137,7 @@ export const appRouter = router({
     create: publicProcedure
       .input(z.object({
         sessionId: z.string(),
-        productId: z.enum(["main", "oto1", "oto2", "oto3"]),
+        productId: z.enum(["main", "oto1", "oto2"]),
         email: z.string().email().optional(),
         chronotype: z.enum(["Lion", "Bear", "Wolf", "Dolphin"]).optional(),
       }))
@@ -509,7 +508,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         const pdfLink = "https://www.deep-sleep-reset.com/api/protocol/download?lang=en";
 
         const finalBody = input.includeDownloadLink
-          ? `${input.body}\n\n---\n📖 Access your protocol: ${downloadLink}\n📄 Download PDF: ${pdfLink}\n\n---\nDeep Sleep Reset · Unsubscribe: petr.matej@gmail.com`
+          ? `${input.body}\n\n---\n📖 Access your protocol: ${downloadLink}\n📄 Download PDF: ${pdfLink}\n\n---\nDeep Sleep Reset · Unsubscribe: support@deep-sleep-reset.com`
           : `${input.body}\n\n---\nDeep Sleep Reset`;
 
         // Use Manus notification system to send to owner as preview, log count
@@ -536,7 +535,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
     createSession: publicProcedure
       .input(
         z.object({
-          productId: z.enum(["main", "discount", "oto1", "oto2", "oto3"]).default("main"),
+          productId: z.enum(["main", "discount", "oto1", "oto2", "subscription"]).default("main"),
           includeUpsell: z.string().optional(), // e.g. "oto1" — adds upsell as 2nd line item alongside main
           sessionId: z.string(),
           email: z.string().email().optional(),
@@ -549,18 +548,18 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          main: 500, discount: 400, oto1: 300, oto2: 700, oto3: 999,
+          main: 500, discount: 400, oto1: 1700, oto2: 2700, subscription: 800,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           main: "Deep Sleep Reset — 7-Night Protocol",
           discount: "Deep Sleep Reset — 7-Night Protocol (Special Offer)",
           oto1: "Deep Sleep Reset — Chronotype Optimizer",
           oto2: "Deep Sleep Reset — ASMR Audio Pack",
-          oto3: "Luna Sleep Coach Premium — Monthly Membership",
+          subscription: "Sleep Optimizer Membership — Monthly",
         };
         // Geo-pricing: low-tier countries get reduced prices
         const LOW_TIER_PRICES: Record<string, number> = {
-          main: 100, discount: 100, oto1: 100, oto2: 200, oto3: 300,
+          main: 100, discount: 100, oto1: 700, oto2: 1100, subscription: 300,
         };
         const amountCents = input.isLowTier
           ? (LOW_TIER_PRICES[input.productId] ?? 100)
