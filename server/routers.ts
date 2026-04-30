@@ -505,8 +505,8 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         // Deduplicate
         emails = Array.from(new Set(emails));
 
-        const downloadLink = "https://deepsleep-z7uhfhzs.manus.space/protocol";
-        const pdfLink = "https://deepsleep-z7uhfhzs.manus.space/api/protocol/download?lang=en";
+        const downloadLink = "https://www.deep-sleep-reset.com/protocol";
+        const pdfLink = "https://www.deep-sleep-reset.com/api/protocol/download?lang=en";
 
         const finalBody = input.includeDownloadLink
           ? `${input.body}\n\n---\n📖 Access your protocol: ${downloadLink}\n📄 Download PDF: ${pdfLink}\n\n---\nDeep Sleep Reset · Unsubscribe: petr.matej@gmail.com`

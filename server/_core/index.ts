@@ -10,6 +10,7 @@ import { registerStripeWebhook } from "../stripeWebhook";
 import { appRouter } from "../routers";
 import { scheduleNightlyOptimization } from "../jobs/nightlyOptimization";
 import { registerProtocolPdfRoute } from "../protocolPdf";
+import { registerRedditOAuthRoutes } from "../redditOAuth";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -45,6 +46,7 @@ async function startServer() {
   registerBehaviorRoutes(app);
   registerStripeWebhook(app);
   registerProtocolPdfRoute(app);
+  registerRedditOAuthRoutes(app);
   // tRPC API
   app.use(
     "/api/trpc",

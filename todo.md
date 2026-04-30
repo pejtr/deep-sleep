@@ -310,3 +310,25 @@
 - [ ] Přidat error state do TimelineCharts pro selhání trpc.admin.getTimelineMetrics
 - [ ] Přidat skutečný date-range picker do Timeline tabu (ne jen preset 1/7/14/30 dní)
 - [ ] Ověřit timeline data na mixed-currency objednávkách a doplnit testy pro hourly/daily revenue agregaci
+
+## Legal Documents & Stripe Products Update (Apr 30)
+- [ ] Terms of Service page (/terms) — update for Stripe
+- [ ] Privacy Policy page (/privacy) — update for Stripe
+- [ ] Refund & Return Policy page (/refund) — NEW for Stripe
+- [ ] Update products.ts with new prices ($5, $17, $27, $8/month)
+- [ ] Remove old membership tiers (Pro $27/month, Elite $47/month)
+- [ ] Add Stripe URLs to Stripe settings (Terms, Privacy, Refund)
+
+## Reddit Ads OAuth Re-authorization (Apr 30)
+- [x] Created /api/reddit/auth endpoint (initiates OAuth flow)
+- [x] Created /api/reddit/callback endpoint (exchanges code for tokens)
+- [ ] Deploy checkpoint so callback works on production domain
+- [ ] User completes Reddit OAuth re-authorization
+- [ ] Save new REDDIT_ADS_ACCESS_TOKEN and REDDIT_ADS_REFRESH_TOKEN to secrets
+
+## Quiz Funnel Landing Page (Apr 30)
+- [ ] Create /quiz-funnel route — standalone quiz for ad traffic
+- [ ] 5-7 sleep questions (no navigation/shop)
+- [ ] Email capture gate before showing results
+- [ ] Personalized results + offer (discount on $5 tripwire or $8/month membership)
+- [ ] Designed for Reddit/TikTok ad traffic conversion
