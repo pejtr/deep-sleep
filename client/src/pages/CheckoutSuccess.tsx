@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { getSessionId } from "@/hooks/useSession";
 import { ArrowRight, Mail, Download, Check, Moon, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { trackPurchase } from "@/lib/conversionTracking";
 
 // Upsell sequence: main → upsell1, oto1 → upsell2, oto2 → upsell3, subscription → thankyou
 const NEXT_STEP: Record<string, string> = {
@@ -44,6 +45,15 @@ export default function CheckoutSuccess() {
       setEmail(em);
       captureLead.mutate({ email: em, sessionId: getSessionId(), source: "stripe_success" });
     }
+    // Fire purchase conversion on all platforms
+    const priceMap: Record<string, number> = { main: 5, discount: 3, oto1: 17, oto2: 27, subscription: 8 };
+    trackPurchase({
+      value: priceMap[pid] || 5,
+      orderId: oid ?? undefined,
+      productId: pid,
+      productName: `Deep Sleep Reset - ${pid}`,
+      email: em ?? undefined,
+    });
   }, []);
 
   // Auto-redirect to next upsell step after countdown

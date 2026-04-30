@@ -8,6 +8,7 @@ import StickyMobileCTA from "@/components/StickyMobileCTA";
 import LiveSalesNotification from "@/components/LiveSalesNotification";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
+import { trackQuizComplete, trackLead, trackViewContent } from "@/lib/conversionTracking";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -78,6 +79,9 @@ export default function QuizResult() {
     track("page_view", { page: "quiz_result", value: { chronotype } });
     // Mark quiz as converted for A/B test
     abMutation.mutate({ sessionId: getSessionId(), testName: "headline" });
+    // Fire quiz complete conversion on all platforms
+    trackQuizComplete(chronotype);
+    trackViewContent({ productId: "main", productName: `Deep Sleep Reset - ${chronotype}`, value: 5 });
   }, []);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
@@ -93,6 +97,7 @@ export default function QuizResult() {
       });
       setEmailSubmitted(true);
       track("email_capture", { page: "quiz_result", value: { chronotype } });
+      trackLead({ email });
     } catch {
       setEmailError("Something went wrong. Please try again.");
     }

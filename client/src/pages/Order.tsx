@@ -11,6 +11,7 @@ import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import ExpressCheckout from "@/components/ExpressCheckout";
+import { trackViewContent } from "@/lib/conversionTracking";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -34,6 +35,7 @@ export default function Order() {
 
   useEffect(() => {
     track("page_view", { page: "order", value: { chronotype } });
+    trackViewContent({ productId: "main", productName: "Deep Sleep Reset Protocol", value: 5 });
   }, []);
 
   return (

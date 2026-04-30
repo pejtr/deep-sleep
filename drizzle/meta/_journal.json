@@ -43,6 +43,13 @@
       "when": 1777329642143,
       "tag": "0005_needy_baron_strucker",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1777558797735,
+      "tag": "0006_rare_mockingbird",
+      "breakpoints": true
     }
   ]
 }

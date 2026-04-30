@@ -9,6 +9,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
+import { getUTMData } from "@/hooks/useSession";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -48,6 +49,7 @@ function ExpressCheckoutInner({
     setLoading(true);
 
     try {
+      const utm = getUTMData();
       const result = await createSession.mutateAsync({
         productId,
         includeUpsell,
@@ -57,6 +59,7 @@ function ExpressCheckoutInner({
         currency: currency.code.toLowerCase(),
         isLowTier,
         origin: window.location.origin,
+        ...utm,
       });
 
       if (result.url) {

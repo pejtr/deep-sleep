@@ -2,6 +2,8 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
+import { getUTMData } from "@/hooks/useSession";
+import { trackInitiateCheckout } from "@/lib/conversionTracking";
 
 interface CheckoutButtonProps {
   productId?: "main" | "discount" | "oto1" | "oto2" | "subscription";
@@ -46,6 +48,14 @@ export function CheckoutButton({
   const handleClick = async () => {
     if (isLoading) return;
     setIsLoading(true);
+    // Fire conversion tracking event on all platforms
+    const priceMap: Record<string, number> = { main: 5, discount: 3, oto1: 17, oto2: 27, subscription: 8 };
+    trackInitiateCheckout({
+      value: priceMap[productId] || 5,
+      productId,
+      productName: `Deep Sleep Reset - ${productId}`,
+    });
+    const utm = getUTMData();
     createSession.mutate({
       productId,
       includeUpsell,
@@ -55,6 +65,7 @@ export function CheckoutButton({
       currency: currency.code.toLowerCase(),
       isLowTier,
       origin: window.location.origin,
+      ...utm,
     });
   };
 

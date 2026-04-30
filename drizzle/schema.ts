@@ -51,6 +51,12 @@ export const orders = mysqlTable("orders", {
   stripeSessionId: varchar("stripeSessionId", { length: 128 }),
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 128 }),
   currency: varchar("currency", { length: 8 }).default("usd"),
+  utmSource: varchar("utmSource", { length: 64 }),
+  utmMedium: varchar("utmMedium", { length: 64 }),
+  utmCampaign: varchar("utmCampaign", { length: 128 }),
+  utmContent: varchar("utmContent", { length: 128 }),
+  utmTerm: varchar("utmTerm", { length: 128 }),
+  referrer: varchar("referrer", { length: 256 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

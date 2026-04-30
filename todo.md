@@ -357,3 +357,27 @@
 ### Priority 4: Social Proof & Reviews
 - [ ] Add post-purchase review prompt (email + in-app)
 - [ ] Display testimonials more prominently on homepage above fold
+
+## A/B Testing for Upsell Pages (Apr 30)
+- [ ] Extend DB schema: upsell_ab_tests table (testId, page, variant, sessionId, shown, converted, revenue, createdAt)
+- [ ] Backend: upsellAB.assignVariant procedure (sticky per session+page)
+- [ ] Backend: upsellAB.trackImpression procedure
+- [ ] Backend: upsellAB.trackConversion procedure (links to order revenue)
+- [ ] Backend: admin.getUpsellABResults procedure (conversion rates, revenue per variant, statistical significance)
+- [ ] Create Variant B for Upsell1 (different headline, CTA, layout approach)
+- [ ] Create Variant B for Upsell2 (different headline, CTA, layout approach)
+- [ ] Create Variant B for Upsell3 (different headline, CTA, layout approach)
+- [ ] Upsell pages: integrate A/B variant assignment and render correct variant
+- [ ] Admin Dashboard: A/B Testing tab with per-page results, winner detection, significance indicator
+- [ ] Vitest tests for upsell A/B testing backend
+
+## Tracking Fixes & Retargeting Pixels (Apr 30)
+- [x] Fix session-to-order attribution — pass sessionId + UTM data through Stripe checkout metadata
+- [x] Add utmSource, utmMedium, utmCampaign columns to orders table (migration applied)
+- [x] Update Stripe webhook to extract and save attribution data from checkout session metadata
+- [x] Add Reddit Conversion Pixel (a2_iw4up15u7778) — PageVisit, ViewContent, AddToCart, Purchase events
+- [x] Add Google Ads retargeting tag (AW-968712546) — page_view, begin_checkout, purchase events
+- [x] Fire conversion events on CheckoutSuccess page (Purchase event with revenue value)
+- [ ] Create retargeting audience definitions (order page visitors who didn't buy, quiz completers)
+- [x] TikTok Pixel (CS2CJHRC77U1VFMHVING) added — PageVisit, ViewContent, InitiateCheckout, CompletePayment
+- [x] Analyze TikTok Ads performance — €87 spent, 0 conversions, CTR 0.36%, recommend pausing until video creative ready

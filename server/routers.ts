@@ -543,6 +543,12 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           currency: z.string().default("usd"),
           isLowTier: z.boolean().default(false),
           origin: z.string(),
+          utmSource: z.string().optional(),
+          utmMedium: z.string().optional(),
+          utmCampaign: z.string().optional(),
+          utmContent: z.string().optional(),
+          utmTerm: z.string().optional(),
+          referrer: z.string().optional(),
         })
       )
       .mutation(async ({ input }) => {
@@ -625,6 +631,12 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           chronotype: (input.chronotype as "Lion" | "Bear" | "Wolf" | "Dolphin" | undefined),
           status: "pending",
           currency,
+          utmSource: input.utmSource,
+          utmMedium: input.utmMedium,
+          utmCampaign: input.utmCampaign,
+          utmContent: input.utmContent,
+          utmTerm: input.utmTerm,
+          referrer: input.referrer,
         });
         const session = await stripe.checkout.sessions.create({
           // Enable all payment methods including Apple Pay, Google Pay, Link

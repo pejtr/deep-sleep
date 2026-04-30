@@ -7,7 +7,11 @@ import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
+import { captureUTM } from "@/hooks/useSession";
 import "./index.css";
+
+// Capture UTM params from URL on first page load (persists in localStorage)
+captureUTM();
 
 const queryClient = new QueryClient();
 
