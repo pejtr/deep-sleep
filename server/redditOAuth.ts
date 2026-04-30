@@ -8,8 +8,9 @@ import type { Express, Request, Response } from "express";
 const REDDIT_AUTH_URL = "https://www.reddit.com/api/v1/authorize";
 const REDDIT_TOKEN_URL = "https://www.reddit.com/api/v1/access_token";
 
-// Scopes needed for Reddit Ads API
-const SCOPES = "ads_read ads_manage read identity";
+// Scopes needed for Reddit Ads API (comma-separated, no underscores)
+// Official docs: https://business.reddithelp.com/s/article/authenticate-your-developer-application
+const SCOPES = "adsread,adsconversions,history,adsedit,read";
 
 export function registerRedditOAuthRoutes(app: Express) {
   /**
