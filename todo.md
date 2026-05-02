@@ -381,3 +381,52 @@
 - [ ] Create retargeting audience definitions (order page visitors who didn't buy, quiz completers)
 - [x] TikTok Pixel (CS2CJHRC77U1VFMHVING) added — PageVisit, ViewContent, InitiateCheckout, CompletePayment
 - [x] Analyze TikTok Ads performance — €87 spent, 0 conversions, CTR 0.36%, recommend pausing until video creative ready
+
+## TikTok Video Ad Creation (Apr 30)
+- [x] Research TikTok ad best practices for health/wellness
+- [x] Write high-converting video script (hook, problem, solution, CTA)
+- [x] Generate TikTok video ad (vertical 9:16, 22s, 3 clips + voiceover + text overlays)
+- [x] Deliver video + script to user for upload
+
+## A/B Testing Implementation (May 2, 2026)
+- [ ] DB schema: ab_tests table (id, sessionId, page, variant, shown, converted, revenue, createdAt)
+- [ ] DB migration applied
+- [ ] Backend: abTest.assignVariant procedure
+- [ ] Backend: abTest.trackConversion procedure
+- [ ] Backend: admin.getABResults procedure
+- [ ] Variant B for Upsell1 (different headline + price anchoring approach)
+- [ ] Variant B for Upsell2 (different value stack layout)
+- [ ] Variant B for Upsell3 (different subscription framing)
+- [ ] A/B variant integration in Upsell1, Upsell2, Upsell3 pages
+- [ ] Admin Dashboard: A/B Testing tab
+- [ ] Vitest tests for A/B testing backend
+
+
+## Stripe Live Mode Setup (May 2)
+- [ ] Complete Stripe KYC verification (claim sandbox at https://dashboard.stripe.com/claim_sandbox)
+- [ ] Generate live API keys from Stripe Dashboard
+- [ ] Update Settings → Payment with live keys (STRIPE_SECRET_KEY, VITE_STRIPE_PUBLISHABLE_KEY)
+- [ ] Test live payment with $0.50 minimum order
+- [ ] Verify webhook delivery to production domain (deepsleep-z7uhfhzs.manus.space/api/stripe/webhook)
+
+## A/B Testing for Upsell Pages (May 2)
+- [x] DB schema: upsell_ab_tests table with variant assignment
+- [x] DB helpers: assignUpsellVariant, markUpsellConverted, getAbResults
+- [x] tRPC procedures: upsellAb.assignVariant, upsellAb.trackConversion, admin.getAbResults
+- [x] Upsell1 page: A/B variant routing + tracking
+- [x] Upsell2 page: A/B variant routing + tracking (Variant B = minimalist layout)
+- [x] Upsell3 page: A/B variant routing + tracking
+- [x] Admin Dashboard: A/B Tests tab with results visualization
+- [x] Vitest tests for A/B testing procedures (5+ tests) — READY FOR TESTING
+- [ ] Monitor A/B results for 2 weeks, identify winning variants
+- [ ] Implement winner + new variant for next round
+
+## Reddit Ads Optimization (May 2)
+- [ ] Fix ad approval: rewrite Sleep-8h-Exhausted-EN ad with compliant copy
+- [ ] Implement Reddit pixel on website for conversion tracking
+- [ ] Create 3 A/B test creatives (Variant B + C) for testing
+- [ ] Expand targeting to Canada + UK geographic markets
+- [ ] Set up 3 audience segments (High-Intent, Broad Wellness, Lookalike)
+- [ ] Increase daily budget to $50-100 for better data gathering
+- [ ] Monitor ROAS and scale budget if > 2:1
+- [ ] Generate weekly Reddit Ads performance report

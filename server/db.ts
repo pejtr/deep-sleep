@@ -23,6 +23,7 @@ import {
   InsertAffiliate,
   emailSequences,
   InsertEmailSequence,
+  upsellAbTests,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -450,4 +451,67 @@ export async function getEmailSequences(leadId: number) {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(emailSequences).where(eq(emailSequences.leadId, leadId));
+}
+// ── Upsell A/B Tests ──────────────────────────────────────────────────────────
+export async function assignUpsellVariant(sessionId: string, page: string, chronotype?: string): Promise<"A" | "B"> {
+  const db = await getDb();
+  if (!db) return "A";
+  // Check if already assigned for this session+page
+  const { eq: eqFn, and } = await import("drizzle-orm");
+  const existing = await db.select().from(upsellAbTests)
+    .where(and(eqFn(upsellAbTests.sessionId, sessionId), eqFn(upsellAbTests.page, page)))
+    .limit(1);
+  if (existing.length > 0) return existing[0].variant as "A" | "B";
+  // Deterministic 50/50 split based on sessionId hash
+  const hash = sessionId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const variant: "A" | "B" = hash % 2 === 0 ? "A" : "B";
+  await db.insert(upsellAbTests).values({ sessionId, page, variant, chronotype });
+  return variant;
+}
+
+export async function markUpsellConverted(sessionId: string, page: string, revenue: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const { eq: eqFn, and } = await import("drizzle-orm");
+  await db.update(upsellAbTests)
+    .set({ converted: true, revenue })
+    .where(and(eqFn(upsellAbTests.sessionId, sessionId), eqFn(upsellAbTests.page, page)));
+}
+
+export async function getUpsellAbResults(): Promise<{
+  page: string;
+  variant: string;
+  impressions: number;
+  conversions: number;
+  convRate: number;
+  totalRevenue: number;
+  avgRevenue: number;
+}[]> {
+  const db = await getDb();
+  if (!db) return [];
+  const rows = await db.select().from(upsellAbTests);
+  // Group by page + variant
+  const map = new Map<string, { impressions: number; conversions: number; revenue: number }>();
+  for (const row of rows) {
+    const key = `${row.page}|${row.variant}`;
+    const cur = map.get(key) ?? { impressions: 0, conversions: 0, revenue: 0 };
+    cur.impressions++;
+    if (row.converted) {
+      cur.conversions++;
+      cur.revenue += parseFloat(row.revenue ?? "0");
+    }
+    map.set(key, cur);
+  }
+  return Array.from(map.entries()).map(([key, v]) => {
+    const [page, variant] = key.split("|");
+    return {
+      page,
+      variant,
+      impressions: v.impressions,
+      conversions: v.conversions,
+      convRate: v.impressions > 0 ? Math.round((v.conversions / v.impressions) * 10000) / 100 : 0,
+      totalRevenue: Math.round(v.revenue * 100) / 100,
+      avgRevenue: v.conversions > 0 ? Math.round((v.revenue / v.conversions) * 100) / 100 : 0,
+    };
+  }).sort((a, b) => a.page.localeCompare(b.page) || a.variant.localeCompare(b.variant));
 }

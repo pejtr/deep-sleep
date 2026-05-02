@@ -197,6 +197,22 @@ export const affiliates = mysqlTable("affiliates", {
 export type Affiliate = typeof affiliates.$inferSelect;
 export type InsertAffiliate = typeof affiliates.$inferInsert;
 
+// ── Upsell A/B Tests ─────────────────────────────────────────────────────────
+export const upsellAbTests = mysqlTable("upsell_ab_tests", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 128 }).notNull(),
+  page: varchar("page", { length: 32 }).notNull(), // upsell1, upsell2, upsell3
+  variant: varchar("variant", { length: 4 }).notNull(), // A, B
+  shown: boolean("shown").default(true).notNull(),
+  converted: boolean("converted").default(false).notNull(),
+  revenue: decimal("revenue", { precision: 10, scale: 2 }).default("0"),
+  chronotype: varchar("chronotype", { length: 16 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UpsellAbTest = typeof upsellAbTests.$inferSelect;
+export type InsertUpsellAbTest = typeof upsellAbTests.$inferInsert;
+
 // ── Email Sequences (automation templates) ───────────────────────────────────
 export const emailSequences = mysqlTable("email_sequences", {
   id: int("id").autoincrement().primaryKey(),

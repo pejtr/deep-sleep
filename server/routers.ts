@@ -19,6 +19,9 @@ import {
   saveFeedback,
   getAllBuyerEmails,
   getAllLeads,
+  assignUpsellVariant,
+  markUpsellConverted,
+  getUpsellAbResults,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -453,8 +456,34 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
   }),
 
   // ── Admin ─────────────────────────────────────────────────────────────────────────────────────────
+  // ── Upsell A/B Testing ────────────────────────────────────────────────────────────────────────────────────────
+  upsellAb: router({
+    assignVariant: publicProcedure
+      .input(z.object({
+        sessionId: z.string(),
+        page: z.enum(["upsell1", "upsell2", "upsell3"]),
+        chronotype: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const variant = await assignUpsellVariant(input.sessionId, input.page, input.chronotype);
+        return { variant };
+      }),
+
+    trackConversion: publicProcedure
+      .input(z.object({
+        sessionId: z.string(),
+        page: z.enum(["upsell1", "upsell2", "upsell3"]),
+        revenue: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        await markUpsellConverted(input.sessionId, input.page, input.revenue);
+        return { success: true };
+      }),
+  }),
+
   admin: router({
     stats: protectedProcedure.query(async () => getAdminStats()),
+    getAbResults: protectedProcedure.query(async () => getUpsellAbResults()),
 
     getTimelineMetrics: protectedProcedure
       .input(z.object({

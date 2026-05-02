@@ -16,16 +16,24 @@ export default function Upsell3() {
   const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
   const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
   const [loading, setLoading] = useState(false);
+  const [variant, setVariant] = useState<"A" | "B">("A");
   const { track } = useTrackBehavior();
   const checkoutMutation = trpc.checkout.createSession.useMutation();
+  const assignVariant = trpc.upsellAb.assignVariant.useMutation();
+  const trackConversion = trpc.upsellAb.trackConversion.useMutation();
 
   useEffect(() => {
+    const sessionId = getSessionId();
     track("page_view", { page: "upsell3", value: { chronotype } });
+    assignVariant.mutateAsync({ sessionId, page: "upsell3", chronotype }).then(r => {
+      setVariant(r.variant);
+      track("ab_impression", { page: "upsell3", value: { variant: r.variant } });
+    }).catch(() => setVariant("A"));
   }, []);
 
   const handleAccept = async () => {
     setLoading(true);
-    track("upsell_accept", { page: "upsell3", value: { chronotype, price: 8 } });
+    track("upsell_accept", { page: "upsell3", value: { chronotype, price: 8, variant } });
     try {
       const result = await checkoutMutation.mutateAsync({
         productId: "subscription",
@@ -34,6 +42,7 @@ export default function Upsell3() {
         origin: window.location.origin,
       });
       if (result.url) {
+        await trackConversion.mutateAsync({ sessionId: getSessionId(), page: "upsell3", revenue: "8.00" });
         toast.info("Redirecting to secure checkout...");
         window.open(result.url, "_blank");
       }
@@ -45,7 +54,7 @@ export default function Upsell3() {
   };
 
   const handleDecline = () => {
-    track("upsell_decline", { page: "upsell3", value: { chronotype } });
+    track("upsell_decline", { page: "upsell3", value: { chronotype, variant } });
     navigate(`/thankyou?chronotype=${chronotype}`);
   };
 

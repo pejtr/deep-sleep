@@ -50,6 +50,13 @@
       "when": 1777558797735,
       "tag": "0006_rare_mockingbird",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1777680791447,
+      "tag": "0007_secret_songbird",
+      "breakpoints": true
     }
   ]
 }

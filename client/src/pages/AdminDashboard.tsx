@@ -401,7 +401,8 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest">("overview");
+  const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
   const { data: stats, isLoading, refetch } = trpc.admin.stats.useQuery(undefined, {
@@ -442,6 +443,7 @@ export default function AdminDashboard() {
     { id: "timeline", label: "Timeline", icon: TrendingUp },
     { id: "funnel", label: "Funnel", icon: Activity },
     { id: "email", label: "Email", icon: Mail },
+    { id: "abtest", label: "A/B Tests", icon: Sparkles },
   ] as const;
 
   // Funnel conversion data for bar chart
@@ -843,6 +845,49 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* ── A/B Test Tab ────────────────────────────────────────────────────────────────────────────────────── */}
+        {activeTab === "abtest" && (
+          <div className="space-y-4">
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-bold mb-1" style={{ color: C.textPrimary }}>Upsell A/B Test Results</h3>
+              <p className="text-xs mb-4" style={{ color: C.textMuted }}>Variant A = original layout · Variant B = new layout · Deterministic 50/50 split by session ID</p>
+              {(!abResults || abResults.length === 0) ? (
+                <p className="text-xs" style={{ color: C.textMuted }}>No A/B test data yet. Data appears when users visit upsell pages.</p>
+              ) : (
+                <div className="space-y-3">
+                  {["upsell1", "upsell2", "upsell3"].map(page => {
+                    const pageResults = abResults.filter(r => r.page === page);
+                    if (pageResults.length === 0) return null;
+                    const varA = pageResults.find(r => r.variant === "A");
+                    const varB = pageResults.find(r => r.variant === "B");
+                    const winner = varA && varB ? (varA.convRate > varB.convRate ? "A" : varB.convRate > varA.convRate ? "B" : null) : null;
+                    return (
+                      <div key={page} className="rounded-xl p-4" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-semibold capitalize" style={{ color: C.textPrimary }}>{page.replace("upsell", "Upsell ")} Page</p>
+                          {winner && <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: `${C.green}20`, color: C.green }}>Variant {winner} winning</span>}
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          {[varA, varB].map((v, vi) => v ? (
+                            <div key={vi} className="rounded-lg p-3" style={{ background: winner === v.variant ? `${C.green}10` : C.card, border: `1px solid ${winner === v.variant ? `${C.green}40` : C.cardBorder}` }}>
+                              <p className="text-xs font-bold mb-2" style={{ color: winner === v.variant ? C.green : C.textSecondary }}>Variant {v.variant} {winner === v.variant ? "★" : ""}</p>
+                              <div className="space-y-1">
+                                <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Shown</span><span className="text-xs font-semibold" style={{ color: C.textPrimary }}>{v.impressions}</span></div>
+                                <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Converted</span><span className="text-xs font-semibold" style={{ color: C.textPrimary }}>{v.conversions}</span></div>
+                                <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Conv. Rate</span><span className="text-xs font-bold" style={{ color: winner === v.variant ? C.green : C.textPrimary }}>{v.convRate}%</span></div>
+                                <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Revenue</span><span className="text-xs font-semibold" style={{ color: C.gold }}>${v.totalRevenue}</span></div>
+                              </div>
+                            </div>
+                          ) : null)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {/* ── Funnel Tab ─────────────────────────────────────────────────────────────────── */}
         {activeTab === "funnel" && (
           <div className="space-y-4">
