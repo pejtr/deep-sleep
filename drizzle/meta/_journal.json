@@ -57,6 +57,13 @@
       "when": 1777680791447,
       "tag": "0007_secret_songbird",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1777811268993,
+      "tag": "0008_amused_clea",
+      "breakpoints": true
     }
   ]
 }

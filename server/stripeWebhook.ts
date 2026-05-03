@@ -4,6 +4,7 @@ import { getDb } from "./db";
 import { orders } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifyOwner } from "./_core/notification";
+import { sendPurchaseConfirmation, addBrevoContact } from "./emailService";
 
 export function registerStripeWebhook(app: Express) {
   // CRITICAL: raw body parser must be registered BEFORE express.json()
@@ -57,10 +58,40 @@ export function registerStripeWebhook(app: Express) {
 
               console.log(`[Stripe Webhook] Order ${orderId} marked as completed`);
 
+              // ── V1-1: Send purchase confirmation email ──────────────────────
+              const buyerEmail = session.customer_email ?? session.metadata?.customer_email;
+              const buyerName = session.metadata?.customer_name;
+              const productId = session.metadata?.productId ?? "main";
+              const chronotype = session.metadata?.chronotype;
+              const amountTotal = (session.amount_total ?? 500) / 100;
+
+              if (buyerEmail) {
+                // Send purchase confirmation with download links (fire-and-forget)
+                sendPurchaseConfirmation({
+                  email: buyerEmail,
+                  name: buyerName,
+                  product: productId,
+                  chronotype,
+                  amount: amountTotal,
+                }).then(ok => {
+                  console.log(`[Stripe Webhook] Purchase confirmation ${ok ? "✅ sent" : "❌ failed"} → ${buyerEmail}`);
+                }).catch(() => {/* non-critical */});
+
+                // ── V1-3: Add to Brevo with chronotype tag ──────────────────
+                addBrevoContact({
+                  email: buyerEmail,
+                  name: buyerName,
+                  chronotype,
+                  product: productId,
+                }).then(ok => {
+                  console.log(`[Stripe Webhook] Brevo contact ${ok ? "✅ added" : "❌ failed"} → ${buyerEmail} (${chronotype ?? "unknown"})`);
+                }).catch(() => {/* non-critical */});
+              }
+
               // Notify owner of new purchase
               await notifyOwner({
                 title: "💰 New Purchase!",
-                content: `Order #${orderId} completed. Product: ${session.metadata?.productId ?? "main"}. Amount: ${(session.amount_total ?? 0) / 100} ${session.currency?.toUpperCase()}. Email: ${session.customer_email ?? "unknown"}`,
+                content: `Order #${orderId} completed. Product: ${productId}. Amount: ${amountTotal} ${session.currency?.toUpperCase()}. Email: ${buyerEmail ?? "unknown"}. Chronotype: ${chronotype ?? "unknown"}`,
               }).catch(() => {/* non-critical */});
             }
             break;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
-import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check } from "lucide-react";
+import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check, Download } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import TrustBar from "@/components/TrustBar";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
@@ -195,6 +195,18 @@ export default function Order() {
             <div className="flex-1 h-px" style={{ background: "oklch(0.25 0.02 265)" }} />
           </div>
 
+          {/* Star rating above CTA — V2-6 */}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(s => (
+                <svg key={s} className="w-4 h-4" fill="oklch(0.78 0.18 65)" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <span className="text-sm font-semibold" style={{ color: "oklch(0.78 0.18 65)" }}>4.9/5</span>
+            <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>from 2,847 verified buyers</span>
+          </div>
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
             productId="main"
@@ -216,9 +228,10 @@ export default function Order() {
           </div>
         </div>
 
-        {/* Trust badges */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
+        {/* Trust badges — V2-5 */}
+        <div className="grid grid-cols-4 gap-2 mb-8">
           {[
+            { icon: <Download className="w-5 h-5" />, title: "Instant Download", desc: "Access in 60 seconds" },
             { icon: <Shield className="w-5 h-5" />, title: "30-Day Guarantee", desc: "Full refund, no questions" },
             { icon: <Lock className="w-5 h-5" />, title: "256-bit SSL", desc: "Bank-level security" },
             { icon: <Star className="w-5 h-5 fill-current" />, title: "4.9★ Rating", desc: "2,847 reviews" },

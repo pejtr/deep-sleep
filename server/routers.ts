@@ -22,6 +22,9 @@ import {
   assignUpsellVariant,
   markUpsellConverted,
   getUpsellAbResults,
+  getBlogPosts,
+  getBlogPostBySlug,
+  createBlogPost,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -703,5 +706,39 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         return { url: session.url, sessionId: session.id };
       }),
   }),
+
+  // ── Blog Router ───────────────────────────────────────────────────────────────
+  blog: router({
+    list: publicProcedure
+      .input(z.object({ limit: z.number().min(1).max(50).default(20), offset: z.number().min(0).default(0) }))
+      .query(async ({ input }) => {
+        const posts = await getBlogPosts(input.limit, input.offset);
+        return posts;
+      }),
+
+    getBySlug: publicProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        const post = await getBlogPostBySlug(input.slug);
+        if (!post) throw new Error("Blog post not found");
+        return post;
+      }),
+
+    create: protectedProcedure
+      .input(z.object({
+        title: z.string().min(1).max(256),
+        slug: z.string().min(1).max(256),
+        content: z.string().min(1),
+        excerpt: z.string().max(512).optional(),
+        seoKeyword: z.string().max(128).optional(),
+        metaDescription: z.string().max(256).optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Forbidden");
+        await createBlogPost(input);
+        return { success: true };
+      }),
+  }),
+
 });
 export type AppRouter = typeof appRouter;

@@ -430,3 +430,72 @@
 - [ ] Increase daily budget to $50-100 for better data gathering
 - [ ] Monitor ROAS and scale budget if > 2:1
 - [ ] Generate weekly Reddit Ads performance report
+
+## Video Best Practices Implementation (May 3)
+
+### Priority 1 — Email Sequence Trigger (Video 1 — MISSING!)
+- [x] Wire sendPurchaseConfirmation into stripeWebhook.ts (currently not called on purchase)
+- [x] Wire 7-day email sequence via Manus scheduled task (Day 1-7 drip emails)
+- [x] Add Brevo contact tagging on quiz email capture (chronotype tag for segmentation)
+
+### Priority 2 — SEO Blog Auto-generation (Video 2)
+- [x] Create /blog route and BlogList + BlogPost pages
+- [x] Add blog_posts table to DB schema (title, slug, content, seo_keyword, meta_description, published_at)
+- [x] Apply DB migration for blog_posts
+- [x] Create tRPC procedures: blog.list, blog.getBySlug, blog.create (admin)
+- [x] Create scheduled task: auto-generate 1 SEO blog post/day via LLM (sleep topics)
+- [x] Add /api/scheduled/blog endpoint for scheduled blog generation
+- [ ] Register site with Google Search Console (manual step for user)
+- [x] Add sitemap.xml generation with blog posts
+
+### Priority 3 — Order Page Trust Optimization (Video 2)
+- [x] Add "Instant Download" badge + "100% Secure Checkout" trust badge to Order page
+- [x] Add star rating display (4.8★ / 847 reviews) above CTA on Order page
+- [ ] Add 3 benefit pillars with icons: Instant Download / Science-Backed / 30-Day Guarantee
+- [x] Add "In Stock — Ready to Download" indicator on Order page
+
+### Priority 4 — In-Content CTA for Blog (Video 2)
+- [x] Blog posts: embed 2 product links per article (mid-article + final CTA box)
+- [x] Add dedicated CTA box at bottom of each blog post ("Stop Struggling with Sleep. Start the Protocol.")
+
+## Video Best Practices — Full Implementation (May 3)
+
+### V1-1: Email Sekvence Trigger po nákupu
+- [x] Wire sendPurchaseConfirmation into stripeWebhook.ts (checkout.session.completed event)
+- [x] Wire addBrevoContact into stripeWebhook.ts (add buyer to Brevo list)
+
+### V1-2: 7-denní drip email sekvence
+- [x] Create /api/scheduled/email-sequence endpoint (POST, accepts orderId + day)
+- [x] Create Manus scheduled task: send Day 1 email 1h after purchase, Day 2-7 daily
+
+### V1-3: Brevo chronotype tagging
+- [x] Update addBrevoContact to pass chronotype as Brevo list attribute/tag
+- [x] Update quiz email capture to pass chronotype to Brevo
+
+### V2-1: SEO Blog
+- [x] Add blog_posts table to drizzle/schema.ts
+- [x] Apply DB migration for blog_posts
+- [ ] Add blog DB helpers: getBlogPosts, getBlogPostBySlug, createBlogPost
+- [x] Add tRPC procedures: blog.list, blog.getBySlug, blog.create (admin only)
+- [x] Create /blog route (BlogList page)
+- [x] Create /blog/:slug route (BlogPost page with in-content product links)
+- [x] Register routes in App.tsx
+
+### V2-2: In-content CTA box
+- [x] BlogPost page: embed product link mid-article + CTA box at bottom
+- [x] CTA box: "Stop Struggling with Sleep. Start the 7-Night Protocol." → /order
+
+### V2-3: Google Search Console (manuální)
+- [x] Add robots.txt with sitemap reference
+- [ ] Document Google Search Console setup steps for user
+
+### V2-4: Sitemap.xml
+- [x] Add /sitemap.xml endpoint to server (dynamic, includes blog posts)
+
+### V2-5 + V2-6: Order page trust optimization
+- [x] Add "Instant Download" + "100% Secure Checkout" trust badges to Order page
+- [x] Add star rating (4.8★ / 847 reviews) above main CTA button
+- [x] Add "In Stock — Ready to Download" indicator
+
+### V1-4: Manychat Instagram funnel (setup guide)
+- [ ] Create MANYCHAT_SETUP_GUIDE.md with step-by-step instructions for client

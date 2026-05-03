@@ -24,6 +24,8 @@ import {
   emailSequences,
   InsertEmailSequence,
   upsellAbTests,
+  blogPosts,
+  InsertBlogPost,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -514,4 +516,32 @@ export async function getUpsellAbResults(): Promise<{
       avgRevenue: v.conversions > 0 ? Math.round((v.revenue / v.conversions) * 100) / 100 : 0,
     };
   }).sort((a, b) => a.page.localeCompare(b.page) || a.variant.localeCompare(b.variant));
+}
+
+// ── Blog Helpers ─────────────────────────────────────────────────────────────
+export async function getBlogPosts(limit = 20, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(blogPosts).orderBy(blogPosts.publishedAt).limit(limit).offset(offset);
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function createBlogPost(data: InsertBlogPost) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.insert(blogPosts).values(data);
+  return result;
+}
+
+export async function getBlogPostCount() {
+  const db = await getDb();
+  if (!db) return 0;
+  const rows = await db.select().from(blogPosts);
+  return rows.length;
 }

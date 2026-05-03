@@ -23,6 +23,8 @@ import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Protocol from "./pages/Protocol";
 import RefundPolicy from "./pages/RefundPolicy";
 import QuizFunnel from "./pages/QuizFunnel";
+import BlogList from "./pages/BlogList";
+import BlogPost from "./pages/BlogPost";
 import SleepChatBot from "./components/SleepChatBot";
 
 function Router() {
@@ -47,6 +49,8 @@ function Router() {
       <Route path="/protocol" component={Protocol} />
       <Route path="/quiz-funnel" component={QuizFunnel} />
       <Route path="/sleep-quiz" component={QuizFunnel} />
+      <Route path="/blog/:slug" component={BlogPost} />
+      <Route path="/blog" component={BlogList} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
