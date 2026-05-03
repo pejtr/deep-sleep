@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { TimelineCharts } from "@/components/TimelineCharts";
+import { PersonaMetricsDashboard } from "@/components/PersonaMetricsDashboard";
 import {
   BarChart3, DollarSign, Users, MessageSquare, Star, TrendingUp,
   Activity, ExternalLink, RefreshCw, Moon, Zap, Globe, ShoppingCart,
@@ -401,7 +402,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -444,6 +445,7 @@ export default function AdminDashboard() {
     { id: "funnel", label: "Funnel", icon: Activity },
     { id: "email", label: "Email", icon: Mail },
     { id: "abtest", label: "A/B Tests", icon: Sparkles },
+    { id: "personas", label: "Personas", icon: Users },
   ] as const;
 
   // Funnel conversion data for bar chart
@@ -889,6 +891,10 @@ export default function AdminDashboard() {
           </div>
         )}
         {/* ── Funnel Tab ─────────────────────────────────────────────────────────────────── */}
+        {/* ── Personas Tab ─────────────────────────────────────────────────────────────────── */}
+        {activeTab === "personas" && (
+          <PersonaMetricsDashboard />
+        )}
         {activeTab === "funnel" && (
           <div className="space-y-4">
             <ChartCard title="Full Funnel Overview">

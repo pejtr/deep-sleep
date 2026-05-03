@@ -252,8 +252,8 @@
 - [x] Chat history persistence
 - [x] PersonaMetricsDashboard component (conversion, revenue, impressions)
 - [x] 18 vitest tests for persona logic (all passing ✓)
-- [ ] Integrate PersonaMetricsDashboard into AdminDashboard page
-- [ ] Integrate personas into email service (Luna names in emails)
+- [x] Integrate PersonaMetricsDashboard into AdminDashboard page
+- [x] Integrate personas into email service (Luna names in emails)
 - [ ] Social media profiles for each Luna (Instagram, TikTok, YouTube)
 
 ## Native Stripe Checkout (replacing Gumroad)

@@ -1,5 +1,6 @@
 // Email automation service using Brevo (Sendinblue) API
 // Handles: purchase confirmation, download delivery, 7-day follow-up sequence
+import { getPersonaById } from "../shared/personas";
 
 const BREVO_API_URL = "https://api.brevo.com/v3";
 const SENDER = { name: "Deep Sleep Reset", email: "support@deep-sleep-reset.com" };
@@ -68,12 +69,14 @@ export async function sendPurchaseConfirmation({
   product,
   chronotype,
   amount,
+  personaId,
 }: {
   email: string;
   name?: string;
   product: string;
   chronotype?: string;
   amount: number;
+  personaId?: string;
 }): Promise<boolean> {
   // Build download list: always include tripwire + any additional purchased product
   const purchasedDownload = PRODUCT_DOWNLOADS[product] || PRODUCT_DOWNLOADS.tripwire;
@@ -84,6 +87,11 @@ export async function sendPurchaseConfirmation({
   const chronotypeName = chronotype ? CHRONOTYPE_NAMES[chronotype] || chronotype : "Bear 🐻";
   const displayName = name || "there";
   const baseUrl = "https://www.deep-sleep-reset.com";
+  
+  // Get persona name if provided
+  const persona = personaId ? getPersonaById(personaId as any) : null;
+  const personaName = persona?.name || "Deep Sleep Reset";
+  const senderName = persona ? `${persona.name} — Deep Sleep Reset` : "Deep Sleep Reset";
 
   const downloadItemsHtml = downloadsToShow.map(dl => `
     <div style="background:#0d0b1a;border:1px solid #2d2050;border-radius:10px;padding:16px;margin-bottom:12px;">
@@ -108,8 +116,8 @@ export async function sendPurchaseConfirmation({
     <!-- Header -->
     <div style="text-align:center;margin-bottom:32px;">
       <div style="font-size:48px;margin-bottom:8px;">🌙</div>
-      <h1 style="color:#fff;font-size:26px;margin:0;font-weight:800;">Deep Sleep Reset</h1>
-      <p style="color:#8b7fa8;margin:8px 0 0;font-size:13px;">Your personalized sleep system</p>
+      <h1 style="color:#fff;font-size:26px;margin:0;font-weight:800;">${senderName}</h1>
+      <p style="color:#8b7fa8;margin:8px 0 0;font-size:13px;">${persona ? "Your sleep guide" : "Your personalized sleep system"}</p>
     </div>
 
     <!-- Success banner -->
