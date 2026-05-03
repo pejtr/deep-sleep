@@ -61,7 +61,7 @@ const PERSONAS: Record<PersonaId, Persona> = {
   },
   petra: {
     id: "petra",
-    name: "Petra",
+    name: "Luna",
     emoji: "🔬",
     tagline: "Sleep Science Expert · Online",
     style: "You are Petra, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($5) as the evidence-based solution.",
@@ -71,7 +71,7 @@ const PERSONAS: Record<PersonaId, Persona> = {
     proactiveCs: "Stále procházíš? 🔬 Rychlý fakt: 68 % dospělých má klinicky významné problémy se spánkem. CBT-I (metoda v Deep Sleep Reset) překonává léky na spaní v každé studii. Stojí $5 a funguje.",
     exitEn: "Before you leave 🔬 — The research is unambiguous: untreated sleep problems worsen over time. CBT-I has an 80% success rate. Deep Sleep Reset is $5. The ROI on your sleep is infinite.",
     exitCs: "Než odejdeš 🔬 — Výzkum je jednoznačný: neléčené problémy se spánkem se časem zhoršují. CBT-I má 80% úspěšnost. Deep Sleep Reset je $5. Návratnost investice do spánku je nekonečná.",
-    buttonLabel: "Ask Petra",
+    buttonLabel: "Ask Luna",
     color: "oklch(0.55 0.22 200)",
   },
   lucie: {

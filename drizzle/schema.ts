@@ -261,3 +261,21 @@ export const blogPosts = mysqlTable("blog_posts", {
 });
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = typeof blogPosts.$inferInsert;
+
+// ── User Journey Events ──────────────────────────────────────────────────────
+// Tracks detailed journey steps per persona: quiz_start → quiz_complete → chat_open → checkout_view → purchase
+export const userJourneyEvents = mysqlTable("user_journey_events", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 128 }).notNull(),
+  personaId: varchar("personaId", { length: 32 }).notNull(), // luna1, luna2, ..., luna10
+  personaName: varchar("personaName", { length: 128 }).notNull(),
+  step: varchar("step", { length: 64 }).notNull(), // quiz_start, quiz_complete, chat_open, chat_message, checkout_view, purchase, email_opened, email_clicked
+  stepNumber: int("stepNumber").notNull(), // 1, 2, 3, 4, 5 for ordering
+  duration: int("duration"), // milliseconds spent on this step
+  metadata: text("metadata"), // JSON with additional context
+  chronotype: varchar("chronotype", { length: 16 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UserJourneyEvent = typeof userJourneyEvents.$inferSelect;
+export type InsertUserJourneyEvent = typeof userJourneyEvents.$inferInsert;
