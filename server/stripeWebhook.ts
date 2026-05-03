@@ -46,6 +46,12 @@ export function registerStripeWebhook(app: Express) {
 
             if (orderId) {
               const db = await getDb();
+              // ── Idempotency: skip if already completed ──────────────────────
+              const existing = await db?.select({ status: orders.status }).from(orders).where(eq(orders.id, parseInt(orderId))).limit(1);
+              if (existing?.[0]?.status === "completed") {
+                console.log(`[Stripe Webhook] Order ${orderId} already completed — skipping duplicate event ${event.id}`);
+                return res.json({ received: true, skipped: true });
+              }
               await db
                 ?.update(orders)
                 .set({

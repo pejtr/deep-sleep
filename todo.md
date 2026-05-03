@@ -501,4 +501,35 @@
 - [ ] Create MANYCHAT_SETUP_GUIDE.md with step-by-step instructions for client
 
 ## Domain Fix (May 3)
-- [ ] Replace all occurrences of deepsleep.manus.space with deepsleep.mom across entire project
+- [x] Replace all occurrences of wrong domains (deepsleep-z7uhfhzs.manus.space, deepsleep.quest) with deepsleep.manus.space
+
+## Full Excellence Optimization (May 3)
+
+### Domain Fixes
+- [x] Fix deepsleep.quest → deepsleep.manus.space in emailService.ts upsell links
+- [ ] Verify all domains resolve correctly (deepsleep.manus.space, deepsleep.mom, deep-sleep-reset.com)
+
+### Security Hardening
+- [x] Add helmet.js for HTTP security headers (CSP, HSTS, X-Frame-Options, etc.)
+- [x] Add rate limiting (express-rate-limit): 300/15min general, 15/15min checkout, 10/hr scheduled
+- [ ] Add input sanitization with zod schemas on all tRPC procedures
+- [ ] Add webhook signature verification hardening (Stripe + Reddit)
+- [ ] Add CORS policy tightening (only allow known domains)
+- [ ] Add SQL injection protection audit (Drizzle ORM parameterized queries check)
+- [ ] Add session security: httpOnly, secure, sameSite cookies
+- [ ] Add admin route protection: verify role=admin on all admin procedures
+
+### Backend Optimization
+- [ ] Add DB connection pooling configuration
+- [ ] Add structured error logging (Winston or Pino)
+- [x] Add webhook idempotency (check if order already processed before creating)
+- [ ] Add graceful shutdown handling
+- [x] Add health check endpoint /api/health
+
+### Frontend Optimization
+- [x] Add React.lazy() + Suspense for all page components (code splitting)
+- [ ] Add loading skeletons for all data-fetching components
+- [ ] Add error boundaries for graceful error handling
+- [ ] Optimize bundle size: audit and remove unused dependencies
+- [ ] Add meta tags (og:title, og:description, og:image) for social sharing
+- [ ] Add canonical URL tags for SEO

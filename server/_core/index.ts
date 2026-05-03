@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
@@ -38,11 +40,64 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // ── Security: Helmet (HTTP security headers) ──────────────────────────────
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "https://www.googletagmanager.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "blob:", "https:"],
+        connectSrc: ["'self'", "https://api.stripe.com", "https://api.reddit.com", "https://api.brevo.com", "https://api.manus.im", "wss:", "ws:"],
+        frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Required for Stripe iframes
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+  }));
+
+  // ── Security: Rate Limiting ────────────────────────────────────────────────
+  const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests, please try again later." },
+    skip: (req) => req.path === "/api/health" || req.path.startsWith("/api/trpc/auth.me"),
+  });
+  const checkoutLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 15,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many checkout attempts, please try again later." },
+  });
+  const scheduledLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Scheduled task rate limit exceeded." },
+  });
+  app.use("/api", generalLimiter);
+  app.use("/api/trpc/checkout", checkoutLimiter);
+  app.use("/api/scheduled", scheduledLimiter);
+
+  // ── Health Check ──────────────────────────────────────────────────────────
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString(), uptime: process.uptime() });
+  });
+
   // Stripe webhook MUST receive raw body — register BEFORE express.json()
   app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Configure body parser with reasonable size limit
+  app.use(express.json({ limit: "5mb" }));
+  app.use(express.urlencoded({ limit: "5mb", extended: true }));
+
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   registerBehaviorRoutes(app);
@@ -79,8 +134,8 @@ async function startServer() {
     }
     try {
       const { keyword, title } = req.body as { keyword?: string; title?: string };
-      const seoKeyword = keyword || "deep sleep improvement";
-      const postTitle = title || `How to Improve ${seoKeyword.charAt(0).toUpperCase() + seoKeyword.slice(1)}`;
+      const seoKeyword = (keyword || "deep sleep improvement").slice(0, 100); // sanitize length
+      const postTitle = (title || `How to Improve ${seoKeyword.charAt(0).toUpperCase() + seoKeyword.slice(1)}`).slice(0, 200);
       const slug = postTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now();
 
       const llmResponse = await invokeLLM({
@@ -130,6 +185,7 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
       createContext,
     })
   );
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
