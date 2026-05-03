@@ -241,6 +241,21 @@
 - [ ] Přidat FAQ sekci do zápatí Home.tsx s alespoň 3 otázkami o platbě a přístupu k produktu
 - [ ] Otázky: "How do I access the program?", "Is my payment secure?", "What if it doesn't work for me?", "Do I need any special equipment?"
 
+## Persona A/B Testing (10-way Guide Role Personas)
+- [x] 10 unique AI personas (Lunas) with empathetic system prompts
+- [x] Persona database schema (persona_assignments table)
+- [x] Persona helpers and DB queries (personaHelpers.ts)
+- [x] tRPC router for persona management (personas.ts)
+- [x] Persona assignment logic (random 10-way A/B test)
+- [x] Chat page with persona integration (/chat)
+- [x] Persona greeting and context awareness
+- [x] Chat history persistence
+- [x] PersonaMetricsDashboard component (conversion, revenue, impressions)
+- [x] 18 vitest tests for persona logic (all passing ✓)
+- [ ] Integrate PersonaMetricsDashboard into AdminDashboard page
+- [ ] Integrate personas into email service (Luna names in emails)
+- [ ] Social media profiles for each Luna (Instagram, TikTok, YouTube)
+
 ## Native Stripe Checkout (replacing Gumroad)
 - [x] Stripe sandbox activated via webdev_add_feature
 - [x] Stripe packages installed (stripe, @stripe/stripe-js)

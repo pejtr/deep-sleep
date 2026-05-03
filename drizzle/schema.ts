@@ -229,6 +229,24 @@ export const emailSequences = mysqlTable("email_sequences", {
 export type EmailSequence = typeof emailSequences.$inferSelect;
 export type InsertEmailSequence = typeof emailSequences.$inferInsert;
 
+// ── Persona A/B Tests (Luna variants) ──────────────────────────────────────────────────
+export const personaAssignments = mysqlTable("persona_assignments", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 128 }).notNull(),
+  personaId: varchar("personaId", { length: 32 }).notNull(), // luna1, luna2, ..., luna10
+  personaName: varchar("personaName", { length: 128 }).notNull(), // Display name
+  personaDescription: text("personaDescription"), // Short description
+  page: varchar("page", { length: 64 }).notNull(), // landing, chatbot, upsell1, upsell2, upsell3
+  shown: boolean("shown").default(true).notNull(),
+  converted: boolean("converted").default(false).notNull(),
+  revenue: decimal("revenue", { precision: 10, scale: 2 }).default("0"),
+  chronotype: varchar("chronotype", { length: 16 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type PersonaAssignment = typeof personaAssignments.$inferSelect;
+export type InsertPersonaAssignment = typeof personaAssignments.$inferInsert;
+
 // ── Blog Posts (SEO auto-generated) ──────────────────────────────────────────────────
 export const blogPosts = mysqlTable("blog_posts", {
   id: int("id").autoincrement().primaryKey(),

@@ -740,5 +740,69 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       }),
   }),
 
+  // ── Personas (Luna A/B Testing) ───────────────────────────────────────────
+  personas: router({
+    assignPersona: publicProcedure
+      .input(
+        z.object({
+          sessionId: z.string(),
+          page: z.string(),
+          chronotype: z.enum(["Lion", "Bear", "Wolf", "Dolphin"]).optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { assignPersonaToSession } = await import("./personaHelpers");
+        const { getPersonaById } = await import("../shared/personas");
+        const assignment = await assignPersonaToSession(input.sessionId, input.page, input.chronotype);
+        const persona = getPersonaById(assignment.personaId);
+        return {
+          personaId: assignment.personaId,
+          personaName: assignment.personaName,
+          personaDescription: assignment.personaDescription,
+          systemPrompt: persona?.systemPrompt,
+        };
+      }),
+
+    getPersona: publicProcedure
+      .input(
+        z.object({
+          sessionId: z.string(),
+          page: z.string(),
+        })
+      )
+      .query(async ({ input }) => {
+        const { getPersonaForSession } = await import("./personaHelpers");
+        return await getPersonaForSession(input.sessionId, input.page);
+      }),
+
+    markConversion: publicProcedure
+      .input(
+        z.object({
+          sessionId: z.string(),
+          page: z.string(),
+          revenue: z.number(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { markPersonaConverted } = await import("./personaHelpers");
+        await markPersonaConverted(input.sessionId, input.page, input.revenue);
+        return { success: true };
+      }),
+
+    getPerformance: protectedProcedure
+      .input(
+        z.object({
+          page: z.string().optional(),
+        })
+      )
+      .query(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const { getPersonaPerformance } = await import("./personaHelpers");
+        return await getPersonaPerformance(input.page);
+      }),
+  }),
+
 });
 export type AppRouter = typeof appRouter;

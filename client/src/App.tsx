@@ -31,6 +31,7 @@ const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const BlogList = lazy(() => import("./pages/BlogList"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const SleepChatBot = lazy(() => import("./components/SleepChatBot"));
+const Chat = lazy(() => import("./pages/Chat").then((m) => ({ default: m.ChatPage })));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
@@ -62,13 +63,15 @@ function Router() {
         <Route path="/affiliates" component={Affiliates} />
         <Route path="/contact" component={Contact} />
         <Route path="/feedback" component={Feedback} />
+        <Route path="/blog/:slug" component={BlogPost} />
+        <Route path="/blog" component={BlogList} />
+        <Route path="/chat" component={Chat} />
+        <Route path="/chatbot" component={SleepChatBot} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/checkout/success" component={CheckoutSuccess} />
         <Route path="/protocol" component={Protocol} />
         <Route path="/quiz-funnel" component={QuizFunnel} />
         <Route path="/sleep-quiz" component={QuizFunnel} />
-        <Route path="/blog/:slug" component={BlogPost} />
-        <Route path="/blog" component={BlogList} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
