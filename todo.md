@@ -407,7 +407,7 @@
 - [ ] Generate live API keys from Stripe Dashboard
 - [ ] Update Settings → Payment with live keys (STRIPE_SECRET_KEY, VITE_STRIPE_PUBLISHABLE_KEY)
 - [ ] Test live payment with $0.50 minimum order
-- [ ] Verify webhook delivery to production domain (deepsleep-z7uhfhzs.manus.space/api/stripe/webhook)
+- [ ] Verify webhook delivery to production domain (deepsleep.manus.space/api/stripe/webhook)
 
 ## A/B Testing for Upsell Pages (May 2)
 - [x] DB schema: upsell_ab_tests table with variant assignment
@@ -499,3 +499,6 @@
 
 ### V1-4: Manychat Instagram funnel (setup guide)
 - [ ] Create MANYCHAT_SETUP_GUIDE.md with step-by-step instructions for client
+
+## Domain Fix (May 3)
+- [ ] Replace all occurrences of deepsleep.manus.space with deepsleep.mom across entire project

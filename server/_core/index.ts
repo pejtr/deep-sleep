@@ -52,7 +52,7 @@ async function startServer() {
 
   // ── Sitemap.xml (V2-4) ─────────────────────────────────────────────────────
   app.get("/sitemap.xml", async (_req, res) => {
-    const baseUrl = "https://deepsleep-z7uhfhzs.manus.space";
+    const baseUrl = "https://deepsleep.manus.space";
     const staticPages = ["/", "/quiz-funnel", "/blog", "/order", "/privacy", "/terms", "/refund", "/affiliates", "/contact"];
     let posts: Array<{ slug: string; publishedAt: Date | string }> = [];
     try { posts = await getBlogPosts(100, 0); } catch {}
@@ -67,7 +67,7 @@ async function startServer() {
   // ── robots.txt ─────────────────────────────────────────────────────────────
   app.get("/robots.txt", (_req, res) => {
     res.set("Content-Type", "text/plain");
-    res.send("User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nSitemap: https://deepsleep-z7uhfhzs.manus.space/sitemap.xml");
+    res.send("User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nSitemap: https://deepsleep.manus.space/sitemap.xml");
   });
 
   // ── Scheduled Blog Post Endpoint (V2-1) ────────────────────────────────────
@@ -87,7 +87,7 @@ async function startServer() {
         messages: [
           {
             role: "system",
-            content: `You are a sleep science expert writing SEO-optimized blog articles for Deep Sleep Reset (deepsleep-z7uhfhzs.manus.space). 
+            content: `You are a sleep science expert writing SEO-optimized blog articles for Deep Sleep Reset (deepsleep.manus.space). 
 Write in a professional, authoritative tone. Sound like someone who has actually worked in sleep medicine.
 Use active voice and vary sentence structure.
 Format: Use ## for H2 headings, ### for H3, **bold** for key terms, - for bullet lists.
