@@ -5,52 +5,52 @@
 
 export const LUNA_IMAGES: Record<string, { url: string; alt: string; name: string }> = {
   compassionate: {
-    url: "/manus-storage/luna1-compassionate_f0d3169d.png",
+    url: "/manus-storage/luna1-compassionate_203cdccc.webp",
     alt: "Luna Compassionate - Empathetic Sleep Guide",
     name: "Luna Compassionate",
   },
   scientific: {
-    url: "/manus-storage/luna2-scientific_863a9c63.png",
+    url: "/manus-storage/luna2-scientific_5d248fd3.webp",
     alt: "Luna Scientific - Evidence-Based Sleep Coach",
     name: "Luna Scientific",
   },
   practical: {
-    url: "/manus-storage/luna3-practical_3fd48da1.png",
+    url: "/manus-storage/luna3-practical_9b178c6b.webp",
     alt: "Luna Practical - Action-Oriented Sleep Guide",
     name: "Luna Practical",
   },
   curious: {
-    url: "/manus-storage/luna4-curious_a46ad845.png",
+    url: "/manus-storage/luna4-curious_f8a139f0.webp",
     alt: "Luna Curious - Inquisitive Sleep Coach",
     name: "Luna Curious",
   },
   motivational: {
-    url: "/manus-storage/luna5-motivational_678fba95.png",
+    url: "/manus-storage/luna5-motivational_a1e2a9c8.webp",
     alt: "Luna Motivational - Inspiring Sleep Guide",
     name: "Luna Motivational",
   },
   holistic: {
-    url: "/manus-storage/luna6-holistic_787f9fbc.png",
+    url: "/manus-storage/luna6-holistic_6962d0f4.webp",
     alt: "Luna Holistic - Balanced Sleep Coach",
     name: "Luna Holistic",
   },
   storyteller: {
-    url: "/manus-storage/luna7-storyteller_fa4fa0d3.png",
+    url: "/manus-storage/luna7-storyteller_8fd578df.webp",
     alt: "Luna Storyteller - Narrative Sleep Guide",
     name: "Luna Storyteller",
   },
   structured: {
-    url: "/manus-storage/luna8-structured_05f8769c.png",
+    url: "/manus-storage/luna8-structured_364e506a.webp",
     alt: "Luna Structured - Systematic Sleep Coach",
     name: "Luna Structured",
   },
   adaptive: {
-    url: "/manus-storage/luna9-adaptive_dbc9485f.png",
+    url: "/manus-storage/luna9-adaptive_5cc4ca34.webp",
     alt: "Luna Adaptive - Flexible Sleep Guide",
     name: "Luna Adaptive",
   },
   empowering: {
-    url: "/manus-storage/luna10-empowering_6c05b798.png",
+    url: "/manus-storage/luna10-empowering_21e4197c.webp",
     alt: "Luna Empowering - Confident Sleep Coach",
     name: "Luna Empowering",
   },
