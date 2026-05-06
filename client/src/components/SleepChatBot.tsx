@@ -12,6 +12,7 @@
  *   /admin      → Admin mode with stats access (admin users only)
  */
 import { useState, useRef, useEffect, useCallback } from "react";
+import { getStablePersona, mapToChatPersona } from "@/lib/personaSync";
 import { trpc } from "@/lib/trpc";
 import { useI18n } from "@/contexts/I18nContext";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -93,14 +94,10 @@ const PERSONAS: Record<PersonaId, Persona> = {
 
 // Pick a stable persona per session
 function getSessionPersona(): PersonaId {
-  const stored = sessionStorage.getItem("chatbot_persona");
-  if (stored && (stored === "luna" || stored === "petra" || stored === "lucie")) {
-    return stored as PersonaId;
-  }
-  const personas: PersonaId[] = ["luna", "petra", "lucie"];
-  const picked = personas[Math.floor(Math.random() * personas.length)]!;
-  sessionStorage.setItem("chatbot_persona", picked);
-  return picked;
+  const stablePersona = getStablePersona();
+  const chatPersona = mapToChatPersona(stablePersona);
+  return chatPersona as PersonaId;
+}
 }
 
 const FEEDBACK_PROMPT_EN = "By the way — how would you rate your sleep problems on a scale of 1-5? (1 = mild, 5 = severe) This helps me give you better advice! 🌙";
