@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { Moon, ArrowLeft, Zap } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, getAbVariant, setChronotype, useTrackBehavior } from "@/hooks/useSession";
+import { setMetaTags } from "@/lib/metaTags";
 
 // Gumroad URL replaced by native Stripe checkout
 // const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
@@ -108,6 +109,12 @@ export default function Quiz() {
   const submitMutation = trpc.quiz.submit.useMutation();
 
   useEffect(() => {
+    setMetaTags({
+      title: "Deep Sleep Quiz — Find Your Chronotype",
+      description: "Discover your sleep chronotype (Lion, Bear, Wolf, or Dolphin) and get personalized sleep recommendations. Takes 2 minutes.",
+      image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp",
+      url: window.location.href,
+    });
     track("page_view", { page: "quiz" });
     return () => {
       if (advanceTimer.current) clearTimeout(advanceTimer.current);
