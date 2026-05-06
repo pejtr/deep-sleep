@@ -5,52 +5,52 @@
 
 export const LUNA_IMAGES: Record<string, { url: string; alt: string; name: string }> = {
   compassionate: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna1-compassionate-8NXuzwydKEFJqcAoPnCcjT.webp",
+    url: "/manus-storage/luna1-compassionate_f0d3169d.png",
     alt: "Luna Compassionate - Empathetic Sleep Guide",
     name: "Luna Compassionate",
   },
   scientific: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna2-scientific-mYAhLYZabBTWbhs5LNKhWS.webp",
+    url: "/manus-storage/luna2-scientific_863a9c63.png",
     alt: "Luna Scientific - Evidence-Based Sleep Coach",
     name: "Luna Scientific",
   },
   practical: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna3-practical-P7jpWjdDqaiZbQawVsNAoc.webp",
+    url: "/manus-storage/luna3-practical_3fd48da1.png",
     alt: "Luna Practical - Action-Oriented Sleep Guide",
     name: "Luna Practical",
   },
   curious: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna4-curious-CrXgMor97BEibUtSdVBmxn.webp",
+    url: "/manus-storage/luna4-curious_a46ad845.png",
     alt: "Luna Curious - Inquisitive Sleep Coach",
     name: "Luna Curious",
   },
   motivational: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna5-motivational-5tXLYjVzFdpjHmWE3po62L.webp",
+    url: "/manus-storage/luna5-motivational_678fba95.png",
     alt: "Luna Motivational - Inspiring Sleep Guide",
     name: "Luna Motivational",
   },
   holistic: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna6-holistic-8maAxSgWqg5GPi7CDsgFT5.webp",
+    url: "/manus-storage/luna6-holistic_787f9fbc.png",
     alt: "Luna Holistic - Balanced Sleep Coach",
     name: "Luna Holistic",
   },
   storyteller: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna7-storyteller-mYAhLYZabBTWbhs5LNKhWS.webp",
+    url: "/manus-storage/luna7-storyteller_fa4fa0d3.png",
     alt: "Luna Storyteller - Narrative Sleep Guide",
     name: "Luna Storyteller",
   },
   structured: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna8-structured-P7jpWjdDqaiZbQawVsNAoc.webp",
+    url: "/manus-storage/luna8-structured_05f8769c.png",
     alt: "Luna Structured - Systematic Sleep Coach",
     name: "Luna Structured",
   },
   adaptive: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna9-adaptive-CrXgMor97BEibUtSdVBmxn.webp",
+    url: "/manus-storage/luna9-adaptive_dbc9485f.png",
     alt: "Luna Adaptive - Flexible Sleep Guide",
     name: "Luna Adaptive",
   },
   empowering: {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna10-empowering-5tXLYjVzFdpjHmWE3po62L.webp",
+    url: "/manus-storage/luna10-empowering_6c05b798.png",
     alt: "Luna Empowering - Confident Sleep Coach",
     name: "Luna Empowering",
   },

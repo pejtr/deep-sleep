@@ -66,11 +66,11 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
   }, [onChatOpen]);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden" style={{ background: "oklch(0.07 0.025 255)" }}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full blur-3xl" style={{ background: "oklch(0.55 0.18 145 / 0.1)" }}></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl" style={{ background: "oklch(0.50 0.18 265 / 0.1)" }}></div>
       </div>
 
       {/* Content */}
@@ -79,28 +79,29 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
           {/* Left: Text Content */}
           <div className="space-y-8">
             <div>
-              <p className="text-amber-400 text-sm font-semibold tracking-widest uppercase mb-4">
+              <p className="text-xs md:text-sm font-semibold tracking-[0.2em] uppercase mb-6" style={{ color: "oklch(0.82 0.16 65)" }}>
                 Science-Backed Sleep Protocol
               </p>
-              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+              <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 max-w-5xl" style={{ color: "oklch(0.95 0.01 265)" }}>
                 You're Not Tired.
-                <span className="block text-amber-400 italic">You're Sleep-Deprived.</span>
+                <br />
+                <span className="text-gradient-gold-italic">You're Sleep-Deprived.</span>
               </h1>
             </div>
 
-            <p className="text-xl text-slate-300 leading-relaxed">
+            <p className="text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: "oklch(0.70 0.04 265)" }}>
               The 7-night protocol that fixes insomnia without pills, supplements, or willpower.
             </p>
 
-            <p className="text-base text-slate-400">
+            <p className="text-sm max-w-xl" style={{ color: "oklch(0.50 0.04 265)" }}>
               Based on CBT-I — the #1 clinician-recommended insomnia treatment with an 80% success rate.
             </p>
 
             {/* Luna Introduction */}
             {lunaImage && (
-              <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4 backdrop-blur">
-                <p className="text-sm text-slate-300">
-                  <span className="font-semibold text-amber-400">{lunaImage.name}</span> is your personal sleep guide.
+              <div className="rounded-lg p-4 backdrop-blur" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.25 0.04 265)" }}>
+                <p className="text-sm" style={{ color: "oklch(0.60 0.04 265)" }}>
+                  <span className="font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>{lunaImage.name}</span> is your personal sleep guide.
                   She understands your struggle and will help you reclaim your nights.
                 </p>
               </div>
@@ -108,12 +109,12 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button className="bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold py-4 px-8 rounded-lg transition-all transform hover:scale-105 text-lg">
+              <button className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold">
                 Fix My Sleep Tonight — $5
               </button>
               <button
                 onClick={onChatOpen}
-                className="border-2 border-amber-400 text-amber-400 hover:bg-amber-400/10 font-bold py-4 px-8 rounded-lg transition-all"
+                className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all" style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >
                 Ask Luna for Free Tips
               </button>
@@ -125,12 +126,12 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-2 border-slate-900"
+                    className="w-8 h-8 rounded-full border-2" style={{ background: "oklch(0.82 0.16 65)", borderColor: "oklch(0.07 0.025 255)" }}
                   ></div>
                 ))}
               </div>
-              <p className="text-sm text-slate-400">
-                <span className="font-semibold text-white">849</span> lives changed this week
+              <p className="text-sm" style={{ color: "oklch(0.40 0.04 265)" }}>
+                <span className="font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>849</span> lives changed this week
               </p>
             </div>
           </div>
@@ -138,14 +139,14 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
           {/* Right: Luna Image */}
           {lunaImage && (
             <div className="relative flex justify-center items-center">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-500/20 rounded-2xl blur-2xl"></div>
+              <div className="absolute inset-0 rounded-2xl blur-2xl" style={{ background: "linear-gradient(to right, oklch(0.82 0.16 65 / 0.2), oklch(0.75 0.18 145 / 0.2))" }}></div>
               <img
                 src={lunaImage.url}
                 alt={lunaImage.alt}
-                className="relative w-full max-w-md rounded-2xl shadow-2xl border-2 border-amber-400/30 object-cover aspect-square"
+                className="relative w-full max-w-md rounded-2xl shadow-2xl border-2 object-cover aspect-square" style={{ borderColor: "oklch(0.82 0.16 65 / 0.3)" }}
               />
               {/* Floating badge */}
-              <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse">
+              <div className="absolute top-4 right-4 text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse" style={{ background: "oklch(0.75 0.18 145)" }}>
                 ● 16 people viewing now
               </div>
             </div>
@@ -154,7 +155,7 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
       </div>
 
       {/* Bottom accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, oklch(0.82 0.16 65 / 0.5), transparent)" }}></div>
     </div>
   );
 }
