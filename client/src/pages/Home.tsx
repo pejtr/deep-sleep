@@ -14,6 +14,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
+import { HeroWithLuna } from "@/components/HeroWithLuna";
 
 // Gumroad URL kept as fallback — replaced by native Stripe checkout
 // const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
@@ -168,8 +169,16 @@ export default function Home() {
     navigate("/order");
   };
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const handleChatOpen = () => {
+    setIsChatOpen(true);
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden pb-14" style={{ background: "oklch(0.07 0.025 255)" }}>
+      {/* HeroWithLuna — replaces traditional hero for A/B testing */}
+      <HeroWithLuna onChatOpen={handleChatOpen} />
 
       {/* ═══════════════ STICKY TOP BAR ═══════════════ */}
       <div className="sticky top-0 z-30 sticky-top-bar">
