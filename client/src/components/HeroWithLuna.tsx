@@ -138,7 +138,7 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
 
           {/* Right: Luna Image */}
           {lunaImage && (
-            <div className="relative flex justify-center items-center">
+            <div className="relative flex justify-center items-center animate-reveal stagger-2">
               <div className="absolute inset-0 rounded-2xl blur-2xl" style={{ background: "linear-gradient(to right, oklch(0.82 0.16 65 / 0.2), oklch(0.75 0.18 145 / 0.2))" }}></div>
               <img
                 src={lunaImage.url}
