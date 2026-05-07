@@ -548,3 +548,19 @@
 - [ ] Optimize bundle size: audit and remove unused dependencies
 - [ ] Add meta tags (og:title, og:description, og:image) for social sharing
 - [ ] Add canonical URL tags for SEO
+
+
+## A/B Landing Page Variants (May 7)
+- [x] Design 2 distinct landing page variants with different value propositions
+- [x] Generate unique social media preview images for both variants
+  - [x] Variant A: "You're Not Tired. You're Sleep-Deprived." (science-focused, brain imagery)
+  - [x] Variant B: "Reclaim Your Life. One Night at a Time." (transformation-focused, sunrise imagery)
+- [x] Create HomeVariantB.tsx component with unique copy and design
+- [x] Implement A/B routing logic in Home.tsx (50/50 split between A and B)
+- [x] Set up dynamic Open Graph meta tags for both variants
+  - [x] Variant A: og:title, og:description, og:image (science-backed messaging)
+  - [x] Variant B: og:title, og:description, og:image (transformation messaging)
+- [x] Integrate tracking for both variants (testName: "landing_variant")
+- [x] Write 31 vitest tests for A/B variants (all passing ✓)
+- [ ] Monitor performance metrics in admin dashboard (impressions, conversions, revenue per variant)
+- [ ] Optimize based on performance data (scale winner, iterate loser)

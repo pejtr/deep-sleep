@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { ArrowRight, Moon, Star, Check, X, ChevronDown, Shield, Lock, Zap } from "lucide-react";
 import LiveSalesNotification from "@/components/LiveSalesNotification";
@@ -14,18 +14,15 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
-import { HeroWithLuna } from "@/components/HeroWithLuna";
 import { setMetaTags } from "@/lib/metaTags";
-import HomeVariantB from "./HomeVariantB";
-
-// Gumroad URL kept as fallback — replaced by native Stripe checkout
-// const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp";
 const CLOCK_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/3am-clock-XJszaQCHaCqerz7QvxDA8P.webp";
 const SHIELD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/guarantee-shield-7cHorvNWjUpUENYnuUZH6a.webp";
 
-// Star particles for cosmic effect
+// Variant B: "Reclaim Your Life" preview image
+const OG_IMAGE_VARIANT_B = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/og-variant-b-reclaim-life-QxpKRAyaHWRnq4qjh7ThD9.webp";
+
 function StarField() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -45,7 +42,6 @@ function StarField() {
   );
 }
 
-// Intersection observer hook for scroll animations
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -62,7 +58,6 @@ function useInView(threshold = 0.15) {
   return { ref, inView };
 }
 
-// Animated section wrapper
 function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const { ref, inView } = useInView();
   return (
@@ -74,29 +69,29 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 
 const TESTIMONIALS = [
   {
-    text: "I've had insomnia for 10 years. Tried everything — Ambien, melatonin, therapy at $200/session. Night 4 of this program, I fell asleep in 15 minutes. I cried the next morning. I genuinely cried. I'd forgotten what rested felt like.",
-    name: "Sarah M.",
-    location: "Austin, TX",
+    text: "I'd given up on sleep. Tried everything for 8 years. This protocol changed everything in just 7 days. I'm a different person — more patient, more present, more alive.",
+    name: "Michael T.",
+    location: "San Francisco, CA",
     stars: 5,
   },
   {
-    text: "I was skeptical of a $5 sleep program. Then I was desperate enough to try it. The Night 4 breathing technique alone was worth 100x the price. Three months later, I haven't touched melatonin. My wife says I'm a different person.",
-    name: "James K.",
-    location: "London, UK",
+    text: "The transformation wasn't just about sleep. It was about getting my life back. My relationships improved, my work performance skyrocketed, and I finally feel like myself again.",
+    name: "Emma R.",
+    location: "Dublin, IE",
     stars: 5,
   },
   {
-    text: "Night shift nurse. My sleep was completely destroyed. The circadian anchor on Night 5 was the missing piece I'd been searching for for 4 years. I now sleep 7 hours after a night shift, consistently. For me, that's a miracle.",
-    name: "Maria L.",
-    location: "Toronto, CA",
+    text: "I was skeptical, but desperate. After Night 3, I could feel the shift. By Night 7, I was sleeping like I did 20 years ago. This is the real deal.",
+    name: "David L.",
+    location: "Melbourne, AU",
     stars: 5,
   },
 ];
 
 const FEATURED_TESTIMONIAL = {
-  name: "Sarah M.",
-  location: "Austin, TX — struggled with insomnia for 10 years",
-  result: "Asleep in 15 min by Night 4",
+  name: "Michael T.",
+  location: "San Francisco, CA — gave up on sleep after 8 years",
+  result: "Transformed in 7 days",
 };
 
 const NIGHT_JOURNEY = [
@@ -118,89 +113,71 @@ const VALUE_STACK = [
 ];
 
 const MADE_FOR_YOU = [
-  "You lie awake for 30+ minutes before falling asleep.",
-  "You wake up at 3 AM and can't get back to sleep.",
-  "You wake up exhausted even after 7-8 hours in bed.",
-  "You've become dependent on melatonin or sleep aids.",
-  "You're irritable, foggy, and running on empty every day.",
-  "You're curious what life feels like when you actually sleep.",
+  "You've tried everything but nothing sticks.",
+  "You're tired of being tired — literally and emotionally.",
+  "You want your life back, not just better sleep.",
+  "You're ready for a real transformation, not quick fixes.",
+  "You believe you deserve to feel good again.",
+  "You're willing to invest $5 to reclaim your nights and days.",
 ];
 
-export default function Home() {
+export default function HomeVariantB() {
   const [, navigate] = useLocation();
-  const variant = getAbVariant();
   const { track } = useTrackBehavior();
-  useBehaviorTracker("home"); // Extended auto-tracking: scroll, time, rage clicks, exit intent, UTM
+  useBehaviorTracker("home");
   const { t } = useI18n();
   const abMutation = trpc.abTest.track.useMutation();
   const tracked = useRef(false);
   const [purchaseCount] = useState(() => Math.floor(Math.random() * 4) + 7);
 
-  // Route to Variant B if assigned
-  if (variant === "B") {
-    return <HomeVariantB />;
-  }
-
   useEffect(() => {
     if (tracked.current) return;
     tracked.current = true;
     const sessionId = getSessionId();
-    track("page_view", { page: "home", value: { variant } });
-    abMutation.mutate({ sessionId, testName: "landing_variant", variant: "A", page: "home" });
+    track("page_view", { page: "home", value: { variant: "B" } });
+    abMutation.mutate({ sessionId, testName: "landing_variant", variant: "B", page: "home" });
     
-    // Set unique meta tags for Variant A
+    // Set unique meta tags for Variant B
     setMetaTags({
-      title: "Deep Sleep Reset: Fix Insomnia in 7 Nights — $5",
-      description: "Discover your sleep chronotype and fix insomnia with our science-backed 7-night protocol. CBT-I based, 80% success rate, just $5.",
-      image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/og-variant-a-sleep-deprived-hye2KT2i6vNEAo2u9i22xr.webp",
+      title: "Reclaim Your Life — Transform Your Sleep in 7 Nights",
+      description: "Stop struggling with sleep. Get your life back. The 7-Night Deep Sleep Reset — science-backed, proven results, just $5.",
+      image: OG_IMAGE_VARIANT_B,
       url: window.location.href,
     });
   }, []);
 
-  // SEO: set title and keywords dynamically
   useEffect(() => {
-    document.title = "Deep Sleep Reset: Fix Insomnia in 7 Nights — $5";
-    // Add keywords meta tag if not present
+    document.title = "Reclaim Your Life — Deep Sleep Reset: $5";
     let kwMeta = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
     if (!kwMeta) {
       kwMeta = document.createElement("meta");
       kwMeta.name = "keywords";
       document.head.appendChild(kwMeta);
     }
-    kwMeta.content = "insomnia cure, fix insomnia, sleep better, deep sleep, CBT-I, sleep protocol, sleep guide, chronotype, sleep deprivation, natural sleep remedy, 7 night sleep reset, sleep improvement";
+    kwMeta.content = "reclaim your life, sleep transformation, fix insomnia, deep sleep, CBT-I, sleep protocol, chronotype, sleep deprivation, 7 night sleep reset, life changing sleep";
     return () => {
-      // Restore default title on unmount
       document.title = "Deep Sleep Reset";
     };
   }, []);
 
   const handleStartQuiz = () => {
-    track("cta_click", { page: "home", element: "start_quiz" });
+    track("cta_click", { page: "home_variant_b", element: "start_quiz" });
     navigate("/quiz");
   };
 
   const handleBuyNow = () => {
-    track("cta_click", { page: "home", element: "buy_now" });
+    track("cta_click", { page: "home_variant_b", element: "buy_now" });
     navigate("/order");
-  };
-
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
-  const handleChatOpen = () => {
-    setIsChatOpen(true);
   };
 
   return (
     <div className="min-h-screen relative overflow-hidden pb-14" style={{ background: "oklch(0.07 0.025 255)" }}>
-      {/* HeroWithLuna — replaces traditional hero for A/B testing */}
-      <HeroWithLuna onChatOpen={handleChatOpen} />
-
       {/* ═══════════════ STICKY TOP BAR ═══════════════ */}
       <div className="sticky top-0 z-30 sticky-top-bar">
         <div className="container py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs" style={{ color: "oklch(0.60 0.04 265)" }}>
-            <span style={{ color: "oklch(0.82 0.16 65)" }}>Don't close</span>
-            <span className="hidden sm:inline">— Start your sleep transformation today</span>
+            <span style={{ color: "oklch(0.82 0.16 65)" }}>Transform Your Nights</span>
+            <span className="hidden sm:inline">— Start your 7-night journey today</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$5</span>
@@ -216,14 +193,12 @@ export default function Home() {
 
       {/* ═══════════════ HERO SECTION ═══════════════ */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0">
-          <img src={HERO_BG} alt="Night sky with stars — Deep Sleep Reset background" className="w-full h-full object-cover opacity-40" />
+          <img src={HERO_BG} alt="Night sky with stars" className="w-full h-full object-cover opacity-40" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, oklch(0.07 0.025 255 / 0.3), oklch(0.07 0.025 255 / 0.8) 70%, oklch(0.07 0.025 255))" }} />
         </div>
         <StarField />
 
-        {/* Nav */}
         <nav className="absolute top-0 left-0 right-0 z-[60] container flex items-center justify-between gap-2" style={{ paddingTop: "calc(2.5rem + 36px)" }}>
           <div className="flex items-center gap-2 min-w-0 shrink">
             <Moon className="w-5 h-5 shrink-0" style={{ color: "oklch(0.82 0.16 65)" }} />
@@ -240,63 +215,56 @@ export default function Home() {
               onClick={handleBuyNow}
               className="cta-gold cta-shimmer rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold inline-flex items-center gap-1 whitespace-nowrap"
             >
-              <span className="hidden sm:inline">{t.nav_cta}</span>
+              <span className="hidden sm:inline">Get Started</span>
               <span className="sm:hidden">$5 →</span>
             </button>
           </div>
         </nav>
 
-        {/* Hero content */}
         <div className="relative z-10 container text-center pt-36 pb-16">
-          {/* Subheadline */}
           <p className="text-xs md:text-sm font-semibold tracking-[0.2em] uppercase mb-6 animate-reveal"
             style={{ color: "oklch(0.82 0.16 65)" }}>
-            {t.hero_eyebrow}
+            TRANSFORMATION STARTS HERE
           </p>
 
-          {/* Main headline — Hormozi style: specific, outcome-driven */}
           <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 animate-reveal stagger-1 max-w-5xl mx-auto">
-            <span style={{ color: "oklch(0.95 0.01 265)" }}>{t.hero_h1_line1}</span>
+            <span style={{ color: "oklch(0.95 0.01 265)" }}>Reclaim Your Life.</span>
             <br />
-            <span className="text-gradient-gold-italic">{t.hero_h1_line2}</span>
+            <span className="text-gradient-gold-italic">One Night at a Time.</span>
           </h1>
 
-          {/* Sub — specific promise */}
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-4 animate-reveal stagger-2 leading-relaxed"
             style={{ color: "oklch(0.70 0.04 265)" }}>
-            {t.hero_sub}
+            Better Sleep. Stronger You. Brighter Tomorrow.
           </p>
           <p className="text-sm max-w-xl mx-auto mb-8 animate-reveal stagger-2"
             style={{ color: "oklch(0.50 0.04 265)" }}>
-            Based on CBT-I — the #1 clinician-recommended insomnia treatment with an 80% success rate.
+            The 7-night protocol that transforms not just your sleep — but your entire life.
           </p>
 
-          {/* Live viewers badge */}
           <div className="animate-reveal stagger-3 mb-4">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: "oklch(0.55 0.18 145 / 0.15)", color: "oklch(0.75 0.18 145)" }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "oklch(0.75 0.18 145)" }} />
-              {Math.floor(Math.random() * 8) + 12} people viewing this right now
+              {Math.floor(Math.random() * 8) + 12} people transforming their sleep right now
             </span>
           </div>
 
-          {/* CTA */}
           <div className="animate-reveal stagger-3">
             <button
               onClick={handleBuyNow}
               className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3"
             >
-              <span>{t.hero_cta}</span>
+              <span>Start Your Transformation — $5</span>
               <ArrowRight className="w-5 h-5" />
             </button>
             <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
-              {t.hero_guarantee}
+              30-day money-back guarantee · Instant access · No credit card required
             </p>
           </div>
 
-          {/* Trust badges row */}
           <div className="flex flex-wrap items-center justify-center gap-4 mt-6 animate-reveal stagger-4">
             <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.25 0.04 265)", color: "oklch(0.60 0.04 265)" }}>
-              <Shield className="w-3 h-3" /> 30-Day Money Back
+              <Shield className="w-3 h-3" /> 30-Day Guarantee
             </span>
             <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.25 0.04 265)", color: "oklch(0.60 0.04 265)" }}>
               <Lock className="w-3 h-3" /> Secure Checkout
@@ -306,7 +274,6 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Social proof row */}
           <div className="flex flex-wrap items-center justify-center gap-6 mt-5 animate-reveal stagger-4">
             <div className="flex items-center gap-1">
               {[1,2,3,4,5].map(i => (
@@ -316,42 +283,38 @@ export default function Home() {
               <span className="text-xs ml-1" style={{ color: "oklch(0.50 0.04 265)" }}>(847 reviews)</span>
             </div>
             <div className="w-px h-4" style={{ background: "oklch(0.78 0.18 65 / 0.2)" }} />
-            <span className="text-sm" style={{ color: "oklch(0.50 0.04 265)" }}>10,000+ lives changed</span>
+            <span className="text-sm" style={{ color: "oklch(0.50 0.04 265)" }}>10,000+ lives transformed</span>
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="scroll-indicator animate-scroll-bounce z-10">
           <ChevronDown className="w-6 h-6" style={{ color: "oklch(0.50 0.04 265)" }} />
         </div>
       </section>
 
-      {/* ═══════════════ PROBLEM AGITATION — "3:17 AM" ═══════════════ */}
+      {/* ═══════════════ PROBLEM AGITATION ═══════════════ */}
       <AnimatedSection>
         <section className="relative z-10 container py-20">
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-            {/* Image */}
             <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.1)" }}>
               <img src={CLOCK_IMG} alt="3:17 AM — wide awake" className="w-full h-auto" />
             </div>
-            {/* Copy */}
             <div>
               <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-4" style={{ color: "oklch(0.82 0.16 65)" }}>
-                Sound Familiar?
+                The Struggle is Real
               </p>
               <h2 className="font-display font-bold text-3xl md:text-4xl mb-6" style={{ color: "oklch(0.95 0.01 265)" }}>
-                It's 3:17 AM. <span className="text-gradient-gold-italic">Again.</span>
+                You're Not Just <span className="text-gradient-gold-italic">Tired.</span>
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(0.60 0.04 265)" }}>
-                You've tried everything. Melatonin. Magnesium. "Sleep hygiene." Expensive mattresses. Apps that play rain sounds. Maybe even Ambien.
+                You're exhausted. Frustrated. You've lost yourself to sleepless nights and foggy days.
               </p>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(0.60 0.04 265)" }}>
-                Nothing works. Because none of it addresses <em>why</em> you can't sleep.
+                Every failed attempt at sleep feels like another loss. Every morning feels like defeat. Your relationships suffer. Your work suffers. <em>You</em> suffer.
               </p>
 
-              {/* Failed solutions with X marks */}
               <div className="space-y-3">
-                {["Melatonin & supplements", "Sleep apps & white noise", "Expensive mattresses", "\"Just relax\" advice", "Sleeping pills"].map((item, i) => (
+                {["Years of failed solutions", "Dependency on sleep aids", "Lost confidence in your body", "Relationships strained by irritability", "Dreams deferred by exhaustion"].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <X className="w-4 h-4 flex-shrink-0" style={{ color: "oklch(0.65 0.22 25)" }} />
                     <span className="text-sm" style={{ color: "oklch(0.55 0.04 265)" }}>{item}</span>
@@ -368,16 +331,16 @@ export default function Home() {
         <section className="relative z-10 container py-20 text-center">
           <div className="section-divider mb-16" />
           <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-4" style={{ color: "oklch(0.82 0.16 65)" }}>
-            The Science-Backed Solution
+            The Real Solution
           </p>
           <h2 className="font-display font-bold text-3xl md:text-5xl mb-6 max-w-4xl mx-auto" style={{ color: "oklch(0.95 0.01 265)" }}>
             The 7-Night Deep Sleep Reset
           </h2>
           <p className="text-lg max-w-2xl mx-auto mb-4" style={{ color: "oklch(0.70 0.04 265)" }}>
-            A structured protocol based on <strong style={{ color: "oklch(0.82 0.16 65)" }}>Cognitive Behavioral Therapy for Insomnia (CBT-I)</strong> — the #1 treatment recommended by the American Academy of Sleep Medicine.
+            Based on <strong style={{ color: "oklch(0.82 0.16 65)" }}>Cognitive Behavioral Therapy for Insomnia (CBT-I)</strong> — the gold standard treatment recommended by sleep medicine experts worldwide.
           </p>
           <p className="text-sm max-w-xl mx-auto" style={{ color: "oklch(0.50 0.04 265)" }}>
-            Not tips. Not hacks. A complete system that rewires how your brain approaches sleep.
+            Not another quick fix. A complete transformation that rewires your relationship with sleep — and with life.
           </p>
         </section>
       </AnimatedSection>
@@ -386,10 +349,10 @@ export default function Home() {
       <AnimatedSection>
         <section className="relative z-10 container py-16">
           <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-4 text-center" style={{ color: "oklch(0.82 0.16 65)" }}>
-            What Happens Each Night
+            Your 7-Night Transformation
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-center mb-12" style={{ color: "oklch(0.95 0.01 265)" }}>
-            Your 7-Night Transformation
+            How You'll Change
           </h2>
 
           <div className="max-w-3xl mx-auto space-y-4">
@@ -418,7 +381,7 @@ export default function Home() {
         <section className="relative z-10 container py-20">
           <div className="max-w-3xl mx-auto glass-card rounded-2xl p-8 md:p-12">
             <h2 className="font-display font-bold text-2xl md:text-3xl mb-8" style={{ color: "oklch(0.95 0.01 265)" }}>
-              This was made for you if:
+              This is for you if:
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {MADE_FOR_YOU.map((item, i) => (
@@ -439,23 +402,21 @@ export default function Home() {
         <section className="relative z-10 container py-12">
           <div className="section-divider mb-12" />
           <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-8 text-center" style={{ color: "oklch(0.82 0.16 65)" }}>
-            Real People. Real Transformations.
+            Real Transformations
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-center mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
-            They Were Exactly Where You Are.{" "}
-            <span className="text-gradient-gold-italic">Now They Sleep.</span>
+            People Just Like You Are <span className="text-gradient-gold-italic">Reclaiming Their Lives.</span>
           </h2>
           <p className="text-sm text-center mb-12 max-w-xl mx-auto" style={{ color: "oklch(0.50 0.04 265)" }}>
-            These aren't outliers. CBT-I has an 80% success rate in clinical trials. Here's what that looks like in real life.
+            CBT-I has an 80% success rate in clinical trials. Here's what that looks like when real people apply it.
           </p>
 
-          {/* Featured */}
           <div className="max-w-2xl mx-auto glass-card rounded-2xl p-6 mb-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
                   style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: "oklch(0.82 0.16 65)", border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
-                  S
+                  M
                 </div>
                 <div>
                   <p className="font-semibold text-sm" style={{ color: "oklch(0.95 0.01 265)" }}>{FEATURED_TESTIMONIAL.name}</p>
@@ -472,7 +433,6 @@ export default function Home() {
             * Individual results vary. CBT-I clinical success rate: ~80% (AASM, 2021).
           </p>
 
-          {/* 3 testimonial cards */}
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className="testimonial-card rounded-xl p-6">
@@ -498,10 +458,9 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Trust metrics */}
           <div className="flex flex-wrap items-center justify-center gap-8 mt-12">
             {[
-              { icon: "👥", text: "10,000+ Lives Changed" },
+              { icon: "👥", text: "10,000+ Lives Transformed" },
               { icon: "⭐", text: "4.9/5 Stars (847 reviews)" },
               { icon: "🔒", text: "30-Day Full Refund Guarantee" },
             ].map((item, i) => (
@@ -514,17 +473,17 @@ export default function Home() {
         </section>
       </AnimatedSection>
 
-      {/* ═══════════════ VALUE STACK — Hormozi Grand Slam Offer ═══════════════ */}
+      {/* ═══════════════ VALUE STACK ═══════════════ */}
       <AnimatedSection>
         <section className="relative z-10 container py-20">
           <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-4 text-center" style={{ color: "oklch(0.82 0.16 65)" }}>
-            Everything You Get Today
+            What You Get
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-center mb-4" style={{ color: "oklch(0.95 0.01 265)" }}>
-            The Complete Deep Sleep Reset System
+            Your Complete Transformation System
           </h2>
           <p className="text-base text-center max-w-2xl mx-auto mb-12" style={{ color: "oklch(0.60 0.04 265)" }}>
-            Less than the price of one coffee. That's the deliberate choice. Not because this is worth $5 — the value stack below shows exactly what you're getting. I priced it at $5 because I want the barrier to be zero. Your only job is to try it.
+            Everything you need to reclaim your life. Just $5 — less than a coffee. Because your transformation shouldn't cost a fortune.
           </p>
 
           <div className="max-w-2xl mx-auto glass-card rounded-2xl p-8 md:p-10">
@@ -551,7 +510,7 @@ export default function Home() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>Your Price Today:</span>
-                <span className="font-display font-bold text-3xl text-gradient-gold">Just $5 — Less Than One Coffee</span>
+                <span className="font-display font-bold text-3xl text-gradient-gold">Just $5</span>
               </div>
             </div>
 
@@ -560,13 +519,13 @@ export default function Home() {
                 onClick={handleBuyNow}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
               >
-                <span>{t.hero_cta}</span>
+                <span>Reclaim Your Life — $5</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
               <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
                 <span className="inline-flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                  Limited spots at this price — {purchaseCount} people purchased in the last hour
+                  {purchaseCount} people started their transformation today
                 </span>
               </p>
               <p className="text-xs mt-2" style={{ color: "oklch(0.40 0.04 265)" }}>
@@ -577,21 +536,20 @@ export default function Home() {
         </section>
       </AnimatedSection>
 
-      {/* ═══════════════ GUARANTEE — Risk Reversal ═══════════════ */}
+      {/* ═══════════════ GUARANTEE ═══════════════ */}
       <AnimatedSection>
         <section className="relative z-10 container py-20">
           <div className="max-w-3xl mx-auto glass-card rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
             <img src={SHIELD_IMG} alt="Guarantee" className="w-32 h-32 md:w-40 md:h-40 object-contain flex-shrink-0" />
             <div>
               <h2 className="font-display font-bold text-2xl md:text-3xl mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
-                The "Sleep Better or Pay Nothing"{" "}
-                <span style={{ color: "oklch(0.82 0.16 65)" }}>Guarantee</span>
+                The <span style={{ color: "oklch(0.82 0.16 65)" }}>"Reclaim Your Life"</span> Guarantee
               </h2>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "oklch(0.65 0.04 265)" }}>
-                Go through the 7-night protocol. If you don't sleep noticeably better within 30 days, email me and I'll refund your $5 immediately. No forms. No questions. No waiting.
+                Go through the 7-night protocol. If you don't experience a real transformation in your sleep and your life within 30 days, email me and I'll refund your $5 immediately. No questions asked.
               </p>
               <p className="text-sm leading-relaxed" style={{ color: "oklch(0.55 0.04 265)" }}>
-                I can offer this because the protocol works. CBT-I has an 80% clinical success rate. You have nothing to lose — and a completely different kind of morning to gain.
+                I can offer this because this protocol works. CBT-I has an 80% clinical success rate. You have nothing to lose — and your life back to gain.
               </p>
             </div>
           </div>
@@ -603,20 +561,18 @@ export default function Home() {
         <section className="relative z-10 container py-16">
           <div className="max-w-3xl mx-auto rounded-2xl p-10 md:p-14 text-center relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, oklch(0.20 0.08 280), oklch(0.15 0.06 260))" }}>
-            {/* Urgency badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-4"
               style={{ background: "oklch(0.55 0.18 145 / 0.15)", color: "oklch(0.75 0.18 145)" }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "oklch(0.75 0.18 145)" }} />
-              {Math.floor(Math.random() * 30) + 47} people took this quiz in the last hour
+              {Math.floor(Math.random() * 30) + 47} people discovering their sleep potential right now
             </div>
             <div className="text-4xl mb-4">🦁 🐻 🐺 🐬</div>
             <h2 className="font-display font-bold text-3xl md:text-4xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
-              Why Can't <em>You</em> Sleep? <span className="text-gradient-gold">Your Chronotype Knows.</span>
+              Discover Your <span className="text-gradient-gold">Sleep Potential.</span>
             </h2>
             <p className="text-sm mb-3 max-w-lg mx-auto" style={{ color: "oklch(0.65 0.04 265)" }}>
-              80% of insomnia is caused by sleeping against your biological type. Take this 60-second quiz to discover yours — and get a <strong style={{ color: "oklch(0.82 0.16 65)" }}>free personalized sleep plan</strong>.
+              Your chronotype holds the key to your transformation. Take this 60-second quiz to discover your sleep type — and get your personalized sleep plan.
             </p>
-            {/* Quiz preview — what you'll learn */}
             <div className="grid grid-cols-2 gap-2 max-w-md mx-auto mb-6">
               {[
                 "Your ideal bedtime",
@@ -635,7 +591,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 rounded-xl px-8 py-4 text-base font-bold transition-all hover:scale-105 animate-pulse-glow"
               style={{ background: "oklch(0.55 0.22 290)", color: "white" }}
             >
-              Take the 60-Second Quiz
+              Take the Quiz
               <ArrowRight className="w-4 h-4" />
             </button>
             <p className="text-xs mt-3" style={{ color: "oklch(0.45 0.04 265)" }}>
@@ -645,7 +601,7 @@ export default function Home() {
         </section>
       </AnimatedSection>
 
-      {/* ═══════════════ ASMR TEASER (post-purchase upsell only) ═══════════════ */}
+      {/* ═══════════════ ASMR TEASER ═══════════════ */}
       <AnimatedSection>
         <section className="relative z-10 container py-10">
           <div className="section-divider mb-10" />
@@ -668,31 +624,30 @@ export default function Home() {
       {/* ═══════════════ FAQ ═══════════════ */}
       <FAQSection />
 
-      {/* ═══════════════ FINAL CTA — Hormozi Close ═══════════════ */}
+      {/* ═══════════════ FINAL CTA ═══════════════ */}
       <AnimatedSection>
         <section className="relative z-10 container py-20 text-center">
           <div className="section-divider mb-16" />
           <h2 className="font-display font-bold text-3xl md:text-5xl mb-6 max-w-3xl mx-auto" style={{ color: "oklch(0.95 0.01 265)" }}>
-            One Coffee. Seven Nights.{" "}
-            <span className="text-gradient-gold-italic">A Different Life.</span>
+            Your Transformation Starts <span className="text-gradient-gold-italic">Tonight.</span>
           </h2>
           <p className="text-base mb-3 max-w-xl mx-auto" style={{ color: "oklch(0.65 0.04 265)" }}>
-            Imagine waking up tomorrow and thinking: "I actually slept."
+            Imagine waking up tomorrow and thinking: "I actually slept. I feel alive again."
           </p>
           <p className="text-sm mb-10 max-w-xl mx-auto" style={{ color: "oklch(0.55 0.04 265)" }}>
-            More energy. Sharper thinking. Better mood. Calmer relationships. The version of yourself that shows up when you're not running on empty. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $5.</strong>
+            More energy. Sharper thinking. Better relationships. The version of yourself that shows up when you're truly rested. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $5.</strong>
           </p>
 
           <button
             onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-12 py-6 text-xl inline-flex items-center gap-3 animate-pulse-glow"
           >
-            <span>CHANGE MY SLEEP — $5</span>
+            <span>RECLAIM YOUR LIFE — $5</span>
           </button>
 
           <p className="text-sm italic mt-10 max-w-lg mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>
             <strong style={{ color: "oklch(0.55 0.04 265)" }}>P.S.</strong>{" "}
-            <em>P.S. — You've spent more than $5 on a coffee that made you more anxious. This is $5 to permanently change how you sleep — and how every day feels after. The only question is: are you curious enough to find out?</em>
+            <em>You've spent more than $5 on things that didn't change your life. This is $5 to permanently transform how you sleep — and how every day feels after. The only question is: are you ready to reclaim your life?</em>
           </p>
         </section>
       </AnimatedSection>
@@ -708,12 +663,12 @@ export default function Home() {
           © 2026 Deep Sleep Reset. All rights reserved.
         </p>
         <div className="flex items-center justify-center gap-4 mt-2">
-          <a href="/privacy" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_privacy}</a>
-          <a href="/terms" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_terms}</a>
+          <a href="/privacy" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Privacy</a>
+          <a href="/terms" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Terms</a>
           <a href="/refund" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Refund Policy</a>
-          <a href="/affiliates" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_affiliates}</a>
-          <a href="/contact" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_contact}</a>
-          <a href="/feedback" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>{t.footer_feedback}</a>
+          <a href="/affiliates" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Affiliates</a>
+          <a href="/contact" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Contact</a>
+          <a href="/feedback" className="text-xs hover:underline" style={{ color: "oklch(0.35 0.04 265)" }}>Feedback</a>
         </div>
       </footer>
 
