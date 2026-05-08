@@ -25,6 +25,7 @@ import {
   getBlogPosts,
   getBlogPostBySlug,
   createBlogPost,
+  getAbMetrics,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -214,7 +215,14 @@ export const appRouter = router({
         await markAbConverted(input.sessionId, input.testName);
         return { success: true };
       }),
-  }),
+
+    getLiveMetrics: publicProcedure
+      .input(z.object({ testName: z.string() }))
+      .query(async ({ input }) => {
+        const metrics = await getAbMetrics(input.testName);
+        return metrics || { testName: input.testName, metrics: {}, winner: null, totalImpressions: 0, totalConversions: 0, updatedAt: new Date() };
+      }),
+}),
 
   // ── Behavior ──────────────────────────────────────────────────────────────
   behavior: router({

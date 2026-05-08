@@ -564,3 +564,35 @@
 - [x] Write 31 vitest tests for A/B variants (all passing ✓)
 - [ ] Monitor performance metrics in admin dashboard (impressions, conversions, revenue per variant)
 - [ ] Optimize based on performance data (scale winner, iterate loser)
+
+
+## Real-Time Dashboard Metrics (May 7-8) ✅ COMPLETE
+- [x] Design metrics dashboard layout with variant comparison
+- [x] Create tRPC procedure for live A/B metrics (impressions, conversions, rates)
+  - [x] getAbMetrics() backend function in server/db.ts
+  - [x] getLiveMetrics tRPC query in server/routers.ts
+- [x] Build real-time metrics widget component (AbMetricsWidget.tsx)
+  - [x] Live metrics display with variant comparison
+  - [x] Winner detection and highlighting
+  - [x] Conversion rate calculations
+  - [x] Progress bars and visual hierarchy
+- [x] Implement auto-refresh polling (5-second intervals)
+  - [x] refetchInterval: 5000ms in useQuery hook
+  - [x] Live/Paused toggle button
+- [x] Add conversion rate calculations and winner detection
+  - [x] Per-variant metrics aggregation
+  - [x] Overall conversion rate calculation
+  - [x] Automatic winner detection (highest rate)
+- [x] Write vitest tests for metrics procedures (25 tests, all passing)
+  - [x] Metrics aggregation tests
+  - [x] Conversion rate calculation tests
+  - [x] Winner detection tests
+  - [x] Performance metrics tests
+  - [x] Edge case handling
+- [x] Integrate dashboard widget into admin panel
+  - [x] Added AbMetricsWidget to A/B Tests tab in AdminDashboard.tsx
+  - [x] Imported AbMetricsWidget component
+- [x] Test real-time updates and verify accuracy
+  - [x] All 150 vitest tests passing ✓
+  - [x] Dev server running without errors
+  - [x] Component renders correctly in dashboard

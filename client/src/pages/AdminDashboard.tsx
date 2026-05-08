@@ -4,6 +4,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { TimelineCharts } from "@/components/TimelineCharts";
 import { PersonaMetricsDashboard } from "@/components/PersonaMetricsDashboard";
+import { AbMetricsWidget } from "@/components/AbMetricsWidget";
 import {
   BarChart3, DollarSign, Users, MessageSquare, Star, TrendingUp,
   Activity, ExternalLink, RefreshCw, Moon, Zap, Globe, ShoppingCart,

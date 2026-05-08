@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { and, gte, lte, eq } from "drizzle-orm";
+import { and, gte, lte, eq, count } from "drizzle-orm";
 import {
   InsertUser,
   users,
@@ -147,6 +147,50 @@ export async function markAbConverted(sessionId: string, testName: string) {
   return db.update(abImpressions)
     .set({ converted: true })
     .where(and(eqFn(abImpressions.sessionId, sessionId), eqFn(abImpressions.testName, testName)));
+}
+
+// Get live A/B metrics for dashboard
+export async function getAbMetrics(testName: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  try {
+    // Get all impressions for this test
+    const allImpressions = await db.select().from(abImpressions).where(eq(abImpressions.testName, testName));
+    
+    // Group by variant and calculate metrics
+    const metrics: Record<string, { impressions: number; conversions: number; rate: number }> = {};
+    
+    allImpressions.forEach((imp) => {
+      if (!metrics[imp.variant]) {
+        metrics[imp.variant] = { impressions: 0, conversions: 0, rate: 0 };
+      }
+      metrics[imp.variant].impressions++;
+      if (imp.converted) metrics[imp.variant].conversions++;
+    });
+    
+    // Calculate conversion rates
+    Object.keys(metrics).forEach((variant) => {
+      const m = metrics[variant];
+      m.rate = m.impressions > 0 ? (m.conversions / m.impressions) * 100 : 0;
+    });
+    
+    // Determine winner (highest conversion rate)
+    const variants = Object.entries(metrics).sort((a, b) => b[1].rate - a[1].rate);
+    const winner = variants.length > 0 ? variants[0][0] : null;
+    
+    return {
+      testName,
+      metrics,
+      winner,
+      totalImpressions: allImpressions.length,
+      totalConversions: allImpressions.filter(i => i.converted).length,
+      updatedAt: new Date(),
+    };
+  } catch (error) {
+    console.error("[Database] Failed to get A/B metrics:", error);
+    return null;
+  }
 }
 
 // ── Behavior Events ──────────────────────────────────────────────────────────
