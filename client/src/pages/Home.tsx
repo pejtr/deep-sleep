@@ -15,6 +15,7 @@ import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 import { HeroWithLuna } from "@/components/HeroWithLuna";
+import SleepChatBot from "@/components/SleepChatBot";
 import { setMetaTags } from "@/lib/metaTags";
 import HomeVariantB from "./HomeVariantB";
 
@@ -194,6 +195,11 @@ export default function Home() {
     <div className="min-h-screen relative overflow-hidden pb-14" style={{ background: "oklch(0.07 0.025 255)" }}>
       {/* HeroWithLuna — replaces traditional hero for A/B testing */}
       <HeroWithLuna onChatOpen={handleChatOpen} />
+      
+      {/* SleepChatBot — Floating chat interface */}
+      {isChatOpen && (
+        <SleepChatBot />
+      )}
 
       {/* ═══════════════ STICKY TOP BAR ═══════════════ */}
       <div className="sticky top-0 z-30 sticky-top-bar">

@@ -134,10 +134,10 @@
 
 ## AI Chatbot (Apr 23)
 - [x] Fix language default to English (ignore browser CS/DE/etc, only auto-detect non-Latin scripts)
-- [ ] Add tRPC chat.message procedure with invokeLLM + sleep guide system prompt
-- [ ] Create SleepChatBot floating component (chat bubble, message history, streaming)
-- [ ] Integrate chatbot into Home.tsx
-- [ ] Test chatbot in multiple languages
+- [x] Add tRPC chat.message procedure with invokeLLM + sleep guide system prompt
+- [x] Create SleepChatBot floating component (chat bubble, message history, streaming)
+- [x] Integrate chatbot into Home.tsx
+- [x] Test chatbot in multiple languages
 
 ## Advanced Analytics & AI Optimization (Apr 23)
 - [ ] Fix feedbacks DB migration (apply SQL to DB)
