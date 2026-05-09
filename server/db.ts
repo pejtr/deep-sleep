@@ -685,3 +685,85 @@ export async function getAbTrends(testName: string, hoursBack: number = 24) {
     return null;
   }
 }
+
+
+// ── A/B Export & Recommendations ────────────────────────────────────────────
+
+
+export async function getAbExportData(testName: string, format: 'csv' | 'json' = 'csv') {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  const impressions = await db.select().from(abImpressions).where(eq(abImpressions.testName, testName));
+
+  if (format === 'json') {
+    return JSON.stringify(impressions, null, 2);
+  }
+
+  // CSV format
+  const headers = ['Timestamp', 'Variant', 'Converted', 'Page', 'Session ID'];
+  const rows = impressions.map((imp: any) => [
+    new Date(imp.createdAt).toISOString(),
+    imp.variant,
+    imp.converted ? 'Yes' : 'No',
+    imp.page || '',
+    imp.sessionId || '',
+  ]);
+
+  const csv = [headers, ...rows].map((row: any) => row.map((cell: any) => `"${cell}"`).join(',')).join('\n');
+  return csv;
+}
+
+export async function getAbRecommendations(testName: string) {
+  const metrics = await getAbMetrics(testName);
+  if (!metrics || !metrics.metrics) return [];
+
+  const recommendations: Array<{ priority: 'high' | 'medium' | 'low'; title: string; description: string }> = [];
+
+  // Analyze metrics
+  const variants = Object.entries(metrics.metrics);
+  if (variants.length === 0) return recommendations;
+
+  // Find winner
+  const winner = variants.reduce((best, [variant, data]: any) => {
+    const bestRate = best[1].conversions > 0 ? (best[1].conversions / best[1].impressions) * 100 : 0;
+    const currentRate = data.conversions > 0 ? (data.conversions / data.impressions) * 100 : 0;
+    return currentRate > bestRate ? [variant, data] : best;
+  });
+
+  const winnerRate = winner[1].conversions > 0 ? (winner[1].conversions / winner[1].impressions) * 100 : 0;
+
+  // Recommendation 1: Scale winner
+  if (winnerRate > 5) {
+    recommendations.push({
+      priority: 'high',
+      title: `Scale Variant ${winner[0]} - Highest Conversion Rate`,
+      description: `Variant ${winner[0]} has a ${winnerRate.toFixed(2)}% conversion rate. Allocate more traffic to this variant.`,
+    });
+  }
+
+  // Recommendation 2: Low volume warning
+  const totalImpressions = metrics.totalImpressions || 0;
+  if (totalImpressions < 1000) {
+    recommendations.push({
+      priority: 'medium',
+      title: 'Increase Traffic Volume',
+      description: `Current test has only ${totalImpressions} impressions. Collect at least 1000+ impressions for statistical significance.`,
+    });
+  }
+
+  // Recommendation 3: Pause underperformer
+  const underperformer = variants.find(([v]: any) => v !== winner[0]);
+  if (underperformer) {
+    const underRate = underperformer[1].conversions > 0 ? (underperformer[1].conversions / underperformer[1].impressions) * 100 : 0;
+    if (underRate < winnerRate * 0.5) {
+      recommendations.push({
+        priority: 'high',
+        title: `Pause Variant ${underperformer[0]} - Significantly Underperforming`,
+        description: `Variant ${underperformer[0]} has ${underRate.toFixed(2)}% conversion rate vs winner's ${winnerRate.toFixed(2)}%. Consider pausing this variant.`,
+      });
+    }
+  }
+
+  return recommendations;
+}

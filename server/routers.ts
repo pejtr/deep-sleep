@@ -27,6 +27,8 @@ import {
   createBlogPost,
   getAbMetrics,
   getAbTrends,
+  getAbExportData,
+  getAbRecommendations,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -230,6 +232,21 @@ export const appRouter = router({
         const trends = await getAbTrends(input.testName, input.hoursBack);
         return trends || { testName: input.testName, hoursBack: input.hoursBack, data: [], variants: [] };
       }),
+
+    exportData: publicProcedure
+      .input(z.object({ testName: z.string(), format: z.enum(['csv', 'json']).default('csv') }))
+      .query(async ({ input }) => {
+        const data = await getAbExportData(input.testName, input.format);
+        return { testName: input.testName, format: input.format, data };
+      }),
+
+    getRecommendations: publicProcedure
+      .input(z.object({ testName: z.string() }))
+      .query(async ({ input }) => {
+        const recommendations = await getAbRecommendations(input.testName);
+        return { testName: input.testName, recommendations };
+      }),
+
 }),
 
   // ── Behavior ──────────────────────────────────────────────────────────────
