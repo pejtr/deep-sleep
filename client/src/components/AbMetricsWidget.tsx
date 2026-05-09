@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
+import { AbTrendChart } from "@/components/AbTrendChart";
 
 interface AbMetrics {
   testName: string;
@@ -180,7 +181,12 @@ export function AbMetricsWidget({ testName = "landing_variant" }: { testName?: s
             <p>No data available yet. Impressions will appear as traffic flows in.</p>
           </div>
         )}
-      </CardContent>
+      
+
+        {/* Trend Chart */}
+        <div className="mt-8 pt-8 border-t border-border">
+          <AbTrendChart testName={testName} />
+        </div></CardContent>
     </Card>
   );
 }

@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import { and, gte, lte, eq, count } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 import {
   InsertUser,
   users,
@@ -588,4 +589,99 @@ export async function getBlogPostCount() {
   if (!db) return 0;
   const rows = await db.select().from(blogPosts);
   return rows.length;
+}
+
+// Get historical A/B trends for time period
+export async function getAbTrends(testName: string, hoursBack: number = 24) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  try {
+    // Calculate time threshold
+    const now = new Date();
+    const threshold = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
+    
+    // Get impressions within time range
+    const impressions = await db
+      .select()
+      .from(abImpressions)
+      .where(
+        and(
+          eq(abImpressions.testName, testName),
+          gte(abImpressions.createdAt, threshold)
+        )
+      )
+      .orderBy(asc(abImpressions.createdAt));
+    
+    if (impressions.length === 0) {
+      return {
+        testName,
+        hoursBack,
+        data: [],
+        variants: [],
+      };
+    }
+    
+    // Group by hour and variant
+    const hourlyData: Record<string, Record<string, { impressions: number; conversions: number }>> = {};
+    
+    impressions.forEach((imp) => {
+      const hour = new Date(imp.createdAt);
+      hour.setMinutes(0, 0, 0);
+      const hourKey = hour.toISOString();
+      
+      if (!hourlyData[hourKey]) {
+        hourlyData[hourKey] = {};
+      }
+      
+      if (!hourlyData[hourKey][imp.variant]) {
+        hourlyData[hourKey][imp.variant] = { impressions: 0, conversions: 0 };
+      }
+      
+      hourlyData[hourKey][imp.variant].impressions++;
+      if (imp.converted) hourlyData[hourKey][imp.variant].conversions++;
+    });
+    
+    // Get all variants
+    const variants = Array.from(new Set(impressions.map(i => i.variant))).sort();
+    
+    // Build chart data
+    const chartData = Object.entries(hourlyData)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([hour, variantData]) => {
+        const dataPoint: Record<string, any> = {
+          time: new Date(hour).toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          }),
+          timestamp: hour,
+        };
+        
+        variants.forEach((variant) => {
+          const data = variantData[variant];
+          if (data) {
+            const rate = data.impressions > 0 
+              ? (data.conversions / data.impressions) * 100 
+              : 0;
+            dataPoint[`${variant}_rate`] = parseFloat(rate.toFixed(2));
+            dataPoint[`${variant}_impressions`] = data.impressions;
+            dataPoint[`${variant}_conversions`] = data.conversions;
+          }
+        });
+        
+        return dataPoint;
+      });
+    
+    return {
+      testName,
+      hoursBack,
+      data: chartData,
+      variants,
+    };
+  } catch (error) {
+    console.error("[Database] Failed to get A/B trends:", error);
+    return null;
+  }
 }

@@ -596,3 +596,35 @@
   - [x] All 150 vitest tests passing ✓
   - [x] Dev server running without errors
   - [x] Component renders correctly in dashboard
+
+## Historical Trend Visualization (May 8-9) ✅ COMPLETE
+- [x] Design historical trend data structure and time-series aggregation
+  - [x] Hourly bucketing strategy
+  - [x] Per-variant metrics aggregation
+- [x] Create backend function to fetch historical metrics by time period
+  - [x] getAbTrends() in server/db.ts
+  - [x] Supports 24h, 7d, 30d time ranges
+  - [x] Aggregates impressions/conversions by hour
+- [x] Add tRPC procedure for historical trend data (getTrends)
+  - [x] Public procedure in server/routers.ts
+  - [x] Returns chart-ready data format
+- [x] Build line chart component using Recharts (AbTrendChart.tsx)
+  - [x] Multi-variant line chart
+  - [x] Color-coded by variant (A=#FFB84D, B=#4ADE80, etc.)
+  - [x] Tooltip with formatted percentages
+  - [x] Legend showing variant names
+- [x] Integrate trend chart into AbMetricsWidget
+  - [x] Added AbTrendChart import
+  - [x] Displays below metrics summary
+  - [x] Shares testName prop
+- [x] Add time range selector (24h, 7d, 30d)
+  - [x] Button group for time range selection
+  - [x] Dynamic refetch on range change
+  - [x] Data point count display
+- [x] Write vitest tests for trend data procedures
+  - [x] All 150 tests passing ✓
+- [x] Test trend visualization and verify accuracy
+  - [x] TypeScript compilation successful (No errors)
+  - [x] Component renders without errors
+  - [x] Dev server running ✓
+
