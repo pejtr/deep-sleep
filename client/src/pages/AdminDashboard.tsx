@@ -17,8 +17,8 @@ import {
   Mail, Send, Copy, Check
 } from "lucide-react";
 import { toast } from "sonner";
-import {
 import { CampaignDashboard } from '@/components/CampaignDashboard';
+import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   AreaChart, Area
