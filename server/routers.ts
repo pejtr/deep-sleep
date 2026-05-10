@@ -102,7 +102,48 @@ const FALLBACK_RATES: Record<string, number> = {
   DKK: 6.36, SGD: 1.34, NZD: 1.67, ZAR: 18.63, JPY: 154.2,
 };
 
+
 export const appRouter = router({
+  campaigns: router({
+    list: publicProcedure
+      .query(async () => {
+        return [
+          {
+            id: "1",
+            name: "Luna Voss - Sleep Transformation",
+            platform: "meta" as const,
+            status: "active" as const,
+            budget: 1000,
+            spent: 450.50,
+            impressions: 12500,
+            clicks: 325,
+            conversions: 28,
+            roi: 156.2,
+            startDate: new Date("2026-05-01"),
+            lunaContent: "luna-voss-1-sleep-transformation",
+          },
+        ];
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        platform: z.enum(["meta", "organic", "google"]),
+        budget: z.number(),
+        lunaContent: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => ({
+        id: Math.random().toString(36),
+        ...input,
+        status: "scheduled" as const,
+        spent: 0,
+        impressions: 0,
+        clicks: 0,
+        conversions: 0,
+        roi: 0,
+        startDate: new Date(),
+      })),
+  }),
+
   system: systemRouter,
 
   auth: router({

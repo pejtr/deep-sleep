@@ -65,7 +65,7 @@
 ## Promotion & Launch
 - [ ] Test complete purchase flow (quiz → result → checkout → payment)
 - [ ] Prepare and launch promotional campaigns (Meta Ads + organic)
-- [ ] Generate Luna Voss AI influencer content for deepsleep.mom
+- [x] Generate Luna Voss AI influencer content for deepsleep.mom
 
 ## Premium Redesign (matching deep-sleep-reset.com)
 - [x] Update global CSS design system: dark cinematic theme, gold/amber accents (#C9A84C), serif typography (Playfair Display)
@@ -142,7 +142,7 @@
 ## Advanced Analytics & AI Optimization (Apr 23)
 - [ ] Fix feedbacks DB migration (apply SQL to DB)
 - [ ] Fix language switcher dropdown (position:fixed, solid background)
-- [ ] Extend behavior tracking: scroll depth, time on page, rage clicks, exit intent, UTM params, device type
+- [x] Extend behavior tracking: scroll depth, time on page, rage clicks, exit intent, UTM params, device type
 - [ ] Add ai_insights table to DB for storing nightly optimization results
 - [ ] Proactive Luna chatbot: 60s trigger, exit intent popup, feedback collection, suggestions
 - [ ] Luna admin mode: access to stats, insights, campaign data
