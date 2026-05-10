@@ -16,6 +16,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 import { HeroWithLuna } from "@/components/HeroWithLuna";
 import SleepChatBot from "@/components/SleepChatBot";
+import { useBehaviorTracking } from "@/hooks/useBehaviorTracking";
 import { setMetaTags } from "@/lib/metaTags";
 import HomeVariantB from "./HomeVariantB";
 
@@ -186,6 +187,7 @@ export default function Home() {
   };
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+  useBehaviorTracking(); // Track scroll, time on page, exit intent, UTM params, device type
 
   const handleChatOpen = () => {
     setIsChatOpen(true);

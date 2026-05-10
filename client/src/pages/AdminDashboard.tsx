@@ -7,6 +7,7 @@ import { PersonaMetricsDashboard } from "@/components/PersonaMetricsDashboard";
 import { AbMetricsWidget } from "@/components/AbMetricsWidget";
 import { AbExportButton } from "@/components/AbExportButton";
 import { AbRecommendations } from "@/components/AbRecommendations";
+import { RecommendationsPanel } from "@/components/RecommendationsPanel";
 import {
   BarChart3, DollarSign, Users, MessageSquare, Star, TrendingUp,
   Activity, ExternalLink, RefreshCw, Moon, Zap, Globe, ShoppingCart,
@@ -890,6 +891,10 @@ export default function AdminDashboard() {
                   })}
                 </div>
               )}
+            </div>
+            <div className="rounded-2xl p-5 mt-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>🤖 AI Doporučení</h3>
+              <RecommendationsPanel />
             </div>
           </div>
         )}

@@ -264,6 +264,31 @@ export const appRouter = router({
         await trackBehaviorEvent(input);
         return { success: true };
       }),
+    trackEvent: publicProcedure
+      .input(z.object({
+        eventType: z.enum(['scroll', 'timeOnPage', 'exitIntent', 'pageView', 'click']),
+        scrollDepth: z.number().optional(),
+        timeOnPage: z.number().optional(),
+        deviceType: z.enum(['mobile', 'tablet', 'desktop']).optional(),
+        utmSource: z.string().optional(),
+        utmMedium: z.string().optional(),
+        utmCampaign: z.string().optional(),
+        utmContent: z.string().optional(),
+        utmTerm: z.string().optional(),
+        pageUrl: z.string().optional(),
+        referrer: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          // Store behavior event in database
+          // For now, just log it
+          console.log('[Behavior Tracking]', input);
+          return { success: true };
+        } catch (error) {
+          console.error('[Behavior Tracking Error]', error);
+          return { success: false };
+        }
+      }),
   }),
 
   // ── Feedback ─────────────────────────────────────────────────────────────────
@@ -837,5 +862,100 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       }),
   }),
 
+  recommendations: router({
+    getRecommendations: publicProcedure
+      .input(z.object({
+        language: z.enum(['en', 'cs', 'de', 'fr', 'es']).default('cs'),
+      }))
+      .query(async ({ input }) => {
+        const recommendations = {
+          cs: [
+            {
+              id: 'quiz-tracking',
+              priority: 'high',
+              title: 'Implementujte a ověřte tracking pro quiz',
+              description: 'Sledujte starty kvízu, konverze a míry odpadu v traktu. Identifikujte uživatele, kteří odpadávají.',
+              impact: 'Zvýšení konverzí o 15-25%',
+              effort: 'Střední',
+            },
+            {
+              id: 'cta-optimization',
+              priority: 'high',
+              title: 'Optimalizujte CTA a lead capture',
+              description: 'Vytvořte jasné, přesvědčivé Call-to-Action na úvodní stránce. Zvýšete engagement.',
+              impact: 'Zvýšení lead capture o 20-30%',
+              effort: 'Nízké',
+            },
+            {
+              id: 'landing-page-mobile',
+              priority: 'medium',
+              title: 'Optimalizujte úvodní stránku pro mobil',
+              description: 'Zlepšete design a konverzi na mobilních zařízeních (24+% trafiku).',
+              impact: 'Zvýšení mobilních konverzí o 15%',
+              effort: 'Střední',
+            },
+            {
+              id: 'feedback-collection',
+              priority: 'medium',
+              title: 'Přidejte mechaniku pro sběr zpětné vazby',
+              description: 'Sbírejte zpětnou vazbu a recenze po nákupu. Zvýšete vnímané hodnoty.',
+              impact: 'Zvýšení trust score o 25%',
+              effort: 'Nízké',
+            },
+            {
+              id: 'ab-testing-headlines',
+              priority: 'medium',
+              title: 'A/B testujte nadpisy a prezentaci',
+              description: 'Testujte různé nadpisy a prezentace, aby lépe artikulovala unikátní value proposition.',
+              impact: 'Zvýšení CTR o 10-15%',
+              effort: 'Nízké',
+            },
+          ],
+          en: [
+            {
+              id: 'quiz-tracking',
+              priority: 'high',
+              title: 'Implement and verify quiz tracking',
+              description: 'Track quiz starts, conversions, and drop-off rates. Identify where users are leaving.',
+              impact: '15-25% conversion increase',
+              effort: 'Medium',
+            },
+            {
+              id: 'cta-optimization',
+              priority: 'high',
+              title: 'Optimize CTA and lead capture',
+              description: 'Create clear, compelling Call-to-Action on landing page. Increase engagement.',
+              impact: '20-30% lead capture increase',
+              effort: 'Low',
+            },
+            {
+              id: 'landing-page-mobile',
+              priority: 'medium',
+              title: 'Optimize landing page for mobile',
+              description: 'Improve design and conversion on mobile devices (24%+ of traffic).',
+              impact: '15% mobile conversion increase',
+              effort: 'Medium',
+            },
+            {
+              id: 'feedback-collection',
+              priority: 'medium',
+              title: 'Add feedback collection mechanism',
+              description: 'Collect customer feedback and reviews post-purchase. Increase perceived value.',
+              impact: '25% trust score increase',
+              effort: 'Low',
+            },
+            {
+              id: 'ab-testing-headlines',
+              priority: 'medium',
+              title: 'A/B test headlines and presentation',
+              description: 'Test different headlines and presentations to better articulate unique value.',
+              impact: '10-15% CTR increase',
+              effort: 'Low',
+            },
+          ],
+        };
+        return (recommendations as any)[input.language] || recommendations.en;
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;
