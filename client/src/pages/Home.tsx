@@ -7,6 +7,7 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 import SupportButton from "@/components/SupportButton";
 import FAQSection from "@/components/FAQSection";
 import ASMRPlayer from "@/components/ASMRPlayer";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { getAbVariant, getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { useBehaviorTracker } from "@/hooks/useBehaviorTracker";
 import { useI18n } from "@/contexts/I18nContext";
@@ -730,6 +731,7 @@ export default function Home() {
       <FloatingSocialProofBar />
       <ExitIntentPopup />
       <SupportButton />
+      <StickyMobileCTA />
     </div>
   );
 }

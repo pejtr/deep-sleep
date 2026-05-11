@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
 import { ArrowRight, Lock, X, Star, Crown, Zap, Moon, MessageCircle, TrendingUp, Check, Shield, Clock } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { toast } from "sonner";
@@ -68,7 +69,8 @@ export default function Upsell3() {
   ];
 
   return (
-    <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
+    <>
+      <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-purple w-80 h-80 opacity-15" style={{ top: "-5%", right: "-5%" }} />
       <div className="orb orb-gold w-64 h-64 opacity-10" style={{ bottom: "20%", left: "-10%" }} />
 
@@ -243,5 +245,7 @@ export default function Upsell3() {
         </button>
       </div>
     </div>
+      <StickyMobileCTA />
+    </>
   );
 }

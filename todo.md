@@ -365,7 +365,7 @@
 - [x] Add "X people took this quiz today" social proof near quiz CTA
 
 ### Priority 3: Add Urgency & Scarcity Elements
-- [ ] Add sticky bottom bar with offer countdown on mobile
+- [x] Add sticky bottom bar with offer countdown on mobile
 - [ ] Add "price increases to $19 soon" messaging on order page
 - [ ] Add real-time viewer count on checkout pages
 

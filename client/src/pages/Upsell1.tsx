@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
 import { ArrowRight, Lock, X, Star, AlertTriangle, Check, Clock, Users, Shield, Zap, TrendingUp } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { toast } from "sonner";
@@ -328,7 +329,12 @@ export default function Upsell1() {
     );
   }
 
-  return variant === "B"
-    ? <VariantB chronotype={chronotype} onAccept={handleAccept} onDecline={handleDecline} loading={loading} />
-    : <VariantA chronotype={chronotype} onAccept={handleAccept} onDecline={handleDecline} loading={loading} />;
+  return (
+    <>
+      {variant === "B"
+        ? <VariantB chronotype={chronotype} onAccept={handleAccept} onDecline={handleDecline} loading={loading} />
+        : <VariantA chronotype={chronotype} onAccept={handleAccept} onDecline={handleDecline} loading={loading} />}
+      <StickyMobileCTA />
+    </>
+  );
 }
