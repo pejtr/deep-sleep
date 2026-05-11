@@ -305,7 +305,7 @@
 - [x] Upsell1 ($3 Chronotype), Upsell2 ($7 ASMR), Upsell3 (Luna Premium $9.99/mo) — Stripe checkout
 - [x] Admin Email Broadcast tab — připravit email list buyers/leads/all s download linkem
 - [ ] Reddit Ads OAuth — nové credentials od uživatele (čekáme na Client ID + Secret)
-- [ ] AI Optimization suggestions — Apply tlačítko funkční (aktuálně placeholder)
+- [x] AI Optimization suggestions — Apply tlačítko funkční (uloží do DB jako applied=true)
 - [ ] Opravit Revenue bug — konverze CZK/GBP/EUR na USD v getAdminStats
 - [ ] Vytvořit /protocol webovou stránku s plným obsahem 7-nočního protokolu
 - [ ] Vytvořit PDF download endpoint /api/protocol/download

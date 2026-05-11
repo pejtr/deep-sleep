@@ -998,8 +998,35 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         };
         return (recommendations as any)[input.language] || recommendations.en;
       }),
-
-  // ── Nightly Optimization Engine ──────────────────────────────────────────
+    apply: protectedProcedure
+      .input(z.object({
+        recommendationId: z.string(),
+        title: z.string(),
+        description: z.string(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        // Uloži aplikované doporučení do ai_insights
+        const db = await (await import('./db')).getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        
+        const today = new Date().toISOString().slice(0, 10);
+        const { aiInsights } = await import('../drizzle/schema');
+        
+        await db.insert(aiInsights).values({
+          date: today,
+          summary: `Applied recommendation: ${input.title}`,
+          recommendations: JSON.stringify([{ id: input.recommendationId, applied: true }]),
+          metrics: JSON.stringify({ appliedAt: new Date().toISOString() }),
+          applied: true,
+        });
+        
+        return { success: true, message: `Doporučení "${input.title}" bylo aplikováno` };
+      }),
+  }),
+  // ── Nightly Optimization Engine ───────────────────────────────────────────
   nightly: router({
     getOptimizationResults: publicProcedure
       .input(z.object({
@@ -1053,7 +1080,6 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           nextRun: new Date(),
         };
       }),
-  }),
   }),
 });
 export type AppRouter = typeof appRouter;

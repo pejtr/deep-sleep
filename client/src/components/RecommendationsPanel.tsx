@@ -52,9 +52,19 @@ export function RecommendationsPanel() {
     setDismissedIds(newDismissed);
   };
 
-  const handleApply = (id: string) => {
-    console.log(`[Recommendations] Applied: ${id}`);
-    handleDismiss(id);
+  const applyMutation = trpc.recommendations.apply.useMutation();
+  
+  const handleApply = async (rec: Recommendation) => {
+    try {
+      await applyMutation.mutateAsync({
+        recommendationId: rec.id,
+        title: rec.title,
+        description: rec.description,
+      });
+      handleDismiss(rec.id);
+    } catch (error) {
+      console.error('[Recommendations] Apply failed:', error);
+    }
   };
 
   const visibleRecommendations = recommendations?.filter(
@@ -140,10 +150,11 @@ export function RecommendationsPanel() {
                   <Button
                     size="sm"
                     variant="default"
-                    onClick={() => handleApply(rec.id)}
+                    onClick={() => handleApply(rec)}
+                    disabled={applyMutation.isPending}
                     className="text-xs"
                   >
-                    {language === "cs" ? "✓ Aplikovat" : "✓ Apply"}
+                    {applyMutation.isPending ? (language === "cs" ? "Aplikuji..." : "Applying...") : (language === "cs" ? "✓ Aplikovat" : "✓ Apply")}
                   </Button>
                   <Button
                     size="sm"
