@@ -207,6 +207,15 @@ export default function Order() {
             <span className="text-sm font-semibold" style={{ color: "oklch(0.78 0.18 65)" }}>4.9/5</span>
             <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>from 2,847 verified buyers</span>
           </div>
+          {/* Price increase warning */}
+          <div className="rounded-lg p-3 mb-4" style={{ background: "oklch(0.15 0.08 15 / 0.2)", border: "1px solid oklch(0.65 0.15 15 / 0.5)" }}>
+            <p className="text-xs font-semibold" style={{ color: "oklch(0.65 0.15 15)" }}>
+              🚨 Price increases to $19 in 48 hours
+            </p>
+            <p className="text-xs opacity-75 mt-1" style={{ color: "oklch(0.65 0.15 15)" }}>
+              Lock in this special price now before it expires
+            </p>
+          </div>
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
             productId="main"

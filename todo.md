@@ -366,8 +366,8 @@
 
 ### Priority 3: Add Urgency & Scarcity Elements
 - [x] Add sticky bottom bar with offer countdown on mobile
-- [ ] Add "price increases to $19 soon" messaging on order page
-- [ ] Add real-time viewer count on checkout pages
+- [x] Add "price increases to $19 soon" messaging on order page
+- [x] Add real-time viewer count on checkout pages
 
 ### Priority 4: Social Proof & Reviews
 - [ ] Add post-purchase review prompt (email + in-app)
