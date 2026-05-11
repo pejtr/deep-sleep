@@ -46,7 +46,7 @@ const TESTIMONIALS: Testimonial[] = [
     avatar: "DL",
   },
   {
-    name: "Lucie D.",
+    name: "Luna D.",
     location: "Paris, France",
     chronotype: "Wolf",
     text: "Three weeks in and I'm sleeping through the night for the first time in years. The chronotype approach is so much more personalized than generic sleep advice.",

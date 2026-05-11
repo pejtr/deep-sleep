@@ -12,7 +12,7 @@ interface Notification {
 const NOTIFICATIONS: Notification[] = [
   { name: "Sarah M.", location: "New York, USA", chronotype: "Wolf", timeAgo: "2 min ago", flag: "🇺🇸" },
   { name: "James K.", location: "London, UK", chronotype: "Bear", timeAgo: "4 min ago", flag: "🇬🇧" },
-  { name: "Lucie D.", location: "Paris, France", chronotype: "Lion", timeAgo: "1 min ago", flag: "🇫🇷" },
+  { name: "Luna D.", location: "Paris, France", chronotype: "Lion", timeAgo: "1 min ago", flag: "🇫🇷" },
   { name: "Marco R.", location: "Milan, Italy", chronotype: "Dolphin", timeAgo: "6 min ago", flag: "🇮🇹" },
   { name: "Yuki T.", location: "Tokyo, Japan", chronotype: "Lion", timeAgo: "3 min ago", flag: "🇯🇵" },
   { name: "Anna S.", location: "Stockholm, Sweden", chronotype: "Wolf", timeAgo: "5 min ago", flag: "🇸🇪" },

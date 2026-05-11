@@ -137,10 +137,10 @@ export default function HomeVariantB() {
     track("page_view", { page: "home", value: { variant: "B" } });
     abMutation.mutate({ sessionId, testName: "landing_variant", variant: "B", page: "home" });
     
-    // Set unique meta tags for Variant B
+    // Set unique meta tags for Variant B - optimized for Facebook conversion
     setMetaTags({
-      title: "Reclaim Your Life — Transform Your Sleep in 7 Nights",
-      description: "Stop struggling with sleep. Get your life back. The 7-Night Deep Sleep Reset — science-backed, proven results, just $5.",
+      title: "Reclaim Your Life. One Night at a Time. — Deep Sleep Reset",
+      description: "Transform your sleep in 7 nights. Stop struggling. Get your life back. Science-backed protocol, 80% success rate, just $5.",
       image: OG_IMAGE_VARIANT_B,
       url: window.location.href,
     });

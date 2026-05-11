@@ -279,3 +279,45 @@ export const userJourneyEvents = mysqlTable("user_journey_events", {
 
 export type UserJourneyEvent = typeof userJourneyEvents.$inferSelect;
 export type InsertUserJourneyEvent = typeof userJourneyEvents.$inferInsert;
+
+
+// ── Products (upsell tiers) ──────────────────────────────────────────────────
+export const products = mysqlTable("products", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 128 }).notNull(), // "7-Night Protocol", "Personalized Plan", "Advanced Access"
+  price: int("price").notNull(), // v centimech: 500 = $5, 2900 = $29, 9900 = $99
+  description: text("description").notNull(),
+  features: text("features").notNull(), // JSON array
+  tier: mysqlEnum("tier", ["basic", "pro", "premium"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
+
+// ── Purchases (order tracking) ───────────────────────────────────────────────
+export const purchases = mysqlTable("purchases", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  productId: int("productId").notNull().references(() => products.id),
+  stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 256 }).notNull().unique(),
+  amount: int("amount").notNull(), // v centimech
+  status: mysqlEnum("status", ["completed", "refunded"]).default("completed").notNull(),
+  purchasedAt: timestamp("purchasedAt").defaultNow().notNull(),
+});
+
+export type Purchase = typeof purchases.$inferSelect;
+export type InsertPurchase = typeof purchases.$inferInsert;
+
+// ── Personalized Plans (AI-generated) ────────────────────────────────────────
+export const personalizedPlans = mysqlTable("personalized_plans", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  chronotype: varchar("chronotype", { length: 16 }).notNull(), // "Lion", "Bear", "Wolf", "Dolphin"
+  sleepIssues: text("sleepIssues").notNull(), // JSON array
+  planContent: text("planContent").notNull(), // AI-generated personalized plan
+  generatedAt: timestamp("generatedAt").defaultNow().notNull(),
+});
+
+export type PersonalizedPlan = typeof personalizedPlans.$inferSelect;
+export type InsertPersonalizedPlan = typeof personalizedPlans.$inferInsert;

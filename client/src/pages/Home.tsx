@@ -152,8 +152,8 @@ export default function Home() {
     
     // Set unique meta tags for Variant A
     setMetaTags({
-      title: "Deep Sleep Reset: Fix Insomnia in 7 Nights — $5",
-      description: "Discover your sleep chronotype and fix insomnia with our science-backed 7-night protocol. CBT-I based, 80% success rate, just $5.",
+      title: "You're Not Tired. You're Sleep-Deprived. — Deep Sleep Reset",
+      description: "Discover your sleep chronotype with our science-backed 7-night protocol. CBT-I based, 80% success rate. Just $5.",
       image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/og-variant-a-sleep-deprived-hye2KT2i6vNEAo2u9i22xr.webp",
       url: window.location.href,
     });

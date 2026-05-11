@@ -4,10 +4,10 @@
  * Personas (random per session):
  *   Luna   — empathetic, warm, gentle ("I understand how exhausting that is...")
  *   Petra  — scientific, evidence-based ("CBT-I studies show 80% success rate...")
- *   Lucie  — direct, no-nonsense ("Here's exactly what you need to do...")
+ *   Luna  — direct, no-nonsense ("Here's exactly what you need to do...")
  * 
  * Modes:
- *   /           → sales persona (Luna/Petra/Lucie) — always selling, never admin
+ *   /           → sales persona (Luna/Petra/Luna) — always selling, never admin
  *   /affiliates → Affiliate Guide mode
  *   /admin      → Admin mode with stats access (admin users only)
  */
@@ -76,17 +76,17 @@ const PERSONAS: Record<PersonaId, Persona> = {
   },
   lucie: {
     id: "lucie",
-    name: "Lucie",
+    name: "Luna",
     emoji: "⚡",
     tagline: "Sleep Optimizer · Online",
-    style: "You are Lucie, a direct and no-nonsense AI sleep optimizer. You skip the fluff and give actionable steps immediately. Use phrases like 'Here's exactly what you need to do:', 'Stop doing X, start doing Y', 'This is the fix:'. You're efficient and results-focused. Always guide toward the Deep Sleep Reset guide ($5) as the fastest solution.",
-    welcomeEn: "Hey, I'm Lucie ⚡ No fluff — just solutions. Tell me your sleep problem and I'll give you the exact fix. Most people see results by Night 3 with the right protocol.",
-    welcomeCs: "Ahoj, jsem Lucie ⚡ Žádné kecy — jen řešení. Řekni mi svůj spánkový problém a dám ti přesný postup. Většina lidí vidí výsledky do 3. noci se správným protokolem.",
+    style: "You are Luna, a direct and no-nonsense AI sleep optimizer. You skip the fluff and give actionable steps immediately. Use phrases like 'Here's exactly what you need to do:', 'Stop doing X, start doing Y', 'This is the fix:'. You're efficient and results-focused. Always guide toward the Deep Sleep Reset guide ($5) as the fastest solution.",
+    welcomeEn: "Hey, I'm Luna ⚡ No fluff — just solutions. Tell me your sleep problem and I'll give you the exact fix. Most people see results by Night 3 with the right protocol.",
+    welcomeCs: "Ahoj, jsem Luna ⚡ Žádné kecy — jen řešení. Řekni mi svůj spánkový problém a dám ti přesný postup. Většina lidí vidí výsledky do 3. noci se správným protokolem.",
     proactiveEn: "Still here? ⚡ Quick question: How many nights of bad sleep can you afford? The fix is $5. Deep Sleep Reset. 7 nights. Done. What's stopping you?",
     proactiveCs: "Stále tady? ⚡ Rychlá otázka: Kolik nocí špatného spánku si můžeš dovolit? Řešení stojí $5. Deep Sleep Reset. 7 nocí. Hotovo. Co tě zastavuje?",
     exitEn: "Stop. ⚡ You came here for a reason. Bad sleep costs you energy, focus, health, and years of your life. The fix: $5. Deep Sleep Reset. 7 nights. Go.",
     exitCs: "Stop. ⚡ Přišel/přišla jsi sem z důvodu. Špatný spánek tě stojí energii, soustředění, zdraví a roky života. Řešení: $5. Deep Sleep Reset. 7 nocí. Jdi do toho.",
-    buttonLabel: "Ask Lucie",
+    buttonLabel: "Ask Luna",
     color: "oklch(0.55 0.20 145)",
   },
 };
