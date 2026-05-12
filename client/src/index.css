@@ -200,6 +200,7 @@
   background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.2), transparent);
   transform: skewX(-20deg);
   animation: shimmer 3s infinite;
+  pointer-events: none;
 }
 @keyframes shimmer {
   0% { left: -60%; }
