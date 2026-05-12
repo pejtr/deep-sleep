@@ -127,10 +127,10 @@
 
 ## Google Ads & Traffic (Apr 23)
 - [x] Pause/remove old Google Ads campaign (deep-sleep-reset.com) - DOCUMENTED IN GOOGLE_ADS_SETUP.md
-- [x] Create new Google Search campaign targeting deepsleep.manus.space - DOCUMENTED IN GOOGLE_ADS_SETUP.md
+- [x] Create new Google Search campaign targeting www.deep-sleep-reset.com - DOCUMENTED IN GOOGLE_ADS_SETUP.md
 - [ ] Set up conversion tracking for Gumroad purchases
 - [ ] Microsoft Advertising appeal email sent (account suspended, ~3000 CZK balance)
-- [ ] Reddit organic traffic — update links from deep-sleep-reset.com to deepsleep.manus.space
+- [ ] Reddit organic traffic — update links to www.deep-sleep-reset.com
 
 ## AI Chatbot (Apr 23)
 - [x] Fix language default to English (ignore browser CS/DE/etc, only auto-detect non-Latin scripts)

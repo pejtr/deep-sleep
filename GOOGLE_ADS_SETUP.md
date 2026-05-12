@@ -1,12 +1,12 @@
 # Google Search Ads Setup Guide
 
 ## Objective
-Create a new Google Search campaign targeting `deepsleep.manus.space` and `deep-sleep-reset.com` domains to drive qualified traffic and increase conversions by 20-30%.
+Create a new Google Search campaign targeting `www.deep-sleep-reset.com` domain to drive qualified traffic and increase conversions by 20-30%.
 
 ## Campaign Details
 
 ### Campaign Name
-`Deep Sleep Reset - Search (deepsleep.manus.space) - May 2026`
+`Deep Sleep Reset - Search (www.deep-sleep-reset.com) - May 2026`
 
 ### Keywords to Target
 - Primary: "insomnia solution", "sleep protocol", "deep sleep", "sleep deprivation", "CBT insomnia"
@@ -22,8 +22,7 @@ Create a new Google Search campaign targeting `deepsleep.manus.space` and `deep-
 **Description 2:** Instant digital access. 30-day money-back guarantee. Start tonight.
 
 ### Landing Page
-`https://deepsleep.manus.space/` (primary)
-`https://deep-sleep-reset.com/` (secondary)
+`https://www.deep-sleep-reset.com/` (primary marketing domain)
 
 ### Budget
 - Daily budget: $50-100 USD
@@ -45,7 +44,7 @@ Create a new Google Search campaign targeting `deepsleep.manus.space` and `deep-
 
 ### 2. Campaign Creation
 - [ ] Create new Search campaign
-- [ ] Set campaign name: `Deep Sleep Reset - Search (deepsleep.manus.space) - May 2026`
+- [ ] Set campaign name: `Deep Sleep Reset - Search (www.deep-sleep-reset.com) - May 2026`
 - [ ] Set daily budget: $50 USD
 - [ ] Select location targeting: All countries (or specific: US, UK, CA, AU, EU)
 - [ ] Set language: English
@@ -54,7 +53,7 @@ Create a new Google Search campaign targeting `deepsleep.manus.space` and `deep-
 - [ ] Create ad group: "Insomnia Solution"
 - [ ] Add keywords (see above)
 - [ ] Create responsive search ads (3 headlines + 2 descriptions)
-- [ ] Set landing page: `https://deepsleep.manus.space/` (or `https://deep-sleep-reset.com/`)
+- [ ] Set landing page: `https://www.deep-sleep-reset.com/`
 
 ### 4. Conversion Tracking
 - [ ] Set up conversion action in Google Ads
@@ -80,7 +79,8 @@ Create a new Google Search campaign targeting `deepsleep.manus.space` and `deep-
 - Scale budget: After 30 days with positive ROAS
 
 ## Notes
-- Pause old campaign on `deep-sleep-reset.com` to avoid duplicate spend
-- Use UTM parameters: `?utm_source=google&utm_medium=cpc&utm_campaign=search_deepsleep_manus`
+- Use UTM parameters: `?utm_source=google&utm_medium=cpc&utm_campaign=search_deepsleep_reset`
+- Primary domain: `www.deep-sleep-reset.com` (all marketing campaigns)
+- System domain: `deepsleep.manus.space` (internal testing/integration only)
 - Monitor competitor bidding (Gumroad, other sleep apps)
 - A/B test ad copy monthly
