@@ -546,8 +546,8 @@
 - [ ] Add loading skeletons for all data-fetching components
 - [ ] Add error boundaries for graceful error handling
 - [ ] Optimize bundle size: audit and remove unused dependencies
-- [ ] Add meta tags (og:title, og:description, og:image) for social sharing
-- [ ] Add canonical URL tags for SEO
+- [x] Add meta tags (og:title, og:description, og:image) for social sharing
+- [x] Add canonical URL tags for SEO
 
 
 ## A/B Landing Page Variants (May 7)
