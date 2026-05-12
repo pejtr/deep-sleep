@@ -196,8 +196,8 @@
 - [x] Auto-refresh každých 30 minut (implementováno)
 
 ## TikTok Ads Integration (Apr 23)
-- [ ] TikTok Ads API backend (OAuth2 client credentials + campaigns + spend report)
-- [ ] TikTok Ads tRPC endpoints (account, campaigns, report, campaignPerformance)
+- [x] TikTok Ads API backend (OAuth2 client credentials + campaigns + spend report) - BASIC IMPLEMENTATION
+- [x] TikTok Ads tRPC endpoints (account, campaigns) - getAccount, getCampaigns procedures
 - [ ] TikTok Ads tab v AdminDashboard s KPI kartami a grafy
 - [ ] TikTok data v admin Luně (system prompt + adminData payload)
 - [ ] Vitest testy pro TikTok Ads API

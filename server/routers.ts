@@ -1081,5 +1081,26 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         };
       }),
   }),
+  tiktok: router({
+    getAccount: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        return {
+          advertiser_id: process.env.TIKTOK_ADS_ADVERTISER_ID || '',
+          advertiser_name: 'Deep Sleep Reset',
+          balance: 0,
+          currency: 'USD',
+        };
+      }),
+    getCampaigns: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        return [];
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;
