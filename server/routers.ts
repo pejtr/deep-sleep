@@ -686,7 +686,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          main: 500, discount: 400, oto1: 1700, oto2: 2700, subscription: 800,
+          main: 500, discount: 400, oto1: 300, oto2: 500, subscription: 800,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           main: "Deep Sleep Reset — 7-Night Protocol",
@@ -697,7 +697,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         };
         // Geo-pricing: low-tier countries get reduced prices
         const LOW_TIER_PRICES: Record<string, number> = {
-          main: 100, discount: 100, oto1: 700, oto2: 1100, subscription: 300,
+          main: 100, discount: 100, oto1: 100, oto2: 150, subscription: 300,
         };
         const amountCents = input.isLowTier
           ? (LOW_TIER_PRICES[input.productId] ?? 100)

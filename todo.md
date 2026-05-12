@@ -661,3 +661,14 @@
   - [x] Dev server running ✓
   - [x] All tests passing ✓
 
+
+
+## KRITICKÉ BUGS - PRIORITY 1
+
+### Stripe Price Bug (May 12, 2026)
+- [x] URGENT: Stripe checkout cena je 9x vyšší (103 Kč → 456,94 Kč) - FIXED
+- [x] Zkontrolovat Stripe price_id v Order.tsx - oto1 měla 1700 centů místo 300
+- [x] Zkontrolovat currency conversion (CZK vs USD) - OK
+- [x] Zkontrolovat tax/fee calculation - OK
+- [x] Ověřit správnou cenu v checkout - oto1: 300 centů (3 USD), oto2: 500 centů (5 USD)
+- [ ] Test: Objednat a ověřit cenu v Stripe
