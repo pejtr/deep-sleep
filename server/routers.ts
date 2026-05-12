@@ -998,7 +998,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         };
         return (recommendations as any)[input.language] || recommendations.en;
       }),
-    apply: protectedProcedure
+    executeRecommendation: protectedProcedure
       .input(z.object({
         recommendationId: z.string(),
         title: z.string(),

@@ -52,7 +52,7 @@ export function RecommendationsPanel() {
     setDismissedIds(newDismissed);
   };
 
-  const applyMutation = trpc.recommendations.apply.useMutation();
+  const applyMutation = trpc.recommendations.executeRecommendation.useMutation();
   
   const handleApply = async (rec: Recommendation) => {
     try {
