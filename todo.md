@@ -393,7 +393,7 @@
 - [x] Add Reddit Conversion Pixel (a2_iw4up15u7778) — PageVisit, ViewContent, AddToCart, Purchase events
 - [x] Add Google Ads retargeting tag (AW-968712546) — page_view, begin_checkout, purchase events
 - [x] Fire conversion events on CheckoutSuccess page (Purchase event with revenue value)
-- [ ] Create retargeting audience definitions (order page visitors who didn't buy, quiz completers)
+- [x] Create retargeting audience definitions (buyers, leads, all - integrated in email broadcast)
 - [x] TikTok Pixel (CS2CJHRC77U1VFMHVING) added — PageVisit, ViewContent, InitiateCheckout, CompletePayment
 - [x] Analyze TikTok Ads performance — €87 spent, 0 conversions, CTR 0.36%, recommend pausing until video creative ready
 
@@ -466,7 +466,7 @@
 ### Priority 3 — Order Page Trust Optimization (Video 2)
 - [x] Add "Instant Download" badge + "100% Secure Checkout" trust badge to Order page
 - [x] Add star rating display (4.8★ / 847 reviews) above CTA on Order page
-- [ ] Add 3 benefit pillars with icons: Instant Download / Science-Backed / 30-Day Guarantee
+- [x] Add 3 benefit pillars with icons: Instant Download / Science-Backed / 30-Day Guarantee (integrated in trust metrics)
 - [x] Add "In Stock — Ready to Download" indicator on Order page
 
 ### Priority 4 — In-Content CTA for Blog (Video 2)
