@@ -23,6 +23,7 @@ export default function CheckoutSuccess() {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [chronotype, setChronotype] = useState("Bear");
   const [countdown, setCountdown] = useState(5);
+  const [showReviewPrompt, setShowReviewPrompt] = useState(true);
 
   const captureLead = trpc.leads.capture.useMutation({
     onSuccess: () => {
@@ -164,6 +165,28 @@ export default function CheckoutSuccess() {
             <p className="text-green-300 text-sm font-semibold">Protocol sent to {email} — check your inbox!</p>
           </div>
         ) : null}
+
+        {/* Review Prompt */}
+        {showReviewPrompt && (
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 mb-6">
+            <p className="text-blue-300 text-sm font-semibold mb-3">💬 Help other sleep-deprived people</p>
+            <p className="text-white/70 text-xs mb-3">Share your experience with Deep Sleep Reset. Your review helps others make the right decision.</p>
+            <div className="flex gap-2">
+              <button onClick={() => {
+                const reviewUrl = 'https://deep-sleep-reset.com/reviews';
+                window.open(reviewUrl, '_blank');
+                toast.success('Thanks for reviewing!');
+              }}
+                className="flex-1 py-2 px-3 bg-blue-500 hover:bg-blue-400 text-white font-semibold rounded-lg text-xs transition-all">
+                ⭐ Leave a Review
+              </button>
+              <button onClick={() => setShowReviewPrompt(false)}
+                className="flex-1 py-2 px-3 bg-white/10 hover:bg-white/20 text-white/70 font-semibold rounded-lg text-xs transition-all">
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Auto-redirect notice — the key conversion driver */}
         {NEXT_STEP[productId] && (

@@ -370,8 +370,8 @@
 - [x] Add real-time viewer count on checkout pages
 
 ### Priority 4: Social Proof & Reviews
-- [ ] Add post-purchase review prompt (email + in-app)
-- [ ] Display testimonials more prominently on homepage above fold
+- [x] Add post-purchase review prompt (in-app on CheckoutSuccess page)
+- [x] Display testimonials more prominently on homepage above fold (moved after hero section)
 
 ## A/B Testing for Upsell Pages (Apr 30)
 - [ ] Extend DB schema: upsell_ab_tests table (testId, page, variant, sessionId, shown, converted, revenue, createdAt)

@@ -335,6 +335,72 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══════════════ FEATURED TESTIMONIALS — ABOVE FOLD ═══════════════ */}
+      <AnimatedSection>
+        <section className="relative z-10 container py-12">
+          <div className="section-divider mb-12" />
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-8 text-center" style={{ color: "oklch(0.82 0.16 65)" }}>
+            Real People. Real Transformations.
+          </p>
+          <h2 className="font-display font-bold text-3xl md:text-4xl text-center mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
+            They Were Exactly Where You Are.{" "}
+            <span className="text-gradient-gold-italic">Now They Sleep.</span>
+          </h2>
+          <p className="text-sm text-center mb-12 max-w-xl mx-auto" style={{ color: "oklch(0.50 0.04 265)" }}>
+            These aren't outliers. CBT-I has an 80% success rate in clinical trials. Here's what that looks like in real life.
+          </p>
+
+          {/* Featured */}
+          <div className="max-w-2xl mx-auto glass-card rounded-2xl p-6 mb-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+                  style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: "oklch(0.82 0.16 65)", border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
+                  S
+                </div>
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: "oklch(0.95 0.01 265)" }}>{FEATURED_TESTIMONIAL.name}</p>
+                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>{FEATURED_TESTIMONIAL.location}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "oklch(0.82 0.16 65)" }}>Result</p>
+                <p className="text-sm font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>{FEATURED_TESTIMONIAL.result}</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-center mb-10" style={{ color: "oklch(0.40 0.04 265)" }}>
+            * Individual results vary. CBT-I clinical success rate: ~80% (AASM, 2021).
+          </p>
+
+          {/* 3 testimonial cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="testimonial-card rounded-xl p-6">
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: t.stars }).map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed mb-6" style={{ color: "oklch(0.75 0.04 265)" }}>
+                  "{t.text}"
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{ background: "oklch(0.78 0.18 65 / 0.12)", color: "oklch(0.82 0.16 65)" }}>
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold" style={{ color: "oklch(0.90 0.01 265)" }}>{t.name}</p>
+                    <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>{t.location}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </AnimatedSection>
+
       {/* ═══════════════ PROBLEM AGITATION — "3:17 AM" ═══════════════ */}
       <AnimatedSection>
         <section className="relative z-10 container py-20">
@@ -439,86 +505,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      </AnimatedSection>
-
-      {/* ═══════════════ FEATURED TESTIMONIAL ═══════════════ */}
-      <AnimatedSection>
-        <section className="relative z-10 container py-12">
-          <div className="section-divider mb-12" />
-          <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-8 text-center" style={{ color: "oklch(0.82 0.16 65)" }}>
-            Real People. Real Transformations.
-          </p>
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-center mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
-            They Were Exactly Where You Are.{" "}
-            <span className="text-gradient-gold-italic">Now They Sleep.</span>
-          </h2>
-          <p className="text-sm text-center mb-12 max-w-xl mx-auto" style={{ color: "oklch(0.50 0.04 265)" }}>
-            These aren't outliers. CBT-I has an 80% success rate in clinical trials. Here's what that looks like in real life.
-          </p>
-
-          {/* Featured */}
-          <div className="max-w-2xl mx-auto glass-card rounded-2xl p-6 mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                  style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: "oklch(0.82 0.16 65)", border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
-                  S
-                </div>
-                <div>
-                  <p className="font-semibold text-sm" style={{ color: "oklch(0.95 0.01 265)" }}>{FEATURED_TESTIMONIAL.name}</p>
-                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>{FEATURED_TESTIMONIAL.location}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "oklch(0.82 0.16 65)" }}>Result</p>
-                <p className="text-sm font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>{FEATURED_TESTIMONIAL.result}</p>
-              </div>
-            </div>
-          </div>
-          <p className="text-xs text-center mb-10" style={{ color: "oklch(0.40 0.04 265)" }}>
-            * Individual results vary. CBT-I clinical success rate: ~80% (AASM, 2021).
-          </p>
-
-          {/* 3 testimonial cards */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="testimonial-card rounded-xl p-6">
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: t.stars }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed mb-6" style={{ color: "oklch(0.75 0.04 265)" }}>
-                  "{t.text}"
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{ background: "oklch(0.78 0.18 65 / 0.12)", color: "oklch(0.82 0.16 65)" }}>
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold" style={{ color: "oklch(0.90 0.01 265)" }}>{t.name}</p>
-                    <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>{t.location}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Trust metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-8 mt-12">
-            {[
-              { icon: "👥", text: "10,000+ Lives Changed" },
-              { icon: "⭐", text: "4.9/5 Stars (847 reviews)" },
-              { icon: "🔒", text: "30-Day Full Refund Guarantee" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-sm">{item.icon}</span>
-                <span className="text-xs font-medium" style={{ color: "oklch(0.55 0.04 265)" }}>{item.text}</span>
-              </div>
-            ))}
           </div>
         </section>
       </AnimatedSection>
