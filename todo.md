@@ -160,12 +160,12 @@
 - [x] Gumroad URL: pevná cena $5 (opraveno z ?price=500 na ?price=5 — Gumroad zobrazuje v dolarech, ne centech)
 - [ ] Luna ADMIN mód: zobrazovat POUZE na /admin stránce, na landing page vždy prodejní persona
 - [ ] Personalizované chatbot persony: Luna (empatická), Petra (vědecká), Lucie (přímá) — random výběr per session
-- [ ] Admin Dashboard: kruhové grafy (device, language, funnel)
-- [ ] Admin Dashboard: sloupcové grafy (revenue/day, events/day)
-- [ ] Admin Dashboard: porovnávací grafy (conversion rate over time)
-- [ ] Admin Dashboard: časové filtry (dnes, 7d, 30d, vše)
-- [ ] Admin Dashboard: AI insights panel s tlačítkem "Apply" pro každé doporučení
-- [ ] Admin Dashboard: možnost potvrdit/aplikovat AI doporučení (uloží do DB jako applied=true)
+- [x] Admin Dashboard: kruhové grafy (device, language, funnel) - OVĚŘENO
+- [x] Admin Dashboard: sloupcové grafy (revenue/day, events/day) - OVĚŘENO
+- [x] Admin Dashboard: porovnávací grafy (conversion rate over time) - OVĚŘENO
+- [x] Admin Dashboard: časové filtry (dnes, 7d, 30d, vše) - OVĚŘENO
+- [x] Admin Dashboard: AI insights panel s tlačítkem "Apply" pro každé doporučení - OVĚŘENO
+- [x] Admin Dashboard: možnost potvrdit/aplikovat AI doporučení (uloží do DB jako applied=true) - OVĚŘENO
 
 ## Timeline Metrics (Apr 25-28)
 - [x] DB helpers: getHourlyMetrics, getDailyMetrics
@@ -672,3 +672,9 @@
 - [x] Zkontrolovat tax/fee calculation - OK
 - [x] Ověřit správnou cenu v checkout - oto1: 300 centů (3 USD), oto2: 500 centů (5 USD)
 - [ ] Test: Objednat a ověřit cenu v Stripe
+
+
+### CTA Button Bug (May 12, 2026)
+- [x] URGENT: CTA button "Fix My Sleep Tonight" neni clickable - FIXED
+- [x] Zkontrolovat CSS - cta-shimmer::after mel pointer-events: none
+- [x] Button je ted clickable a naviguje na /order
