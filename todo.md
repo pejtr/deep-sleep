@@ -201,20 +201,16 @@
 - [ ] TikTok Ads tab v AdminDashboard s KPI kartami a grafy
 - [ ] TikTok data v admin Luně (system prompt + adminData payload)
 - [ ] Vitest testy pro TikTok Ads API
-- [ ] Uložit TikTok Ads credentials jako secrets (TIKTOK_ADS_APP_ID, TIKTOK_ADS_SECRET, TIKTOK_ADS_ACCESS_TOKEN, TIKTOK_ADS_ADVERTISER_ID)
-
-## Currency Switcher (Apr 23)
-- [ ] Backend tRPC endpoint: currency.getRates — live kurzy z exchangerate API
-- [ ] Backend: geo-detekce měny podle Accept-Language / IP
-- [ ] Frontend CurrencyContext + useCurrency hook
-- [ ] CurrencySwitcher komponenta (dropdown vedle language switcheru)
-- [ ] Integrace do Home.tsx CTA tlačítek — zobrazit cenu v lokální měně
-- [ ] Integrace do Order.tsx, FloatingSocialProofBar.tsx, sticky bar
-- [ ] Podporované měny: USD, EUR, GBP, CZK, CAD, AUD, PLN, HUF, RON, INR, BRL, MXN
-- [ ] Auto-detekce měny při prvním načtení (podle jazyka/IP)
-- [ ] Vitest test pro currency endpoint
-
-## Nativní Stripe Checkout (Apr 23)
+- [ ] Uložit TikTok Ads credentials jako secrets (TIKTOK_ADS_APP_ID, TIKTOK_ADS_SECRET, TIKTOK_ADS_ACCESS_TOKEN, TIKTOK_ADS_ADVE## Currency Switcher (Apr 23)
+- [x] Backend tRPC endpoint: currency.getRates — live kurzy z open.er-api.com - OVĚŘENO
+- [x] Backend: geo-detekce měny podle Accept-Language / IP - OVĚŘENO
+- [ ] Frontend CurrencyContext + useCurrency hook - NEEDS VERIFICATION
+- [x] CurrencySwitcher komponenta (dropdown vedle language switcheru) - OVĚŘENO
+- [ ] Integrace do Home.tsx CTA tlačíků — zobrazit cenu v lokální měně - HARDCODED $5
+- [ ] Integrace do Order.tsx, FloatingSocialProofBar.tsx, sticky bar - CHYBÍ LOKALIZOVANÉ CENY
+- [x] Podporované měny: USD, EUR, GBP, CZK, CAD, AUD, PLN, HUF, RON, INR, BRL, MXN - 20 měn
+- [ ] Auto-detekce měny při prvním načtení (podle jazyka/IP) - CHYBÍ NA FRONTEND
+- [ ] Vitest test pro currency endpoint - CHYBÍkout (Apr 23)
 - [ ] Aktivovat Stripe integraci přes webdev_add_feature
 - [ ] Nastavit STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY a STRIPE_WEBHOOK_SECRET
 - [ ] Backend: createCheckoutSession tRPC endpoint (price $5, product metadata, currency support)

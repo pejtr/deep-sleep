@@ -135,9 +135,15 @@ export default function Home() {
   const { track } = useTrackBehavior();
   useBehaviorTracker("home"); // Extended auto-tracking: scroll, time, rage clicks, exit intent, UTM
   const { t } = useI18n();
+  const { getGeoPrice, isLowTier } = useCurrency();
   const abMutation = trpc.abTest.track.useMutation();
   const tracked = useRef(false);
   const [purchaseCount] = useState(() => Math.floor(Math.random() * 4) + 7);
+  // Geo-pricing: adjust prices for low-tier countries
+  const mainPrice = getGeoPrice(5);
+  const upsell1Price = getGeoPrice(7);
+  const upsell2Price = getGeoPrice(17);
+  const upsell3Price = getGeoPrice(8);
 
   // Route to Variant B if assigned
   if (variant === "B") {
@@ -212,7 +218,7 @@ export default function Home() {
             <span className="hidden sm:inline">— Start your sleep transformation today</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$5</span>
+            <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>${mainPrice}</span>
             <div className="w-px h-3" style={{ background: "oklch(0.78 0.18 65 / 0.3)" }} />
             <div className="flex items-center gap-0.5">
               {[1,2,3,4,5].map(i => (
