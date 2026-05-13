@@ -213,6 +213,13 @@ export const appRouter = router({
     getBySession: publicProcedure
       .input(z.object({ sessionId: z.string() }))
       .query(async ({ input }) => getOrdersBySession(input.sessionId)),
+
+    getRecent: publicProcedure
+      .input(z.object({ limit: z.number().default(10) }))
+      .query(async ({ input }) => {
+        const { getRecentOrders } = await import("./db");
+        return getRecentOrders(input.limit);
+      }),
   }),
 
   // ── Leads ─────────────────────────────────────────────────────────────────

@@ -5,7 +5,7 @@
 
 export const LUNA_IMAGES: Record<string, { url: string; alt: string; name: string }> = {
   compassionate: {
-    url: "/manus-storage/luna1-compassionate_203cdccc.webp",
+    url: "/manus-storage/luna-hero-green_66809a3d.png",
     alt: "Luna Compassionate - Empathetic Sleep Guide",
     name: "Luna Compassionate",
   },
@@ -25,17 +25,17 @@ export const LUNA_IMAGES: Record<string, { url: string; alt: string; name: strin
     name: "Luna Curious",
   },
   motivational: {
-    url: "/manus-storage/luna5-motivational_a1e2a9c8.webp",
+    url: "/manus-storage/luna-motivational_708b4863.png",
     alt: "Luna Motivational - Inspiring Sleep Guide",
     name: "Luna Motivational",
   },
   holistic: {
-    url: "/manus-storage/luna6-holistic_6962d0f4.webp",
+    url: "/manus-storage/luna-holistic_475c6309.png",
     alt: "Luna Holistic - Balanced Sleep Coach",
     name: "Luna Holistic",
   },
   storyteller: {
-    url: "/manus-storage/luna7-storyteller_8fd578df.webp",
+    url: "/manus-storage/luna-storyteller_89c4c087.png",
     alt: "Luna Storyteller - Narrative Sleep Guide",
     name: "Luna Storyteller",
   },

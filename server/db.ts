@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { and, gte, lte, eq, count } from "drizzle-orm";
+import { and, gte, lte, eq, count, desc } from "drizzle-orm";
 import { asc } from "drizzle-orm";
 import {
   InsertUser,
@@ -766,4 +766,42 @@ export async function getAbRecommendations(testName: string) {
   }
 
   return recommendations;
+}
+
+
+// ── Recent Orders (for live notifications) ────────────────────────────────────
+export async function getRecentOrders(limit: number = 10) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  try {
+    // Get recent COMPLETED orders with chronotype info
+    const recentOrders = await db
+      .select({
+        id: orders.id,
+        amount: orders.amount,
+        currency: orders.currency,
+        productId: orders.productId,
+        chronotype: orders.chronotype,
+        email: orders.email,
+        createdAt: orders.createdAt,
+      })
+      .from(orders)
+      .where(eq(orders.status, "completed"))
+      .orderBy(orders.createdAt)
+      .limit(limit);
+    
+    return recentOrders.map(o => ({
+      id: o.id,
+      amount: o.amount,
+      currency: o.currency || "usd",
+      productId: o.productId,
+      chronotype: o.chronotype || "Lion",
+      email: o.email || "Customer",
+      createdAt: o.createdAt,
+    }));
+  } catch (error) {
+    console.error("[getRecentOrders] Error:", error);
+    return [];
+  }
 }

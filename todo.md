@@ -149,7 +149,7 @@
 - [ ] Midnight cron job: analyze behavior data, generate AI recommendations, notify admin
 - [ ] Master Admin Dashboard: all data synthesis, funnel visualization, AI insights panel, heatmap
 - [ ] CSV export of feedback in admin
-- [ ] Real-time notifications for new orders and high-value feedback
+- [x] Real-time notifications for new orders and high-value feedback (getRecentOrders + LiveSalesNotification integration)
 
 ## UI Fixes (User Requests)
 - [ ] Sticky bar: přidat Quiz tlačítko do prázdného prostoru
@@ -674,3 +674,10 @@
 - [x] URGENT: CTA button "Fix My Sleep Tonight" neni clickable - FIXED
 - [x] Zkontrolovat CSS - cta-shimmer::after mel pointer-events: none
 - [x] Button je ted clickable a naviguje na /order
+
+
+## SEO Optimization (May 13)
+- [x] Reduce keywords from 12 to 5 (focus: fix insomnia, sleep protocol, CBT-I, chronotype quiz, sleep better)
+- [x] Vitest tests for getRecentOrders (11 tests, all passing)
+- [x] Real-time orders integration in LiveSalesNotification
+- [x] Polling interval 30s for live updates

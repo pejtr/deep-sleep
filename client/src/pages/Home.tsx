@@ -176,7 +176,7 @@ export default function Home() {
       kwMeta.name = "keywords";
       document.head.appendChild(kwMeta);
     }
-    kwMeta.content = "insomnia cure, fix insomnia, sleep better, deep sleep, CBT-I, sleep protocol, sleep guide, chronotype, sleep deprivation, natural sleep remedy, 7 night sleep reset, sleep improvement";
+    kwMeta.content = "fix insomnia, sleep protocol, CBT-I, chronotype quiz, sleep better";
     return () => {
       // Restore default title on unmount
       document.title = "Deep Sleep Reset";

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { trpc } from "@/lib/trpc";
 
 interface Notification {
   name: string;
@@ -43,9 +44,35 @@ export default function LiveSalesNotification({ enabled = true }: Props) {
   const [visible, setVisible] = useState(false);
   const [exiting, setExiting] = useState(false);
   const [index, setIndex] = useState(0);
+  const [orders, setOrders] = useState<any[]>([]);
+
+  // Fetch recent orders from DB every 30 seconds
+  const { data: recentOrders } = trpc.orders.getRecent.useQuery(
+    { limit: 15 },
+    { refetchInterval: 30000, enabled }
+  );
+
+  useEffect(() => {
+    if (recentOrders && recentOrders.length > 0) {
+      setOrders(recentOrders);
+    }
+  }, [recentOrders]);
+
 
   const showNext = useCallback(() => {
-    const shuffled = [...NOTIFICATIONS].sort(() => Math.random() - 0.5);
+    // Mix real orders with fallback notifications
+    const combined = [
+      ...orders.map((o: any) => ({
+        name: o.email?.split('@')[0] || 'Customer',
+        location: 'Worldwide',
+        chronotype: o.chronotype || 'Lion',
+        timeAgo: 'just now',
+        flag: '🌍',
+      })),
+      ...NOTIFICATIONS,
+    ];
+    
+    const shuffled = [...combined].sort(() => Math.random() - 0.5);
     const next = shuffled[index % shuffled.length];
     setIndex(i => i + 1);
     setCurrent(next ?? null);
@@ -60,7 +87,7 @@ export default function LiveSalesNotification({ enabled = true }: Props) {
         setExiting(false);
       }, 400);
     }, 4000);
-  }, [index]);
+  }, [index, orders]);
 
   useEffect(() => {
     if (!enabled) return;
