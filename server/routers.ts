@@ -1109,5 +1109,28 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         return [];
       }),
   }),
+
+  // ── Geo-Pricing ───────────────────────────────────────────────────────────────
+  pricing: router({
+    getForGeo: publicProcedure
+      .input(z.object({
+        country: z.string().optional(),
+      }))
+      .query(async ({ input, ctx }) => {
+        const { getGeoPricingFromIp, getGeoPricingFromCountry } = await import("./geoPricing");
+        
+        if (input.country) {
+          return getGeoPricingFromCountry(input.country);
+        }
+        
+        // Get IP from request
+        const ip = (ctx.req.headers["x-forwarded-for"] as string)?.split(",")[0] || 
+                   (ctx.req.headers["x-real-ip"] as string) ||
+                   ctx.req.socket.remoteAddress || 
+                   "127.0.0.1";
+        
+        return getGeoPricingFromIp(ip);
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

@@ -25,6 +25,7 @@ const Affiliates = lazy(() => import("./pages/Affiliates"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Feedback = lazy(() => import("./pages/Feedback"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Protocol = lazy(() => import("./pages/Protocol"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
@@ -68,6 +69,7 @@ function Router() {
         <Route path="/chat" component={Chat} />
         <Route path="/chatbot" component={SleepChatBot} />
         <Route path="/admin" component={AdminDashboard} />
+        <Route path="/analytics" component={AnalyticsDashboard} />
         <Route path="/checkout/success" component={CheckoutSuccess} />
         <Route path="/protocol" component={Protocol} />
         <Route path="/quiz-funnel" component={QuizFunnel} />
