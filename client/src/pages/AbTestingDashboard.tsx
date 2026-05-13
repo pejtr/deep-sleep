@@ -21,6 +21,8 @@ import { TrendingUp, Zap, Target, AlertCircle } from "lucide-react";
 export default function AbTestingDashboard() {
   const [selectedTest, setSelectedTest] = useState<"upsell1" | "upsell2" | "upsell3">("upsell1");
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("7d");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   // Fetch A/B results
   const { data: abResults, isLoading: abLoading } = trpc.admin.getAbResults.useQuery();
@@ -129,6 +131,51 @@ export default function AbTestingDashboard() {
             </Button>
           ))}
         </div>
+        {/* Date Range Filter */}
+        <div className="mb-8 p-4 border rounded-lg bg-card">
+          <h3 className="font-semibold mb-4">Custom Date Range</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md bg-background text-foreground"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">End Date</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md bg-background text-foreground"
+              />
+            </div>
+            <div className="flex items-end gap-2">
+              <Button
+                onClick={() => {
+                  // Apply custom date range
+                  console.log("Filtering by date range:", startDate, endDate);
+                }}
+                className="flex-1"
+              >
+                Apply Filter
+              </Button>
+              <Button
+                onClick={() => {
+                  setStartDate("");
+                  setEndDate("");
+                }}
+                variant="outline"
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
+        </div>
+
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

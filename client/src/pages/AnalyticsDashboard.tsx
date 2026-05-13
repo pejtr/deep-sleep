@@ -59,6 +59,36 @@ export default function AnalyticsDashboard() {
 
   const COLORS = ["#f59e0b", "#3b82f6", "#10b981"];
 
+  
+  const handleExportCSV = async () => {
+    if (!dailyMetrics) return;
+    
+    const csvData = `Date,Visits,Orders,Revenue
+${dailyMetrics.map((m: any) => `${m.date},${m.visits},${m.orders},${m.revenue}`).join('\n')}`;
+    
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
+
+  const handleExportPDF = async () => {
+    const response = await fetch('/api/analytics/export-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ timeRange }),
+    });
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${new Date().toISOString().split('T')[0]}.pdf`;
+    a.click();
+  };
+
+
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">

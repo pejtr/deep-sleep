@@ -681,3 +681,9 @@
 - [x] Vitest tests for getRecentOrders (11 tests, all passing)
 - [x] Real-time orders integration in LiveSalesNotification
 - [x] Polling interval 30s for live updates
+
+
+## Additional Features (May 13)
+- [x] Export analytics dashboard data as PDF/CSV report
+- [x] A/B testing date range filter for detailed analysis
+- [x] Active A/B test indicator badge on admin dashboard
