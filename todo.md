@@ -459,6 +459,17 @@
 - [ ] Register site with Google Search Console (manual step for user)
 - [x] Add sitemap.xml generation with blog posts
 
+## Blog Automation - Daily SEO Posts (May 15)
+- [x] Create blog.generateDaily tRPC procedure with LLM integration
+- [x] Implement SEO keyword injection (first paragraph + H2 + 3-5x throughout)
+- [x] Auto-generate meta descriptions and excerpts
+- [x] Create vitest tests for blog generation (7 tests, all passing)
+- [x] Create periodic-updates.md with scheduled task configuration
+- [x] Manual trigger endpoint: POST /api/scheduled/blog-post
+- [ ] Setup Manus scheduled task for daily blog generation (9:00 AM UTC)
+- [ ] Monitor blog post generation in Admin Dashboard
+- [ ] Track organic traffic from /blog routes
+
 ### Priority 3 — Order Page Trust Optimization (Video 2)
 - [x] Add "Instant Download" badge + "100% Secure Checkout" trust badge to Order page
 - [x] Add star rating display (4.8★ / 847 reviews) above CTA on Order page
@@ -486,7 +497,7 @@
 ### V2-1: SEO Blog
 - [x] Add blog_posts table to drizzle/schema.ts
 - [x] Apply DB migration for blog_posts
-- [ ] Add blog DB helpers: getBlogPosts, getBlogPostBySlug, createBlogPost
+- [x] Add blog DB helpers: getBlogPosts, getBlogPostBySlug, createBlogPost
 - [x] Add tRPC procedures: blog.list, blog.getBySlug, blog.create (admin only)
 - [x] Create /blog route (BlogList page)
 - [x] Create /blog/:slug route (BlogPost page with in-content product links)

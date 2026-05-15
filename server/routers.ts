@@ -177,6 +177,47 @@ export const appRouter = router({
         return { chronotype };
       }),
 
+    generateDaily: publicProcedure
+      .input(z.object({
+        keyword: z.string().optional(),
+        title: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const seoKeyword = (input.keyword || "deep sleep improvement").slice(0, 100);
+        const postTitle = (input.title || `How to Improve ${seoKeyword.charAt(0).toUpperCase() + seoKeyword.slice(1)}`).slice(0, 200);
+        const slug = postTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now();
+        const llmResponse = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: `You are a sleep science expert writing SEO-optimized blog articles for Deep Sleep Reset (deepsleep.manus.space). 
+Write in a professional, authoritative tone. Sound like someone who has actually worked in sleep medicine.
+Use active voice and vary sentence structure.
+Format: Use ## for H2 headings, ### for H3, **bold** for key terms, - for bullet lists.
+SEO Rules: Naturally include the target keyword in the first paragraph, in at least one H2, and 3-5 times throughout.
+Length: 600-900 words. Do NOT include the title in the content (it's added separately).`
+            },
+            {
+              role: "user",
+              content: `Write a complete SEO blog article about: "${seoKeyword}". Target keyword: "${seoKeyword}". Article title: "${postTitle}". Include practical, science-backed advice. Do not include the title at the top.`
+            }
+          ]
+        });
+        const rawContent = llmResponse.choices?.[0]?.message?.content;
+        const articleContent = typeof rawContent === "string" ? rawContent : "";
+        const excerpt = articleContent.replace(/[#*\n]/g, " ").trim().slice(0, 200) + "...";
+        const metaDescription = `Learn about ${seoKeyword}. Science-backed sleep tips from Deep Sleep Reset. Improve your sleep quality tonight.`.slice(0, 256);
+        await createBlogPost({
+          title: postTitle,
+          slug,
+          content: articleContent,
+          excerpt,
+          seoKeyword,
+          metaDescription,
+        });
+        return { success: true, slug, title: postTitle };
+      }),
+
     getResult: publicProcedure
       .input(z.object({ sessionId: z.string() }))
       .query(async ({ input }) => {
