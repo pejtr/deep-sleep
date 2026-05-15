@@ -85,11 +85,12 @@ export function registerStripeWebhook(app: Express) {
                 }).catch(() => {/* non-critical */});
 
         // Initialize 7-day email sequence
+        const clientRefId = session.client_reference_id || "0";
         await initializeEmailSequence(
-          lead.id,
-          email,
+          clientRefId,
+          buyerEmail || "",
           chronotype || "Bear",
-          downloadUrl
+          ""
         );
 
                 // ── V1-3: Add to Brevo with chronotype tag ──────────────────
