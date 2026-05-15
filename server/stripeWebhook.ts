@@ -5,6 +5,7 @@ import { orders } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifyOwner } from "./_core/notification";
 import { sendPurchaseConfirmation, addBrevoContact } from "./emailService";
+import { initializeEmailSequence } from "./emailScheduler";
 
 export function registerStripeWebhook(app: Express) {
   // CRITICAL: raw body parser must be registered BEFORE express.json()
@@ -82,6 +83,14 @@ export function registerStripeWebhook(app: Express) {
                 }).then(ok => {
                   console.log(`[Stripe Webhook] Purchase confirmation ${ok ? "✅ sent" : "❌ failed"} → ${buyerEmail}`);
                 }).catch(() => {/* non-critical */});
+
+        // Initialize 7-day email sequence
+        await initializeEmailSequence(
+          lead.id,
+          email,
+          chronotype || "Bear",
+          downloadUrl
+        );
 
                 // ── V1-3: Add to Brevo with chronotype tag ──────────────────
                 addBrevoContact({

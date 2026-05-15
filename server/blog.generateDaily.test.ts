@@ -36,7 +36,7 @@ describe("blog.generateDaily", () => {
   it("should generate blog post with default keyword", async () => {
     const result = await createBlogPost({
       title: "How to Improve Deep Sleep Improvement",
-      slug: "how-to-improve-deep-sleep-improvement-1234567890",
+      slug: `how-to-improve-deep-sleep-improvement-${Date.now()}`,
       content: `## Understanding Sleep Deprivation
 
 Sleep deprivation affects millions worldwide. This article explores deep sleep improvement techniques.
@@ -63,7 +63,7 @@ Deep sleep improvement requires commitment and consistency. Start with one techn
   it("should generate blog post with custom keyword", async () => {
     const result = await createBlogPost({
       title: "How to Fix Insomnia",
-      slug: "how-to-fix-insomnia-1234567890",
+      slug: `how-to-fix-insomnia-${Date.now()}`,
       content: "Content about fixing insomnia...",
       excerpt: "Learn about fixing insomnia...",
       seoKeyword: "fix insomnia",

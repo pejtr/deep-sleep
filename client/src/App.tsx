@@ -27,6 +27,7 @@ const Feedback = lazy(() => import("./pages/Feedback"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
 const AbTestingDashboard = lazy(() => import("./pages/AbTestingDashboard"));
+const Settings = lazy(() => import("./pages/Settings"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Protocol = lazy(() => import("./pages/Protocol"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
@@ -70,6 +71,7 @@ function Router() {
         <Route path="/chat" component={Chat} />
         <Route path="/chatbot" component={SleepChatBot} />
         <Route path="/admin" component={AdminDashboard} />
+        <Route path="/settings" component={Settings} />
         <Route path="/analytics" component={AnalyticsDashboard} />
         <Route path="/ab-testing" component={AbTestingDashboard} />
         <Route path="/checkout/success" component={CheckoutSuccess} />

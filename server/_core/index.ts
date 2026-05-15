@@ -177,6 +177,41 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
     }
   });
 
+    // ── Analytics Export ────────────────────────────────────────────────────────
+  app.post("/api/analytics/export-pdf", async (req, res) => {
+    try {
+      const { generateAnalyticsPDF } = await import("../analyticsExport");
+      const { getAdminStats } = await import("../db");
+      
+      const stats = await getAdminStats();
+      const pdfBuffer = await generateAnalyticsPDF(stats);
+      
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", "attachment; filename=analytics-report.pdf");
+      res.send(pdfBuffer);
+    } catch (err) {
+      console.error("[Analytics Export] Error:", err);
+      return res.status(500).json({ error: "Failed to generate PDF" });
+    }
+  });
+
+  app.post("/api/analytics/export-csv", async (req, res) => {
+    try {
+      const { generateAnalyticsCSV } = await import("../analyticsExport");
+      const { getAdminStats } = await import("../db");
+      
+      const stats = await getAdminStats();
+      const csvContent = generateAnalyticsCSV(stats);
+      
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=analytics-report.csv");
+      res.send(csvContent);
+    } catch (err) {
+      console.error("[Analytics Export] Error:", err);
+      return res.status(500).json({ error: "Failed to generate CSV" });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
