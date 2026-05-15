@@ -193,7 +193,11 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
           avgOrderValue: stats.completedOrderCount > 0 ? stats.revenue / stats.completedOrderCount : 0,
         },
         dailyMetrics: [],
-        deviceBreakdown: stats.deviceBreakdown || [],
+        deviceBreakdown: (stats.deviceBreakdown || []).map(d => ({
+          device: d.device,
+          count: d.count,
+          percentage: stats.behaviorCount > 0 ? (d.count / stats.behaviorCount) * 100 : 0,
+        })),
         topPages: [],
         recentOrders: stats.recentOrders || [],
       };
@@ -223,7 +227,11 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
           avgOrderValue: stats.completedOrderCount > 0 ? stats.revenue / stats.completedOrderCount : 0,
         },
         dailyMetrics: [],
-        deviceBreakdown: stats.deviceBreakdown || [],
+        deviceBreakdown: (stats.deviceBreakdown || []).map(d => ({
+          device: d.device,
+          count: d.count,
+          percentage: stats.behaviorCount > 0 ? (d.count / stats.behaviorCount) * 100 : 0,
+        })),
         topPages: [],
         recentOrders: stats.recentOrders || [],
       };
