@@ -97,12 +97,36 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
               Based on CBT-I — the #1 clinician-recommended insomnia treatment with an 80% success rate.
             </p>
 
+            {/* 3 Checkmarks */}
+            <div className="flex flex-wrap gap-6 py-4">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">✓</span>
+                <div>
+                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>CBT-I Certified</p>
+                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Clinically proven treatment</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">✓</span>
+                <div>
+                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>80% Success Rate</p>
+                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Fastest insomnia fix</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">✓</span>
+                <div>
+                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>No Pills/Supplements</p>
+                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>100% natural method</p>
+                </div>
+              </div>
+            </div>
+
             {/* Luna Introduction */}
             {lunaImage && (
               <div className="rounded-lg p-4 backdrop-blur" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.25 0.04 265)" }}>
                 <p className="text-sm" style={{ color: "oklch(0.60 0.04 265)" }}>
-                  <span className="font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>{lunaImage.name}</span> is your personal sleep guide.
-                  She understands your struggle and will help you reclaim your nights.
+                  <span className="font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>❤️ {lunaImage.name}</span> — Your Personal Sleep Guide
                 </p>
               </div>
             )}
@@ -110,13 +134,13 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold">
-                Fix My Sleep Tonight — $5
+                ✓ START MY 7-NIGHT SLEEP PLAN | $5 TODAY
               </button>
               <button
                 onClick={onChatOpen}
                 className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all" style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >
-                Ask Luna for Free Tips
+                💡 GET FREE SLEEP TIPS (NO CREDIT CARD)
               </button>
             </div>
 
@@ -146,8 +170,11 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
                 className="relative w-full max-w-md rounded-2xl shadow-2xl border-2 object-cover aspect-square" style={{ borderColor: "oklch(0.82 0.16 65 / 0.3)" }}
               />
               {/* Floating badge */}
-              <div className="absolute top-4 right-4 text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse" style={{ background: "oklch(0.75 0.18 145)" }}>
-                ● 16 people viewing now
+              <div className="absolute top-4 right-4 text-white px-4 py-2 rounded-full text-sm font-semibold animate-pulse" style={{ background: "oklch(0.75 0.18 145)" }}>
+                🟢 26 people viewing NOW →
+              </div>
+              <div className="absolute bottom-4 left-4 text-white px-4 py-2 rounded-lg text-sm font-semibold" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.82 0.16 65 / 0.3)" }}>
+                💚 Luna • Your Sleep Coach
               </div>
             </div>
           )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { ArrowRight, Lock } from "lucide-react";
 import CountdownTimer from "./CountdownTimer";
 
@@ -18,6 +19,7 @@ export default function StickyMobileCTA({
   show = true,
 }: Props) {
   const [visible, setVisible] = useState(false);
+  const [, navigate] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,15 +44,24 @@ export default function StickyMobileCTA({
       {/* CTA button */}
       <div className="px-4 pb-4 pt-2"
         style={{ background: "oklch(0.07 0.025 255)", borderTop: "1px solid oklch(0.78 0.18 65 / 0.1)" }}>
-        <button
-          onClick={handleClick}
-          className="w-full cta-gold cta-shimmer rounded-xl py-4 flex items-center justify-center gap-2 text-base"
-        >
-          <Lock className="w-4 h-4" />
-          <span>{label}</span>
-          <span className="font-black">— Only {price}</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleClick}
+            className="flex-1 cta-gold cta-shimmer rounded-xl py-4 flex items-center justify-center gap-2 text-base"
+          >
+            <Lock className="w-4 h-4" />
+            <span>{label}</span>
+            <span className="font-black">— Only {price}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => navigate('/quiz')}
+            className="px-4 py-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
+            title="Start Quiz"
+          >
+            📝
+          </button>
+        </div>
         <div className="flex items-center justify-center gap-3 mt-2">
           <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>🔒 Secure</span>
           <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>✅ Instant access</span>

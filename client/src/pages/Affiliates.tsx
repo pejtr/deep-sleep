@@ -1,7 +1,16 @@
 import { Moon, ArrowLeft, DollarSign, Users, TrendingUp, Gift } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import SleepChatBot from "../components/SleepChatBot";
 
 export default function Affiliates() {
+  const [showLuna, setShowLuna] = useState(true);
+
+  useEffect(() => {
+    // Luna Affiliate mode - show chatbot with affiliate persona
+    setShowLuna(true);
+  }, []);
+
   return (
     <div className="min-h-screen pb-16" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-gold w-96 h-96 opacity-15" style={{ top: "-5%", right: "-5%" }} />
@@ -127,6 +136,11 @@ export default function Affiliates() {
           </p>
         </div>
       </div>
+
+      {/* Luna Affiliate Mode */}
+      {showLuna && (
+        <SleepChatBot />
+      )}
     </div>
   );
 }

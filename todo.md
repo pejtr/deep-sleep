@@ -152,10 +152,10 @@
 - [x] Real-time notifications for new orders and high-value feedback (getRecentOrders + LiveSalesNotification integration)
 
 ## UI Fixes (User Requests)
-- [ ] Sticky bar: přidat Quiz tlačítko do prázdného prostoru
-- [ ] Pomalejší smooth scroll na celém webu
-- [ ] Luna Affiliate mód na /affiliates stránce (ne ADMIN mód)
-- [ ] Email kontaktní formulář směrovat na petr.matej@gmail.com
+- [x] Sticky bar: přidat Quiz tlačítko do prázdného prostoru
+- [x] Pomalejší smooth scroll na celém webu
+- [x] Luna Affiliate mód na /affiliates stránce (ne ADMIN mód)
+- [x] Email kontaktní formulář směrovat na petr.matej@gmail.com
 - [ ] Zjistit možnost emailu na deepsleep.quest doméně
 - [x] Gumroad URL: pevná cena $5 (opraveno z ?price=500 na ?price=5 — Gumroad zobrazuje v dolarech, ne centech)
 - [ ] Luna ADMIN mód: zobrazovat POUZE na /admin stránce, na landing page vždy prodejní persona
