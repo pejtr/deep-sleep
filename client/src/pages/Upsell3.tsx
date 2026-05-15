@@ -12,6 +12,32 @@ const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "🦁", Bear: "🐻
 
 
 // ── Variant B: Minimalist subscription layout ────────────────────────────────
+function VariantA({ chronotype, onAccept, onDecline, loading }: {
+  chronotype: string;
+  onAccept: () => void;
+  onDecline: () => void;
+  loading: boolean;
+}) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full">
+        <div className="bg-slate-800 rounded-2xl p-8 shadow-2xl">
+          <h1 className="text-4xl font-bold text-white mb-4">Upsell 3 - Variant A</h1>
+          <p className="text-slate-300 mb-6">Premium sleep optimization for {chronotype}</p>
+          <div className="flex gap-4">
+            <button onClick={onAccept} disabled={loading} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg disabled:opacity-50">
+              {loading ? "Processing..." : "Accept"}
+            </button>
+            <button onClick={onDecline} disabled={loading} className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">
+              Decline
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function VariantB({ chronotype, onAccept, onDecline, loading }: {
   chronotype: Chronotype; onAccept: () => void; onDecline: () => void; loading: boolean;
 }) {
