@@ -1,7 +1,6 @@
 import { getDb } from "./db";
 import { emailSequences } from "../drizzle/schema";
-import { eq, and, lt } from "drizzle-orm";
-import { sendDayXEmail } from "./emailService";
+import { eq } from "drizzle-orm";
 
 /**
  * Process pending emails from the 7-day sequence
@@ -10,6 +9,12 @@ import { sendDayXEmail } from "./emailService";
 export async function processPendingEmails() {
   try {
     console.log("[Email Scheduler] Processing pending emails...");
+
+    const db = await getDb();
+    if (!db) {
+      console.error("[Email Scheduler] Database connection failed");
+      return;
+    }
 
     // Get all pending email sequences
     const pending = await db
@@ -61,14 +66,20 @@ export async function initializeEmailSequence(
   downloadUrl: string
 ) {
   try {
+    const db = await getDb();
+    if (!db) {
+      console.error("[Email Scheduler] Database connection failed");
+      return;
+    }
+
     // Create 7 email records (Day 0-6)
     const emails = [];
     for (let day = 0; day <= 6; day++) {
       emails.push({
-        leadId: parseInt(leadId),
+        leadId: parseInt(leadId) || 0,
         sequenceType: "7day",
         emailNumber: day + 1,
-        status: "pending",
+        status: "pending" as const,
       });
     }
 

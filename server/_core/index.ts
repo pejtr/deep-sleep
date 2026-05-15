@@ -184,7 +184,20 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
       const { getAdminStats } = await import("../db");
       
       const stats = await getAdminStats();
-      const pdfBuffer = await generateAnalyticsPDF(stats);
+      const analyticsData = {
+        dateRange: { start: new Date(Date.now() - 30*24*60*60*1000), end: new Date() },
+        kpis: {
+          totalRevenue: stats.revenue,
+          totalOrders: stats.orderCount,
+          conversionRate: stats.orderCount > 0 ? (stats.completedOrderCount / stats.orderCount) * 100 : 0,
+          avgOrderValue: stats.completedOrderCount > 0 ? stats.revenue / stats.completedOrderCount : 0,
+        },
+        dailyMetrics: [],
+        deviceBreakdown: stats.deviceBreakdown || [],
+        topPages: [],
+        recentOrders: stats.recentOrders || [],
+      };
+      const pdfBuffer = await generateAnalyticsPDF(analyticsData);
       
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", "attachment; filename=analytics-report.pdf");
@@ -201,7 +214,20 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
       const { getAdminStats } = await import("../db");
       
       const stats = await getAdminStats();
-      const csvContent = generateAnalyticsCSV(stats);
+      const analyticsData = {
+        dateRange: { start: new Date(Date.now() - 30*24*60*60*1000), end: new Date() },
+        kpis: {
+          totalRevenue: stats.revenue,
+          totalOrders: stats.orderCount,
+          conversionRate: stats.orderCount > 0 ? (stats.completedOrderCount / stats.orderCount) * 100 : 0,
+          avgOrderValue: stats.completedOrderCount > 0 ? stats.revenue / stats.completedOrderCount : 0,
+        },
+        dailyMetrics: [],
+        deviceBreakdown: stats.deviceBreakdown || [],
+        topPages: [],
+        recentOrders: stats.recentOrders || [],
+      };
+      const csvContent = generateAnalyticsCSV(analyticsData);
       
       res.setHeader("Content-Type", "text/csv");
       res.setHeader("Content-Disposition", "attachment; filename=analytics-report.csv");
