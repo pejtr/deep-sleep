@@ -743,3 +743,10 @@
 - [x] Add $1 "1-Night Optimizer" pricing tier on Order page (side-by-side with $4)
 - [x] Add $1 entry CTA on homepage hero section
 - [x] Verify products.ts has entry $1 Stripe product
+
+## UI Fixes (May 16)
+- [x] Ask Luna button moved back to right-bottom
+- [x] Chat window positioned right-bottom
+- [x] Proactive bubble positioned right-bottom
+- [x] GET FREE SLEEP TIPS button wired to SleepChatBot via custom event (open-sleep-chat)
+- [x] External open trigger added to SleepChatBot (listens for window event)

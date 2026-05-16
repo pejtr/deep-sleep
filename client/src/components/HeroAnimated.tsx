@@ -106,7 +106,11 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                 START MY 7-NIGHT SLEEP PLAN | $4 TODAY
               </button>
               <button
-                onClick={onChatOpen}
+                onClick={() => {
+                  // Fire custom event so SleepChatBot (in App.tsx) can open
+                  window.dispatchEvent(new CustomEvent('open-sleep-chat'));
+                  if (onChatOpen) onChatOpen();
+                }}
                 className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all cursor-pointer"
                 style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >

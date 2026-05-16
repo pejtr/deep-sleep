@@ -231,6 +231,13 @@ export default function SleepChatBot() {
     return () => clearTimeout(timer);
   }, [proactiveDismissed, hasOpened, open, isSalesMode, scrolledPast50]);
 
+  // ── External open trigger (from hero CTA) ─────────────────────────────────────
+  useEffect(() => {
+    const handleExternalOpen = () => openChat("manual");
+    window.addEventListener('open-sleep-chat', handleExternalOpen);
+    return () => window.removeEventListener('open-sleep-chat', handleExternalOpen);
+  }, [openChat]);
+
   // ── Exit intent trigger (sales mode only) ───────────────────────────────────────
   useEffect(() => {
     if (hasOpened || proactiveDismissed || !isSalesMode) return;
@@ -354,7 +361,7 @@ export default function SleepChatBot() {
       {/* Proactive bubble (sales mode only) */}
       {showProactiveBubble && !open && isSalesMode && (
         <div
-          className="fixed bottom-40 right-5 z-50 max-w-[260px] rounded-2xl p-4 shadow-2xl animate-in slide-in-from-bottom-4"
+          className="fixed bottom-20 right-5 z-50 max-w-[260px] rounded-2xl p-4 shadow-2xl animate-in slide-in-from-bottom-4"
           style={{
             background: "oklch(0.10 0.03 255)",
             border: `1px solid ${displayColor} / 0.5)`.replace("/ 0.5)", "/ 0.5)"),
@@ -387,16 +394,16 @@ export default function SleepChatBot() {
         </div>
       )}
 
-      {/* Floating chat button — only visible after 50% scroll (or admin/affiliate pages) */}
+      {/* Floating chat button — bottom-LEFT, only visible after 50% scroll (or admin/affiliate pages) */}
       {(scrolledPast50 || isAdminMode || isAffiliateMode) && (
         <button
           onClick={() => open ? setOpen(false) : openChat("manual")}
-          className="fixed bottom-24 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-6 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
           style={{
             background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
             boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,
           }}
-          aria-label="Sleep report"
+          aria-label="Ask Luna"
         >
           {open ? (
             <X className="w-5 h-5 text-white" />
@@ -405,9 +412,9 @@ export default function SleepChatBot() {
               {isAdminMode ? (
                 <Sparkles className="w-5 h-5 text-white" />
               ) : (
-                <AlertTriangle className="w-5 h-5 text-white" />
+                <img src={LUNA_AVATAR} alt="Luna" className="w-6 h-6 rounded-full object-cover" />
               )}
-              <span className="text-white text-sm font-semibold hidden sm:inline">{buttonLabel}</span>
+              <span className="text-white text-sm font-semibold">{buttonLabel}</span>
               <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-white animate-pulse" />
             </>
           )}
@@ -417,7 +424,7 @@ export default function SleepChatBot() {
       {/* Chat window */}
       {open && (
         <div
-          className="fixed bottom-40 right-5 z-50 flex flex-col rounded-2xl overflow-hidden shadow-2xl"
+          className="fixed bottom-20 right-5 z-50 flex flex-col rounded-2xl overflow-hidden shadow-2xl"
           style={{
             width: "min(380px, calc(100vw - 2.5rem))",
             height: "min(520px, calc(100vh - 12rem))",
