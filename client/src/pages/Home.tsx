@@ -16,6 +16,7 @@ import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
 import { HeroWithLuna } from "@/components/HeroWithLuna";
+import { HeroAnimated } from "@/components/HeroAnimated";
 import SleepChatBot from "@/components/SleepChatBot";
 import { useBehaviorTracking } from "@/hooks/useBehaviorTracking";
 import { setMetaTags } from "@/lib/metaTags";
@@ -209,8 +210,12 @@ export default function Home() {
         </p>
       </div>
 
-      {/* HeroWithLuna — replaces traditional hero for A/B testing */}
-      <HeroWithLuna onChatOpen={handleChatOpen} />
+      {/* Hero — A/B Testing: Variant A (Luna) vs Variant B (Animated) */}
+      {variant === "A" ? (
+        <HeroWithLuna onChatOpen={handleChatOpen} navigate={navigate} />
+      ) : (
+        <HeroAnimated onChatOpen={handleChatOpen} navigate={navigate} />
+      )}
       
       {/* SleepChatBot — Floating chat interface */}
       {isChatOpen && (

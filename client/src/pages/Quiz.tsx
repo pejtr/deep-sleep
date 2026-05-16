@@ -139,7 +139,7 @@ export default function Quiz() {
         const abVariant = getAbVariant();
         const result = await submitMutation.mutateAsync({
           sessionId,
-          answers: newAnswers.slice(0, 5),
+          answers: newAnswers,
           abVariant,
         });
         setChronotype(result.chronotype);

@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { getLunaImage } from "../../../shared/lunaImages";
 import { trpc } from "../lib/trpc";
 import { useAuth } from "../_core/hooks/useAuth";
 
 interface HeroWithLunaProps {
   onChatOpen?: () => void;
+  navigate?: (path: string) => void;
 }
 
-export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
+export function HeroWithLuna({ onChatOpen, navigate: navProp }: HeroWithLunaProps) {
+  const [, routeNavigate] = useLocation();
+  const navigate = navProp || routeNavigate;
   const auth = useAuth();
   const user = auth?.user;
   const [lunaImage, setLunaImage] = useState<{ url: string; alt: string; name: string } | null>(null);
@@ -133,12 +137,18 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold">
+              <button
+                onClick={() => {
+                  console.log('Navigating to /quiz');
+                  navigate?.("/quiz");
+                }}
+                className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold cursor-pointer"
+              >
                 ✓ START MY 7-NIGHT SLEEP PLAN | $5 TODAY
               </button>
               <button
                 onClick={onChatOpen}
-                className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all" style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
+                className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all cursor-pointer" style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >
                 💡 GET FREE SLEEP TIPS (NO CREDIT CARD)
               </button>
@@ -162,18 +172,18 @@ export function HeroWithLuna({ onChatOpen }: HeroWithLunaProps) {
 
           {/* Right: Luna Image */}
           {lunaImage && (
-            <div className="relative flex justify-center items-center">
+            <div className="relative flex justify-center items-center pointer-events-none">
               <div className="absolute inset-0 rounded-2xl blur-2xl" style={{ background: "linear-gradient(to right, oklch(0.82 0.16 65 / 0.2), oklch(0.75 0.18 145 / 0.2))" }}></div>
               <img
                 src={lunaImage.url}
                 alt={lunaImage.alt}
-                className="relative w-full max-w-md rounded-2xl shadow-2xl border-2 object-cover aspect-square" style={{ borderColor: "oklch(0.82 0.16 65 / 0.3)" }}
+                className="relative w-full max-w-md rounded-2xl shadow-2xl border-2 object-cover aspect-square pointer-events-auto" style={{ borderColor: "oklch(0.82 0.16 65 / 0.3)" }}
               />
               {/* Floating badge */}
-              <div className="absolute top-4 right-4 text-white px-4 py-2 rounded-full text-sm font-semibold animate-pulse" style={{ background: "oklch(0.75 0.18 145)" }}>
+              <div className="absolute top-4 right-4 text-white px-4 py-2 rounded-full text-sm font-semibold animate-pulse pointer-events-auto" style={{ background: "oklch(0.75 0.18 145)" }}>
                 🟢 26 people viewing NOW →
               </div>
-              <div className="absolute bottom-4 left-4 text-white px-4 py-2 rounded-lg text-sm font-semibold" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.82 0.16 65 / 0.3)" }}>
+              <div className="absolute bottom-4 left-4 text-white px-4 py-2 rounded-lg text-sm font-semibold pointer-events-auto" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.82 0.16 65 / 0.3)" }}>
                 💚 Luna • Your Sleep Coach
               </div>
             </div>
