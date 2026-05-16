@@ -738,3 +738,8 @@
 
 ## Admin Login Fix (May 16)
 - [x] Add login button on /admin page when user is not authenticated
+
+## $1 Entry Product Visibility (May 16)
+- [x] Add $1 "1-Night Optimizer" pricing tier on Order page (side-by-side with $4)
+- [x] Add $1 entry CTA on homepage hero section
+- [x] Verify products.ts has entry $1 Stripe product

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
-import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check, Download } from "lucide-react";
+import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check, Download, Zap, Moon, Brain } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import TrustBar from "@/components/TrustBar";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
@@ -15,8 +15,8 @@ import { trackViewContent } from "@/lib/conversionTracking";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
-const CHRONOTYPE_ICONS: Record<Chronotype, string> = {
-  Lion: "🦁", Bear: "🐻", Wolf: "🐺", Dolphin: "🐬",
+const CHRONOTYPE_ICONS: Record<Chronotype, React.ElementType> = {
+  Lion: Zap, Bear: Moon, Wolf: Brain, Dolphin: Star,
 };
 
 export default function Order() {
@@ -24,7 +24,8 @@ export default function Order() {
   const search = useSearch();
   const params = new URLSearchParams(search);
   const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
-  const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
+  const IconComponent = CHRONOTYPE_ICONS[chronotype] ?? Moon;
+  const [selectedTier, setSelectedTier] = useState<"discount" | "main">("main");
 
   const [buyers] = useState(() => Math.floor(Math.random() * 15) + 8);
   const [viewers] = useState(() => Math.floor(Math.random() * 60) + 180);
@@ -35,8 +36,8 @@ export default function Order() {
 
   useEffect(() => {
     track("page_view", { page: "order", value: { chronotype } });
-    trackViewContent({ productId: "main", productName: "Deep Sleep Reset Protocol", value: 5 });
-  }, []);
+    trackViewContent({ productId: selectedTier === "discount" ? "discount" : "main", productName: selectedTier === "discount" ? "1-Night Optimizer" : "Deep Sleep Reset Protocol", value: selectedTier === "discount" ? 1 : 5 });
+  }, [selectedTier]);
 
   return (
     <div className="min-h-screen pb-32 md:pb-0" style={{ background: "oklch(0.07 0.025 255)" }}>
@@ -57,7 +58,7 @@ export default function Order() {
         </div>
       </div>
 
-      <div className="relative z-10 container max-w-lg mx-auto py-8">
+      <div className="relative z-10 container max-w-2xl mx-auto py-8">
 
         {/* Live FOMO indicators */}
         <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
@@ -76,14 +77,130 @@ export default function Order() {
         </div>
 
         {/* TikTok viral badge */}
-        <div className="flex items-center justify-center gap-2 mb-5 px-4 py-2 rounded-full mx-auto w-fit"
+        <div className="flex items-center justify-center gap-2 mb-8 px-4 py-2 rounded-full mx-auto w-fit"
           style={{ background: "oklch(0.12 0.03 290)", border: "1px solid oklch(0.55 0.15 290 / 0.5)" }}>
-          <span className="text-sm">&#127909;</span>
+          <span className="text-sm">▶</span>
           <span className="text-xs font-bold" style={{ color: "oklch(0.80 0.14 290)" }}>As seen on TikTok</span>
           <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>· 244K+ views</span>
         </div>
 
-        {/* Product card */}
+        {/* Pricing Tiers Selector */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* $1 Entry Tier */}
+          <div
+            onClick={() => setSelectedTier("discount")}
+            className="glass-card rounded-3xl p-6 relative overflow-hidden cursor-pointer transition-all duration-200"
+            style={{
+              border: selectedTier === "discount" ? "2px solid oklch(0.78 0.18 65)" : "1px solid oklch(0.78 0.18 65 / 0.3)",
+              transform: selectedTier === "discount" ? "scale(1.02)" : "scale(1)",
+            }}
+          >
+            <div className="orb orb-gold w-32 h-32 opacity-10" style={{ top: "-20%", right: "-10%" }} />
+            
+            <div className="badge-popular mb-3">Quick Start</div>
+            
+            <div className="flex items-center gap-2 mb-3">
+              <Zap className="w-6 h-6" style={{ color: "oklch(0.78 0.18 65)" }} />
+              <h2 className="font-display font-bold text-lg" style={{ color: "oklch(0.95 0.01 265)" }}>
+                1-Night Optimizer
+              </h2>
+            </div>
+
+            <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
+              Perfect for testing what works for your {chronotype} chronotype
+            </p>
+
+            <div className="flex flex-col gap-2 mb-4">
+              {[
+                "Tonight's Sleep Optimization Guide",
+                "Chronotype-Specific Protocol",
+                "Sleep Trigger Audio (5 min)",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Check className="w-4 h-4 flex-shrink-0" style={{ color: "oklch(0.78 0.18 65)" }} />
+                  <span className="text-xs" style={{ color: "oklch(0.70 0.04 265)" }}>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mb-4">
+              <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(1)}</span>
+              <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
+            </div>
+
+            <button
+              onClick={() => setSelectedTier("discount")}
+              className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
+              style={{
+                background: selectedTier === "discount" ? "oklch(0.78 0.18 65)" : "oklch(0.78 0.18 65 / 0.2)",
+                color: selectedTier === "discount" ? "black" : "oklch(0.78 0.18 65)",
+              }}
+            >
+              {selectedTier === "discount" ? "Selected" : "Choose"}
+            </button>
+          </div>
+
+          {/* $4 Full Tier */}
+          <div
+            onClick={() => setSelectedTier("main")}
+            className="glass-card rounded-3xl p-6 relative overflow-hidden cursor-pointer transition-all duration-200"
+            style={{
+              border: selectedTier === "main" ? "2px solid oklch(0.78 0.18 65)" : "1px solid oklch(0.78 0.18 65 / 0.3)",
+              transform: selectedTier === "main" ? "scale(1.02)" : "scale(1)",
+            }}
+          >
+            <div className="orb orb-gold w-32 h-32 opacity-10" style={{ top: "-20%", right: "-10%" }} />
+            
+            <div className="badge-popular mb-3">Most Popular</div>
+            
+            <div className="flex items-center gap-2 mb-3">
+              <IconComponent className="w-6 h-6" style={{ color: "oklch(0.78 0.18 65)" }} />
+              <h2 className="font-display font-bold text-lg" style={{ color: "oklch(0.95 0.01 265)" }}>
+                7-Night Full Protocol
+              </h2>
+            </div>
+
+            <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
+              Complete {chronotype} sleep transformation system
+            </p>
+
+            <div className="flex flex-col gap-2 mb-4">
+              {[
+                `${chronotype} Chronotype Sleep Guide (PDF)`,
+                "7-Night Protocol Tracker & Schedule",
+                `${chronotype}-Specific Wind-Down Ritual`,
+                "Deep Sleep Trigger Audio (10 min)",
+                "Lifetime access + future updates",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Check className="w-4 h-4 flex-shrink-0" style={{ color: "oklch(0.78 0.18 65)" }} />
+                  <span className="text-xs" style={{ color: "oklch(0.70 0.04 265)" }}>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
+              <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(4)}</span>
+              <div className="badge-popular">89% OFF</div>
+            </div>
+
+            <p className="text-xs mb-4" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
+
+            <button
+              onClick={() => setSelectedTier("main")}
+              className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
+              style={{
+                background: selectedTier === "main" ? "oklch(0.78 0.18 65)" : "oklch(0.78 0.18 65 / 0.2)",
+                color: selectedTier === "main" ? "black" : "oklch(0.78 0.18 65)",
+              }}
+            >
+              {selectedTier === "main" ? "Selected" : "Choose"}
+            </button>
+          </div>
+        </div>
+
+          {/* Selected Product Card */}
         <div className="glass-card rounded-3xl p-8 mb-6 relative overflow-hidden"
           style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
           <div className="orb orb-gold w-40 h-40 opacity-10" style={{ top: "-20%", right: "-10%" }} />
@@ -93,26 +210,30 @@ export default function Order() {
 
           {/* Product title */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-4xl">{icon}</span>
+            <IconComponent className="w-10 h-10" style={{ color: "oklch(0.78 0.18 65)" }} />
             <div>
               <h1 className="font-display font-bold text-xl" style={{ color: "oklch(0.95 0.01 265)" }}>
-                {chronotype} Deep Sleep Protocol
+                {selectedTier === "discount" ? "1-Night Optimizer" : `${chronotype} Deep Sleep Protocol`}
               </h1>
               <p className="text-xs" style={{ color: "oklch(0.55 0.04 265)" }}>
-                7-Night Personalized Sleep System
+                {selectedTier === "discount" ? "Quick Start System" : "7-Night Personalized Sleep System"}
               </p>
             </div>
           </div>
 
           {/* What's included */}
           <div className="flex flex-col gap-2 mb-6">
-            {[
+            {(selectedTier === "discount" ? [
+              "Tonight's Sleep Optimization Guide",
+              "Chronotype-Specific Protocol",
+              "Sleep Trigger Audio (5 min)",
+            ] : [
               `${chronotype} Chronotype Sleep Guide (PDF)`,
               "7-Night Protocol Tracker & Schedule",
               `${chronotype}-Specific Wind-Down Ritual`,
               "Deep Sleep Trigger Audio (10 min)",
               "Lifetime access + future updates",
-            ].map((item, i) => (
+            ]).map((item, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="text-xs flex-shrink-0" style={{ color: "oklch(0.78 0.18 65)" }}>✓</span>
                 <span className="text-sm" style={{ color: "oklch(0.70 0.04 265)" }}>{item}</span>
@@ -122,12 +243,21 @@ export default function Order() {
 
           {/* Price with currency switcher */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
-            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(5)}</span>
-            <div>
-              <div className="badge-popular">89% OFF</div>
-              <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
-            </div>
+            {selectedTier === "main" && (
+              <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
+            )}
+            <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>
+              {formatPrice(selectedTier === "discount" ? 1 : 4)}
+            </span>
+            {selectedTier === "main" && (
+              <div>
+                <div className="badge-popular">89% OFF</div>
+                <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
+              </div>
+            )}
+            {selectedTier === "discount" && (
+              <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
+            )}
           </div>
           <div className="flex items-center gap-2 mb-6">
             <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>Price shown in:</span>
@@ -139,53 +269,55 @@ export default function Order() {
             <CountdownTimer variant="inline" label="Price locks in:" />
           </div>
 
-          {/* Order Bump — OTO1 Chronotype Optimizer $3 */}
-          <div
-            onClick={() => setBumpSelected(b => !b)}
-            className="mb-5 rounded-2xl p-4 cursor-pointer transition-all duration-200 select-none"
-            style={{
-              background: bumpSelected ? "oklch(0.78 0.18 65 / 0.12)" : "oklch(0.12 0.03 290 / 0.8)",
-              border: bumpSelected ? "2px solid oklch(0.78 0.18 65 / 0.7)" : "2px dashed oklch(0.35 0.08 65 / 0.6)",
-            }}
-          >
-            <div className="flex items-start gap-3">
-              <div
-                className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center mt-0.5 transition-all"
-                style={{
-                  background: bumpSelected ? "oklch(0.78 0.18 65)" : "oklch(0.18 0.03 290)",
-                  border: bumpSelected ? "none" : "2px solid oklch(0.40 0.08 65)",
-                }}
-              >
-                {bumpSelected && <Check className="w-4 h-4 text-black" />}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>YES! Add this</span>
-                  <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Special one-time offer</span>
+          {/* Order Bump — only for main tier */}
+          {selectedTier === "main" && (
+            <div
+              onClick={() => setBumpSelected(b => !b)}
+              className="mb-5 rounded-2xl p-4 cursor-pointer transition-all duration-200 select-none"
+              style={{
+                background: bumpSelected ? "oklch(0.78 0.18 65 / 0.12)" : "oklch(0.12 0.03 290 / 0.8)",
+                border: bumpSelected ? "2px solid oklch(0.78 0.18 65 / 0.7)" : "2px dashed oklch(0.35 0.08 65 / 0.6)",
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center mt-0.5 transition-all"
+                  style={{
+                    background: bumpSelected ? "oklch(0.78 0.18 65)" : "oklch(0.18 0.03 290)",
+                    border: bumpSelected ? "none" : "2px solid oklch(0.40 0.08 65)",
+                  }}
+                >
+                  {bumpSelected && <Check className="w-4 h-4 text-black" />}
                 </div>
-                <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.90 0.04 265)" }}>
-                  Chronotype Optimizer — Personalized 30-Day Plan
-                </p>
-                <p className="text-xs leading-relaxed mb-2" style={{ color: "oklch(0.55 0.04 265)" }}>
-                  Get a fully personalized sleep schedule, meal timing, and light exposure plan built specifically for your {chronotype} chronotype. Most people see 2x faster results.
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(17)}</span>
-                  <span className="text-base font-black" style={{ color: "oklch(0.78 0.18 65)" }}>Add for just {formatPrice(3)}</span>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>YES! Add this</span>
+                    <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Special one-time offer</span>
+                  </div>
+                  <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.90 0.04 265)" }}>
+                    Chronotype Optimizer — Personalized 30-Day Plan
+                  </p>
+                  <p className="text-xs leading-relaxed mb-2" style={{ color: "oklch(0.55 0.04 265)" }}>
+                    Get a fully personalized sleep schedule, meal timing, and light exposure plan built specifically for your {chronotype} chronotype. Most people see 2x faster results.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(17)}</span>
+                    <span className="text-base font-black" style={{ color: "oklch(0.78 0.18 65)" }}>Add for just {formatPrice(3)}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Express Checkout — Apple Pay / Google Pay / Link */}
           <div className="mb-4">
             <ExpressCheckout
-              productId="main"
-              includeUpsell={bumpSelected ? "oto1" : undefined}
+              productId={selectedTier}
+              includeUpsell={selectedTier === "main" && bumpSelected ? "oto1" : undefined}
               sessionId={getSessionId()}
               chronotype={chronotype}
-              amount={bumpSelected ? 8 : 5}
-              label={bumpSelected ? "Protocol + Optimizer" : "Deep Sleep Protocol"}
+              amount={selectedTier === "discount" ? 1 : (bumpSelected ? 7 : 4)}
+              label={selectedTier === "discount" ? "1-Night Optimizer" : (bumpSelected ? "Protocol + Optimizer" : "Deep Sleep Protocol")}
             />
           </div>
 
@@ -207,104 +339,51 @@ export default function Order() {
             <span className="text-sm font-semibold" style={{ color: "oklch(0.78 0.18 65)" }}>4.9/5</span>
             <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>from 2,847 verified buyers</span>
           </div>
+
           {/* Price increase warning */}
           <div className="rounded-lg p-3 mb-4" style={{ background: "oklch(0.15 0.08 15 / 0.2)", border: "1px solid oklch(0.65 0.15 15 / 0.5)" }}>
             <p className="text-xs font-semibold" style={{ color: "oklch(0.65 0.15 15)" }}>
-              🚨 Price increases to $19 in 48 hours
+              Price increases to ${selectedTier === "discount" ? "5" : "19"} in 48 hours
             </p>
             <p className="text-xs opacity-75 mt-1" style={{ color: "oklch(0.65 0.15 15)" }}>
               Lock in this special price now before it expires
             </p>
           </div>
+
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
-            productId="main"
-            includeUpsell={bumpSelected ? "oto1" : undefined}
+            productId={selectedTier}
+            includeUpsell={selectedTier === "main" && bumpSelected ? "oto1" : undefined}
             sessionId={getSessionId()}
             chronotype={chronotype}
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg"
             variant="primary"
           >
             <Lock className="w-5 h-5" />
-            <span>{bumpSelected ? `Get Protocol + Optimizer — ${formatPrice(5)} + ${formatPrice(3)}` : `Get My ${chronotype} Protocol — ${formatPrice(5)}`}</span>
+            <span>
+              {selectedTier === "discount" 
+                ? `Get 1-Night Optimizer — ${formatPrice(1)}`
+                : (bumpSelected ? `Get Protocol + Optimizer — ${formatPrice(4)} + ${formatPrice(3)}` : `Get My ${chronotype} Protocol — ${formatPrice(4)}`)
+              }
+            </span>
             <ArrowRight className="w-5 h-5" />
           </CheckoutButton>
 
           {/* Payment methods */}
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <CreditCard className="w-4 h-4" style={{ color: "oklch(0.40 0.04 265)" }} />
-            <span className="text-xs" style={{ color: "oklch(0.40 0.04 265)" }}>Visa · Mastercard · Apple Pay · Google Pay · PayPal</span>
+          <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+            <CreditCard className="w-4 h-4" style={{ color: "oklch(0.45 0.04 265)" }} />
+            <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>Visa • Mastercard • Apple Pay • Google Pay</span>
           </div>
         </div>
 
-        {/* Trust badges — V2-5 */}
-        <div className="grid grid-cols-4 gap-2 mb-8">
-          {[
-            { icon: <Download className="w-5 h-5" />, title: "Instant Download", desc: "Access in 60 seconds" },
-            { icon: <Shield className="w-5 h-5" />, title: "30-Day Guarantee", desc: "Full refund, no questions" },
-            { icon: <Lock className="w-5 h-5" />, title: "256-bit SSL", desc: "Bank-level security" },
-            { icon: <Star className="w-5 h-5 fill-current" />, title: "4.9★ Rating", desc: "2,847 reviews" },
-          ].map((badge, i) => (
-            <div key={i} className="glass-card rounded-xl p-3 text-center">
-              <div className="flex justify-center mb-1.5" style={{ color: "oklch(0.78 0.18 65)" }}>
-                {badge.icon}
-              </div>
-              <p className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>{badge.title}</p>
-              <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>{badge.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Social proof */}
-        <div className="glass-card rounded-2xl p-5 mb-8">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-              style={{ background: "oklch(0.78 0.18 65 / 0.15)" }}>
-              {icon}
-            </div>
-            <div>
-              <div className="flex gap-0.5 mb-1">
-                {[1,2,3,4,5].map(i => (
-                  <Star key={i} className="w-3 h-3 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
-                ))}
-              </div>
-              <p className="text-xs leading-relaxed" style={{ color: "oklch(0.65 0.04 265)" }}>
-                "I was skeptical about a $4 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
-              </p>
-              <p className="text-xs mt-1.5 font-semibold" style={{ color: "oklch(0.50 0.04 265)" }}>
-                — Verified {chronotype} customer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Trust bar */}
-        <TrustBar variant="compact" />
-
-        {/* FAQ */}
-        <div className="mt-8 space-y-3">
-          {[
-            { q: "How do I receive the protocol?", a: "Instantly after purchase — you'll get a download link via email and on the confirmation page." },
-            { q: "What if it doesn't work for me?", a: "Full 30-day money-back guarantee. Email us and we'll refund you immediately, no questions asked." },
-            { q: "Is this really just $4?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
-          ].map((faq, i) => (
-            <div key={i} className="glass-card rounded-xl p-4">
-              <p className="text-sm font-semibold mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>Q: {faq.q}</p>
-              <p className="text-xs leading-relaxed" style={{ color: "oklch(0.55 0.04 265)" }}>{faq.a}</p>
-            </div>
-          ))}
-        </div>
-
+        {/* Trust indicators */}
+        <TrustBar />
       </div>
 
-      {/* Sticky mobile CTA */}
-      <StickyMobileCTA
-        label={`Get My ${chronotype} Protocol`}
-        price={formatPrice(5)}
-        onClick={() => track("checkout_click", { page: "order", element: "sticky_cta", value: { chronotype } })}
-      />
+      {/* Sticky Mobile CTA */}
+      <StickyMobileCTA />
 
-      {/* FOMO */}
+      {/* Live Sales Notifications */}
       <LiveSalesNotification />
     </div>
   );

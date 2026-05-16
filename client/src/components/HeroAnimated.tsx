@@ -85,10 +85,21 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <button
                 onClick={() => {
-                  navigate?.("/quiz");
+                  navigate?.("/order");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="border-2 rounded-xl px-6 py-3 text-base font-bold transition-all cursor-pointer"
+                style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
+              >
+                TRY FOR $1
+              </button>
+              <button
+                onClick={() => {
+                  navigate?.("/order");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold cursor-pointer"
               >
