@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 
+const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp";
+
 interface HeroAnimatedProps {
   onChatOpen?: () => void;
   navigate?: (path: string) => void;
@@ -20,11 +22,17 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden" style={{ background: "oklch(0.07 0.025 255)" }}>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Night sky background */}
+      <div className="absolute inset-0">
+        <img src={HERO_BG} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, oklch(0.07 0.025 255 / 0.4), oklch(0.07 0.025 255 / 0.85))" }} />
+      </div>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 rounded-full blur-3xl" style={{ background: "oklch(0.55 0.18 145 / 0.1)" }}></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl" style={{ background: "oklch(0.50 0.18 265 / 0.1)" }}></div>
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full blur-3xl" style={{ background: "oklch(0.55 0.18 145 / 0.06)" }}></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl" style={{ background: "oklch(0.50 0.18 265 / 0.06)" }}></div>
       </div>
 
       {/* Content */}
@@ -54,21 +62,21 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             {/* 3 Checkmarks */}
             <div className="flex flex-wrap gap-6 py-4">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">✓</span>
+                <span className="text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>&#10003;</span>
                 <div>
                   <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>CBT-I Certified</p>
                   <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Clinically proven treatment</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">✓</span>
+                <span className="text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>&#10003;</span>
                 <div>
                   <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>80% Success Rate</p>
                   <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Fastest insomnia fix</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">✓</span>
+                <span className="text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>&#10003;</span>
                 <div>
                   <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>No Pills/Supplements</p>
                   <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>100% natural method</p>
@@ -80,19 +88,18 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 onClick={() => {
-                  console.log('Navigating to /quiz');
                   navigate?.("/quiz");
                 }}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold cursor-pointer"
               >
-                ✓ START MY 7-NIGHT SLEEP PLAN | $5 TODAY
+                START MY 7-NIGHT SLEEP PLAN | $4 TODAY
               </button>
               <button
                 onClick={onChatOpen}
                 className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all cursor-pointer"
                 style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >
-                💡 GET FREE SLEEP TIPS (NO CREDIT CARD)
+                GET FREE SLEEP TIPS
               </button>
             </div>
 
@@ -120,7 +127,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
               <div className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity duration-1000">
                 <svg viewBox="0 0 400 400" className="w-full max-w-md" style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.3))" }}>
                   {/* Before: Stressed face */}
-                  <g style={{ opacity: animationPhase === 0 ? 1 : 0, transition: "opacity 1s" }}>
+                  <g style={{ opacity: 1, transition: "opacity 1s" }}>
                     <circle cx="100" cy="100" r="60" fill="oklch(0.60 0.08 30)" />
                     <circle cx="85" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
                     <circle cx="115" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
@@ -129,7 +136,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                       INSOMNIA
                     </text>
                     <text x="100" y="230" textAnchor="middle" fontSize="14" fill="oklch(0.40 0.04 265)">
-                      Exhausted • Foggy • Anxious
+                      Exhausted · Foggy · Anxious
                     </text>
                   </g>
 
@@ -140,7 +147,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                   </g>
 
                   {/* After: Happy face */}
-                  <g style={{ opacity: animationPhase === 0 ? 1 : 0, transition: "opacity 1s" }}>
+                  <g style={{ opacity: 1, transition: "opacity 1s" }}>
                     <circle cx="300" cy="100" r="60" fill="oklch(0.75 0.18 145)" />
                     <circle cx="285" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
                     <circle cx="315" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
@@ -149,7 +156,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                       DEEP SLEEP
                     </text>
                     <text x="300" y="230" textAnchor="middle" fontSize="14" fill="oklch(0.60 0.04 265)">
-                      Rested • Sharp • Calm
+                      Rested · Sharp · Calm
                     </text>
                   </g>
                 </svg>
@@ -218,7 +225,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             {/* Phase 2: Sleep Dashboard */}
             {animationPhase === 2 && (
               <div className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity duration-1000">
-                <div className="w-full max-w-md p-6 rounded-2xl" style={{ background: "oklch(0.15 0.04 265)", border: "1px solid oklch(0.25 0.04 265)" }}>
+                <div className="w-full max-w-md p-6 rounded-2xl" style={{ background: "oklch(0.15 0.04 265 / 0.9)", border: "1px solid oklch(0.25 0.04 265)", backdropFilter: "blur(12px)" }}>
                   <h3 className="text-xl font-bold mb-6" style={{ color: "oklch(0.95 0.01 265)" }}>
                     Your Sleep Score
                   </h3>
@@ -242,7 +249,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-3xl font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>85</span>
+                        <span className="text-3xl font-black" style={{ color: "oklch(0.82 0.16 65)" }}>85</span>
                       </div>
                     </div>
                   </div>

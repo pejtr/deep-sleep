@@ -118,7 +118,7 @@ const MADE_FOR_YOU = [
   "You want your life back, not just better sleep.",
   "You're ready for a real transformation, not quick fixes.",
   "You believe you deserve to feel good again.",
-  "You're willing to invest $5 to reclaim your nights and days.",
+  "You're willing to invest $4 to reclaim your nights and days.",
 ];
 
 export default function HomeVariantB() {
@@ -140,14 +140,14 @@ export default function HomeVariantB() {
     // Set unique meta tags for Variant B - optimized for Facebook conversion
     setMetaTags({
       title: "Reclaim Your Life. One Night at a Time. — Deep Sleep Reset",
-      description: "Transform your sleep in 7 nights. Stop struggling. Get your life back. Science-backed protocol, 80% success rate, just $5.",
+      description: "Transform your sleep in 7 nights. Stop struggling. Get your life back. Science-backed protocol, 80% success rate, just $4.",
       image: OG_IMAGE_VARIANT_B,
       url: window.location.href,
     });
   }, []);
 
   useEffect(() => {
-    document.title = "Reclaim Your Life — Deep Sleep Reset: $5";
+    document.title = "Reclaim Your Life — Deep Sleep Reset: $4";
     let kwMeta = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
     if (!kwMeta) {
       kwMeta = document.createElement("meta");
@@ -180,7 +180,7 @@ export default function HomeVariantB() {
             <span className="hidden sm:inline">— Start your 7-night journey today</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$5</span>
+            <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>$4</span>
             <div className="w-px h-3" style={{ background: "oklch(0.78 0.18 65 / 0.3)" }} />
             <div className="flex items-center gap-0.5">
               {[1,2,3,4,5].map(i => (
@@ -216,7 +216,7 @@ export default function HomeVariantB() {
               className="cta-gold cta-shimmer rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold inline-flex items-center gap-1 whitespace-nowrap"
             >
               <span className="hidden sm:inline">Get Started</span>
-              <span className="sm:hidden">$5 →</span>
+              <span className="sm:hidden">$4 →</span>
             </button>
           </div>
         </nav>
@@ -254,7 +254,7 @@ export default function HomeVariantB() {
               onClick={handleBuyNow}
               className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3"
             >
-              <span>Start Your Transformation — $5</span>
+              <span>Start Your Transformation — $4</span>
               <ArrowRight className="w-5 h-5" />
             </button>
             <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
@@ -483,7 +483,7 @@ export default function HomeVariantB() {
             Your Complete Transformation System
           </h2>
           <p className="text-base text-center max-w-2xl mx-auto mb-12" style={{ color: "oklch(0.60 0.04 265)" }}>
-            Everything you need to reclaim your life. Just $5 — less than a coffee. Because your transformation shouldn't cost a fortune.
+            Everything you need to reclaim your life. Just $4 — less than a coffee. Because your transformation shouldn't cost a fortune.
           </p>
 
           <div className="max-w-2xl mx-auto glass-card rounded-2xl p-8 md:p-10">
@@ -510,7 +510,7 @@ export default function HomeVariantB() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>Your Price Today:</span>
-                <span className="font-display font-bold text-3xl text-gradient-gold">Just $5</span>
+                <span className="font-display font-bold text-3xl text-gradient-gold">Just $4</span>
               </div>
             </div>
 
@@ -519,7 +519,7 @@ export default function HomeVariantB() {
                 onClick={handleBuyNow}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
               >
-                <span>Reclaim Your Life — $5</span>
+                <span>Reclaim Your Life — $4</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
               <p className="text-xs mt-3" style={{ color: "oklch(0.40 0.04 265)" }}>
@@ -546,7 +546,7 @@ export default function HomeVariantB() {
                 The <span style={{ color: "oklch(0.82 0.16 65)" }}>"Reclaim Your Life"</span> Guarantee
               </h2>
               <p className="text-sm leading-relaxed mb-4" style={{ color: "oklch(0.65 0.04 265)" }}>
-                Go through the 7-night protocol. If you don't experience a real transformation in your sleep and your life within 30 days, email me and I'll refund your $5 immediately. No questions asked.
+                Go through the 7-night protocol. If you don't experience a real transformation in your sleep and your life within 30 days, email me and I'll refund your $4 immediately. No questions asked.
               </p>
               <p className="text-sm leading-relaxed" style={{ color: "oklch(0.55 0.04 265)" }}>
                 I can offer this because this protocol works. CBT-I has an 80% clinical success rate. You have nothing to lose — and your life back to gain.
@@ -611,11 +611,11 @@ export default function HomeVariantB() {
             <div className="flex-1 text-center sm:text-left">
               <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>Bonus included after purchase</p>
               <h3 className="font-display font-bold text-lg mb-1" style={{ color: "oklch(0.95 0.01 265)" }}>5 Guided Sleep Audio Sessions</h3>
-              <p className="text-sm" style={{ color: "oklch(0.55 0.04 265)" }}>Body scan, breath work &amp; sleep onset audio — unlocked instantly after your $5 purchase.</p>
+              <p className="text-sm" style={{ color: "oklch(0.55 0.04 265)" }}>Body scan, breath work &amp; sleep onset audio — unlocked instantly after your $4 purchase.</p>
             </div>
             <button onClick={handleBuyNow}
               className="cta-gold cta-shimmer rounded-lg px-5 py-2.5 text-sm font-bold whitespace-nowrap shrink-0">
-              Get Access — $5
+              Get Access — $4
             </button>
           </div>
         </section>
@@ -635,19 +635,19 @@ export default function HomeVariantB() {
             Imagine waking up tomorrow and thinking: "I actually slept. I feel alive again."
           </p>
           <p className="text-sm mb-10 max-w-xl mx-auto" style={{ color: "oklch(0.55 0.04 265)" }}>
-            More energy. Sharper thinking. Better relationships. The version of yourself that shows up when you're truly rested. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $5.</strong>
+            More energy. Sharper thinking. Better relationships. The version of yourself that shows up when you're truly rested. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for $4.</strong>
           </p>
 
           <button
             onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-12 py-6 text-xl inline-flex items-center gap-3 animate-pulse-glow"
           >
-            <span>RECLAIM YOUR LIFE — $5</span>
+            <span>RECLAIM YOUR LIFE — $4</span>
           </button>
 
           <p className="text-sm italic mt-10 max-w-lg mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>
             <strong style={{ color: "oklch(0.55 0.04 265)" }}>P.S.</strong>{" "}
-            <em>You've spent more than $5 on things that didn't change your life. This is $5 to permanently transform how you sleep — and how every day feels after. The only question is: are you ready to reclaim your life?</em>
+            <em>You've spent more than $4 on things that didn't change your life. This is $4 to permanently transform how you sleep — and how every day feels after. The only question is: are you ready to reclaim your life?</em>
           </p>
         </section>
       </AnimatedSection>

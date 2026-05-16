@@ -16,7 +16,7 @@ const C = {
 function injectProductLinks(content: string): string {
   const paragraphs = content.split("\n\n");
   const midIndex = Math.floor(paragraphs.length / 2);
-  const productLink = `\n\n> 💤 **If you need a faster route to deep sleep**, the [7-Night Deep Sleep Reset Protocol](/order) gives you a science-backed, step-by-step system for just $5.\n\n`;
+  const productLink = `\n\n> **If you need a faster route to deep sleep**, the [7-Night Deep Sleep Reset Protocol](/order) gives you a science-backed, step-by-step system for just $4.\n\n`;
   paragraphs.splice(midIndex, 0, productLink);
   return paragraphs.join("\n\n");
 }
@@ -56,7 +56,7 @@ export default function BlogPost() {
     return (
       <div style={{ background: C.bg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center", color: C.textMuted }}>
-          <div style={{ fontSize: "32px", marginBottom: "12px" }}>🌙</div>
+          <div style={{ fontSize: "32px", marginBottom: "12px" }}></div>
           <p>Loading article...</p>
         </div>
       </div>
@@ -82,10 +82,10 @@ export default function BlogPost() {
       {/* Header */}
       <div style={{ borderBottom: `1px solid ${C.border}`, padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <Link href="/" style={{ color: C.gold, textDecoration: "none", fontWeight: 700, fontSize: "18px" }}>
-          🌙 Deep Sleep Reset
+          Deep Sleep Reset
         </Link>
         <Link href="/order" style={{ background: C.gold, color: "#0a0810", padding: "8px 20px", borderRadius: "8px", textDecoration: "none", fontWeight: 700, fontSize: "14px" }}>
-          Get the Protocol — $5
+          Get the Protocol — $4
         </Link>
       </div>
 
@@ -123,7 +123,7 @@ export default function BlogPost() {
 
         {/* Bottom CTA Box — V2-2 */}
         <div style={{ marginTop: "48px", background: `linear-gradient(135deg, oklch(0.13 0.04 265), oklch(0.15 0.06 290))`, border: `1px solid ${C.gold}55`, borderRadius: "20px", padding: "32px", textAlign: "center" }}>
-          <p style={{ fontSize: "24px", marginBottom: "8px" }}>🌙</p>
+          <p style={{ fontSize: "24px", marginBottom: "8px" }}></p>
           <h3 style={{ fontSize: "20px", fontWeight: 800, marginBottom: "10px" }}>
             Stop Struggling with Sleep. Start the Protocol.
           </h3>
@@ -132,13 +132,13 @@ export default function BlogPost() {
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "12px" }}>
             <Link href="/order" style={{ background: C.gold, color: "#0a0810", padding: "14px 28px", borderRadius: "10px", textDecoration: "none", fontWeight: 800, fontSize: "16px" }}>
-              Get the Protocol — $5 →
+              Get the Protocol — $4 →
             </Link>
             <Link href="/quiz-funnel" style={{ background: "transparent", border: `1px solid ${C.border}`, color: C.text, padding: "14px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: 600, fontSize: "15px" }}>
               Take Free Quiz First
             </Link>
           </div>
-          <p style={{ color: C.textMuted, fontSize: "12px" }}>⚡ Instant download · 🛡️ 30-day money-back guarantee</p>
+          <p style={{ color: C.textMuted, fontSize: "12px" }}>Instant download · 30-day money-back guarantee</p>
         </div>
 
         {/* Back to blog */}

@@ -12,7 +12,7 @@ export default function GeoPrice({
   showCurrency = false,
   className = "",
 }: GeoPriceProps) {
-  const [price, setPrice] = useState("$5");
+  const [price, setPrice] = useState("$4");
   const [currency, setCurrency] = useState("USD");
 
   // Fetch geo-pricing

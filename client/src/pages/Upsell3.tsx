@@ -44,7 +44,7 @@ function VariantB({ chronotype, onAccept, onDecline, loading }: {
   return (
     <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-gold w-80 h-80 opacity-15" style={{ top: "-5%", right: "-5%" }} />
-      <CountdownTimer variant="banner" label="⚡ Exclusive offer expires in:" />
+      <CountdownTimer variant="banner" label="Exclusive offer expires in:" />
       <div className="relative z-10 container max-w-lg mx-auto py-8 px-4">
         <div className="text-center mb-8">
           <h1 className="font-display font-bold text-3xl md:text-4xl mb-4" style={{ color: "oklch(0.95 0.01 265)" }}>

@@ -44,7 +44,7 @@ export default function Affiliates() {
           </h1>
           <p className="text-base max-w-xl mx-auto" style={{ color: "oklch(0.60 0.04 265)" }}>
             Join our affiliate program and earn up to 50% commission on every sale. 
-            Our $5 price point converts exceptionally well — low barrier, high volume.
+            Our $4 price point converts exceptionally well — low barrier, high volume.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ export default function Affiliates() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
             { icon: <DollarSign className="w-5 h-5" />, value: "50%", label: "Commission" },
-            { icon: <TrendingUp className="w-5 h-5" />, value: "$5", label: "Low price = high CVR" },
+            { icon: <TrendingUp className="w-5 h-5" />, value: "$4", label: "Low price = high CVR" },
             { icon: <Users className="w-5 h-5" />, value: "10,000+", label: "Happy customers" },
             { icon: <Gift className="w-5 h-5" />, value: "30-day", label: "Cookie window" },
           ].map((stat, i) => (

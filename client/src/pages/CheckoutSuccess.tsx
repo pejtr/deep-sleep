@@ -8,6 +8,7 @@ import { trackPurchase } from "@/lib/conversionTracking";
 
 // Upsell sequence: main → upsell1, oto1 → upsell2, oto2 → upsell3, subscription → thankyou
 const NEXT_STEP: Record<string, string> = {
+  entry: "/upsell/entry",
   main: "/upsell1",
   oto1: "/upsell2",
   oto2: "/upsell3",
@@ -28,7 +29,7 @@ export default function CheckoutSuccess() {
   const captureLead = trpc.leads.capture.useMutation({
     onSuccess: () => {
       setEmailSubmitted(true);
-      toast.success("✅ Protocol sent to your inbox!");
+      toast.success("Protocol sent to your inbox!");
     },
     onError: () => toast.error("Couldn't save email. Please try again."),
   });
@@ -47,9 +48,9 @@ export default function CheckoutSuccess() {
       captureLead.mutate({ email: em, sessionId: getSessionId(), source: "stripe_success" });
     }
     // Fire purchase conversion on all platforms
-    const priceMap: Record<string, number> = { main: 5, discount: 3, oto1: 17, oto2: 27, subscription: 8 };
+    const priceMap: Record<string, number> = { entry: 1, main: 4, discount: 4, oto1: 17, oto2: 27, subscription: 8 };
     trackPurchase({
-      value: priceMap[pid] || 5,
+      value: priceMap[pid] || 4,
       orderId: oid ?? undefined,
       productId: pid,
       productName: `Deep Sleep Reset - ${pid}`,
@@ -91,8 +92,8 @@ export default function CheckoutSuccess() {
   // Product-specific success messages
   const successMessages: Record<string, { title: string; subtitle: string; emoji: string }> = {
     main: { title: "Payment Successful!", subtitle: "Your 7-Night Deep Sleep Reset is ready", emoji: "🎉" },
-    oto1: { title: "Chronotype Toolkit Added!", subtitle: "Your personalized optimizer is unlocked", emoji: "🎯" },
-    oto2: { title: "ASMR Pack Added!", subtitle: "7 premium sleep tracks are yours", emoji: "🎧" },
+    oto1: { title: "Chronotype Toolkit Added!", subtitle: "Your personalized optimizer is unlocked", emoji: "" },
+    oto2: { title: "ASMR Pack Added!", subtitle: "7 premium sleep tracks are yours", emoji: "" },
     subscription: { title: "Welcome to Premium!", subtitle: "Your Sleep Optimizer membership is active", emoji: "👑" },
     discount: { title: "Payment Successful!", subtitle: "Your Deep Sleep Reset is ready", emoji: "🎉" },
   };
@@ -178,7 +179,7 @@ export default function CheckoutSuccess() {
                 toast.success('Thanks for reviewing!');
               }}
                 className="flex-1 py-2 px-3 bg-blue-500 hover:bg-blue-400 text-white font-semibold rounded-lg text-xs transition-all">
-                ⭐ Leave a Review
+                Leave a Review
               </button>
               <button onClick={() => setShowReviewPrompt(false)}
                 className="flex-1 py-2 px-3 bg-white/10 hover:bg-white/20 text-white/70 font-semibold rounded-lg text-xs transition-all">
@@ -216,7 +217,7 @@ export default function CheckoutSuccess() {
 
         {/* Guarantee */}
         <div className="flex items-center justify-center gap-3 text-white/50 text-sm mb-6">
-          <span>🛡️</span>
+          <span></span>
           <span>30-day money-back guarantee · No questions asked</span>
         </div>
 

@@ -66,9 +66,9 @@ export function setMetaTags(config: MetaTagsConfig) {
  */
 export function resetMetaTags() {
   setMetaTags({
-    title: "Deep Sleep Reset: Fix Insomnia in 7 Nights — $5",
+    title: "Deep Sleep Reset: Fix Insomnia in 7 Nights — $4",
     description:
-      "Science-backed 7-night protocol that fixes insomnia without pills. CBT-I has an 80% clinical success rate. Just $5.",
+      "Science-backed 7-night protocol that fixes insomnia without pills. CBT-I has an 80% clinical success rate. Just $4.",
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp",
     url: "https://deep-sleep-reset.com",

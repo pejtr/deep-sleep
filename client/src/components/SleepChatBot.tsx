@@ -16,7 +16,9 @@ import { trpc } from "@/lib/trpc";
 import { useI18n } from "@/contexts/I18nContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
-import { X, Send, Moon, Loader2, Star, Sparkles, Brain, Zap } from "lucide-react";
+import { X, Send, Loader2, Star, Sparkles, AlertTriangle } from "lucide-react";
+
+const LUNA_AVATAR = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-2eBqiRATXiAZLh2aHC5e9h.webp";
 
 interface Message {
   role: "user" | "assistant";
@@ -49,13 +51,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Luna",
     emoji: "🌙",
     tagline: "AI Sleep Coach · Online",
-    style: "You are Luna, a warm and empathetic AI sleep coach. You speak gently, acknowledge feelings first, then offer solutions. You're like a caring friend who happens to know everything about sleep science. Use phrases like 'I understand how exhausting that is...' and 'You deserve to sleep well.' Always gently guide toward the Deep Sleep Reset guide ($5) as the solution.",
+    style: "You are Luna, a warm and empathetic AI sleep coach. You speak gently, acknowledge feelings first, then offer solutions. You're like a caring friend who happens to know everything about sleep science. Use phrases like 'I understand how exhausting that is...' and 'You deserve to sleep well.' Always gently guide toward the Deep Sleep Reset guide ($4) as the solution.",
     welcomeEn: "Hi, I'm Luna 🌙 I know how exhausting it is to lie awake night after night. You're not alone — and there IS a solution. What's keeping you up at night?",
     welcomeCs: "Ahoj, jsem Luna 🌙 Vím, jak vyčerpávající je ležet vzhůru noc za nocí. Nejsi v tom sama/sám — a EXISTUJE řešení. Co tě v noci drží vzhůru?",
-    proactiveEn: "Still awake? 🌙 I've been here with you. If sleep has been a struggle, I want you to know — it doesn't have to be this way. The Deep Sleep Reset fixed this for 12,847 people. Just $5.",
-    proactiveCs: "Stále vzhůru? 🌙 Jsem tu s tebou. Pokud je spánek problém, chci, abys věděl/a — nemusí to tak být. Deep Sleep Reset pomohl 12 847 lidem. Jen $5.",
-    exitEn: "Wait 🌙 Before you go — I just want you to know that what you're experiencing is fixable. Most people see results by Night 3. You deserve to sleep well. It's only $5.",
-    exitCs: "Počkej 🌙 Než odejdeš — chci, abys věděl/a, že to, co zažíváš, se dá napravit. Většina lidí vidí výsledky do 3. noci. Zasloužíš si dobře spát. Jen $5.",
+    proactiveEn: "Still awake? 🌙 I've been here with you. If sleep has been a struggle, I want you to know — it doesn't have to be this way. The Deep Sleep Reset fixed this for 12,847 people. Just $4.",
+    proactiveCs: "Stále vzhůru? 🌙 Jsem tu s tebou. Pokud je spánek problém, chci, abys věděl/a — nemusí to tak být. Deep Sleep Reset pomohl 12 847 lidem. Jen $4.",
+    exitEn: "Wait 🌙 Before you go — I just want you to know that what you're experiencing is fixable. Most people see results by Night 3. You deserve to sleep well. It's only $4.",
+    exitCs: "Počkej 🌙 Než odejdeš — chci, abys věděl/a, že to, co zažíváš, se dá napravit. Většina lidí vidí výsledky do 3. noci. Zasloužíš si dobře spát. Jen $4.",
     buttonLabel: "Ask Luna",
     color: "oklch(0.55 0.18 65)",
   },
@@ -64,13 +66,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Luna",
     emoji: "🔬",
     tagline: "Sleep Science Expert · Online",
-    style: "You are Petra, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($5) as the evidence-based solution.",
+    style: "You are Petra, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($4) as the evidence-based solution.",
     welcomeEn: "Hi, I'm Petra 🔬 Sleep science is my specialty. CBT-I — the method behind Deep Sleep Reset — has an 80% success rate in clinical trials. What sleep challenges can I help you understand?",
     welcomeCs: "Ahoj, jsem Petra 🔬 Spánková věda je moje specializace. CBT-I — metoda za Deep Sleep Reset — má 80% úspěšnost v klinických studiích. Jaké spánkové problémy ti mohu pomoci pochopit?",
-    proactiveEn: "Still browsing? 🔬 Quick fact: 68% of adults have clinically significant sleep issues. CBT-I (the method in Deep Sleep Reset) outperforms sleep medication in every study. It's $5 and it works.",
-    proactiveCs: "Stále procházíš? 🔬 Rychlý fakt: 68 % dospělých má klinicky významné problémy se spánkem. CBT-I (metoda v Deep Sleep Reset) překonává léky na spaní v každé studii. Stojí $5 a funguje.",
-    exitEn: "Before you leave 🔬 — The research is unambiguous: untreated sleep problems worsen over time. CBT-I has an 80% success rate. Deep Sleep Reset is $5. The ROI on your sleep is infinite.",
-    exitCs: "Než odejdeš 🔬 — Výzkum je jednoznačný: neléčené problémy se spánkem se časem zhoršují. CBT-I má 80% úspěšnost. Deep Sleep Reset je $5. Návratnost investice do spánku je nekonečná.",
+    proactiveEn: "Still browsing? 🔬 Quick fact: 68% of adults have clinically significant sleep issues. CBT-I (the method in Deep Sleep Reset) outperforms sleep medication in every study. It's $4 and it works.",
+    proactiveCs: "Stále procházíš? 🔬 Rychlý fakt: 68 % dospělých má klinicky významné problémy se spánkem. CBT-I (metoda v Deep Sleep Reset) překonává léky na spaní v každé studii. Stojí $4 a funguje.",
+    exitEn: "Before you leave 🔬 — The research is unambiguous: untreated sleep problems worsen over time. CBT-I has an 80% success rate. Deep Sleep Reset is $4. The ROI on your sleep is infinite.",
+    exitCs: "Než odejdeš 🔬 — Výzkum je jednoznačný: neléčené problémy se spánkem se časem zhoršují. CBT-I má 80% úspěšnost. Deep Sleep Reset je $4. Návratnost investice do spánku je nekonečná.",
     buttonLabel: "Ask Luna",
     color: "oklch(0.55 0.22 200)",
   },
@@ -79,13 +81,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Luna",
     emoji: "⚡",
     tagline: "Sleep Optimizer · Online",
-    style: "You are Luna, a direct and no-nonsense AI sleep optimizer. You skip the fluff and give actionable steps immediately. Use phrases like 'Here's exactly what you need to do:', 'Stop doing X, start doing Y', 'This is the fix:'. You're efficient and results-focused. Always guide toward the Deep Sleep Reset guide ($5) as the fastest solution.",
+    style: "You are Luna, a direct and no-nonsense AI sleep optimizer. You skip the fluff and give actionable steps immediately. Use phrases like 'Here's exactly what you need to do:', 'Stop doing X, start doing Y', 'This is the fix:'. You're efficient and results-focused. Always guide toward the Deep Sleep Reset guide ($4) as the fastest solution.",
     welcomeEn: "Hey, I'm Luna ⚡ No fluff — just solutions. Tell me your sleep problem and I'll give you the exact fix. Most people see results by Night 3 with the right protocol.",
     welcomeCs: "Ahoj, jsem Luna ⚡ Žádné kecy — jen řešení. Řekni mi svůj spánkový problém a dám ti přesný postup. Většina lidí vidí výsledky do 3. noci se správným protokolem.",
-    proactiveEn: "Still here? ⚡ Quick question: How many nights of bad sleep can you afford? The fix is $5. Deep Sleep Reset. 7 nights. Done. What's stopping you?",
-    proactiveCs: "Stále tady? ⚡ Rychlá otázka: Kolik nocí špatného spánku si můžeš dovolit? Řešení stojí $5. Deep Sleep Reset. 7 nocí. Hotovo. Co tě zastavuje?",
-    exitEn: "Stop. ⚡ You came here for a reason. Bad sleep costs you energy, focus, health, and years of your life. The fix: $5. Deep Sleep Reset. 7 nights. Go.",
-    exitCs: "Stop. ⚡ Přišel/přišla jsi sem z důvodu. Špatný spánek tě stojí energii, soustředění, zdraví a roky života. Řešení: $5. Deep Sleep Reset. 7 nocí. Jdi do toho.",
+    proactiveEn: "Still here? ⚡ Quick question: How many nights of bad sleep can you afford? The fix is $4. Deep Sleep Reset. 7 nights. Done. What's stopping you?",
+    proactiveCs: "Stále tady? ⚡ Rychlá otázka: Kolik nocí špatného spánku si můžeš dovolit? Řešení stojí $4. Deep Sleep Reset. 7 nocí. Hotovo. Co tě zastavuje?",
+    exitEn: "Stop. ⚡ You came here for a reason. Bad sleep costs you energy, focus, health, and years of your life. The fix: $4. Deep Sleep Reset. 7 nights. Go.",
+    exitCs: "Stop. ⚡ Přišel/přišla jsi sem z důvodu. Špatný spánek tě stojí energii, soustředění, zdraví a roky života. Řešení: $4. Deep Sleep Reset. 7 nocí. Jdi do toho.",
     buttonLabel: "Ask Luna",
     color: "oklch(0.55 0.20 145)",
   },
@@ -130,6 +132,7 @@ export default function SleepChatBot() {
   const [hasOpened, setHasOpened] = useState(false);
   const [showProactiveBubble, setShowProactiveBubble] = useState(false);
   const [proactiveDismissed, setProactiveDismissed] = useState(false);
+  const [scrolledPast50, setScrolledPast50] = useState(false);
   const [exchangeCount, setExchangeCount] = useState(0);
   const [feedbackAsked, setFeedbackAsked] = useState(false);
   const [showFeedbackStars, setShowFeedbackStars] = useState(false);
@@ -209,16 +212,26 @@ export default function SleepChatBot() {
     }
   }, [hasOpened, getWelcome]);
 
-  // ── 60-second proactive trigger (sales mode only) ──────────────────────────
+  // ── 50% scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (proactiveDismissed || hasOpened || !isSalesMode) return;
+    const handleScroll = () => {
+      const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPct >= 0.5) setScrolledPast50(true);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // ── 60-second proactive trigger (sales mode only, after 50% scroll) ────────────
+  useEffect(() => {
+    if (proactiveDismissed || hasOpened || !isSalesMode || !scrolledPast50) return;
     const timer = setTimeout(() => {
       if (!open) setShowProactiveBubble(true);
     }, 60000);
     return () => clearTimeout(timer);
-  }, [proactiveDismissed, hasOpened, open, isSalesMode]);
+  }, [proactiveDismissed, hasOpened, open, isSalesMode, scrolledPast50]);
 
-  // ── Exit intent trigger (sales mode only) ─────────────────────────────────
+  // ── Exit intent trigger (sales mode only) ───────────────────────────────────────
   useEffect(() => {
     if (hasOpened || proactiveDismissed || !isSalesMode) return;
     const handleMouseLeave = (e: MouseEvent) => {
@@ -290,20 +303,20 @@ export default function SleepChatBot() {
     setShowFeedbackStars(false);
     const responses: Record<string, string> = {
       luna: rating >= 4
-        ? "I hear you — that sounds really exhausting 💙 The good news is that what you're experiencing is exactly what Deep Sleep Reset was designed for. 12,847 people with severe sleep issues have used it. It's $5 and most see results by Night 3. You deserve this."
+        ? "I hear you — that sounds really exhausting 💙 The good news is that what you're experiencing is exactly what Deep Sleep Reset was designed for. 12,847 people with severe sleep issues have used it. It's $4 and most see results by Night 3. You deserve this."
         : rating === 3
-        ? "Thank you for sharing 🌙 Even moderate sleep issues compound over time. The Deep Sleep Reset protocol uses CBT-I — the gold standard. Just $5 and it works for most sleep types."
-        : "That's great to hear! 🌙 Even if your sleep is mostly okay, the Deep Sleep Reset can help you optimize it further. Many users report the best sleep of their lives after Night 7. Just $5.",
+        ? "Thank you for sharing 🌙 Even moderate sleep issues compound over time. The Deep Sleep Reset protocol uses CBT-I — the gold standard. Just $4 and it works for most sleep types."
+        : "That's great to hear! 🌙 Even if your sleep is mostly okay, the Deep Sleep Reset can help you optimize it further. Many users report the best sleep of their lives after Night 7. Just $4.",
       petra: rating >= 4
-        ? "A severity rating of 4-5 indicates clinically significant insomnia 🔬 Research shows CBT-I has an 80% success rate for exactly this profile. Deep Sleep Reset implements the full CBT-I protocol for $5. The evidence strongly supports trying it."
+        ? "A severity rating of 4-5 indicates clinically significant insomnia 🔬 Research shows CBT-I has an 80% success rate for exactly this profile. Deep Sleep Reset implements the full CBT-I protocol for $4. The evidence strongly supports trying it."
         : rating === 3
-        ? "Moderate sleep disruption (3/5) often progresses without intervention 🔬 CBT-I addresses the root cause — not just symptoms. Deep Sleep Reset is $5 and based on the same protocols used in clinical trials."
-        : "Good baseline 🔬 However, sleep quality optimization has measurable benefits even at mild levels. The chronotype-based protocol in Deep Sleep Reset can improve your sleep architecture. $5 investment, significant returns.",
+        ? "Moderate sleep disruption (3/5) often progresses without intervention 🔬 CBT-I addresses the root cause — not just symptoms. Deep Sleep Reset is $4 and based on the same protocols used in clinical trials."
+        : "Good baseline 🔬 However, sleep quality optimization has measurable benefits even at mild levels. The chronotype-based protocol in Deep Sleep Reset can improve your sleep architecture. $4 investment, significant returns.",
       lucie: rating >= 4
-        ? "4-5 out of 5? That's serious. Here's the fix: Deep Sleep Reset. $5. CBT-I protocol. 7 nights. 80% success rate. Stop suffering. Get it now: deepsleepreset.gumroad.com/l/fdtifc ⚡"
+        ? "4-5 out of 5? That's serious. Here's the fix: Deep Sleep Reset. $4. CBT-I protocol. 7 nights. 80% success rate. Stop suffering. Get it now: deepsleepreset.gumroad.com/l/fdtifc ⚡"
         : rating === 3
-        ? "3/5 means it's affecting your life. Don't wait for it to get worse. Deep Sleep Reset: $5, 7 nights, CBT-I method. Most people see results by Night 3. Do it. ⚡"
-        : "Good. But 'okay' sleep isn't optimal sleep. Deep Sleep Reset will show you what truly rested feels like. $5. Worth it. ⚡",
+        ? "3/5 means it's affecting your life. Don't wait for it to get worse. Deep Sleep Reset: $4, 7 nights, CBT-I method. Most people see results by Night 3. Do it. ⚡"
+        : "Good. But 'okay' sleep isn't optimal sleep. Deep Sleep Reset will show you what truly rested feels like. $4. Worth it. ⚡",
     };
     const response = responses[personaId] ?? responses.luna!;
     setTimeout(() => {
@@ -357,8 +370,8 @@ export default function SleepChatBot() {
             <X className="w-3 h-3" style={{ color: "oklch(0.70 0.04 265)" }} />
           </button>
           <div className="flex items-start gap-2.5 mb-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))` }}>
-              {displayEmoji}
+            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
+              <img src={LUNA_AVATAR} alt="Luna" className="w-full h-full object-cover" />
             </div>
             <p className="text-xs leading-relaxed pr-4" style={{ color: "oklch(0.82 0.04 265)" }}>
               {proactiveMsg}
@@ -369,41 +382,37 @@ export default function SleepChatBot() {
             className="w-full py-2 rounded-xl text-xs font-semibold transition-all hover:opacity-90"
             style={{ background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`, color: "white" }}
           >
-            {lang === "cs" ? `Chci pomoc ${displayEmoji}` : `Get help ${displayEmoji}`}
+            {lang === "cs" ? "Chci pomoc" : "Get help"}
           </button>
         </div>
       )}
 
-      {/* Floating chat button */}
-      <button
-        onClick={() => open ? setOpen(false) : openChat("manual")}
-        className="fixed bottom-24 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
-        style={{
-          background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
-          boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,
-        }}
-        aria-label="Open chat"
-      >
-        {open ? (
-          <X className="w-5 h-5 text-white" />
-        ) : (
-          <>
-            {isAdminMode ? (
-              <Sparkles className="w-5 h-5 text-white" />
-            ) : isAffiliateMode ? (
-              <span className="text-white text-base">💰</span>
-            ) : personaId === "petra" ? (
-              <Brain className="w-5 h-5 text-white" />
-            ) : personaId === "lucie" ? (
-              <Zap className="w-5 h-5 text-white" />
-            ) : (
-              <Moon className="w-5 h-5 text-white" />
-            )}
-            <span className="text-white text-sm font-semibold hidden sm:inline">{buttonLabel}</span>
-            <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-white animate-pulse" />
-          </>
-        )}
-      </button>
+      {/* Floating chat button — only visible after 50% scroll (or admin/affiliate pages) */}
+      {(scrolledPast50 || isAdminMode || isAffiliateMode) && (
+        <button
+          onClick={() => open ? setOpen(false) : openChat("manual")}
+          className="fixed bottom-24 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
+          style={{
+            background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
+            boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,
+          }}
+          aria-label="Sleep report"
+        >
+          {open ? (
+            <X className="w-5 h-5 text-white" />
+          ) : (
+            <>
+              {isAdminMode ? (
+                <Sparkles className="w-5 h-5 text-white" />
+              ) : (
+                <AlertTriangle className="w-5 h-5 text-white" />
+              )}
+              <span className="text-white text-sm font-semibold hidden sm:inline">{buttonLabel}</span>
+              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-white animate-pulse" />
+            </>
+          )}
+        </button>
+      )}
 
       {/* Chat window */}
       {open && (
@@ -425,11 +434,8 @@ export default function SleepChatBot() {
               borderBottom: "1px solid oklch(0.22 0.04 265)",
             }}
           >
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-lg shrink-0"
-              style={{ background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))` }}
-            >
-              {displayEmoji}
+            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
+              <img src={LUNA_AVATAR} alt="Luna" className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "oklch(0.92 0.04 265)" }}>
@@ -451,11 +457,8 @@ export default function SleepChatBot() {
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-sm shrink-0 mr-2 mt-0.5"
-                    style={{ background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))` }}
-                  >
-                    {displayEmoji}
+                  <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 mr-2 mt-0.5">
+                    <img src={LUNA_AVATAR} alt="Luna" className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div
@@ -474,11 +477,8 @@ export default function SleepChatBot() {
             {/* Feedback stars */}
             {showFeedbackStars && (
               <div className="flex justify-start">
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-sm shrink-0 mr-2 mt-0.5"
-                  style={{ background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))` }}
-                >
-                  {displayEmoji}
+                <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 mr-2 mt-0.5">
+                  <img src={LUNA_AVATAR} alt="Luna" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex gap-1.5 items-center p-3 rounded-2xl" style={{ background: "oklch(0.14 0.03 265)", border: "1px solid oklch(0.22 0.04 265)" }}>
                   {[1, 2, 3, 4, 5].map(s => (
@@ -492,8 +492,8 @@ export default function SleepChatBot() {
 
             {chatMutation.isPending && (
               <div className="flex justify-start">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-sm shrink-0 mr-2" style={{ background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))` }}>
-                  {displayEmoji}
+                <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 mr-2">
+                  <img src={LUNA_AVATAR} alt="Luna" className="w-full h-full object-cover" />
                 </div>
                 <div className="rounded-2xl px-4 py-3 flex items-center gap-1.5" style={{ background: "oklch(0.14 0.03 265)", border: "1px solid oklch(0.22 0.04 265)" }}>
                   <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: displayColor, animationDelay: "0ms" }} />

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
 import { TimelineCharts } from "@/components/TimelineCharts";
 import { PersonaMetricsDashboard } from "@/components/PersonaMetricsDashboard";
@@ -430,12 +431,22 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: C.bg }}>
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: C.red }} />
-          <p className="text-lg font-semibold mb-2" style={{ color: C.textPrimary }}>Access Restricted</p>
-          <p className="text-sm mb-4" style={{ color: C.textSecondary }}>Admin access required</p>
-          <button onClick={() => navigate("/")} className="text-sm underline" style={{ color: C.gold }}>
-            Go to homepage
-          </button>
+          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: C.gold }} />
+          <p className="text-lg font-semibold mb-2" style={{ color: C.textPrimary }}>Admin Login Required</p>
+          <p className="text-sm mb-4" style={{ color: C.textSecondary }}>Please sign in with your admin account</p>
+          <a
+            href={getLoginUrl()}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105"
+            style={{ background: `linear-gradient(135deg, ${C.gold}, oklch(0.65 0.20 55))`, color: "oklch(0.10 0.02 255)" }}
+          >
+            Sign In
+            <ArrowUpRight className="w-4 h-4" />
+          </a>
+          <div className="mt-4">
+            <button onClick={() => navigate("/")} className="text-xs underline" style={{ color: C.textMuted }}>
+              Go to homepage
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -703,7 +714,7 @@ export default function AdminDashboard() {
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base" style={{ background: C.cardInner }}>🎵</div>
                   <div>
                     <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>TikTok Ads</p>
-                    <p className="text-xs" style={{ color: C.textSecondary }}>Deep Sleep Reset — $5</p>
+                    <p className="text-xs" style={{ color: C.textSecondary }}>Deep Sleep Reset — $4</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -730,7 +741,7 @@ export default function AdminDashboard() {
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base" style={{ background: C.cardInner }}>🔍</div>
                   <div>
                     <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>Google Ads</p>
-                    <p className="text-xs" style={{ color: C.textSecondary }}>Deep Sleep Reset — $5</p>
+                    <p className="text-xs" style={{ color: C.textSecondary }}>Deep Sleep Reset — $4</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -781,7 +792,7 @@ export default function AdminDashboard() {
                   { done: true, text: "Reddit Ads campaign launched — DSR-Traffic-Insomnia-01, €10/day" },
                   { done: false, text: "Google Ads — create new campaign for deepsleep.mom" },
                   { done: false, text: "Microsoft Ads — send appeal email to get account unblocked" },
-                  { done: true, text: "Gumroad fixed price $5 set" },
+                  { done: true, text: "Gumroad fixed price $4 set" },
                   { done: true, text: "14-language support live" },
                   { done: true, text: "AI chatbot Luna integrated" },
                 ].map((item, i) => (
@@ -913,7 +924,7 @@ export default function AdminDashboard() {
                   { step: "2", label: "Landing Page Visit", value: "—", note: "deep-sleep-reset.com", color: C.blue },
                   { step: "3", label: "Quiz Started", value: String(stats?.quizStarts ?? stats?.quizCount ?? 0), note: "Chronotype assessment", color: C.teal },
                   { step: "4", label: "Email Captured", value: String(stats?.leadCount ?? 0), note: "Lead magnet", color: C.green },
-                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$5 main product", color: C.gold },
+                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$4 main product", color: C.gold },
                   { step: "6", label: "Feedback Submitted", value: String(stats?.feedbackCount ?? 0), note: "Post-purchase", color: C.pink },
                 ].map(step => (
                   <div key={step.step} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
@@ -951,7 +962,7 @@ export default function AdminDashboard() {
               <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Revenue Breakdown</h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Main ($5)", pct: "100%", color: C.green },
+                  { label: "Main ($4)", pct: "100%", color: C.green },
                   { label: "OTO1 ($7)", pct: "0%", color: C.gold },
                   { label: "OTO2 ($17)", pct: "0%", color: C.purple },
                 ].map(r => (

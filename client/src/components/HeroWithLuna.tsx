@@ -144,7 +144,7 @@ export function HeroWithLuna({ onChatOpen, navigate: navProp }: HeroWithLunaProp
                 }}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold cursor-pointer"
               >
-                ✓ START MY 7-NIGHT SLEEP PLAN | $5 TODAY
+                ✓ START MY 7-NIGHT SLEEP PLAN | $4 TODAY
               </button>
               <button
                 onClick={onChatOpen}

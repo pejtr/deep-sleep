@@ -80,11 +80,11 @@ const TESTIMONIALS: Testimonial[] = [
 ];
 
 const CHRONOTYPE_ICONS: Record<string, string> = {
-  Lion: "🦁",
-  Bear: "🐻",
-  Wolf: "🐺",
-  Dolphin: "🐬",
-  all: "✨",
+  Lion: "L",
+  Bear: "B",
+  Wolf: "W",
+  Dolphin: "D",
+  all: "",
 };
 
 interface Props {
@@ -142,7 +142,7 @@ export default function TestimonialsCarousel({
         {/* Result badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5"
           style={{ background: "oklch(0.78 0.18 65 / 0.1)", border: "1px solid oklch(0.78 0.18 65 / 0.2)" }}>
-          <span className="text-xs">✅</span>
+          <span className="text-xs"></span>
           <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>{t.result}</span>
         </div>
 

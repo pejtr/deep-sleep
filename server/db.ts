@@ -227,7 +227,7 @@ export async function getAdminStats() {
   const quizStarts = behaviors.filter((b: { event: string; page?: string | null }) => b.event === 'page_view' && b.page === 'quiz').length;
   const checkoutClicks = behaviors.filter((b: { event: string }) => b.event === 'checkout_click').length;
   // Revenue: convert all amounts to USD using approximate exchange rates
-  // Orders are stored in local currency (e.g. CZK 103.85 = $5 USD)
+  // Orders are stored in local currency (e.g. CZK 103.85 = $4 USD)
   const APPROX_RATES_TO_USD: Record<string, number> = {
     usd: 1, eur: 1.172, gbp: 1.349, czk: 0.0482, cad: 0.732, aud: 0.645,
     pln: 0.262, huf: 0.00281, ron: 0.236, inr: 0.012, brl: 0.201, mxn: 0.058,

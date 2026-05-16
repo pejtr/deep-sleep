@@ -120,7 +120,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
           className="px-6 py-3 text-center text-xs font-bold tracking-widest uppercase"
           style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: "oklch(0.82 0.16 65)" }}
         >
-          ⚡ Wait — Special One-Time Offer
+          Wait — Special One-Time Offer
         </div>
 
         <div className="px-6 py-6">
@@ -157,7 +157,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
               Exit Discount — Today Only
             </p>
             <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl line-through" style={{ color: "oklch(0.45 0.04 265)" }}>{formatPrice(5)}</span>
+              <span className="text-2xl line-through" style={{ color: "oklch(0.45 0.04 265)" }}>{formatPrice(47)}</span>
               <span className="text-4xl font-display font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(4)}</span>
               <span
                 className="text-xs font-bold px-2 py-1 rounded-full"

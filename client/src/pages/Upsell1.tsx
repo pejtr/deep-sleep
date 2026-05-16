@@ -38,7 +38,7 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
     <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-gold w-80 h-80 opacity-15" style={{ top: "-5%", right: "-5%" }} />
       <div className="orb orb-purple w-64 h-64 opacity-10" style={{ bottom: "20%", left: "-10%" }} />
-      <CountdownTimer variant="banner" label="⚡ One-time offer expires in:" />
+      <CountdownTimer variant="banner" label="One-time offer expires in:" />
       <div className="flex items-center justify-center gap-2 py-2" style={{ background: "oklch(0.12 0.03 255)" }}>
         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-xs" style={{ color: "oklch(0.60 0.04 265)" }}>
@@ -87,14 +87,14 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
             ))}
           </div>
           <div className="rounded-xl p-4" style={{ background: "oklch(0.12 0.04 145 / 0.2)", border: "1px solid oklch(0.50 0.15 145 / 0.3)" }}>
-            <p className="text-xs font-bold text-green-300 mb-2">✅ Protocol + Optimizer</p>
+            <p className="text-xs font-bold text-green-300 mb-2">Protocol + Optimizer</p>
             {["Permanent change", `${chronotype}-specific`, "30-day tracker", "3x faster results"].map((item, i) => (
               <p key={i} className="text-xs" style={{ color: "oklch(0.70 0.04 265)" }}>{item}</p>
             ))}
           </div>
         </div>
         <div className="glass-card rounded-3xl p-6 md:p-8 mb-4" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
-          <h2 className="font-bold text-lg mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>🎯 {chronotype} Chronotype Optimizer</h2>
+          <h2 className="font-bold text-lg mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>{chronotype} Chronotype Optimizer</h2>
           <p className="text-xs mb-4" style={{ color: "oklch(0.50 0.04 265)" }}>The 30-day system that makes your protocol results permanent</p>
           <div className="flex flex-col gap-2 mb-5">
             {[
@@ -173,7 +173,7 @@ function VariantB({ chronotype, onAccept, onDecline, loading }: {
   return (
     <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-gold w-96 h-96 opacity-10" style={{ top: "10%", left: "50%", transform: "translateX(-50%)" }} />
-      <CountdownTimer variant="banner" label="🔥 This upgrade disappears when you leave:" />
+      <CountdownTimer variant="banner" label="This upgrade disappears when you leave:" />
 
       <div className="relative z-10 container max-w-lg mx-auto py-8 px-4">
         {/* Big bold headline — urgency first */}
@@ -258,7 +258,7 @@ function VariantB({ chronotype, onAccept, onDecline, loading }: {
             <ArrowRight className="w-5 h-5" />
           </button>
           <p className="text-center text-xs mt-3" style={{ color: "oklch(0.45 0.04 265)" }}>
-            🔒 Secure checkout · Instant download · 30-day guarantee
+            Secure checkout · Instant download · 30-day guarantee
           </p>
         </div>
 

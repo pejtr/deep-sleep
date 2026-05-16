@@ -15,6 +15,7 @@ import NotFound from "@/pages/NotFound";
 // ── Non-critical: lazy load (code splitting) ───────────────────────────────
 const Quiz = lazy(() => import("./pages/Quiz"));
 const QuizResult = lazy(() => import("./pages/QuizResult"));
+const UpsellEntry = lazy(() => import("./pages/UpsellEntry"));
 const Upsell1 = lazy(() => import("./pages/Upsell1"));
 const Upsell2 = lazy(() => import("./pages/Upsell2"));
 const Upsell3 = lazy(() => import("./pages/Upsell3"));
@@ -56,6 +57,7 @@ function Router() {
         <Route path="/quiz" component={Quiz} />
         <Route path="/result" component={QuizResult} />
         <Route path="/order" component={Order} />
+        <Route path="/upsell/entry" component={UpsellEntry} />
         <Route path="/upsell1" component={Upsell1} />
         <Route path="/upsell2" component={Upsell2} />
         <Route path="/upsell3" component={Upsell3} />

@@ -3,19 +3,31 @@
 
 // ─── Funnel Products (used by funnelRoutes.ts) ─────────────────────────────
 // Pricing strategy (Hormozi tripwire funnel):
-//   Tripwire: $5  → irresistible entry, HIGH/MID countries pay full, LOW pay ~$2
+//   Entry:    $1  → 1-Night Sleep Optimizer (ultra-low barrier)
+//   Tripwire: $4  → 7-Night Full Protocol (main offer)
 //   OTO1:    $17  → 30-day transformation
 //   OTO2:    $27  → toolkit + audio
 //   Membership: $8/month → single subscription tier
 export const FUNNEL_PRODUCTS = {
+  entry: {
+    key: "entry",
+    name: "1-Night Sleep Optimizer",
+    description: "Your personalized chronotype sleep plan for tonight",
+    price: 100, // $1.00
+    displayPrice: "$1",
+    originalPrice: "$19",
+    discountPercent: 95,
+    successRedirect: "/upsell/entry",
+    cancelRedirect: "/order",
+  },
   tripwire: {
     key: "tripwire",
     name: "7-Night Deep Sleep Reset",
     description: "Personalized 7-night sleep protocol for your chronotype",
-    price: 500, // $5.00 base
-    displayPrice: "$5",
+    price: 400, // $4.00
+    displayPrice: "$4",
     originalPrice: "$47",
-    discountPercent: 89,
+    discountPercent: 91,
     successRedirect: "/upsell/1",
     cancelRedirect: "/order",
   },
@@ -46,7 +58,7 @@ export type ProductKey = keyof typeof FUNNEL_PRODUCTS;
 
 // ─── Geo Pricing Tiers ────────────────────────────────────────────────────────
 // Strategy: LOW tier gets 60% discount (targeting volume from developing markets)
-// MID tier = full price in local currency (CZ/SK/PL/EU = same $5/$17/$27 as US)
+// MID tier = full price in local currency (CZ/SK/PL/EU = same $1/$4/$17/$27 as US)
 // HIGH tier = full price (US, UK, DE, CA, AU, JP, CH, SE, NO, DK)
 
 // LOW TIER: Truly low-income countries (GDP/capita < $5k) — 60% discount
@@ -58,7 +70,7 @@ const LOW_TIER_COUNTRIES = [
 ];
 
 // MID TIER: Central/Eastern Europe + LatAm + MENA — NO discount (full price)
-// CZ/SK/PL/HU/RO = $5 tripwire (cca 120 Kč), $17 mid, $27 premium
+// CZ/SK/PL/HU/RO = $1 entry / $4 tripwire (cca 95 Kč), $17 mid, $27 premium
 const MID_TIER_COUNTRIES = [
   // Central & Eastern Europe (PRIMARY TARGET MARKET)
   "CZ", "SK", "PL", "HU", "RO", "BG", "HR", "LT", "LV", "EE",
@@ -89,11 +101,19 @@ export function getPriceForGeo(basePriceCents: number, country: string): number 
 
 // ─── Dashboard Products (used by routers.ts for Stripe checkout) ────────────
 export const PRODUCTS = {
+  "sleep-optimizer-1night": {
+    name: "1-Night Sleep Optimizer",
+    description: "Your personalized chronotype sleep plan for tonight",
+    basePrice: 100, // $1.00
+    displayPrice: "$1",
+    originalPrice: "$19",
+    currency: "usd",
+  },
   "sleep-reset-7night": {
     name: "7-Night Deep Sleep Reset",
     description: "Personalized 7-night sleep protocol for your chronotype",
-    basePrice: 500, // $5.00
-    displayPrice: "$5",
+    basePrice: 400, // $4.00
+    displayPrice: "$4",
     originalPrice: "$47",
     currency: "usd",
   },

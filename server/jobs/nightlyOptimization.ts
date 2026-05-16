@@ -111,7 +111,7 @@ export async function runNightlyOptimization(): Promise<void> {
     }));
 
     // 4. Call AI for analysis and recommendations
-    const prompt = `You are a performance marketing AI analyst for "Deep Sleep Reset" — a $5 sleep guide sold via Gumroad.
+    const prompt = `You are a performance marketing AI analyst for "Deep Sleep Reset" — a $4 sleep guide sold via Gumroad.
 
 DAILY METRICS (${date}):
 - Revenue: $${stats.revenue.toFixed(2)} | Orders: ${stats.orderCount} | Leads: ${stats.leadCount}

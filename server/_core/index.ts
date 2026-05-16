@@ -52,11 +52,13 @@ async function startServer() {
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         connectSrc: ["'self'", "https://api.stripe.com", "https://api.reddit.com", "https://api.brevo.com", "https://api.manus.im", "wss:", "ws:"],
         frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
+        frameAncestors: ["'self'", "https://manus.im", "https://*.manus.im", "https://*.manus.space", "https://*.manus.computer"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },
     },
     crossOriginEmbedderPolicy: false, // Required for Stripe iframes
+    crossOriginOpenerPolicy: false, // Allow iframe embedding
     hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
   }));
 
@@ -67,7 +69,7 @@ async function startServer() {
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: "Too many requests, please try again later." },
-    skip: (req) => req.path === "/api/health" || req.path.startsWith("/api/trpc/auth.me"),
+    skip: (req) => req.path === "/api/health" || req.path.startsWith("/api/trpc/auth.me") || req.path.includes("behavior.trackEvent") || req.path.includes("behavior.track"),
   });
   const checkoutLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,

@@ -6,7 +6,7 @@ import { getUTMData } from "@/hooks/useSession";
 import { trackInitiateCheckout } from "@/lib/conversionTracking";
 
 interface CheckoutButtonProps {
-  productId?: "main" | "discount" | "oto1" | "oto2" | "subscription";
+  productId?: "main" | "entry" | "discount" | "oto1" | "oto2" | "subscription";
   /** When set, adds this product as a 2nd line item alongside the main product */
   includeUpsell?: "oto1" | "oto2";
   sessionId: string;
@@ -49,9 +49,9 @@ export function CheckoutButton({
     if (isLoading) return;
     setIsLoading(true);
     // Fire conversion tracking event on all platforms
-    const priceMap: Record<string, number> = { main: 5, discount: 3, oto1: 17, oto2: 27, subscription: 8 };
+    const priceMap: Record<string, number> = { entry: 1, main: 4, discount: 4, oto1: 17, oto2: 27, subscription: 8 };
     trackInitiateCheckout({
-      value: priceMap[productId] || 5,
+      value: priceMap[productId] || 4,
       productId,
       productName: `Deep Sleep Reset - ${productId}`,
     });

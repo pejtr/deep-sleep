@@ -23,7 +23,7 @@ const QUESTIONS = [
       "🌅 Before 6:30am — I'm up with the sun",
       "☀️ 6:30–8:30am — A reasonable morning",
       "🌤️ 8:30–10:30am — I need my sleep",
-      "🌙 After 10:30am — I'm a true night owl",
+      "After 10:30am — I'm a true night owl",
     ],
   },
   {
@@ -38,10 +38,10 @@ const QUESTIONS = [
   {
     text: "What's your ideal bedtime?",
     options: [
-      "🌙 Before 9pm",
-      "🌙 9–11pm",
-      "🌙 11pm–1am",
-      "🌙 After 1am",
+      "Before 9pm",
+      "9–11pm",
+      "11pm–1am",
+      "After 1am",
     ],
   },
   {
@@ -57,8 +57,8 @@ const QUESTIONS = [
     text: "How do you handle stress before bed?",
     options: [
       "😌 I rarely feel stressed at bedtime",
-      "📝 I sometimes worry but can let it go",
-      "🎵 I need distraction to wind down",
+      "I sometimes worry but can let it go",
+      "I need distraction to wind down",
       "😰 My mind races — I can't stop thinking",
     ],
   },
@@ -295,7 +295,7 @@ export default function QuizFunnel() {
               {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
               4.9/5
             </span>
-            <span>🔒 100% private</span>
+            <span>100% private</span>
           </div>
         </div>
       </div>
@@ -422,7 +422,7 @@ export default function QuizFunnel() {
         {/* Protocol preview */}
         <div className="glass-card rounded-2xl p-6 mb-6">
           <h3 className="font-bold text-base mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
-            ✅ What's Inside Your {chronotype} Protocol
+            What's Inside Your {chronotype} Protocol
           </h3>
           <div className="flex flex-col gap-2">
             {data.protocolPreview.map((item, i) => (
@@ -496,7 +496,7 @@ export default function QuizFunnel() {
           </div>
 
           <p className="text-xs mt-3 relative z-10" style={{ color: "oklch(0.40 0.04 265)" }}>
-            🔒 Secure checkout · Instant PDF access · 30-day money-back guarantee
+            Secure checkout · Instant PDF access · 30-day money-back guarantee
           </p>
 
           {/* Trust badges */}
@@ -517,7 +517,7 @@ export default function QuizFunnel() {
         <div className="rounded-2xl p-5 mb-6 text-center"
           style={{ background: "oklch(0.55 0.18 145 / 0.06)", border: "1px solid oklch(0.55 0.18 145 / 0.2)" }}>
           <p className="text-sm font-semibold mb-1" style={{ color: "oklch(0.70 0.18 145)" }}>
-            🛡️ Sleep Better or Pay Nothing
+            Sleep Better or Pay Nothing
           </p>
           <p className="text-xs" style={{ color: "oklch(0.55 0.04 265)" }}>
             Try the full protocol for 30 days. If you don't sleep deeper, email us for a complete refund. No questions asked.

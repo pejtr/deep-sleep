@@ -46,7 +46,7 @@ export default function RefundPolicy() {
             },
             {
               title: "2. One-Time Purchases (Digital Products)",
-              body: `All one-time digital product purchases — including the 7-Night Deep Sleep Reset ($5), 30-Day Sleep Transformation ($17), and Deep Sleep Toolkit ($27) — are covered by our 30-day money-back guarantee. If you are not satisfied with your purchase for any reason, simply contact us within 30 days of the purchase date and we will issue a full refund. No questions asked. No forms to fill out. No hoops to jump through.`
+              body: `All one-time digital product purchases — including the 7-Night Deep Sleep Reset ($4), 30-Day Sleep Transformation ($17), and Deep Sleep Toolkit ($27) — are covered by our 30-day money-back guarantee. If you are not satisfied with your purchase for any reason, simply contact us within 30 days of the purchase date and we will issue a full refund. No questions asked. No forms to fill out. No hoops to jump through.`
             },
             {
               title: "3. Subscription Products",

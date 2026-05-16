@@ -719,3 +719,22 @@
 - [x] Linkbuilding strategie: outreach templates, PR pitches, guest post opportunities (SEO-LINKBUILDING-STRATEGY.md)
 - [x] Hreflang tags pro multi-language support (en, cs, de, es, fr, pt, hi)
 - [ ] Image alt tags audit a optimalizace
+
+## Luna Avatar & Chat UX (May 16)
+- [ ] Vygenerovat Luna avatar - profesionální tvář pro AI sleep coach
+- [ ] Nahradit emoji měsíc v chatu Luna avatarem
+- [ ] Chat zpřístupnit až po 50% scrollu stránky (prodejní logika)
+- [ ] Přidat živou grafiku/animaci k Luna avataru (typing indicator, pulse)
+- [ ] Odstranit všechny emoji zvířátka z celého webu (Order, Upsell1-3, ThankYou, Protocol, QuizFunnel, HomeVariantB)
+- [ ] Přegenerovat SEO-LINKBUILDING-STRATEGY.md do češtiny
+- [ ] Přidat popup "Your chronotype is waiting" (z původního projektu deep-sleep-reset)
+- [ ] Přidat popup "Get Your Free Sleep Score" email capture (z původního projektu)
+- [ ] Hero pozadí - noční obloha s hvězdami a horami (starfield background z původního projektu)
+- [ ] Notifikace zjednodušit: "Name from City, Country bought Sleep Reset for $5 · just now"
+- [ ] Chat ikona změnit na vykřičník = Report Button (když něco nejde)
+- [ ] Změnit cenu z $5 na $4 v celém webu (products.ts, Home.tsx, Order.tsx, všude)
+- [ ] Přidat $1 produkt: "1-Night Sleep Optimizer" (entry level, personalizovaný na chronotype)
+- [ ] Pricing ladder: $1 (1-Night) → $4 (7-Night Full Protocol) → Upsells
+
+## Admin Login Fix (May 16)
+- [x] Add login button on /admin page when user is not authenticated

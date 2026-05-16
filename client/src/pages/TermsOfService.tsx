@@ -39,7 +39,7 @@ export default function TermsOfService() {
             },
             {
               title: "3. Products and Digital Delivery",
-              body: `Deep Sleep Reset sells digital products including sleep protocols, audio guides, and related materials. Our product lineup includes: 7-Night Deep Sleep Reset ($5), 30-Day Sleep Transformation ($17), Deep Sleep Toolkit ($27), and Sleep Optimizer Membership ($8/month subscription). Upon successful payment through Stripe, you will receive immediate access to your purchased digital products. Digital products are delivered electronically via our website and email.`
+              body: `Deep Sleep Reset sells digital products including sleep protocols, audio guides, and related materials. Our product lineup includes: 7-Night Deep Sleep Reset ($4), 30-Day Sleep Transformation ($17), Deep Sleep Toolkit ($27), and Sleep Optimizer Membership ($8/month subscription). Upon successful payment through Stripe, you will receive immediate access to your purchased digital products. Digital products are delivered electronically via our website and email.`
             },
             {
               title: "4. Payments and Billing",

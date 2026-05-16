@@ -22,7 +22,7 @@ const CHRONOTYPE_DATA: Record<Chronotype, {
   worstMistake: string;
 }> = {
   Lion: {
-    icon: "🦁",
+    icon: "",
     color: "oklch(0.82 0.16 65)",
     title: "The Lion",
     description: "You're an early riser with peak mental energy in the morning. Lions are natural leaders who dominate the first half of the day — but crash hard by evening.",
@@ -31,7 +31,7 @@ const CHRONOTYPE_DATA: Record<Chronotype, {
     worstMistake: "Staying up past 10pm 'just to finish one more thing' — this destroys your Lion sleep architecture.",
   },
   Bear: {
-    icon: "🐻",
+    icon: "",
     color: "oklch(0.65 0.18 180)",
     title: "The Bear",
     description: "You follow the solar cycle — the most common chronotype. Bears feel best with a standard schedule but often suffer when life forces them off their natural rhythm.",
@@ -40,7 +40,7 @@ const CHRONOTYPE_DATA: Record<Chronotype, {
     worstMistake: "Sleeping in on weekends. Bears suffer the most from 'social jet lag' — shifting your schedule by even 2 hours wrecks your whole week.",
   },
   Wolf: {
-    icon: "🐺",
+    icon: "",
     color: "oklch(0.65 0.18 290)",
     title: "The Wolf",
     description: "You're a night owl with peak creativity and energy in the evening. Wolves are often misunderstood as lazy — but your biology simply runs on a different clock.",
@@ -49,7 +49,7 @@ const CHRONOTYPE_DATA: Record<Chronotype, {
     worstMistake: "Trying to force yourself into a Lion schedule. Fighting your Wolf chronotype causes chronic sleep deprivation and kills your natural peak performance window.",
   },
   Dolphin: {
-    icon: "🐬",
+    icon: "",
     color: "oklch(0.65 0.18 220)",
     title: "The Dolphin",
     description: "You're a light, irregular sleeper with a hyperactive mind. Dolphins often have anxiety-driven sleep issues and wake easily — but you're also highly intelligent and creative.",
@@ -176,7 +176,7 @@ export default function QuizResult() {
         {/* Solutions preview */}
         <div className="glass-card rounded-2xl p-6 mb-8">
           <h3 className="font-bold text-base mb-4" style={{ color: "oklch(0.95 0.01 265)" }}>
-            ✅ What the {chronotype} Protocol Fixes
+            What the {chronotype} Protocol Fixes
           </h3>
           <div className="flex flex-col gap-2">
             {data.solutions.map((s, i) => (
@@ -225,7 +225,7 @@ export default function QuizResult() {
           <div className="rounded-2xl p-4 mb-8 text-center"
             style={{ background: "oklch(0.55 0.18 145 / 0.1)", border: "1px solid oklch(0.55 0.18 145 / 0.25)" }}>
             <p className="text-sm font-semibold" style={{ color: "oklch(0.70 0.18 145)" }}>
-              ✅ Cheat sheet sent! Check your inbox.
+              Cheat sheet sent! Check your inbox.
             </p>
           </div>
         )}
@@ -265,7 +265,7 @@ export default function QuizResult() {
 
           <div className="flex items-center justify-center gap-3 mb-6 relative z-10">
             <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$75</span>
-            <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>$5</span>
+            <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>$4</span>
             <span className="badge-popular">93% OFF</span>
           </div>
 
@@ -274,11 +274,11 @@ export default function QuizResult() {
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg flex items-center justify-center gap-3 relative z-10"
           >
             <Lock className="w-5 h-5" />
-            <span>Get My {chronotype} Protocol — $5</span>
+            <span>Get My {chronotype} Protocol — $4</span>
             <ArrowRight className="w-5 h-5" />
           </button>
           <p className="text-xs mt-3 relative z-10" style={{ color: "oklch(0.40 0.04 265)" }}>
-            🔒 Secure checkout · Instant PDF access · 30-day money-back guarantee
+            Secure checkout · Instant PDF access · 30-day money-back guarantee
           </p>
         </div>
 
@@ -299,7 +299,7 @@ export default function QuizResult() {
       {/* Sticky mobile CTA */}
       <StickyMobileCTA
         label={`Get My ${chronotype} Protocol`}
-        price="$5"
+        price="$4"
         onClick={handleGetProtocol}
       />
 

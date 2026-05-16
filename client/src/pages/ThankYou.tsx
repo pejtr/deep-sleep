@@ -39,7 +39,7 @@ export default function ThankYou() {
 
   const handleShare = (platform: string) => {
     track("referral_share", { page: "thankyou", value: { platform } });
-    const text = encodeURIComponent(`I just discovered I'm a ${chronotype} chronotype 🌙 Take the free sleep quiz and finally sleep deeply: ${referralUrl}`);
+    const text = encodeURIComponent(`I just discovered I'm a ${chronotype} chronotype sleep quiz and finally sleep deeply: ${referralUrl}`);
     if (platform === "facebook") {
       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralUrl)}`, "_blank");
     } else if (platform === "twitter") {
@@ -72,7 +72,7 @@ export default function ThankYou() {
           <div className="text-6xl mb-4 animate-float">{icon}</div>
           <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl mx-auto mb-4"
             style={{ background: "oklch(0.55 0.18 145 / 0.15)", border: "1px solid oklch(0.55 0.18 145 / 0.3)" }}>
-            ✅
+            
           </div>
           <h1 className="font-display font-black text-2xl md:text-3xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
             You're All Set, {chronotype}!
@@ -83,7 +83,7 @@ export default function ThankYou() {
           <div className="rounded-xl p-4 mb-4"
             style={{ background: "oklch(0.55 0.18 145 / 0.08)", border: "1px solid oklch(0.55 0.18 145 / 0.2)" }}>
             <p className="text-xs font-semibold" style={{ color: "oklch(0.65 0.18 145)" }}>
-              📧 Check your inbox — download link sent instantly
+              Check your inbox — download link sent instantly
             </p>
           </div>
           <p className="text-xs" style={{ color: "oklch(0.40 0.04 265)" }}>
@@ -122,7 +122,7 @@ export default function ThankYou() {
           <div className="glass-card rounded-2xl p-6 mb-6 animate-reveal"
             style={{ border: "1px solid oklch(0.78 0.18 65 / 0.2)" }}>
             <h3 className="font-bold text-sm mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
-              ⭐ How was your experience so far?
+              How was your experience so far?
             </h3>
             <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
               Your feedback helps us improve the protocol for other {chronotype}s.
@@ -180,7 +180,7 @@ export default function ThankYou() {
         {/* Referral program */}
         <div className="glass-card rounded-2xl p-6 mb-6">
           <h3 className="font-bold text-base mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
-            🎁 Share & Help a Friend Sleep Better
+            Share & Help a Friend Sleep Better
           </h3>
           <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
             Know someone who struggles with sleep? Share your referral link — they get the quiz for free and you help them discover their chronotype.

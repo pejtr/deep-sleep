@@ -86,7 +86,7 @@ export default function Feedback() {
         {/* Step 1: Rating */}
         {step === "rate" && (
           <div className="glass-card rounded-3xl p-8 text-center" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.2)" }}>
-            <div className="text-5xl mb-4">🌙</div>
+            <div className="text-5xl mb-4"></div>
             <h1 className="font-display font-black text-2xl md:text-3xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
               How Did We Do?
             </h1>
@@ -121,7 +121,7 @@ export default function Feedback() {
                  displayRating === 4 ? "Great! 👍" :
                  displayRating === 3 ? "Good, room to improve 🙂" :
                  displayRating === 2 ? "We can do better 😔" :
-                 "We're sorry to hear that 💙"}
+                 "We're sorry to hear that"}
               </p>
             )}
 
@@ -160,7 +160,7 @@ export default function Feedback() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: "oklch(0.70 0.04 265)" }}>
-                  What did you like most? ✨
+                  What did you like most?
                 </label>
                 <textarea
                   value={liked}
@@ -220,7 +220,7 @@ export default function Feedback() {
         {/* Step 3: Reward */}
         {step === "reward" && reward && (
           <div className="glass-card rounded-3xl p-8 text-center" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
-            <div className="text-5xl mb-4 animate-float">🎁</div>
+            <div className="text-5xl mb-4 animate-float"></div>
             <h2 className="font-display font-black text-2xl mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
               Thank You!
             </h2>

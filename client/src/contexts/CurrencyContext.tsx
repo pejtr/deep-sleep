@@ -34,16 +34,16 @@ interface CurrencyInfo {
   flag: string;
 }
 
-// Low-tier countries get $1 pricing instead of $5
+// Low-tier countries get reduced pricing
 const LOW_TIER_CURRENCIES: CurrencyCode[] = ["INR", "BRL", "MXN", "ZAR", "PLN", "HUF", "RON"];
 
 // Geo-pricing: maps standard USD price to low-tier price
 const GEO_PRICE_MAP: Record<number, number> = {
-  5: 1,   // main product: $5 → $1
-  3: 1,   // OTO1: $3 → $1
-  7: 2,   // OTO2: $7 → $2
-  10: 3,  // OTO3 bundle: $10 → $3
-  4: 1,   // exit-intent discount: $4 → $1
+  1: 1,   // entry product: $1 stays $1
+  4: 1,   // main product: $4 → $1
+  17: 5,  // OTO1: $17 → $5
+  27: 8,  // OTO2: $27 → $8
+  8: 3,   // membership: $8 → $3
 };
 
 interface CurrencyContextValue {
@@ -51,7 +51,7 @@ interface CurrencyContextValue {
   setCurrency: (code: CurrencyCode) => void;
   convertPrice: (usdAmount: number) => string;
   formatPrice: (usdAmount: number) => string;
-  /** Returns the geo-adjusted USD base price (e.g. $5→$1 for low-tier) */
+  /** Returns the geo-adjusted USD base price (e.g. $4→$1 for low-tier) */
   getGeoPrice: (usdAmount: number) => number;
   isLowTier: boolean;
   rates: Record<string, number>;

@@ -265,7 +265,7 @@ export default function Protocol() {
                     ))}
                   </div>
                   <div className="rounded-xl p-3 text-xs" style={{ background: "oklch(0.65 0.15 240 / 0.1)", border: "1px solid oklch(0.65 0.15 240 / 0.2)" }}>
-                    <span className="text-blue-300 font-semibold">🔬 Science: </span>
+                    <span className="text-blue-300 font-semibold">Science: </span>
                     <span className="text-white/60">{night.science}</span>
                   </div>
                 </div>

@@ -33,7 +33,8 @@ export interface GeoPricingResult {
 
 // Product base prices in cents
 const BASE_PRICES = {
-  main: { cents: 500, display: "$5", original: "$47" },
+  entry: { cents: 100, display: "$1", original: "$19" },
+  main: { cents: 400, display: "$4", original: "$47" },
   oto1: { cents: 1700, display: "$17", original: "$97" },
   oto2: { cents: 2700, display: "$27", original: "$127" },
 };

@@ -492,13 +492,13 @@ You are the admin's personal data analyst and growth strategist. You have FULL R
 8. Respond in the SAME LANGUAGE as the admin's message (Czech if they write in Czech, English if English)`;
 
         } else if (input.mode === "affiliate") {
-          systemPrompt = `You are Luna, an affiliate guide for Deep Sleep Reset ($5 product, 50% commission = $2.50/sale, 30-day cookie). Help affiliates maximize earnings with specific, actionable advice. Respond in the same language as the user.`;
+          systemPrompt = `You are Luna, an affiliate guide for Deep Sleep Reset ($4 product, 50% commission = $2.50/sale, 30-day cookie). Help affiliates maximize earnings with specific, actionable advice. Respond in the same language as the user.`;
 
         } else {
           systemPrompt = `You are Luna, the friendly AI sleep coach for Deep Sleep Reset — a $1 science-backed 7-night sleep protocol based on CBT-I (Cognitive Behavioral Therapy for Insomnia), the #1 clinician-recommended insomnia treatment with 80% success rate.
 
 About the product:
-- Price: $5 (one-time, no subscription)
+- Price: $4 (one-time, no subscription)
 - Includes: 7-Night Protocol PDF, Sleep Environment Checklist, Chronotype Guide, 4 ASMR tracks, 30-Day Tracker
 - CBT-I based — clinically proven, no pills needed
 - 30-day money-back guarantee
@@ -715,7 +715,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
     createSession: publicProcedure
       .input(
         z.object({
-          productId: z.enum(["main", "discount", "oto1", "oto2", "subscription"]).default("main"),
+          productId: z.enum(["main", "entry", "discount", "oto1", "oto2", "subscription"]).default("main"),
           includeUpsell: z.string().optional(), // e.g. "oto1" — adds upsell as 2nd line item alongside main
           sessionId: z.string(),
           email: z.string().email().optional(),
@@ -734,18 +734,19 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          main: 500, discount: 400, oto1: 300, oto2: 500, subscription: 800,
+          entry: 100, main: 400, discount: 400, oto1: 1700, oto2: 2700, subscription: 800,
         };
         const PRODUCT_NAMES: Record<string, string> = {
+          entry: "1-Night Sleep Optimizer",
           main: "Deep Sleep Reset — 7-Night Protocol",
           discount: "Deep Sleep Reset — 7-Night Protocol (Special Offer)",
-          oto1: "Deep Sleep Reset — Chronotype Optimizer",
-          oto2: "Deep Sleep Reset — ASMR Audio Pack",
+          oto1: "30-Day Sleep Transformation",
+          oto2: "Deep Sleep Toolkit",
           subscription: "Sleep Optimizer Membership — Monthly",
         };
         // Geo-pricing: low-tier countries get reduced prices
         const LOW_TIER_PRICES: Record<string, number> = {
-          main: 100, discount: 100, oto1: 100, oto2: 150, subscription: 300,
+          entry: 100, main: 100, discount: 100, oto1: 500, oto2: 800, subscription: 300,
         };
         const amountCents = input.isLowTier
           ? (LOW_TIER_PRICES[input.productId] ?? 100)

@@ -269,7 +269,7 @@ export default function Order() {
                 ))}
               </div>
               <p className="text-xs leading-relaxed" style={{ color: "oklch(0.65 0.04 265)" }}>
-                "I was skeptical about a $5 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
+                "I was skeptical about a $4 guide but this completely changed how I sleep. The {chronotype} protocol is exactly what I needed — specific, actionable, and it actually works."
               </p>
               <p className="text-xs mt-1.5 font-semibold" style={{ color: "oklch(0.50 0.04 265)" }}>
                 — Verified {chronotype} customer
@@ -286,7 +286,7 @@ export default function Order() {
           {[
             { q: "How do I receive the protocol?", a: "Instantly after purchase — you'll get a download link via email and on the confirmation page." },
             { q: "What if it doesn't work for me?", a: "Full 30-day money-back guarantee. Email us and we'll refund you immediately, no questions asked." },
-            { q: "Is this really just $5?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
+            { q: "Is this really just $4?", a: "Yes — this is a limited introductory price. We reserve the right to increase it at any time." },
           ].map((faq, i) => (
             <div key={i} className="glass-card rounded-xl p-4">
               <p className="text-sm font-semibold mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>Q: {faq.q}</p>

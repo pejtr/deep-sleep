@@ -60,7 +60,7 @@ export default function Contact() {
         {/* Contact form */}
         {sent ? (
           <div className="glass-card rounded-3xl p-10 text-center" style={{ border: "1px solid oklch(0.55 0.18 145 / 0.3)" }}>
-            <div className="text-5xl mb-4">✅</div>
+            <div className="text-5xl mb-4"></div>
             <h2 className="font-display font-bold text-2xl mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>Message Sent!</h2>
             <p className="text-sm" style={{ color: "oklch(0.55 0.04 265)" }}>
               Your email client should have opened. We'll reply within 24 hours.

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowRight, Lock } from "lucide-react";
+import { ArrowRight, Lock, Shield, Zap, CreditCard } from "lucide-react";
 import CountdownTimer from "./CountdownTimer";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 
 export default function StickyMobileCTA({
   label = "Get Instant Access",
-  price = "$5",
+  price = "$4",
   onClick,
   href,
   show = true,
@@ -59,13 +59,13 @@ export default function StickyMobileCTA({
             className="px-4 py-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
             title="Start Quiz"
           >
-            📝
+            
           </button>
         </div>
         <div className="flex items-center justify-center gap-3 mt-2">
-          <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>🔒 Secure</span>
-          <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>✅ Instant access</span>
-          <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>💳 All cards</span>
+          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}><Shield className="w-3 h-3" /> Secure</span>
+          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}><Zap className="w-3 h-3" /> Instant access</span>
+          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}><CreditCard className="w-3 h-3" /> All cards</span>
         </div>
       </div>
     </div>

@@ -21,10 +21,10 @@ export default function BlogList() {
         {/* Header */}
         <div style={{ borderBottom: `1px solid ${C.border}`, padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ color: C.gold, textDecoration: "none", fontWeight: 700, fontSize: "18px" }}>
-            🌙 Deep Sleep Reset
+            Deep Sleep Reset
           </Link>
           <Link href="/order" style={{ background: C.gold, color: "#0a0810", padding: "8px 20px", borderRadius: "8px", textDecoration: "none", fontWeight: 700, fontSize: "14px" }}>
-            Get the Protocol — $5
+            Get the Protocol — $4
           </Link>
         </div>
 
@@ -96,7 +96,7 @@ export default function BlogList() {
             </div>
           ) : (
             <div style={{ textAlign: "center", padding: "64px 24px" }}>
-              <p style={{ fontSize: "48px", marginBottom: "16px" }}>🌙</p>
+              <p style={{ fontSize: "48px", marginBottom: "16px" }}></p>
               <p style={{ color: C.textMuted, fontSize: "16px", marginBottom: "24px" }}>
                 Sleep science articles are being generated. Check back soon!
               </p>

@@ -11,12 +11,12 @@ type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "🦁", Bear: "🐻", Wolf: "🐺", Dolphin: "🐬" };
 
 const TRACKS = [
-  { name: "Deep Forest Rain", duration: "60 min", desc: "Natural soundscape that triggers parasympathetic response", value: "$5" },
-  { name: "Tibetan Bowl Meditation", duration: "20 min", desc: "Pre-sleep ritual to clear mental chatter in 10 minutes", value: "$5" },
-  { name: "Ocean Waves + Theta", duration: "45 min", desc: "Theta wave overlay for deep relaxation before sleep", value: "$5" },
-  { name: "White Noise Cocoon", duration: "8 hours", desc: "Full-night masking for light sleepers and noisy environments", value: "$5" },
+  { name: "Deep Forest Rain", duration: "60 min", desc: "Natural soundscape that triggers parasympathetic response", value: "$9" },
+  { name: "Tibetan Bowl Meditation", duration: "20 min", desc: "Pre-sleep ritual to clear mental chatter in 10 minutes", value: "$9" },
+  { name: "Ocean Waves + Theta", duration: "45 min", desc: "Theta wave overlay for deep relaxation before sleep", value: "$9" },
+  { name: "White Noise Cocoon", duration: "8 hours", desc: "Full-night masking for light sleepers and noisy environments", value: "$9" },
   { name: "ASMR Whisper Guide", duration: "30 min", desc: "Guided relaxation with binaural beats for rapid onset", value: "$7" },
-  { name: "Campfire Crickets", duration: "90 min", desc: "Nature loop that reduces cortisol by 23% in studies", value: "$5" },
+  { name: "Campfire Crickets", duration: "90 min", desc: "Nature loop that reduces cortisol by 23% in studies", value: "$9" },
   { name: "Delta Wave Deep Sleep", duration: "8 hours", desc: "Clinically-tested delta frequency for maximum deep sleep", value: "$7" },
 ];
 
@@ -29,7 +29,7 @@ function VariantA_Upsell2({ chronotype, icon, onAccept, onDecline, loading }: {
     <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
       <div className="orb orb-blue w-80 h-80 opacity-15" style={{ top: "-5%", right: "-5%" }} />
       <div className="orb orb-purple w-64 h-64 opacity-10" style={{ bottom: "20%", left: "-10%" }} />
-      <CountdownTimer variant="banner" label="⚡ Audio pack offer expires in:" />
+      <CountdownTimer variant="banner" label="Audio pack offer expires in:" />
       <div className="relative z-10 container max-w-lg mx-auto py-8 px-4">
         <div className="flex items-center justify-center gap-2 mb-6">
           <div className="flex items-center gap-1">
@@ -71,7 +71,7 @@ function VariantA_Upsell2({ chronotype, icon, onAccept, onDecline, loading }: {
           </p>
         </div>
         <div className="glass-card rounded-3xl p-6 md:p-8 mb-4" style={{ border: "1px solid oklch(0.65 0.15 280 / 0.4)" }}>
-          <h2 className="font-bold text-lg mb-1" style={{ color: "oklch(0.75 0.15 280)" }}>🎧 ASMR Deep Sleep Audio Pack</h2>
+          <h2 className="font-bold text-lg mb-1" style={{ color: "oklch(0.75 0.15 280)" }}>ASMR Deep Sleep Audio Pack</h2>
           <p className="text-xs mb-4" style={{ color: "oklch(0.50 0.04 265)" }}>7 premium tracks · 18+ hours of content · Instant download</p>
           <div className="flex flex-col gap-1.5 mb-5">
             {TRACKS.map((t, i) => (
@@ -159,7 +159,7 @@ function VariantB_Upsell2({ chronotype, icon, onAccept, onDecline, loading }: {
   const [selected, setSelected] = useState<number | null>(null);
   return (
     <div className="min-h-screen pb-10" style={{ background: "oklch(0.07 0.025 255)" }}>
-      <CountdownTimer variant="banner" label="🎵 Audio pack offer expires in:" />
+      <CountdownTimer variant="banner" label="Audio pack offer expires in:" />
       <div className="relative z-10 container max-w-lg mx-auto py-8 px-4">
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">{icon}</div>

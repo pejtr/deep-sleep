@@ -116,7 +116,8 @@ export default function Home() {
   const { getGeoPrice } = useCurrency();
   const tracked = useRef(false);
   const [purchaseCount] = useState(() => Math.floor(Math.random() * 4) + 7);
-  const mainPrice = getGeoPrice(5);
+  const mainPrice = getGeoPrice(4);
+  const entryPrice = getGeoPrice(1);
   const [isChatOpen, setIsChatOpen] = useState(false);
   useBehaviorTracking();
 
@@ -127,15 +128,15 @@ export default function Home() {
     track("page_view", { page: "home" });
 
     setMetaTags({
-      title: "Deep Sleep Reset — Fix Insomnia in 7 Nights | $5",
-      description: "Science-backed 7-night sleep protocol based on CBT-I. 80% success rate. No pills, no supplements. Just $5.",
+      title: "Deep Sleep Reset — Fix Insomnia in 7 Nights | $4",
+      description: "Science-backed 7-night sleep protocol based on CBT-I. 80% success rate. No pills, no supplements. Just $4.",
       image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/og-variant-a-sleep-deprived-hye2KT2i6vNEAo2u9i22xr.webp",
       url: window.location.href,
     });
   }, []);
 
   useEffect(() => {
-    document.title = "Deep Sleep Reset — Fix Insomnia in 7 Nights | $5";
+    document.title = "Deep Sleep Reset — Fix Insomnia in 7 Nights | $4";
     let kwMeta = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
     if (!kwMeta) {
       kwMeta = document.createElement("meta");
@@ -209,7 +210,7 @@ export default function Home() {
             ))}
           </div>
           <p className="text-xs text-center mt-6 font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>
-            ⭐ 4.9/5 from 847+ verified users
+            4.9/5 from 847+ verified users
           </p>
         </section>
       </AnimatedSection>
@@ -324,7 +325,7 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4" />
               </button>
               <p className="text-xs mt-2" style={{ color: "oklch(0.40 0.04 265)" }}>
-                🔒 256-bit SSL · Instant Access · 30-Day Guarantee
+                256-bit SSL · Instant Access · 30-Day Guarantee
               </p>
             </div>
           </div>
@@ -353,7 +354,7 @@ export default function Home() {
         <section className="relative z-10 container py-12">
           <div className="max-w-2xl mx-auto rounded-2xl p-8 md:p-10 text-center relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, oklch(0.20 0.08 280), oklch(0.15 0.06 260))" }}>
-            <div className="text-3xl mb-3">🦁 🐻 🐺 🐬</div>
+            <div className="text-xs font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: "oklch(0.65 0.04 265)" }}>LION &middot; BEAR &middot; WOLF &middot; DOLPHIN</div>
             <h2 className="font-display font-bold text-2xl md:text-3xl mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
               Why Can't <em>You</em> Sleep? <span className="text-gradient-gold">Your Chronotype Knows.</span>
             </h2>
@@ -394,7 +395,7 @@ export default function Home() {
             onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
           >
-            <span>CHANGE MY SLEEP — ${mainPrice}</span>
+            <span>GET MY SLEEP PROTOCOL — ${mainPrice}</span>
           </button>
 
           <p className="text-xs italic mt-6 max-w-md mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>

@@ -20,7 +20,7 @@ const QUESTIONS: Question[] = [
       "🌅 Before 6:30am — I'm up with the sun",
       "☀️ 6:30–8:30am — A reasonable morning",
       "🌤️ 8:30–10:30am — I need my sleep",
-      "🌙 After 10:30am — I'm a true night owl",
+      "After 10:30am — I'm a true night owl",
     ],
   },
   {
@@ -37,10 +37,10 @@ const QUESTIONS: Question[] = [
     id: 3,
     text: "What's your ideal bedtime?",
     options: [
-      "🌙 Before 9pm",
-      "🌙 9–11pm",
-      "🌙 11pm–1am",
-      "🌙 After 1am",
+      "Before 9pm",
+      "9–11pm",
+      "11pm–1am",
+      "After 1am",
     ],
   },
   {
@@ -58,8 +58,8 @@ const QUESTIONS: Question[] = [
     text: "How do you handle stress before bed?",
     options: [
       "😌 I rarely feel stressed at bedtime",
-      "📝 I sometimes worry but can let it go",
-      "🎵 I need distraction to wind down",
+      "I sometimes worry but can let it go",
+      "I need distraction to wind down",
       "😰 My mind races — I can't stop thinking",
     ],
   },
@@ -180,7 +180,7 @@ export default function Quiz() {
           }}
         >
           <Zap className="w-3 h-3" />
-          Buy $5
+          Buy $4
         </button>
       </div>
 
