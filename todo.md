@@ -698,3 +698,24 @@
 - [x] Export analytics dashboard data as PDF/CSV report
 - [x] A/B testing date range filter for detailed analysis
 - [x] Active A/B test indicator badge on admin dashboard
+
+## Neuropsychologická optimalizace prodejního funnelu (May 16)
+- [x] Quiz: zkrátit z 8 na 5 otázek (max conversion, min friction)
+- [x] Hero: sjednotit - pouze HeroAnimated (odstranit A/B test, Luna pryč)
+- [x] Home.tsx: kompaktní layout - bez zbytečné omáčky, rovnou k rozhodnutí
+- [x] Neuropsychologie prodeje: loss aversion, social proof, scarcity, anchoring
+- [x] Odstranit duplicitní sekce, sjednotit flow
+
+## SEO & Organická Traffic Maximalizace (May 16)
+- [x] Technical SEO: meta tags, Open Graph, Twitter Cards na všech stránkách
+- [x] Schema markup: Product, FAQ, Article, Organization structured data (JSON-LD)
+- [x] Sitemap.xml: automaticky generovaný
+- [x] robots.txt: optimalizovaný pro crawlery
+- [ ] Performance: Core Web Vitals optimalizace (LCP, FID, CLS)
+- [x] Canonical URLs na všech stránkách
+- [x] Blog engine: /blog route s SEO-optimalizovanými články
+- [x] Pillar content: 10 SEO článků (insomnia, CBT-I, sleep hygiene, chronotypes, melatonin, 3am waking, etc.)
+- [x] Internal linking: propojení blog → product → quiz
+- [x] Linkbuilding strategie: outreach templates, PR pitches, guest post opportunities (SEO-LINKBUILDING-STRATEGY.md)
+- [x] Hreflang tags pro multi-language support (en, cs, de, es, fr, pt, hi)
+- [ ] Image alt tags audit a optimalizace

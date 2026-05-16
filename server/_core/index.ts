@@ -107,8 +107,8 @@ async function startServer() {
 
   // ── Sitemap.xml (V2-4) ─────────────────────────────────────────────────────
   app.get("/sitemap.xml", async (_req, res) => {
-    const baseUrl = "https://deepsleep.manus.space";
-    const staticPages = ["/", "/quiz-funnel", "/blog", "/order", "/privacy", "/terms", "/refund", "/affiliates", "/contact"];
+    const baseUrl = `https://${_req.headers.host || "deepsleep-z7uhfhzs.manus.space"}`;
+    const staticPages = ["/", "/quiz", "/quiz-funnel", "/blog", "/order", "/privacy", "/terms", "/refund", "/affiliates", "/contact", "/feedback", "/chat"];
     let posts: Array<{ slug: string; publishedAt: Date | string }> = [];
     try { posts = await getBlogPosts(100, 0); } catch {}
     const urls = [
@@ -122,7 +122,8 @@ async function startServer() {
   // ── robots.txt ─────────────────────────────────────────────────────────────
   app.get("/robots.txt", (_req, res) => {
     res.set("Content-Type", "text/plain");
-    res.send("User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nSitemap: https://deepsleep.manus.space/sitemap.xml");
+    const host = _req.headers.host || "deepsleep-z7uhfhzs.manus.space";
+    res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /settings\nDisallow: /analytics\nDisallow: /ab-testing\nSitemap: https://${host}/sitemap.xml`);
   });
 
   // ── Scheduled Blog Post Endpoint (V2-1) ────────────────────────────────────

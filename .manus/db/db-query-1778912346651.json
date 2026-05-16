@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, slug, title FROM blog_posts ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute SELECT id, slug, title FROM blog_posts ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "slug": "how-to-improve-deep-sleep-improvement-1234567890",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "2",
+      "slug": "how-to-fix-insomnia-1234567890",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "30003",
+      "slug": "how-to-improve-deep-sleep-improvement-1778808968478",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "30004",
+      "slug": "how-to-fix-insomnia-1778808968807",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "60001",
+      "slug": "how-to-improve-deep-sleep-improvement-1778809256309",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "60002",
+      "slug": "how-to-fix-insomnia-1778809256896",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "90001",
+      "slug": "how-to-improve-deep-sleep-improvement-1778809779637",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "90002",
+      "slug": "how-to-fix-insomnia-1778809781675",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "120001",
+      "slug": "how-to-improve-deep-sleep-improvement-1778810115931",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "120002",
+      "slug": "how-to-fix-insomnia-1778810116370",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "150001",
+      "slug": "how-to-improve-deep-sleep-improvement-1778811912099",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "150002",
+      "slug": "how-to-fix-insomnia-1778811913139",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "180001",
+      "slug": "how-to-improve-deep-sleep-improvement-1778900426319",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "180002",
+      "slug": "how-to-fix-insomnia-1778900426693",
+      "title": "How to Fix Insomnia"
+    },
+    {
+      "id": "180003",
+      "slug": "how-to-improve-deep-sleep-improvement-1778900588839",
+      "title": "How to Improve Deep Sleep Improvement"
+    },
+    {
+      "id": "180004",
+      "slug": "how-to-fix-insomnia-1778900589214",
+      "title": "How to Fix Insomnia"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tslug\ttitle\n1\thow-to-improve-deep-sleep-improvement-1234567890\tHow to Improve Deep Sleep Improvement\n2\thow-to-fix-insomnia-1234567890\tHow to Fix Insomnia\n30003\thow-to-improve-deep-sleep-improvement-1778808968478\tHow to Improve Deep Sleep Improvement\n30004\thow-to-fix-insomnia-1778808968807\tHow to Fix Insomnia\n60001\thow-to-improve-deep-sleep-improvement-1778809256309\tHow to Improve Deep Sleep Improvement\n60002\thow-to-fix-insomnia-1778809256896\tHow to Fix Insomnia\n90001\thow-to-improve-deep-sleep-improvement-1778809779637\tHow to Improve Deep Sleep Improvement\n90002\thow-to-fix-insomnia-1778809781675\tHow to Fix Insomnia\n120001\thow-to-improve-deep-sleep-improvement-1778810115931\tHow to Improve Deep Sleep Improvement\n120002\thow-to-fix-insomnia-1778810116370\tHow to Fix Insomnia\n150001\thow-to-improve-deep-sleep-improvement-1778811912099\tHow to Improve Deep Sleep Improvement\n150002\thow-to-fix-insomnia-1778811913139\tHow to Fix Insomnia\n180001\thow-to-improve-deep-sleep-improvement-1778900426319\tHow to Improve Deep Sleep Improvement\n180002\thow-to-fix-insomnia-1778900426693\tHow to Fix Insomnia\n180003\thow-to-improve-deep-sleep-improvement-1778900588839\tHow to Improve Deep Sleep Improvement\n180004\thow-to-fix-insomnia-1778900589214\tHow to Fix Insomnia\n",
+  "stderr": "",
+  "execution_time_ms": 439
+}
