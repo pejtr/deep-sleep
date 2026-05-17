@@ -750,3 +750,11 @@
 - [x] Proactive bubble positioned right-bottom
 - [x] GET FREE SLEEP TIPS button wired to SleepChatBot via custom event (open-sleep-chat)
 - [x] External open trigger added to SleepChatBot (listens for window event)
+
+
+## UI Fixes & Analytics (May 17)
+- [x] Toggle button: Moon icon instead of Luna photo
+- [x] Chat header: larger Luna photo (w-14 h-14 with colored border)
+- [x] Admin Dashboard: Daily pageviews chart (TimelineCharts component working)
+- [x] Admin Dashboard: Traffic sources breakdown (already implemented)
+- [x] Stripe checkout: switched from sandbox to DEEPSLEEP4 live keys

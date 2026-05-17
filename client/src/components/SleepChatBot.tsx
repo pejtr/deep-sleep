@@ -16,7 +16,7 @@ import { trpc } from "@/lib/trpc";
 import { useI18n } from "@/contexts/I18nContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
-import { X, Send, Loader2, Star, Sparkles, AlertTriangle } from "lucide-react";
+import { X, Send, Loader2, Star, Sparkles, AlertTriangle, Moon } from "lucide-react";
 
 // Luna visual identity — real photos, stable per session
 const LUNA_PHOTOS = [
@@ -421,7 +421,7 @@ export default function SleepChatBot() {
               {isAdminMode ? (
                 <Sparkles className="w-5 h-5 text-white" />
               ) : (
-                <img src={LUNA_AVATAR} alt="Luna" className="w-6 h-6 rounded-full object-cover" />
+                <Moon className="w-5 h-5 text-white" />
               )}
               <span className="text-white text-sm font-semibold">{buttonLabel}</span>
               <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-white animate-pulse" />
@@ -450,7 +450,7 @@ export default function SleepChatBot() {
               borderBottom: "1px solid oklch(0.22 0.04 265)",
             }}
           >
-            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
+            <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 border-2" style={{ borderColor: displayColor }}>
               <img src={LUNA_AVATAR} alt="Luna" className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0">
