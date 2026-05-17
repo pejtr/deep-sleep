@@ -241,8 +241,8 @@ export async function getAdminStats() {
     return amt * rate;
   };
   const completedRevenue = completedOrders.reduce((sum, o) => sum + toUsd(o.amount, o.currency), 0);
-  const totalRevenue = allOrders.reduce((sum, o) => sum + toUsd(o.amount, o.currency), 0);
-  const revenue = completedRevenue > 0 ? completedRevenue : totalRevenue; // fallback to all if webhook not yet active
+  // Revenue should ONLY count completed orders (paid)
+  const revenue = completedRevenue;
   const avgRating = fbs.length > 0 ? fbs.reduce((sum, f) => sum + (f.rating ?? 0), 0) / fbs.length : 0;
   // Include createdAt timestamp in recentOrders for time display — ONLY COMPLETED ORDERS
   const recentOrders = completedOrders.slice(-10).reverse().map(o => ({ id: o.id, amount: o.amount, product: o.productId, status: o.status, createdAt: o.createdAt, currency: o.currency ?? undefined }));
@@ -312,7 +312,7 @@ export async function getAdminStats() {
   });
   const avgTimeToCheckout = timeCount > 0 ? Math.round(totalTimeMin / timeCount * 10) / 10 : 0;
 
-  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
+  return { quizCount: quiz.length, orderCount: completedOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
 }
 
 // ── Email broadcast helpers ───────────────────────────────────────────────────
