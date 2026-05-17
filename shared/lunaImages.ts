@@ -1,58 +1,58 @@
 /**
- * Luna Persona Images Mapping
- * Maps each persona to their professional portrait image
+ * Luna Visual Identity — Real Photos
+ * 3 authentic photos of Luna, used across landing page and chatbot
  */
 
 export const LUNA_IMAGES: Record<string, { url: string; alt: string; name: string }> = {
   compassionate: {
-    url: "/manus-storage/luna-hero-green_66809a3d.png",
-    alt: "Luna Compassionate - Empathetic Sleep Guide",
-    name: "Luna Compassionate",
+    url: "/manus-storage/luna1_93e25070.jpeg",
+    alt: "Luna — Your Personal Sleep Guide",
+    name: "Luna",
   },
   scientific: {
-    url: "/manus-storage/luna2-scientific_5d248fd3.webp",
-    alt: "Luna Scientific - Evidence-Based Sleep Coach",
-    name: "Luna Scientific",
+    url: "/manus-storage/luna2_671b3719.jpeg",
+    alt: "Luna — Sleep Science Expert",
+    name: "Luna",
   },
   practical: {
-    url: "/manus-storage/luna3-practical_9b178c6b.webp",
-    alt: "Luna Practical - Action-Oriented Sleep Guide",
-    name: "Luna Practical",
+    url: "/manus-storage/luna3_ab28b31a.jpeg",
+    alt: "Luna — Sleep Optimizer",
+    name: "Luna",
   },
   curious: {
-    url: "/manus-storage/luna4-curious_f8a139f0.webp",
-    alt: "Luna Curious - Inquisitive Sleep Coach",
-    name: "Luna Curious",
+    url: "/manus-storage/luna1_93e25070.jpeg",
+    alt: "Luna — Your Personal Sleep Guide",
+    name: "Luna",
   },
   motivational: {
-    url: "/manus-storage/luna-motivational_708b4863.png",
-    alt: "Luna Motivational - Inspiring Sleep Guide",
-    name: "Luna Motivational",
+    url: "/manus-storage/luna2_671b3719.jpeg",
+    alt: "Luna — Sleep Science Expert",
+    name: "Luna",
   },
   holistic: {
-    url: "/manus-storage/luna-holistic_475c6309.png",
-    alt: "Luna Holistic - Balanced Sleep Coach",
-    name: "Luna Holistic",
+    url: "/manus-storage/luna3_ab28b31a.jpeg",
+    alt: "Luna — Sleep Optimizer",
+    name: "Luna",
   },
   storyteller: {
-    url: "/manus-storage/luna-storyteller_89c4c087.png",
-    alt: "Luna Storyteller - Narrative Sleep Guide",
-    name: "Luna Storyteller",
+    url: "/manus-storage/luna1_93e25070.jpeg",
+    alt: "Luna — Your Personal Sleep Guide",
+    name: "Luna",
   },
   structured: {
-    url: "/manus-storage/luna8-structured_364e506a.webp",
-    alt: "Luna Structured - Systematic Sleep Coach",
-    name: "Luna Structured",
+    url: "/manus-storage/luna2_671b3719.jpeg",
+    alt: "Luna — Sleep Science Expert",
+    name: "Luna",
   },
   adaptive: {
-    url: "/manus-storage/luna9-adaptive_5cc4ca34.webp",
-    alt: "Luna Adaptive - Flexible Sleep Guide",
-    name: "Luna Adaptive",
+    url: "/manus-storage/luna3_ab28b31a.jpeg",
+    alt: "Luna — Sleep Optimizer",
+    name: "Luna",
   },
   empowering: {
-    url: "/manus-storage/luna10-empowering_21e4197c.webp",
-    alt: "Luna Empowering - Confident Sleep Coach",
-    name: "Luna Empowering",
+    url: "/manus-storage/luna1_93e25070.jpeg",
+    alt: "Luna — Your Personal Sleep Guide",
+    name: "Luna",
   },
 };
 
@@ -61,7 +61,7 @@ export const LUNA_IMAGES: Record<string, { url: string; alt: string; name: strin
  */
 export function getLunaImage(personaKey: string) {
   const key = personaKey.toLowerCase();
-  return LUNA_IMAGES[key] || LUNA_IMAGES.compassionate; // Default to Compassionate
+  return LUNA_IMAGES[key] || LUNA_IMAGES["compassionate"]!;
 }
 
 /**
@@ -75,6 +75,10 @@ export function getAllLunaImages() {
  * Get random Luna image
  */
 export function getRandomLunaImage() {
-  const images = Object.values(LUNA_IMAGES);
-  return images[Math.floor(Math.random() * images.length)];
+  const photos = [
+    { url: "/manus-storage/luna1_93e25070.jpeg", alt: "Luna — Your Personal Sleep Guide", name: "Luna" },
+    { url: "/manus-storage/luna2_671b3719.jpeg", alt: "Luna — Sleep Science Expert", name: "Luna" },
+    { url: "/manus-storage/luna3_ab28b31a.jpeg", alt: "Luna — Sleep Optimizer", name: "Luna" },
+  ];
+  return photos[Math.floor(Math.random() * photos.length)]!;
 }

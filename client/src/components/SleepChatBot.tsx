@@ -18,7 +18,16 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { X, Send, Loader2, Star, Sparkles, AlertTriangle } from "lucide-react";
 
-const LUNA_AVATAR = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-2eBqiRATXiAZLh2aHC5e9h.webp";
+// Luna visual identity — real photos, stable per session
+const LUNA_PHOTOS = [
+  "/manus-storage/luna1_93e25070.jpeg",
+  "/manus-storage/luna2_671b3719.jpeg",
+  "/manus-storage/luna3_ab28b31a.jpeg",
+];
+const _lunaIdx = parseInt(sessionStorage.getItem("luna_photo_idx") ?? "-1");
+const _lunaPhotoIdx = _lunaIdx >= 0 ? _lunaIdx : Math.floor(Math.random() * LUNA_PHOTOS.length);
+if (_lunaIdx < 0) sessionStorage.setItem("luna_photo_idx", String(_lunaPhotoIdx));
+const LUNA_AVATAR = LUNA_PHOTOS[_lunaPhotoIdx]!;
 
 interface Message {
   role: "user" | "assistant";
