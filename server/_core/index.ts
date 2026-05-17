@@ -109,7 +109,7 @@ async function startServer() {
 
   // ── Sitemap.xml (V2-4) ─────────────────────────────────────────────────────
   app.get("/sitemap.xml", async (_req, res) => {
-    const baseUrl = `https://${_req.headers.host || "deepsleep-z7uhfhzs.manus.space"}`;
+    const baseUrl = `https://${_req.headers.host || "deep-sleep-reset.com"}`;
     const staticPages = ["/", "/quiz", "/quiz-funnel", "/blog", "/order", "/privacy", "/terms", "/refund", "/affiliates", "/contact", "/feedback", "/chat"];
     let posts: Array<{ slug: string; publishedAt: Date | string }> = [];
     try { posts = await getBlogPosts(100, 0); } catch {}
@@ -124,7 +124,7 @@ async function startServer() {
   // ── robots.txt ─────────────────────────────────────────────────────────────
   app.get("/robots.txt", (_req, res) => {
     res.set("Content-Type", "text/plain");
-    const host = _req.headers.host || "deepsleep-z7uhfhzs.manus.space";
+    const host = _req.headers.host || "deep-sleep-reset.com";
     res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nDisallow: /settings\nDisallow: /analytics\nDisallow: /ab-testing\nSitemap: https://${host}/sitemap.xml`);
   });
 

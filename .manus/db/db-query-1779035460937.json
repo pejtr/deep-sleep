@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `persona_assignments` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `sessionId` varchar(128) NOT NULL,\n  `personaId` varchar(32) NOT NULL,\n  `personaName` varchar(128) NOT NULL,\n  `personaDescription` text,\n  `page` varchar(64) NOT NULL,\n  `shown` boolean NOT NULL DEFAULT true,\n  `converted` boolean NOT NULL DEFAULT false,\n  `revenue` decimal(10, 2) DEFAULT 0,\n  `chronotype` varchar(16),\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  KEY `sessionId_idx` (`sessionId`),\n  KEY `personaId_idx` (`personaId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute CREATE TABLE IF NOT EXISTS `persona_assignments` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `sessionId` varchar(128) NOT NULL,\n  `personaId` varchar(32) NOT NULL,\n  `personaName` varchar(128) NOT NULL,\n  `personaDescription` text,\n  `page` varchar(64) NOT NULL,\n  `shown` boolean NOT NULL DEFAULT true,\n  `converted` boolean NOT NULL DEFAULT false,\n  `revenue` decimal(10, 2) DEFAULT 0,\n  `chronotype` varchar(16),\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  KEY `sessionId_idx` (`sessionId`),\n  KEY `personaId_idx` (`personaId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 414
+}

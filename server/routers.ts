@@ -190,7 +190,7 @@ export const appRouter = router({
           messages: [
             {
               role: "system",
-              content: `You are a sleep science expert writing SEO-optimized blog articles for Deep Sleep Reset (deepsleep.manus.space). 
+              content: `You are a sleep science expert writing SEO-optimized blog articles for Deep Sleep Reset (deep-sleep-reset.com). 
 Write in a professional, authoritative tone. Sound like someone who has actually worked in sleep medicine.
 Use active voice and vary sentence structure.
 Format: Use ## for H2 headings, ### for H3, **bold** for key terms, - for bullet lists.
