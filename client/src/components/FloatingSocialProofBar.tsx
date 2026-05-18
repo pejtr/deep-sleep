@@ -42,8 +42,8 @@ export default function FloatingSocialProofBar() {
   const currentTestimonial = TESTIMONIALS[testimonialIndex]!;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 social-proof-bar">
-      <div className="container py-2.5 flex items-center justify-between gap-3">
+    <div className="fixed bottom-0 left-0 right-0 z-30 social-proof-bar">
+      <div className="container py-2.5 flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
         {/* Left: Live counter */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <div className="flex items-center gap-1.5">
@@ -63,7 +63,7 @@ export default function FloatingSocialProofBar() {
           {/* Quiz button — visible on mobile/tablet where testimonial is hidden */}
           <button
             onClick={() => navigate("/quiz")}
-            className="flex sm:hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            className="flex sm:hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90 active:scale-95 order-2 sm:order-none"
             style={{
               background: "oklch(0.14 0.04 265)",
               border: "1px solid oklch(0.55 0.18 65 / 0.4)",
@@ -75,7 +75,7 @@ export default function FloatingSocialProofBar() {
           </button>
 
           {/* Rotating testimonial — desktop only */}
-          <div className="hidden md:flex items-center gap-3 flex-1 min-w-0 justify-center">
+          <div className="hidden md:flex items-center gap-3 flex-1 min-w-0 justify-center order-1 md:order-none">
             <div className="flex gap-0.5 flex-shrink-0">
               {[1,2,3,4,5].map(i => (
                 <Star key={i} className="w-3 h-3 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
@@ -92,7 +92,7 @@ export default function FloatingSocialProofBar() {
           {/* Quiz button — visible on sm (between mobile and md) */}
           <button
             onClick={() => navigate("/quiz")}
-            className="hidden sm:flex md:hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            className="hidden sm:flex md:hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90 active:scale-95 order-2 sm:order-none"
             style={{
               background: "oklch(0.14 0.04 265)",
               border: "1px solid oklch(0.55 0.18 65 / 0.4)",

@@ -407,7 +407,7 @@ export default function SleepChatBot() {
       {(scrolledPast50 || isAdminMode || isAffiliateMode) && (
         <button
           onClick={() => open ? setOpen(false) : openChat("manual")}
-          className="fixed bottom-24 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-28 md:bottom-24 right-5 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
           style={{
             background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
             boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,

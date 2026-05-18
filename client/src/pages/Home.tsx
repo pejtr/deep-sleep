@@ -158,7 +158,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden pb-14" style={{ background: "oklch(0.07 0.025 255)" }}>
+    <div className="min-h-screen relative overflow-hidden pb-32 md:pb-14" style={{ background: "oklch(0.07 0.025 255)" }}>
 
       {/* ═══════════════ ANIMATED HERO — Sleep Dashboard + Brain Waves + Before/After ═══════════════ */}
       <HeroAnimated onChatOpen={() => setIsChatOpen(true)} navigate={navigate} />
