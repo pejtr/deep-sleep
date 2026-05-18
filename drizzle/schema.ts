@@ -324,3 +324,33 @@ export const personalizedPlans = mysqlTable("personalized_plans", {
 
 export type PersonalizedPlan = typeof personalizedPlans.$inferSelect;
 export type InsertPersonalizedPlan = typeof personalizedPlans.$inferInsert;
+
+// ── API Keys (for external integrations like LeadOS) ─────────────────────────
+export const apiKeys = mysqlTable("api_keys", {
+  id: int("id").autoincrement().primaryKey(),
+  keyHash: varchar("keyHash", { length: 128 }).notNull().unique(), // SHA-256 hash of the key
+  name: varchar("name", { length: 128 }).notNull(), // e.g. "LeadOS Production"
+  permissions: text("permissions").notNull().default("read"), // JSON array: ["read", "write", "email"]
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  lastUsedAt: timestamp("lastUsedAt"),
+});
+
+export type ApiKey = typeof apiKeys.$inferSelect;
+export type InsertApiKey = typeof apiKeys.$inferInsert;
+
+// ── Outbound Webhooks (push events to LeadOS or other CRMs) ──────────────────
+export const outboundWebhooks = mysqlTable("outbound_webhooks", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 128 }).notNull(), // e.g. "LeadOS"
+  url: text("url").notNull(), // destination URL
+  secret: varchar("secret", { length: 128 }), // HMAC signing secret
+  events: text("events").notNull().default("[]"), // JSON array: ["new_order", "new_lead", "quiz_completed"]
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  lastTriggeredAt: timestamp("lastTriggeredAt"),
+  lastStatus: int("lastStatus"), // HTTP status of last delivery
+});
+
+export type OutboundWebhook = typeof outboundWebhooks.$inferSelect;
+export type InsertOutboundWebhook = typeof outboundWebhooks.$inferInsert;

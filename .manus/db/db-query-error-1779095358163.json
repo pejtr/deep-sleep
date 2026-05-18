@@ -1,0 +1,14 @@
+{
+  "query": "CREATE TABLE `api_keys` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`keyHash` varchar(128) NOT NULL,\n\t`name` varchar(128) NOT NULL,\n\t`permissions` text NOT NULL DEFAULT ('read'),\n\t`active` boolean NOT NULL DEFAULT true,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`lastUsedAt` timestamp,\n\tCONSTRAINT `api_keys_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `api_keys_keyHash_unique` UNIQUE(`keyHash`)\n);\nCREATE TABLE `outbound_webhooks` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`name` varchar(128) NOT NULL,\n\t`url` text NOT NULL,\n\t`secret` varchar(128),\n\t`events` text NOT NULL DEFAULT ('[]'),\n\t`active` boolean NOT NULL DEFAULT true,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`lastTriggeredAt` timestamp,\n\t`lastStatus` int,\n\tCONSTRAINT `outbound_webhooks_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute CREATE TABLE `api_keys` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`keyHash` varchar(128) NOT NULL,\n\t`name` varchar(128) NOT NULL,\n\t`permissions` text NOT NULL DEFAULT ('read'),\n\t`active` boolean NOT NULL DEFAULT true,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`lastUsedAt` timestamp,\n\tCONSTRAINT `api_keys_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `api_keys_keyHash_unique` UNIQUE(`keyHash`)\n);\nCREATE TABLE `outbound_webhooks` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`name` varchar(128) NOT NULL,\n\t`url` text NOT NULL,\n\t`secret` varchar(128),\n\t`events` text NOT NULL DEFAULT ('[]'),\n\t`active` boolean NOT NULL DEFAULT true,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`lastTriggeredAt` timestamp,\n\t`lastStatus` int,\n\tCONSTRAINT `outbound_webhooks_id` PRIMARY KEY(`id`)\n);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 5 column 45 near \"'read'),",
+    "\t`active` boolean NOT NULL DEFAULT true,",
+    "\t`createdAt` timestamp NOT NULL DEFAULT (now()),",
+    "\t`lastUsedAt` timestamp,",
+    "\tCONSTRAINT `api_keys_id` PRIMARY KEY(`id`),",
+    "\tCONSTRAINT `api_keys_keyHash_unique` UNIQUE(`keyHash`)",
+    ")\""
+  ]
+}

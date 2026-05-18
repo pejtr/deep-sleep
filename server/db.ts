@@ -312,7 +312,7 @@ export async function getAdminStats() {
   });
   const avgTimeToCheckout = timeCount > 0 ? Math.round(totalTimeMin / timeCount * 10) / 10 : 0;
 
-  return { quizCount: quiz.length, orderCount: completedOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
+  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
 }
 
 // ── Email broadcast helpers ───────────────────────────────────────────────────

@@ -14,6 +14,7 @@ import { scheduleNightlyOptimization } from "../jobs/nightlyOptimization";
 import { processPendingEmails } from "../emailScheduler";
 import { registerProtocolPdfRoute } from "../protocolPdf";
 import { registerRedditOAuthRoutes } from "../redditOAuth";
+import { externalApiRouter } from "../externalApi";
 import { createContext } from "./context";
 import { getBlogPosts, createBlogPost } from "../db";
 import { invokeLLM } from "./llm";
@@ -107,6 +108,8 @@ async function startServer() {
   registerStripeWebhook(app);
   registerProtocolPdfRoute(app);
   registerRedditOAuthRoutes(app);
+  // External REST API for LeadOS CRM integration
+  app.use("/api/external", externalApiRouter);
 
   // ── Sitemap.xml (V2-4) ─────────────────────────────────────────────────────
   app.get("/sitemap.xml", async (_req, res) => {

@@ -128,8 +128,311 @@ function getDateRange(days: number) {
     endDate: end.toISOString().split("T")[0],
   };
 }
+// ── Overview Tab (Phase 1 — Professional KPIs + Waterfall Funnel) ────────────────
+type AdminStats = {
+  revenue?: number;
+  completedOrderCount?: number;
+  orderCount?: number;
+  leadCount?: number;
+  quizStarts?: number;
+  quizCount?: number;
+  avgRating?: number;
+  feedbackCount?: number;
+  behaviorCount?: number;
+  uniqueBuyers?: number;
+  duplicateAttempts?: number;
+  avgTimeToCheckout?: number;
+  recentOrders?: Array<{ id: number; amount: string; product: string; status?: string; currency?: string; createdAt: Date }>;
+  referrerBreakdown?: Array<{ source: string; visits: number }>;
+  deviceBreakdown?: Array<{ device: string; count: number }>;
+  orderTimeline?: Array<{ hour: string; count: number }>;
+};
 
-// ── Reddit Ads Tab ───────────────────────────────────────────────────────────
+function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoading: boolean; refetch: () => void }) {
+  const [dateRange, setDateRange] = useState<"today" | "7d" | "30d" | "90d">("30d");
+
+  // Derived KPIs
+  const revenue = stats?.revenue ?? 0;
+  const orders = stats?.orderCount ?? 0;
+  const completedOrders = stats?.completedOrderCount ?? orders;
+  const leads = stats?.leadCount ?? 0;
+  const quizStarts = stats?.quizStarts ?? stats?.quizCount ?? 0;
+  const aov = completedOrders > 0 ? revenue / completedOrders : 0;
+  const cvr = quizStarts > 0 ? (completedOrders / quizStarts) * 100 : 0;
+  const emailCaptureRate = quizStarts > 0 ? (leads / quizStarts) * 100 : 0;
+
+  // Waterfall funnel data with drop-off
+  const funnelSteps = [
+    { label: "Quiz Starts", value: quizStarts, color: C.teal, icon: Activity },
+    { label: "Email Captured", value: leads, color: C.blue, icon: Mail },
+    { label: "Order Page", value: Math.max(leads, completedOrders), color: C.purple, icon: ShoppingCart },
+    { label: "Completed Orders", value: completedOrders, color: C.green, icon: CheckCircle2 },
+  ];
+
+  const orderTimelineData = stats?.orderTimeline ?? [];
+
+  return (
+    <div className="space-y-6">
+      {/* ── Date Range Picker ─────────────────────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-base font-bold" style={{ color: C.textPrimary }}>Performance Overview</h2>
+          <p className="text-xs" style={{ color: C.textMuted }}>All-time data · Completed orders only</p>
+        </div>
+        <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+          {(["today", "7d", "30d", "90d"] as const).map(r => (
+            <button
+              key={r}
+              onClick={() => setDateRange(r)}
+              className="text-xs px-3 py-1.5 rounded-lg transition-all"
+              style={{
+                background: dateRange === r ? C.gold : "transparent",
+                color: dateRange === r ? "oklch(0.10 0.02 255)" : C.textMuted,
+                fontWeight: dateRange === r ? 700 : 400,
+              }}
+            >{r}</button>
+          ))}
+          <button onClick={() => refetch()} className="ml-1 p-1.5 rounded-lg transition-all hover:opacity-70" style={{ color: C.textMuted }}>
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="rounded-2xl p-5 animate-pulse h-28" style={{ background: C.card }} />
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* ── Hero KPI Row ─────────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {/* Revenue */}
+            <div className="rounded-2xl p-5 col-span-1" style={{ background: `linear-gradient(135deg, ${C.card}, oklch(0.11 0.04 145))`, border: `1px solid ${C.green}30` }}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${C.green}18` }}>
+                  <DollarSign className="w-4 h-4" style={{ color: C.green }} />
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${C.green}18`, color: C.green }}>Paid only</span>
+              </div>
+              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>${revenue.toFixed(2)}</p>
+              <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Total Revenue</p>
+              <p className="text-xs mt-1" style={{ color: C.green }}>AOV: ${aov.toFixed(2)}</p>
+            </div>
+
+            {/* Orders */}
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${C.gold}18` }}>
+                <ShoppingCart className="w-4 h-4" style={{ color: C.gold }} />
+              </div>
+              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{completedOrders}</p>
+              <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Completed Orders</p>
+              <p className="text-xs mt-1" style={{ color: C.textMuted }}>{orders - completedOrders} pending</p>
+            </div>
+
+            {/* Conversion Rate */}
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${C.purple}18` }}>
+                <Target className="w-4 h-4" style={{ color: C.purple }} />
+              </div>
+              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{cvr.toFixed(1)}%</p>
+              <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Quiz → Order CVR</p>
+              <p className="text-xs mt-1" style={{ color: C.textMuted }}>Email cap: {emailCaptureRate.toFixed(1)}%</p>
+            </div>
+
+            {/* Leads */}
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${C.blue}18` }}>
+                <Users className="w-4 h-4" style={{ color: C.blue }} />
+              </div>
+              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{leads}</p>
+              <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Email Leads</p>
+              <p className="text-xs mt-1" style={{ color: C.textMuted }}>RPL: ${leads > 0 ? (revenue / leads).toFixed(2) : "0.00"}</p>
+            </div>
+
+            {/* Quiz Starts */}
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${C.teal}18` }}>
+                <Activity className="w-4 h-4" style={{ color: C.teal }} />
+              </div>
+              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{quizStarts}</p>
+              <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Quiz Starts</p>
+              <p className="text-xs mt-1" style={{ color: C.textMuted }}>Funnel entries</p>
+            </div>
+          </div>
+
+          {/* ── Waterfall Funnel + Revenue Chart ──────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Waterfall Funnel */}
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Conversion Funnel</h3>
+              <div className="space-y-2">
+                {funnelSteps.map((step, i) => {
+                  const prevValue = i === 0 ? step.value : funnelSteps[i - 1].value;
+                  const dropOff = prevValue > 0 && i > 0 ? (((prevValue - step.value) / prevValue) * 100).toFixed(0) : null;
+                  const barWidth = funnelSteps[0].value > 0 ? (step.value / funnelSteps[0].value) * 100 : 0;
+                  const StepIcon = step.icon;
+                  return (
+                    <div key={step.label}>
+                      {dropOff && (
+                        <div className="flex items-center gap-1 mb-1 ml-2">
+                          <ArrowDownRight className="w-3 h-3" style={{ color: C.red }} />
+                          <span className="text-xs" style={{ color: C.red }}>{dropOff}% drop-off</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${step.color}18` }}>
+                          <StepIcon className="w-3.5 h-3.5" style={{ color: step.color }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium" style={{ color: C.textSecondary }}>{step.label}</span>
+                            <span className="text-sm font-bold" style={{ color: step.color }}>{step.value.toLocaleString()}</span>
+                          </div>
+                          <div className="h-2 rounded-full" style={{ background: C.cardInner }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-700"
+                              style={{ width: `${barWidth}%`, background: `linear-gradient(90deg, ${step.color}80, ${step.color})` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Revenue Timeline */}
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Order Activity (last 48h)</h3>
+              {orderTimelineData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={180}>
+                  <AreaChart data={orderTimelineData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+                    <defs>
+                      <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={C.green} stopOpacity={0.4} />
+                        <stop offset="95%" stopColor={C.green} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" />
+                    <XAxis dataKey="hour" tick={{ fill: C.textMuted, fontSize: 9 }} />
+                    <YAxis tick={{ fill: C.textMuted, fontSize: 9 }} allowDecimals={false} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Area type="monotone" dataKey="count" name="Orders" stroke={C.green} fill="url(#revGrad)" strokeWidth={2} dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-44 gap-2">
+                  <Clock className="w-8 h-8" style={{ color: C.textMuted }} />
+                  <p className="text-xs" style={{ color: C.textMuted }}>No order data yet</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>Timeline will appear after first purchase</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Secondary Metrics Row ─────────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Traffic Sources */}
+            <ChartCard title="Traffic Sources">
+              {stats?.referrerBreakdown && stats.referrerBreakdown.length > 0 ? (
+                <div className="space-y-2">
+                  {stats.referrerBreakdown.map((r, i) => {
+                    const maxVisits = Math.max(...stats.referrerBreakdown!.map(x => x.visits));
+                    const pct = maxVisits > 0 ? (r.visits / maxVisits) * 100 : 0;
+                    const colors = [C.gold, C.green, C.blue, C.purple, C.teal, C.pink];
+                    return (
+                      <div key={r.source} className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium truncate max-w-[140px]" style={{ color: C.textPrimary }}>{r.source}</span>
+                          <span className="text-xs font-bold" style={{ color: colors[i % colors.length] }}>{r.visits}</span>
+                        </div>
+                        <div className="h-1.5 rounded-full" style={{ background: C.cardInner }}>
+                          <div className="h-full rounded-full" style={{ width: `${pct}%`, background: colors[i % colors.length] }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No referrer data yet</p>
+              )}
+            </ChartCard>
+
+            {/* Device Breakdown */}
+            <ChartCard title="Devices">
+              {stats?.deviceBreakdown && stats.deviceBreakdown.length > 0 ? (
+                <ResponsiveContainer width="100%" height={140}>
+                  <PieChart>
+                    <Pie data={stats.deviceBreakdown.map(d => ({ name: d.device, value: d.count }))} cx="50%" cy="50%" innerRadius={35} outerRadius={55} paddingAngle={3} dataKey="value">
+                      {stats.deviceBreakdown.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={[C.gold, C.teal, C.purple, C.green][index % 4]} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend wrapperStyle={{ fontSize: 10, color: C.textMuted }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No device data yet</p>
+              )}
+            </ChartCard>
+
+            {/* Buyer Intelligence */}
+            <ChartCard title="Buyer Intelligence">
+              <div className="space-y-3">
+                {[
+                  { label: "Unique Buyers", value: String(stats?.uniqueBuyers ?? 0), color: C.green },
+                  { label: "Avg Rating", value: stats?.avgRating ? `${stats.avgRating}/5 ★` : "—", color: C.gold },
+                  { label: "Feedbacks", value: String(stats?.feedbackCount ?? 0), color: C.pink },
+                  { label: "Behavior Events", value: String(stats?.behaviorCount ?? 0), color: C.teal },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
+                    <span className="text-xs" style={{ color: C.textSecondary }}>{item.label}</span>
+                    <span className="text-sm font-bold" style={{ color: item.color }}>{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </ChartCard>
+          </div>
+
+          {/* ── Recent Orders ─────────────────────────────────────────────────────────────── */}
+          {stats?.recentOrders && stats.recentOrders.length > 0 && (
+            <ChartCard title="Recent Orders">
+              <div className="space-y-2">
+                {stats.recentOrders.map(order => (
+                  <div key={order.id} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" style={{ color: order.status === 'completed' ? C.green : C.gold }} />
+                      <div>
+                        <span className="text-xs font-medium" style={{ color: C.textSecondary }}>{order.product}</span>
+                        {order.status && order.status !== 'completed' && (
+                          <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: 'oklch(0.78 0.18 65 / 0.15)', color: C.gold }}>{order.status}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-semibold" style={{ color: order.status === 'completed' ? C.green : C.gold }}>
+                        {order.currency ? order.currency.toUpperCase() : 'USD'} {order.amount}
+                      </span>
+                      <span className="text-xs" style={{ color: C.textMuted }}>
+                        {order.createdAt ? new Date(order.createdAt).toLocaleString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : "—"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ChartCard>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ── Reddit Ads Tab ───────────────────────────────────────────────────────────────
 function RedditAdsTab() {
   const [range, setRange] = useState<7 | 14 | 30>(7);
   const [chartType, setChartType] = useState<"line" | "bar" | "area">("area");
@@ -408,7 +711,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas" | "integrations">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -462,6 +765,7 @@ export default function AdminDashboard() {
     { id: "email", label: "Email", icon: Mail },
     { id: "abtest", label: "A/B Tests", icon: Sparkles },
     { id: "personas", label: "Personas", icon: Users },
+    { id: "integrations", label: "Integrations", icon: Cpu },
   ] as const;
 
   // Funnel conversion data for bar chart
@@ -530,173 +834,9 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* ── Overview Tab ─────────────────────────────────────────────────── */}
+        {/* ── Overview Tab (Phase 1 — Professional KPIs + Funnel) ─────────────────── */}
         {activeTab === "overview" && (
-          <div className="space-y-6">
-            {isLoading ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="rounded-2xl p-5 animate-pulse h-28" style={{ background: C.card }} />
-                ))}
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <StatCard icon={DollarSign} label="Revenue" value={`$${(stats?.revenue ?? 0).toFixed(2)}`} sub={(stats?.completedOrderCount ?? 0) > 0 ? "Confirmed orders" : "All orders"} color={C.green} trend="+∞%" trendUp />
-                  <StatCard icon={ShoppingCart} label="Orders" value={stats?.orderCount ?? 0} sub="All orders" color={C.gold} />
-                  <StatCard icon={Users} label="Email Leads" value={stats?.leadCount ?? 0} sub="Captured" color={C.purple} />
-                  <StatCard icon={Activity} label="Quiz Starts" value={stats?.quizStarts ?? stats?.quizCount ?? 0} sub="Funnel entries" color={C.teal} />
-                  <StatCard icon={Star} label="Avg Rating" value={stats?.avgRating ? `${stats.avgRating}/5` : "—"} sub={`${stats?.feedbackCount ?? 0} reviews`} color={C.gold} />
-                  <StatCard icon={MessageSquare} label="Feedbacks" value={stats?.feedbackCount ?? 0} sub="Submitted" color={C.pink} />
-                  <StatCard icon={Zap} label="Events" value={stats?.behaviorCount ?? 0} sub="Behavior tracked" color={C.teal} />
-                  <StatCard icon={Globe} label="Languages" value="14" sub="Active translations" color={C.blue} />
-                </div>
-
-                {/* Funnel bar chart */}
-                <ChartCard title="Conversion Funnel">
-                  <ResponsiveContainer width="100%" height={160}>
-                    <BarChart data={funnelChartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" />
-                      <XAxis dataKey="step" tick={{ fill: C.textMuted, fontSize: 11 }} />
-                      <YAxis tick={{ fill: C.textMuted, fontSize: 11 }} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" name="Count" radius={[6, 6, 0, 0]}>
-                        {funnelChartData.map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={[C.teal, C.purple, C.green, C.gold][index % 4]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </ChartCard>
-
-                {/* Recent orders */}
-                {stats?.recentOrders && stats.recentOrders.length > 0 && (
-                  <ChartCard title="Recent Orders">
-                    <div className="space-y-2">
-                      {stats.recentOrders.map((order: { id: number; amount: string; product: string; status?: string; currency?: string; createdAt: Date }) => (
-                        <div key={order.id} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4" style={{ color: order.status === 'completed' ? C.green : C.gold }} />
-                            <div>
-                              <span className="text-xs font-medium" style={{ color: C.textSecondary }}>{order.product}</span>
-                              {order.status && order.status !== 'completed' && (
-                                <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: 'oklch(0.78 0.18 65 / 0.15)', color: C.gold }}>{order.status}</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs font-semibold" style={{ color: order.status === 'completed' ? C.green : C.gold }}>
-                              {order.currency ? order.currency.toUpperCase() : 'USD'} {order.amount}
-                            </span>
-                            <span className="text-xs" style={{ color: C.textMuted }}>
-                              {order.createdAt ? new Date(order.createdAt).toLocaleString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : "—"}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </ChartCard>
-                )}
-
-                {/* ── Purchase Intelligence ─────────────────────────────────── */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Buyer Stats */}
-                  <ChartCard title="Buyer Intelligence">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
-                        <span className="text-xs" style={{ color: C.textSecondary }}>Unique Buyers</span>
-                        <span className="text-lg font-bold" style={{ color: C.green }}>{stats?.uniqueBuyers ?? 0}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
-                        <span className="text-xs" style={{ color: C.textSecondary }}>Duplicate Attempts</span>
-                        <span className="text-lg font-bold" style={{ color: stats?.duplicateAttempts ? C.gold : C.textMuted }}>{stats?.duplicateAttempts ?? 0}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
-                        <span className="text-xs" style={{ color: C.textSecondary }}>Avg Time to Checkout</span>
-                        <span className="text-lg font-bold" style={{ color: C.teal }}>{stats?.avgTimeToCheckout ? `${stats.avgTimeToCheckout}m` : "—"}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-xs" style={{ color: C.textSecondary }}>Conversion Rate</span>
-                        <span className="text-lg font-bold" style={{ color: C.gold }}>
-                          {stats?.quizStarts && stats.quizStarts > 0 ? `${((stats.orderCount / stats.quizStarts) * 100).toFixed(1)}%` : stats?.behaviorCount && stats.behaviorCount > 0 ? `${((stats.orderCount / (stats.behaviorCount / 10)) * 100).toFixed(1)}%` : "—"}
-                        </span>
-                      </div>
-                    </div>
-                  </ChartCard>
-
-                  {/* Traffic Sources */}
-                  <ChartCard title="Traffic Sources">
-                    {stats?.referrerBreakdown && stats.referrerBreakdown.length > 0 ? (
-                      <div className="space-y-2">
-                        {(stats.referrerBreakdown as { source: string; visits: number }[]).map((r, i) => {
-                          const maxVisits = Math.max(...(stats.referrerBreakdown as { source: string; visits: number }[]).map(x => x.visits));
-                          const pct = maxVisits > 0 ? (r.visits / maxVisits) * 100 : 0;
-                          const colors = [C.gold, C.green, C.blue, C.purple, C.teal, C.pink, C.red, C.textSecondary];
-                          return (
-                            <div key={r.source} className="space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium truncate max-w-[140px]" style={{ color: C.textPrimary }}>{r.source}</span>
-                                <span className="text-xs font-bold" style={{ color: colors[i % colors.length] }}>{r.visits}</span>
-                              </div>
-                              <div className="h-1.5 rounded-full" style={{ background: C.cardInner }}>
-                                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: colors[i % colors.length] }} />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No referrer data yet</p>
-                    )}
-                  </ChartCard>
-
-                  {/* Device Breakdown */}
-                  <ChartCard title="Devices">
-                    {stats?.deviceBreakdown && (stats.deviceBreakdown as { device: string; count: number }[]).length > 0 ? (
-                      <ResponsiveContainer width="100%" height={140}>
-                        <PieChart>
-                          <Pie
-                            data={(stats.deviceBreakdown as { device: string; count: number }[]).map(d => ({ name: d.device, value: d.count }))}
-                            cx="50%" cy="50%" innerRadius={35} outerRadius={55}
-                            paddingAngle={3} dataKey="value"
-                          >
-                            {(stats.deviceBreakdown as { device: string; count: number }[]).map((_, index) => (
-                              <Cell key={`cell-${index}`} fill={[C.gold, C.teal, C.purple, C.green][index % 4]} />
-                            ))}
-                          </Pie>
-                          <Tooltip content={<CustomTooltip />} />
-                          <Legend wrapperStyle={{ fontSize: 10, color: C.textMuted }} />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    ) : (
-                      <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No device data yet</p>
-                    )}
-                  </ChartCard>
-                </div>
-
-                {/* Order Timeline */}
-                {stats?.orderTimeline && (stats.orderTimeline as { hour: string; count: number }[]).length > 0 && (
-                  <ChartCard title="Order Timeline (last 48h)">
-                    <ResponsiveContainer width="100%" height={120}>
-                      <AreaChart data={stats.orderTimeline as { hour: string; count: number }[]} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-                        <defs>
-                          <linearGradient id="orderGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={C.green} stopOpacity={0.3} />
-                            <stop offset="95%" stopColor={C.green} stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" />
-                        <XAxis dataKey="hour" tick={{ fill: C.textMuted, fontSize: 10 }} />
-                        <YAxis tick={{ fill: C.textMuted, fontSize: 10 }} allowDecimals={false} />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Area type="monotone" dataKey="count" name="Orders" stroke={C.green} fill="url(#orderGrad)" strokeWidth={2} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </ChartCard>
-                )}
-              </>
-            )}
-          </div>
+          <OverviewTab stats={stats} isLoading={isLoading} refetch={refetch} />
         )}
 
         {/* ── Campaigns Tab ────────────────────────────────────────────────── */}
@@ -915,6 +1055,8 @@ export default function AdminDashboard() {
         {activeTab === "personas" && (
           <PersonaMetricsDashboard />
         )}
+        {/* ── Integrations Tab ─────────────────────────────────────────────── */}
+        {activeTab === "integrations" && <IntegrationsTab />}
         {activeTab === "funnel" && (
           <div className="space-y-4">
             <ChartCard title="Full Funnel Overview">
@@ -974,6 +1116,316 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Integrations Tab Component ─────────────────────────────────────────────
+function IntegrationsTab() {
+  const [newKeyName, setNewKeyName] = useState("");
+  const [newKeyPerms, setNewKeyPerms] = useState<("read" | "write" | "email")[]>(["read"]);
+  const [createdKey, setCreatedKey] = useState<string | null>(null);
+  const [copiedKey, setCopiedKey] = useState(false);
+
+  const [newWHName, setNewWHName] = useState("");
+  const [newWHUrl, setNewWHUrl] = useState("");
+  const [newWHEvents, setNewWHEvents] = useState<("new_order" | "new_lead" | "quiz_completed")[]>(["new_order"]);
+  const [createdWHSecret, setCreatedWHSecret] = useState<string | null>(null);
+  const [copiedSecret, setCopiedSecret] = useState(false);
+
+  const utils = trpc.useUtils();
+
+  const { data: apiKeys, isLoading: keysLoading } = trpc.integrations.listApiKeys.useQuery();
+  const { data: webhooks, isLoading: whLoading } = trpc.integrations.listWebhooks.useQuery();
+
+  const createKey = trpc.integrations.createApiKey.useMutation({
+    onSuccess: (data) => {
+      setCreatedKey(data.key);
+      utils.integrations.listApiKeys.invalidate();
+      toast.success(`API key "${data.name}" created`);
+    },
+    onError: () => toast.error("Failed to create API key"),
+  });
+
+  const revokeKey = trpc.integrations.revokeApiKey.useMutation({
+    onSuccess: () => {
+      utils.integrations.listApiKeys.invalidate();
+      toast.success("API key revoked");
+    },
+  });
+
+  const createWH = trpc.integrations.createWebhook.useMutation({
+    onSuccess: (data) => {
+      setCreatedWHSecret(data.secret ?? null);
+      utils.integrations.listWebhooks.invalidate();
+      toast.success("Webhook created");
+    },
+    onError: () => toast.error("Failed to create webhook"),
+  });
+
+  const toggleWH = trpc.integrations.updateWebhook.useMutation({
+    onSuccess: () => utils.integrations.listWebhooks.invalidate(),
+  });
+
+  const deleteWH = trpc.integrations.deleteWebhook.useMutation({
+    onSuccess: () => {
+      utils.integrations.listWebhooks.invalidate();
+      toast.success("Webhook deleted");
+    },
+  });
+
+  const copyText = (text: string, setCopied: (v: boolean) => void) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const togglePerm = (p: "read" | "write" | "email") =>
+    setNewKeyPerms(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
+
+  const toggleEvent = (e: "new_order" | "new_lead" | "quiz_completed") =>
+    setNewWHEvents(prev => prev.includes(e) ? prev.filter(x => x !== e) : [...prev, e]);
+
+  return (
+    <div className="space-y-6">
+      {/* API Documentation */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: C.textPrimary }}>
+          <Cpu className="w-4 h-4" style={{ color: C.blue }} />
+          External REST API — LeadOS / CRM Integration
+        </h3>
+        <p className="text-xs mb-3" style={{ color: C.textSecondary }}>
+          Base URL: <code className="px-1.5 py-0.5 rounded text-xs" style={{ background: C.cardInner, color: C.gold }}>https://deep-sleep-reset.com/api/external</code>
+        </p>
+        <div className="grid grid-cols-1 gap-2">
+          {[
+            { method: "GET", path: "/leads", desc: "List quiz leads + email leads", perm: "read" },
+            { method: "GET", path: "/orders", desc: "List completed orders", perm: "read" },
+            { method: "GET", path: "/analytics", desc: "KPI metrics (revenue, orders, CVR, AOV)", perm: "read" },
+            { method: "GET", path: "/email-sequences", desc: "Email sequence status per customer", perm: "read" },
+            { method: "POST", path: "/leads", desc: "Create/update lead from LeadOS", perm: "write" },
+            { method: "POST", path: "/email/send", desc: "Send transactional email via Brevo", perm: "email" },
+          ].map(ep => (
+            <div key={ep.path} className="flex items-center gap-3 p-2.5 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+              <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: ep.method === "GET" ? "oklch(0.55 0.18 145 / 0.2)" : "oklch(0.65 0.15 240 / 0.2)", color: ep.method === "GET" ? C.green : C.blue }}>{ep.method}</span>
+              <code className="text-xs" style={{ color: C.gold }}>{ep.path}</code>
+              <span className="text-xs flex-1" style={{ color: C.textSecondary }}>{ep.desc}</span>
+              <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: C.cardBorder, color: C.textMuted }}>perm:{ep.perm}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs mt-3" style={{ color: C.textMuted }}>Auth: <code style={{ color: C.textSecondary }}>Authorization: Bearer &lt;api_key&gt;</code></p>
+      </div>
+
+      {/* API Keys */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: C.textPrimary }}>
+          <Zap className="w-4 h-4" style={{ color: C.gold }} />
+          API Keys
+        </h3>
+
+        {/* Create new key */}
+        <div className="p-4 rounded-xl mb-4" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+          <p className="text-xs font-semibold mb-3" style={{ color: C.textSecondary }}>Generate New API Key</p>
+          <div className="flex gap-2 mb-3">
+            <input
+              value={newKeyName}
+              onChange={e => setNewKeyName(e.target.value)}
+              placeholder="Key name (e.g. LeadOS Production)"
+              className="flex-1 text-xs px-3 py-2 rounded-lg outline-none"
+              style={{ background: C.bg, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+            />
+          </div>
+          <div className="flex gap-2 mb-3">
+            {(["read", "write", "email"] as const).map(p => (
+              <button
+                key={p}
+                onClick={() => togglePerm(p)}
+                className="text-xs px-3 py-1.5 rounded-lg transition-all"
+                style={{
+                  background: newKeyPerms.includes(p) ? `${C.blue}30` : C.bg,
+                  border: `1px solid ${newKeyPerms.includes(p) ? C.blue : C.cardBorder}`,
+                  color: newKeyPerms.includes(p) ? C.blue : C.textMuted,
+                }}
+              >{p}</button>
+            ))}
+          </div>
+          <button
+            onClick={() => {
+              if (!newKeyName.trim()) { toast.error("Enter a key name"); return; }
+              if (newKeyPerms.length === 0) { toast.error("Select at least one permission"); return; }
+              createKey.mutate({ name: newKeyName.trim(), permissions: newKeyPerms });
+              setNewKeyName("");
+            }}
+            disabled={createKey.isPending}
+            className="text-xs px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90"
+            style={{ background: C.gold, color: "oklch(0.10 0.02 255)" }}
+          >
+            {createKey.isPending ? "Generating..." : "Generate Key"}
+          </button>
+        </div>
+
+        {/* Show created key */}
+        {createdKey && (
+          <div className="p-3 rounded-xl mb-4 flex items-center gap-3" style={{ background: "oklch(0.55 0.18 145 / 0.1)", border: `1px solid ${C.green}` }}>
+            <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: C.green }} />
+            <code className="text-xs flex-1 break-all" style={{ color: C.green }}>{createdKey}</code>
+            <button onClick={() => copyText(createdKey, setCopiedKey)} className="shrink-0">
+              {copiedKey ? <Check className="w-4 h-4" style={{ color: C.green }} /> : <Copy className="w-4 h-4" style={{ color: C.textMuted }} />}
+            </button>
+          </div>
+        )}
+        {createdKey && <p className="text-xs mb-4" style={{ color: C.red }}>⚠ Copy this key now — it will not be shown again.</p>}
+
+        {/* Keys list */}
+        {keysLoading ? (
+          <p className="text-xs" style={{ color: C.textMuted }}>Loading...</p>
+        ) : apiKeys && apiKeys.length > 0 ? (
+          <div className="space-y-2">
+            {apiKeys.map(k => (
+              <div key={k.id} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold" style={{ color: k.active ? C.textPrimary : C.textMuted }}>{k.name}</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>
+                    Perms: {JSON.parse(k.permissions || "[]").join(", ")} &middot; Created: {new Date(k.createdAt).toLocaleDateString()}
+                    {k.lastUsedAt && ` · Last used: ${new Date(k.lastUsedAt).toLocaleDateString()}`}
+                  </p>
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded" style={{ background: k.active ? "oklch(0.55 0.18 145 / 0.15)" : "oklch(0.65 0.18 25 / 0.15)", color: k.active ? C.green : C.red }}>
+                  {k.active ? "Active" : "Revoked"}
+                </span>
+                {k.active && (
+                  <button
+                    onClick={() => revokeKey.mutate({ id: k.id })}
+                    className="text-xs px-3 py-1 rounded-lg transition-all hover:opacity-80"
+                    style={{ background: "oklch(0.65 0.18 25 / 0.15)", color: C.red }}
+                  >Revoke</button>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs" style={{ color: C.textMuted }}>No API keys yet.</p>
+        )}
+      </div>
+
+      {/* Outbound Webhooks */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: C.textPrimary }}>
+          <Send className="w-4 h-4" style={{ color: C.purple }} />
+          Outbound Webhooks
+        </h3>
+        <p className="text-xs mb-4" style={{ color: C.textSecondary }}>
+          Push real-time events to LeadOS, Zapier, or any webhook endpoint. Signed with HMAC-SHA256.
+        </p>
+
+        {/* Create webhook */}
+        <div className="p-4 rounded-xl mb-4" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+          <p className="text-xs font-semibold mb-3" style={{ color: C.textSecondary }}>Add Webhook</p>
+          <div className="flex gap-2 mb-2">
+            <input
+              value={newWHName}
+              onChange={e => setNewWHName(e.target.value)}
+              placeholder="Name (e.g. LeadOS)"
+              className="flex-1 text-xs px-3 py-2 rounded-lg outline-none"
+              style={{ background: C.bg, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+            />
+          </div>
+          <div className="flex gap-2 mb-2">
+            <input
+              value={newWHUrl}
+              onChange={e => setNewWHUrl(e.target.value)}
+              placeholder="https://your-crm.com/webhook"
+              className="flex-1 text-xs px-3 py-2 rounded-lg outline-none"
+              style={{ background: C.bg, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+            />
+          </div>
+          <div className="flex gap-2 mb-3">
+            {(["new_order", "new_lead", "quiz_completed"] as const).map(e => (
+              <button
+                key={e}
+                onClick={() => toggleEvent(e)}
+                className="text-xs px-3 py-1.5 rounded-lg transition-all"
+                style={{
+                  background: newWHEvents.includes(e) ? `${C.purple}30` : C.bg,
+                  border: `1px solid ${newWHEvents.includes(e) ? C.purple : C.cardBorder}`,
+                  color: newWHEvents.includes(e) ? C.purple : C.textMuted,
+                }}
+              >{e}</button>
+            ))}
+          </div>
+          <button
+            onClick={() => {
+              if (!newWHName.trim() || !newWHUrl.trim()) { toast.error("Name and URL required"); return; }
+              if (newWHEvents.length === 0) { toast.error("Select at least one event"); return; }
+              createWH.mutate({ name: newWHName.trim(), url: newWHUrl.trim(), events: newWHEvents });
+              setNewWHName(""); setNewWHUrl("");
+            }}
+            disabled={createWH.isPending}
+            className="text-xs px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90"
+            style={{ background: C.purple, color: "#fff" }}
+          >
+            {createWH.isPending ? "Adding..." : "Add Webhook"}
+          </button>
+        </div>
+
+        {/* Show created secret */}
+        {createdWHSecret && (
+          <div className="p-3 rounded-xl mb-4 flex items-center gap-3" style={{ background: "oklch(0.65 0.15 280 / 0.1)", border: `1px solid ${C.purple}` }}>
+            <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: C.purple }} />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs mb-1" style={{ color: C.textSecondary }}>Signing Secret (save now):</p>
+              <code className="text-xs break-all" style={{ color: C.purple }}>{createdWHSecret}</code>
+            </div>
+            <button onClick={() => copyText(createdWHSecret, setCopiedSecret)} className="shrink-0">
+              {copiedSecret ? <Check className="w-4 h-4" style={{ color: C.purple }} /> : <Copy className="w-4 h-4" style={{ color: C.textMuted }} />}
+            </button>
+          </div>
+        )}
+
+        {/* Webhooks list */}
+        {whLoading ? (
+          <p className="text-xs" style={{ color: C.textMuted }}>Loading...</p>
+        ) : webhooks && webhooks.length > 0 ? (
+          <div className="space-y-2">
+            {webhooks.map(wh => (
+              <div key={wh.id} className="p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{wh.name}</p>
+                    <p className="text-xs truncate" style={{ color: C.textMuted }}>{wh.url}</p>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: wh.active ? "oklch(0.55 0.18 145 / 0.15)" : "oklch(0.65 0.18 25 / 0.15)", color: wh.active ? C.green : C.red }}>
+                    {wh.active ? "Active" : "Paused"}
+                  </span>
+                  <button
+                    onClick={() => toggleWH.mutate({ id: wh.id, active: !wh.active })}
+                    className="text-xs px-2 py-1 rounded-lg"
+                    style={{ background: C.cardBorder, color: C.textSecondary }}
+                  >{wh.active ? "Pause" : "Resume"}</button>
+                  <button
+                    onClick={() => deleteWH.mutate({ id: wh.id })}
+                    className="text-xs px-2 py-1 rounded-lg"
+                    style={{ background: "oklch(0.65 0.18 25 / 0.15)", color: C.red }}
+                  >Delete</button>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {(JSON.parse(wh.events || "[]") as string[]).map(ev => (
+                    <span key={ev} className="text-xs px-2 py-0.5 rounded" style={{ background: `${C.purple}20`, color: C.purple }}>{ev}</span>
+                  ))}
+                  {wh.lastStatus !== null && wh.lastStatus !== undefined && (
+                    <span className="text-xs px-2 py-0.5 rounded" style={{ background: C.cardBorder, color: wh.lastStatus >= 200 && wh.lastStatus < 300 ? C.green : C.red }}>
+                      Last: HTTP {wh.lastStatus}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs" style={{ color: C.textMuted }}>No webhooks configured yet.</p>
         )}
       </div>
     </div>

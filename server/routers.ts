@@ -7,6 +7,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "./_core/llm";
 import { getCampaigns, getCampaignSummary, getAdAccount, getCampaignPerformance } from "./redditAds";
+import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -174,6 +175,22 @@ export const appRouter = router({
           abVariant: input.abVariant,
           email: input.email,
         });
+        // Dispatch quiz_completed webhook event
+        dispatchWebhookEvent("quiz_completed", {
+          sessionId: input.sessionId,
+          chronotype,
+          email: input.email ?? null,
+          abVariant: input.abVariant ?? null,
+        }).catch(() => {/* non-critical */});
+        // Dispatch new_lead if email provided
+        if (input.email) {
+          dispatchWebhookEvent("new_lead", {
+            email: input.email,
+            chronotype,
+            source: "quiz",
+            sessionId: input.sessionId,
+          }).catch(() => {/* non-critical */});
+        }
         return { chronotype };
       }),
 
@@ -1149,6 +1166,126 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           throw new TRPCError({ code: 'FORBIDDEN' });
         }
         return [];
+      }),
+  }),
+
+  // ── Integrations (API Keys + Outbound Webhooks) ─────────────────────────────
+  integrations: router({
+    // ── API Keys ──────────────────────────────────────────────────────────────
+    listApiKeys: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await (await import("./db")).getDb();
+      if (!db) return [];
+      const { apiKeys } = await import("../drizzle/schema");
+      const keys = await db.select({
+        id: apiKeys.id,
+        name: apiKeys.name,
+        permissions: apiKeys.permissions,
+        active: apiKeys.active,
+        createdAt: apiKeys.createdAt,
+        lastUsedAt: apiKeys.lastUsedAt,
+      }).from(apiKeys);
+      return keys;
+    }),
+
+    createApiKey: protectedProcedure
+      .input(z.object({
+        name: z.string().min(1).max(128),
+        permissions: z.array(z.enum(["read", "write", "email", "admin"])).default(["read"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await (await import("./db")).getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { apiKeys } = await import("../drizzle/schema");
+        const { generateApiKey, hashApiKey } = await import("./externalApi");
+        const rawKey = generateApiKey();
+        const keyHash = hashApiKey(rawKey);
+        await db.insert(apiKeys).values({
+          name: input.name,
+          keyHash,
+          permissions: JSON.stringify(input.permissions),
+          active: true,
+        });
+        // Return raw key ONCE — never stored in plaintext
+        return { key: rawKey, name: input.name, permissions: input.permissions };
+      }),
+
+    revokeApiKey: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await (await import("./db")).getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { apiKeys } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+        await db.update(apiKeys).set({ active: false }).where(eq(apiKeys.id, input.id));
+        return { success: true };
+      }),
+
+    // ── Outbound Webhooks ──────────────────────────────────────────────────────
+    listWebhooks: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await (await import("./db")).getDb();
+      if (!db) return [];
+      const { outboundWebhooks } = await import("../drizzle/schema");
+      return db.select().from(outboundWebhooks);
+    }),
+
+    createWebhook: protectedProcedure
+      .input(z.object({
+        name: z.string().min(1).max(128),
+        url: z.string().url(),
+        secret: z.string().optional(),
+        events: z.array(z.enum(["new_order", "new_lead", "quiz_completed", "*"])).default(["new_order"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await (await import("./db")).getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { outboundWebhooks } = await import("../drizzle/schema");
+        const secret = input.secret || require("crypto").randomBytes(24).toString("hex");
+        const [result] = await db.insert(outboundWebhooks).values({
+          name: input.name,
+          url: input.url,
+          secret,
+          events: JSON.stringify(input.events),
+          active: true,
+        });
+        return { success: true, secret };
+      }),
+
+    updateWebhook: protectedProcedure
+      .input(z.object({
+        id: z.number().int(),
+        active: z.boolean().optional(),
+        events: z.array(z.string()).optional(),
+        url: z.string().url().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await (await import("./db")).getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { outboundWebhooks } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+        const updateData: Record<string, unknown> = {};
+        if (input.active !== undefined) updateData.active = input.active;
+        if (input.events) updateData.events = JSON.stringify(input.events);
+        if (input.url) updateData.url = input.url;
+        await db.update(outboundWebhooks).set(updateData as any).where(eq(outboundWebhooks.id, input.id));
+        return { success: true };
+      }),
+
+    deleteWebhook: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await (await import("./db")).getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { outboundWebhooks } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+        await db.delete(outboundWebhooks).where(eq(outboundWebhooks.id, input.id));
+        return { success: true };
       }),
   }),
 

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { notifyOwner } from "./_core/notification";
 import { sendPurchaseConfirmation, addBrevoContact } from "./emailService";
 import { initializeEmailSequence } from "./emailScheduler";
+import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
 
 export function registerStripeWebhook(app: Express) {
   // CRITICAL: raw body parser must be registered BEFORE express.json()
@@ -113,6 +114,17 @@ export function registerStripeWebhook(app: Express) {
                   console.log(`[Stripe Webhook] Brevo contact ${ok ? "✅ added" : "❌ failed"} → ${buyerEmail} (${chronotype ?? "unknown"})`);
                 }).catch(() => {/* non-critical */});
               }
+
+              // Dispatch outbound webhook event (fire-and-forget)
+              dispatchWebhookEvent("new_order", {
+                orderId,
+                productId,
+                amount: amountTotal,
+                currency: session.currency?.toUpperCase(),
+                email: buyerEmail ?? null,
+                chronotype: chronotype ?? null,
+                stripeSessionId: session.id,
+              }).catch(() => {/* non-critical */});
 
               // Notify owner of new purchase
               await notifyOwner({

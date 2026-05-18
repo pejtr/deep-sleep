@@ -92,6 +92,13 @@
       "when": 1779080218331,
       "tag": "0012_fancy_scorpion",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1779095348424,
+      "tag": "0013_strong_mathemanic",
+      "breakpoints": true
     }
   ]
 }

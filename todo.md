@@ -787,6 +787,23 @@
 - [ ] Dashboard: AI insights panel s actionable recommendations
 - [ ] Dashboard: Campaign performance comparison
 
+## LeadOS CRM Integration (2026-05-18)
+- [ ] DB: api_keys tabulka (id, key_hash, name, permissions, created_at, last_used_at)
+- [ ] DB migration pro api_keys
+- [ ] Middleware: API key autentizace pro /api/external/* endpointy
+- [ ] REST GET /api/external/leads — seznam leads (email, chronotype, createdAt, source)
+- [ ] REST GET /api/external/orders — seznam objednávek (id, email, amount, status, createdAt)
+- [ ] REST GET /api/external/analytics — KPI metriky (revenue, orders, leads, conversion_rate)
+- [ ] REST GET /api/external/email-sequences — stav email sekvencí per zákazník
+- [ ] REST POST /api/external/leads — vytvořit lead z LeadOS
+- [ ] REST POST /api/external/email/send — odeslat email přes Brevo z LeadOS
+- [ ] Outbound webhooks: posílat eventy do LeadOS URL (new_order, new_lead, quiz_completed)
+- [ ] DB: outbound_webhooks tabulka (id, event, url, secret, active)
+- [ ] Admin UI: správa API klíčů (generovat, revokovat, zobrazit permissions)
+- [ ] Admin UI: konfigurace webhook URL pro LeadOS
+- [ ] OpenAPI/Swagger dokumentace pro LeadOS integraci
+- [ ] Vitest testy pro external API endpointy
+
 ## Post-Purchase Flow Fixes (CRITICAL - 2026-05-18)
 - [x] Odstraň auto-redirect po 5s na CheckoutSuccess stránce
 - [x] Oprav product ID mapování (main → tripwire) ve stripeWebhook.ts
@@ -804,3 +821,33 @@
 - [ ] Fáze 2: Revenue & Attribution Charts (daily traffic, bounce rate, sources)
 - [ ] Fáze 3: Cohort Analysis + Advanced Filters
 - [ ] Fáze 4: Persona Performance + AI Insights
+
+## LeadOS CRM Integration (DONE - 2026-05-18)
+- [x] DB: api_keys tabulka (id, name, keyHash, permissions, active, lastUsedAt)
+- [x] DB: outbound_webhooks tabulka (id, name, url, secret, events, active, lastStatus)
+- [x] DB migration aplikována
+- [x] server/externalApi.ts: REST API s Bearer token auth middleware
+- [x] GET /api/external/leads (read perm)
+- [x] GET /api/external/orders (read perm)
+- [x] GET /api/external/analytics (read perm)
+- [x] GET /api/external/email-sequences (read perm)
+- [x] POST /api/external/leads (write perm)
+- [x] POST /api/external/email/send (email perm)
+- [x] server/outboundWebhookDispatcher.ts: HMAC-SHA256 signing + event dispatch
+- [x] Events: new_order, new_lead, quiz_completed
+- [x] tRPC integrations router: listApiKeys, createApiKey, revokeApiKey, listWebhooks, createWebhook, updateWebhook, deleteWebhook
+- [x] Admin UI: Integrations tab (API docs + API keys + Webhooks management)
+- [x] Dispatch new_order event v stripeWebhook.ts
+- [x] Dispatch new_lead + quiz_completed event v routers.ts
+
+## Professional Dashboard Phase 1 (DONE - 2026-05-18)
+- [x] Fáze 1: Core KPIs + Funnel Visualization
+- [x] Hero KPI row: Revenue (AOV), Orders, CVR (email capture rate), Leads (RPL), Quiz Starts
+- [x] Waterfall funnel s drop-off % mezi kroky
+- [x] Date range picker (today/7d/30d/90d) + refresh button
+- [x] Revenue timeline area chart (last 48h)
+- [x] Traffic sources, device breakdown, buyer intelligence
+- [x] Recent orders table
+- [x] Opraveny geoPricing testy (aktuální ceny $4)
+- [x] Opraven orderCount (allOrders místo completedOrders) pro správný uniqueBuyers test
+- [x] Všechny testy procházejí (276/276)

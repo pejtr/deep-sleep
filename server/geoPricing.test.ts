@@ -8,7 +8,7 @@ describe("Geo-Pricing System", () => {
       expect(result.country).toBe("US");
       expect(result.tier).toBe("high");
       expect(result.currency).toBe("USD");
-      expect(result.prices.main.geoAdjustedCents).toBe(500); // $5.00
+      expect(result.prices.main.geoAdjustedCents).toBe(400); // $4.00
     });
 
     it("should return correct pricing for India (low tier)", () => {
@@ -16,7 +16,7 @@ describe("Geo-Pricing System", () => {
       expect(result.country).toBe("IN");
       expect(result.tier).toBe("low");
       expect(result.currency).toBe("INR");
-      expect(result.prices.main.geoAdjustedCents).toBe(200); // 40% of $5 = $2
+      expect(result.prices.main.geoAdjustedCents).toBe(160); // 40% of $4 = $1.60
     });
 
     it("should return correct pricing for Czech Republic (mid tier)", () => {
@@ -24,7 +24,7 @@ describe("Geo-Pricing System", () => {
       expect(result.country).toBe("CZ");
       expect(result.tier).toBe("mid");
       expect(result.currency).toBe("CZK");
-      expect(result.prices.main.geoAdjustedCents).toBe(500); // Full price
+      expect(result.prices.main.geoAdjustedCents).toBe(400); // Full price
     });
 
     it("should have all three product tiers", () => {
@@ -50,7 +50,7 @@ describe("Geo-Pricing System", () => {
 
     it("should apply 40% discount for low-tier countries", () => {
       const result = getGeoPricingFromCountry("IN");
-      expect(result.prices.main.geoAdjustedCents).toBe(200); // 40% of 500
+      expect(result.prices.main.geoAdjustedCents).toBe(160); // 40% of 400
       expect(result.prices.oto1.geoAdjustedCents).toBe(680); // 40% of 1700
       expect(result.prices.oto2.geoAdjustedCents).toBe(1080); // 40% of 2700
     });
