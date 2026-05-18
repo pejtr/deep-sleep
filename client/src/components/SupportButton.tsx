@@ -1,4 +1,4 @@
-import { MessageSquare } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 export default function SupportButton() {
   const handleClick = () => {
@@ -9,7 +9,7 @@ export default function SupportButton() {
     <button
       onClick={handleClick}
       title="Contact Support"
-      className="fixed bottom-[68px] left-4 z-50 flex items-center justify-center w-9 h-9 rounded-lg transition-all hover:scale-110 hover:opacity-100 opacity-70"
+      className="fixed bottom-32 md:bottom-[68px] left-4 z-40 flex items-center justify-center w-9 h-9 rounded-lg transition-all hover:scale-110 hover:opacity-100 opacity-70"
       style={{
         background: "oklch(0.13 0.03 265 / 0.95)",
         border: "1px solid oklch(0.78 0.18 65 / 0.2)",
@@ -17,7 +17,7 @@ export default function SupportButton() {
         boxShadow: "0 4px 12px oklch(0 0 0 / 0.4)",
       }}
     >
-      <MessageSquare className="w-4 h-4" style={{ color: "oklch(0.78 0.18 65)" }} />
+      <AlertTriangle className="w-4 h-4" style={{ color: "oklch(0.78 0.18 65)" }} />
     </button>
   );
 }
