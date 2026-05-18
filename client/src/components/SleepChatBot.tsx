@@ -275,7 +275,7 @@ export default function SleepChatBot() {
     const mode = isAdminMode ? "admin" : isAffiliateMode ? "affiliate" : "sales";
     const adminDataPayload = isAdminMode ? {
       revenue: adminStats?.revenue ?? 0,
-      orders: adminStats?.orderCount ?? 0,
+      orders: adminStats?.completedOrderCount ?? adminStats?.orderCount ?? 0,
       leads: adminStats?.leadCount ?? 0,
       quizStarts: adminStats?.quizCount ?? 0,
       avgRating: adminStats?.avgRating ?? 0,
@@ -543,7 +543,7 @@ export default function SleepChatBot() {
                           mode: qMode,
                           adminData: isAdminMode ? {
                             revenue: adminStats?.revenue ?? 0,
-                            orders: adminStats?.orderCount ?? 0,
+                            orders: adminStats?.completedOrderCount ?? adminStats?.orderCount ?? 0,
                             leads: adminStats?.leadCount ?? 0,
                             quizStarts: adminStats?.quizCount ?? 0,
                             avgRating: adminStats?.avgRating ?? 0,

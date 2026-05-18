@@ -851,3 +851,18 @@
 - [x] Opraveny geoPricing testy (aktuální ceny $4)
 - [x] Opraven orderCount (allOrders místo completedOrders) pro správný uniqueBuyers test
 - [x] Všechny testy procházejí (276/276)
+
+## Bug Fix: orderCount zobrazuje všechny objednávky místo jen completed (2026-05-18)
+- [ ] Opravit sticky bar / header — zobrazovat completedOrderCount místo orderCount
+- [ ] Zkontrolovat všechna místa v UI kde se zobrazuje stats.orderCount a opravit na completedOrderCount
+- [ ] Opravit db.ts — vrátit orderCount = allOrders.length zpět na completedOrders.length (nebo přejmenovat pole)
+
+## Quiz Result Email Automation (DONE - 2026-05-18)
+- [x] Vytvoř quizEmailService.ts s sendQuizResultEmail funkcí
+- [x] Email design: Chronotype result + personalized insights
+- [x] Immediate $5 offer (tripwire) s urgency (48h)
+- [x] Social proof + 30-day guarantee
+- [x] Brevo integration: addQuizContactToBrevo pro seznam quiz completers
+- [x] Integruj sendQuizResultEmail do quiz.submit procedury
+- [x] Integruj addQuizContactToBrevo pro seznam quiz completers (listId: 3)
+- [x] Opravit orderCount na completedOrderCount všude v UI (AdminDashboard, SleepChatBot)

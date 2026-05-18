@@ -8,6 +8,7 @@ import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "./_core/llm";
 import { getCampaigns, getCampaignSummary, getAdAccount, getCampaignPerformance } from "./redditAds";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
+import { sendQuizResultEmail, addQuizContactToBrevo } from "./quizEmailService";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -182,8 +183,18 @@ export const appRouter = router({
           email: input.email ?? null,
           abVariant: input.abVariant ?? null,
         }).catch(() => {/* non-critical */});
-        // Dispatch new_lead if email provided
+        // Send quiz result email if email provided
         if (input.email) {
+          sendQuizResultEmail({
+            email: input.email,
+            chronotype: chronotype.toLowerCase(),
+          }).catch((err) => console.error("[Quiz Email] Failed to send:", err));
+          // Add to Brevo contact list
+          addQuizContactToBrevo({
+            email: input.email,
+            chronotype: chronotype.toLowerCase(),
+          }).catch(() => {/* non-critical */});
+          // Dispatch new_lead webhook
           dispatchWebhookEvent("new_lead", {
             email: input.email,
             chronotype,

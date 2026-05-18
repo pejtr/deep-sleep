@@ -153,7 +153,7 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
 
   // Derived KPIs
   const revenue = stats?.revenue ?? 0;
-  const orders = stats?.orderCount ?? 0;
+  const orders = stats?.completedOrderCount ?? stats?.orderCount ?? 0;
   const completedOrders = stats?.completedOrderCount ?? orders;
   const leads = stats?.leadCount ?? 0;
   const quizStarts = stats?.quizStarts ?? stats?.quizCount ?? 0;
@@ -772,7 +772,7 @@ export default function AdminDashboard() {
   const funnelChartData = [
     { step: "Quiz", value: stats?.quizCount ?? 0 },
     { step: "Email", value: stats?.leadCount ?? 0 },
-    { step: "Orders", value: stats?.orderCount ?? 0 },
+    { step: "Orders", value: stats?.completedOrderCount ?? stats?.orderCount ?? 0 },
     { step: "Reviews", value: stats?.feedbackCount ?? 0 },
   ];
 
@@ -801,7 +801,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: "oklch(0.78 0.18 65 / 0.12)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}>
               <ShoppingCart className="w-3.5 h-3.5" style={{ color: C.gold }} />
-              <p className="text-xs font-bold" style={{ color: C.gold }}>{stats.orderCount} orders</p>
+              <p className="text-xs font-bold" style={{ color: C.gold }}>{stats.completedOrderCount ?? stats.orderCount} orders</p>
             </div>
           </div>
         )}
@@ -1066,7 +1066,7 @@ export default function AdminDashboard() {
                   { step: "2", label: "Landing Page Visit", value: "—", note: "deep-sleep-reset.com", color: C.blue },
                   { step: "3", label: "Quiz Started", value: String(stats?.quizStarts ?? stats?.quizCount ?? 0), note: "Chronotype assessment", color: C.teal },
                   { step: "4", label: "Email Captured", value: String(stats?.leadCount ?? 0), note: "Lead magnet", color: C.green },
-                  { step: "5", label: "Order Completed", value: String(stats?.orderCount ?? 0), note: "$4 main product", color: C.gold },
+                  { step: "5", label: "Order Completed", value: String(stats?.completedOrderCount ?? stats?.orderCount ?? 0), note: "$4 main product", color: C.gold },
                   { step: "6", label: "Feedback Submitted", value: String(stats?.feedbackCount ?? 0), note: "Post-purchase", color: C.pink },
                 ].map(step => (
                   <div key={step.step} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
