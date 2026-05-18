@@ -324,15 +324,15 @@ export default function SleepChatBot() {
         ? "Thank you for sharing 🌙 Even moderate sleep issues compound over time. The Deep Sleep Reset protocol uses CBT-I — the gold standard. Just $4 and it works for most sleep types."
         : "That's great to hear! 🌙 Even if your sleep is mostly okay, the Deep Sleep Reset can help you optimize it further. Many users report the best sleep of their lives after Night 7. Just $4.",
       petra: rating >= 4
-        ? "A severity rating of 4-5 indicates clinically significant insomnia 🔬 Research shows CBT-I has an 80% success rate for exactly this profile. Deep Sleep Reset implements the full CBT-I protocol for $4. The evidence strongly supports trying it."
+        ? "A severity rating of 4-5 indicates clinically significant insomnia 🔬 Research shows CBT-I has an 80% success rate for exactly this profile. **Deep Sleep Reset** implements the full CBT-I protocol for $4. The evidence strongly supports trying it. https://deep-sleep-reset.com"
         : rating === 3
-        ? "Moderate sleep disruption (3/5) often progresses without intervention 🔬 CBT-I addresses the root cause — not just symptoms. Deep Sleep Reset is $4 and based on the same protocols used in clinical trials."
-        : "Good baseline 🔬 However, sleep quality optimization has measurable benefits even at mild levels. The chronotype-based protocol in Deep Sleep Reset can improve your sleep architecture. $4 investment, significant returns.",
+        ? "Moderate sleep disruption (3/5) often progresses without intervention 🔬 CBT-I addresses the root cause — not just symptoms. **Deep Sleep Reset** is $4 and based on the same protocols used in clinical trials. https://deep-sleep-reset.com"
+        : "Good baseline 🔬 However, sleep quality optimization has measurable benefits even at mild levels. The chronotype-based protocol in **Deep Sleep Reset** can improve your sleep architecture. $4 investment, significant returns. https://deep-sleep-reset.com",
       lucie: rating >= 4
-        ? "4-5 out of 5? That's serious. Here's the fix: Deep Sleep Reset. $4. CBT-I protocol. 7 nights. 80% success rate. Stop suffering. Get it now: deepsleepreset.gumroad.com/l/fdtifc ⚡"
+        ? "4-5 out of 5? That's serious. Here's the fix: **Deep Sleep Reset**. $4. CBT-I protocol. 7 nights. 80% success rate. Stop suffering. Get it now: https://deep-sleep-reset.com ⚡"
         : rating === 3
-        ? "3/5 means it's affecting your life. Don't wait for it to get worse. Deep Sleep Reset: $4, 7 nights, CBT-I method. Most people see results by Night 3. Do it. ⚡"
-        : "Good. But 'okay' sleep isn't optimal sleep. Deep Sleep Reset will show you what truly rested feels like. $4. Worth it. ⚡",
+        ? "3/5 means it's affecting your life. Don't wait for it to get worse. **Deep Sleep Reset**: $4, 7 nights, CBT-I method. Most people see results by Night 3. Do it. https://deep-sleep-reset.com ⚡"
+        : "Good. But 'okay' sleep isn't optimal sleep. **Deep Sleep Reset** will show you what truly rested feels like. $4. Worth it. https://deep-sleep-reset.com ⚡",
     };
     const response = responses[personaId] ?? responses.luna!;
     setTimeout(() => {
@@ -403,11 +403,11 @@ export default function SleepChatBot() {
         </div>
       )}
 
-      {/* Floating chat button — bottom-LEFT, only visible after 50% scroll (or admin/affiliate pages) */}
+      {/* Floating chat button — bottom-RIGHT, only visible after 50% scroll (or admin/affiliate pages) */}
       {(scrolledPast50 || isAdminMode || isAffiliateMode) && (
         <button
           onClick={() => open ? setOpen(false) : openChat("manual")}
-          className="fixed bottom-6 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-24 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
           style={{
             background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
             boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,

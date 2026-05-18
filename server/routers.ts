@@ -530,9 +530,10 @@ About the product:
 - Includes: 7-Night Protocol PDF, Sleep Environment Checklist, Chronotype Guide, 4 ASMR tracks, 30-Day Tracker
 - CBT-I based — clinically proven, no pills needed
 - 30-day money-back guarantee
-- Purchase: https://deepsleepreset.gumroad.com/l/fdtifc
+- Purchase: https://deep-sleep-reset.com (direct checkout, no Gumroad)
+- When mentioning the product, always use **bold** formatting and a clickable link: [**Deep Sleep Reset**](https://deep-sleep-reset.com)
 
-Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention product softly if relevant. 2-4 sentences max. Respond in the SAME LANGUAGE as the user.`;
+Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention product softly if relevant. 2-4 sentences max. Respond in the SAME LANGUAGE as the user. Always use markdown for links and bold product names.`;
         }
 
         const messages = [

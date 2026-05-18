@@ -66,33 +66,32 @@ export default function AbTestingDashboard() {
     ? calculateSignificance(currentTest.variantA, currentTest.variantB)
     : 0;
 
-  // Prepare chart data
+  // Prepare chart data — guard against null variants (test may have only one variant so far)
+  const safeA = currentTest?.variantA ?? { conversions: 0, impressions: 0, revenue: 0 };
+  const safeB = currentTest?.variantB ?? { conversions: 0, impressions: 0, revenue: 0 };
+
   const performanceData = currentTest
     ? [
         {
           name: "Variant A",
-          conversions: currentTest.variantA.conversions,
-          impressions: currentTest.variantA.impressions,
-          conversionRate: ((currentTest.variantA.conversions / currentTest.variantA.impressions) * 100).toFixed(2),
-          revenue: currentTest.variantA.revenue,
+          conversions: safeA.conversions,
+          impressions: safeA.impressions,
+          conversionRate: safeA.impressions > 0 ? ((safeA.conversions / safeA.impressions) * 100).toFixed(2) : "0.00",
+          revenue: safeA.revenue,
         },
         {
           name: "Variant B",
-          conversions: currentTest.variantB.conversions,
-          impressions: currentTest.variantB.impressions,
-          conversionRate: ((currentTest.variantB.conversions / currentTest.variantB.impressions) * 100).toFixed(2),
-          revenue: currentTest.variantB.revenue,
+          conversions: safeB.conversions,
+          impressions: safeB.impressions,
+          conversionRate: safeB.impressions > 0 ? ((safeB.conversions / safeB.impressions) * 100).toFixed(2) : "0.00",
+          revenue: safeB.revenue,
         },
       ]
     : [];
 
   // Determine winner
-  const variantAConvRate = currentTest
-    ? currentTest.variantA.conversions / currentTest.variantA.impressions
-    : 0;
-  const variantBConvRate = currentTest
-    ? currentTest.variantB.conversions / currentTest.variantB.impressions
-    : 0;
+  const variantAConvRate = safeA.impressions > 0 ? safeA.conversions / safeA.impressions : 0;
+  const variantBConvRate = safeB.impressions > 0 ? safeB.conversions / safeB.impressions : 0;
   const winner = variantAConvRate > variantBConvRate ? "A" : "B";
   const winnerLift = Math.abs(variantAConvRate - variantBConvRate) * 100;
 
@@ -186,10 +185,10 @@ export default function AbTestingDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {currentTest ? ((currentTest.variantA.conversions / currentTest.variantA.impressions) * 100).toFixed(2) : "0"}%
+                {currentTest && safeA.impressions > 0 ? ((safeA.conversions / safeA.impressions) * 100).toFixed(2) : "0"}%
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {currentTest?.variantA.conversions || 0} conversions / {currentTest?.variantA.impressions || 0} impressions
+                {safeA.conversions} conversions / {safeA.impressions} impressions
               </p>
             </CardContent>
           </Card>
@@ -201,10 +200,10 @@ export default function AbTestingDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {currentTest ? ((currentTest.variantB.conversions / currentTest.variantB.impressions) * 100).toFixed(2) : "0"}%
+                {currentTest && safeB.impressions > 0 ? ((safeB.conversions / safeB.impressions) * 100).toFixed(2) : "0"}%
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {currentTest?.variantB.conversions || 0} conversions / {currentTest?.variantB.impressions || 0} impressions
+                {safeB.conversions} conversions / {safeB.impressions} impressions
               </p>
             </CardContent>
           </Card>
@@ -266,17 +265,17 @@ export default function AbTestingDashboard() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <p className="text-sm text-muted-foreground">Variant A Revenue</p>
-                  <p className="text-2xl font-bold">${currentTest.variantA.revenue.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">${(safeA.revenue ?? 0).toFixed(2)}</p>
                 </div>
                 <div className="p-4 bg-red-50 rounded-lg">
                   <p className="text-sm text-muted-foreground">Variant B Revenue</p>
-                  <p className="text-2xl font-bold">${currentTest.variantB.revenue.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">${(safeB.revenue ?? 0).toFixed(2)}</p>
                 </div>
               </div>
               <div className="mt-4 p-4 bg-green-50 rounded-lg">
                 <p className="text-sm text-muted-foreground">Potential Revenue Gain</p>
                 <p className="text-2xl font-bold">
-                  ${(Math.max(currentTest.variantA.revenue, currentTest.variantB.revenue) - Math.min(currentTest.variantA.revenue, currentTest.variantB.revenue)).toFixed(2)}
+                  ${(Math.max(safeA.revenue ?? 0, safeB.revenue ?? 0) - Math.min(safeA.revenue ?? 0, safeB.revenue ?? 0)).toFixed(2)}
                 </p>
               </div>
             </CardContent>

@@ -73,7 +73,14 @@ export function captureUTM(): void {
 export function getUTMData(): UTMData {
   try {
     const stored = localStorage.getItem(UTM_KEY);
-    return stored ? JSON.parse(stored) : {};
+    if (!stored) return {};
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.warn("[UTM] Failed to parse stored data:", e);
+      localStorage.removeItem(UTM_KEY);
+      return {};
+    }
   } catch {
     return {};
   }

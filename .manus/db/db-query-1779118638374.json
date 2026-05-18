@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `api_keys` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `name` varchar(255) NOT NULL,\n  `key` varchar(255) NOT NULL UNIQUE,\n  `permissions` json NOT NULL,\n  `active` boolean NOT NULL DEFAULT true,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `lastUsedAt` timestamp NULL,\n  INDEX idx_key (`key`)\n);\n\nCREATE TABLE IF NOT EXISTS `outbound_webhooks` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `name` varchar(255) NOT NULL,\n  `url` varchar(2048) NOT NULL,\n  `secret` varchar(255) NOT NULL,\n  `events` json NOT NULL,\n  `active` boolean NOT NULL DEFAULT true,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `lastTriggeredAt` timestamp NULL,\n  `lastStatus` varchar(50) NULL,\n  INDEX idx_active (`active`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute CREATE TABLE IF NOT EXISTS `api_keys` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `name` varchar(255) NOT NULL,\n  `key` varchar(255) NOT NULL UNIQUE,\n  `permissions` json NOT NULL,\n  `active` boolean NOT NULL DEFAULT true,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `lastUsedAt` timestamp NULL,\n  INDEX idx_key (`key`)\n);\n\nCREATE TABLE IF NOT EXISTS `outbound_webhooks` (\n  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,\n  `name` varchar(255) NOT NULL,\n  `url` varchar(2048) NOT NULL,\n  `secret` varchar(255) NOT NULL,\n  `events` json NOT NULL,\n  `active` boolean NOT NULL DEFAULT true,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `lastTriggeredAt` timestamp NULL,\n  `lastStatus` varchar(50) NULL,\n  INDEX idx_active (`active`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 453
+}
