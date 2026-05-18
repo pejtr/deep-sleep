@@ -94,6 +94,13 @@ const PERSONAS: Record<PersonaId, Persona> = {
   },
 };
 
+// Markdown renderer — bold text + clickable links
+function renderMarkdown(text: string) {
+  const withBold = text.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: bold; color: oklch(0.95 0.01 265)">$1</strong>');
+  const withLinks = withBold.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: oklch(0.78 0.18 65); text-decoration: underline; cursor: pointer;">$1</a>');
+  return <div dangerouslySetInnerHTML={{ __html: withLinks }} />;
+}
+
 // Pick a stable persona per session
 function getSessionPersona(): PersonaId {
   const stored = sessionStorage.getItem("chatbot_persona");
@@ -477,7 +484,7 @@ export default function SleepChatBot() {
                       : { background: msg.isProactive ? "oklch(0.12 0.05 65)" : "oklch(0.14 0.03 265)", color: "oklch(0.85 0.04 265)", border: `1px solid ${msg.isProactive ? "oklch(0.55 0.18 65 / 0.3)" : "oklch(0.22 0.04 265)"}`, borderBottomLeftRadius: "4px" }
                   }
                 >
-                  {msg.content}
+                  {renderMarkdown(msg.content)}
                 </div>
               </div>
             ))}
