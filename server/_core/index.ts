@@ -11,6 +11,7 @@ import { registerBehaviorRoutes } from "../behaviorRoutes";
 import { registerStripeWebhook } from "../stripeWebhook";
 import { appRouter } from "../routers";
 import { scheduleNightlyOptimization } from "../jobs/nightlyOptimization";
+import { processPendingEmails } from "../emailScheduler";
 import { registerProtocolPdfRoute } from "../protocolPdf";
 import { registerRedditOAuthRoutes } from "../redditOAuth";
 import { createContext } from "./context";
@@ -276,6 +277,12 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
     console.log(`Server running on http://localhost:${port}/`);
     // Start nightly AI optimization scheduler
     scheduleNightlyOptimization();
+    // Start email sequence scheduler — runs every hour
+    processPendingEmails().catch(console.error); // run immediately on startup
+    setInterval(() => {
+      processPendingEmails().catch(console.error);
+    }, 60 * 60 * 1000); // every hour
+    console.log("[Email Scheduler] Started — processing every hour");
   });
 }
 

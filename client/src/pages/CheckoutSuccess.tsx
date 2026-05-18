@@ -58,25 +58,8 @@ export default function CheckoutSuccess() {
     });
   }, []);
 
-  // Auto-redirect to next upsell step after countdown
-  useEffect(() => {
-    if (!productId) return;
-    const nextStep = NEXT_STEP[productId];
-    if (!nextStep) return;
-
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate(`${nextStep}?chronotype=${chronotype}`);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [productId, chronotype, navigate]);
+  // NO auto-redirect — user must click to proceed to upsell
+  // This prevents the jarring experience of being redirected before reading
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,28 +172,28 @@ export default function CheckoutSuccess() {
           </div>
         )}
 
-        {/* Auto-redirect notice — the key conversion driver */}
+        {/* One-time upsell offer — user must click, NO auto-redirect */}
         {NEXT_STEP[productId] && (
-          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-6 mb-6 animate-pulse">
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-400" />
-              <p className="text-amber-300 font-bold text-lg">Wait — We Have a Special Offer for You!</p>
+              <p className="text-amber-300 font-bold text-lg">🎁 Exclusive One-Time Offer Unlocked</p>
             </div>
             <p className="text-white/60 text-sm mb-4">
               {productId === "main" || productId === "discount"
-                ? "Because you just got the 7-Night Protocol, you've unlocked an exclusive one-time offer..."
+                ? "Because you just purchased the 7-Night Protocol, you've unlocked a special upgrade offer — available only right now."
                 : productId === "oto1"
-                ? "Great choice! You've unlocked another exclusive deal..."
-                : "Almost done! One more thing that pairs perfectly with your purchase..."
+                ? "Great choice! You've unlocked another exclusive deal that pairs perfectly with your purchase."
+                : "Almost done! One more thing that will supercharge your sleep results."
               }
             </p>
             <button onClick={goToNextStep}
               className="w-full py-4 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-lg rounded-2xl shadow-lg shadow-amber-500/30 transition-all flex items-center justify-center gap-2">
-              <span>See Your Exclusive Offer</span>
+              <span>See My Exclusive Offer</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-            <p className="text-white/40 text-xs mt-3">
-              Redirecting automatically in <span className="text-amber-300 font-bold">{countdown}s</span>...
+            <p className="text-white/40 text-xs mt-3 text-center">
+              This offer is only available on this page — it disappears when you leave.
             </p>
           </div>
         )}

@@ -758,3 +758,49 @@
 - [x] Admin Dashboard: Daily pageviews chart (TimelineCharts component working)
 - [x] Admin Dashboard: Traffic sources breakdown (already implemented)
 - [x] Stripe checkout: switched from sandbox to DEEPSLEEP4 live keys
+
+## Professional Dashboard Redesign (Iterative)
+
+### Fáze 1: Core KPIs + Funnel Visualization
+- [ ] Dashboard: Redesign top KPI cards (Revenue, Conversion Rate, AOV, CAC, ROAS)
+- [ ] Dashboard: Waterfall funnel chart (Quiz Starts → Quiz Complete → Email → Checkout Click → Orders)
+- [ ] Dashboard: Drop-off % na každém funnel kroku
+- [ ] Dashboard: Date range picker (today, 7d, 30d, 90d, custom) — globální filtr
+- [ ] Dashboard: Real-time live visitors counter
+- [ ] Dashboard: Trend indicators (% change vs. previous period)
+
+### Fáze 2: Revenue & Attribution Charts
+- [ ] Dashboard: Revenue trend line chart (daily/weekly/monthly)
+- [ ] Dashboard: Traffic source attribution (organic, direct, Reddit, TikTok, Google)
+- [ ] Dashboard: Device breakdown (mobile vs desktop vs tablet)
+- [ ] Dashboard: Geographic heatmap (top countries)
+- [ ] Dashboard: Revenue by product (pie/donut chart)
+
+### Fáze 3: Cohort Analysis + Advanced Filters
+- [ ] Dashboard: Cohort retention heatmap
+- [ ] Dashboard: Advanced filters (source, device, persona, country)
+- [ ] Dashboard: CSV export pro všechny tabulky
+- [ ] Dashboard: Comparison mode (period vs. period)
+
+### Fáze 4: Persona Performance + AI Insights
+- [ ] Dashboard: Persona conversion matrix (10-way A/B)
+- [ ] Dashboard: AI insights panel s actionable recommendations
+- [ ] Dashboard: Campaign performance comparison
+
+## Post-Purchase Flow Fixes (CRITICAL - 2026-05-18)
+- [x] Odstraň auto-redirect po 5s na CheckoutSuccess stránce
+- [x] Oprav product ID mapování (main → tripwire) ve stripeWebhook.ts
+- [x] Oprav baseUrl v emailService.ts (www → bez www)
+- [x] Přidej email, chronotype, scheduledAt sloupce do emailSequences tabulky
+- [x] Oprav emailScheduler.ts - skutečně odesílej emails s sendSequenceEmail()
+- [x] Přidej scheduling logiku (odesílat email v den 1, 2, 3, 5, 7)
+- [x] Spouštěj email scheduler každou hodinu v server startup
+- [x] Oprav orderCount a revenue - počítej jen completed orders
+- [x] Oprav hardcoded domény (deepsleep-z7uhfhzs.manus.space → deep-sleep-reset.com)
+- [x] Oprav webhook URL (www.deep-sleep-reset.com → deep-sleep-reset.com)
+
+## Professional Dashboard Redesign (TODO - 2026-05-18)
+- [ ] Fáze 1: Core KPIs + Funnel Visualization (detailní, profesionální)
+- [ ] Fáze 2: Revenue & Attribution Charts (daily traffic, bounce rate, sources)
+- [ ] Fáze 3: Cohort Analysis + Advanced Filters
+- [ ] Fáze 4: Persona Performance + AI Insights

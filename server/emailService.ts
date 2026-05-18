@@ -86,7 +86,7 @@ export async function sendPurchaseConfirmation({
   }
   const chronotypeName = chronotype ? CHRONOTYPE_NAMES[chronotype] || chronotype : "Bear 🐻";
   const displayName = name || "there";
-  const baseUrl = "https://www.deep-sleep-reset.com";
+  const baseUrl = "https://deep-sleep-reset.com";
   
   // Get persona name if provided
   const persona = personaId ? getPersonaById(personaId as any) : null;

@@ -68,7 +68,17 @@ export function registerStripeWebhook(app: Express) {
               // ── V1-1: Send purchase confirmation email ──────────────────────
               const buyerEmail = session.customer_email ?? session.metadata?.customer_email;
               const buyerName = session.metadata?.customer_name;
-              const productId = session.metadata?.productId ?? "main";
+              // Map Stripe product IDs to email service product keys
+              const rawProductId = session.metadata?.productId ?? "main";
+              const PRODUCT_ID_MAP: Record<string, string> = {
+                main: "tripwire",
+                discount: "tripwire",
+                entry: "tripwire",
+                oto1: "oto1",
+                oto2: "oto2",
+                subscription: "oto3",
+              };
+              const productId = PRODUCT_ID_MAP[rawProductId] ?? "tripwire";
               const chronotype = session.metadata?.chronotype;
               const amountTotal = (session.amount_total ?? 500) / 100;
 

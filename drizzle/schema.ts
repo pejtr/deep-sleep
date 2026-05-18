@@ -217,8 +217,11 @@ export type InsertUpsellAbTest = typeof upsellAbTests.$inferInsert;
 export const emailSequences = mysqlTable("email_sequences", {
   id: int("id").autoincrement().primaryKey(),
   leadId: int("leadId").notNull(),
+  email: varchar("email", { length: 320 }),
+  chronotype: varchar("chronotype", { length: 32 }).default("Bear"),
   sequenceType: varchar("sequenceType", { length: 64 }).notNull(), // welcome, 7day, upsell, retention
   emailNumber: int("emailNumber").notNull(), // 1, 2, 3, etc.
+  scheduledAt: timestamp("scheduledAt"), // when to send this email
   sentAt: timestamp("sentAt"),
   openedAt: timestamp("openedAt"),
   clickedAt: timestamp("clickedAt"),

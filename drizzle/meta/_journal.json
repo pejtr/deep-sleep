@@ -85,6 +85,13 @@
       "when": 1778420533071,
       "tag": "0011_cultured_zombie",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1779080218331,
+      "tag": "0012_fancy_scorpion",
+      "breakpoints": true
     }
   ]
 }

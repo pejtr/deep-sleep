@@ -1,6 +1,10 @@
 import { getDb } from "./db";
 import { emailSequences } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, lte, isNull } from "drizzle-orm";
+import { sendSequenceEmail } from "./emailService";
+
+// Days in the sequence that have actual email content
+const SEQUENCE_DAYS = [1, 2, 3, 5, 7];
 
 /**
  * Process pending emails from the 7-day sequence
@@ -16,32 +20,54 @@ export async function processPendingEmails() {
       return;
     }
 
-    // Get all pending email sequences
+    const now = new Date();
+
+    // Get pending emails that are due (scheduledAt <= now)
     const pending = await db
       .select()
       .from(emailSequences)
-      .where(eq(emailSequences.status, "pending"));
+      .where(
+        and(
+          eq(emailSequences.status, "pending"),
+          lte(emailSequences.scheduledAt, now)
+        )
+      );
 
-    console.log(`[Email Scheduler] Found ${pending.length} pending emails`);
+    console.log(`[Email Scheduler] Found ${pending.length} emails due to send`);
 
     for (const seq of pending) {
       try {
-        const day = (seq.emailNumber || 1) - 1;
+        if (!seq.email) {
+          console.warn(`[Email Scheduler] No email for sequence ${seq.id} — skipping`);
+          await db.update(emailSequences).set({ status: "bounced" }).where(eq(emailSequences.id, seq.id));
+          continue;
+        }
 
-        // Mark as sent
-        await db
-          .update(emailSequences)
-          .set({
-            status: "sent",
-            sentAt: new Date(),
-          })
-          .where(eq(emailSequences.id, seq.id));
+        // Map emailNumber (1-7) to actual sequence day (1, 2, 3, 5, 7)
+        const dayIndex = (seq.emailNumber || 1) - 1;
+        const day = SEQUENCE_DAYS[dayIndex] ?? SEQUENCE_DAYS[0];
 
-        console.log(`[Email Scheduler] Sent email ${seq.emailNumber} for lead ${seq.leadId}`);
+        const ok = await sendSequenceEmail({
+          email: seq.email,
+          chronotype: seq.chronotype || "Bear",
+          day,
+        });
+
+        if (ok) {
+          await db
+            .update(emailSequences)
+            .set({ status: "sent", sentAt: new Date() })
+            .where(eq(emailSequences.id, seq.id));
+          console.log(`[Email Scheduler] ✅ Sent Day ${day} email to ${seq.email}`);
+        } else {
+          await db
+            .update(emailSequences)
+            .set({ status: "bounced" })
+            .where(eq(emailSequences.id, seq.id));
+          console.warn(`[Email Scheduler] ❌ Failed to send Day ${day} email to ${seq.email}`);
+        }
       } catch (err) {
-        console.error(`[Email Scheduler] Error sending email:`, err);
-
-        // Mark as failed
+        console.error(`[Email Scheduler] Error sending email ${seq.id}:`, err);
         await db
           .update(emailSequences)
           .set({ status: "bounced" })
@@ -58,33 +84,48 @@ export async function processPendingEmails() {
 /**
  * Initialize email sequence for new buyer
  * Called after successful Stripe checkout
+ * Creates 5 email records scheduled for days 1, 2, 3, 5, 7 after purchase
  */
 export async function initializeEmailSequence(
   leadId: string,
   email: string,
   chronotype: string,
-  downloadUrl: string
+  _downloadUrl: string
 ) {
   try {
+    if (!email) {
+      console.warn("[Email Scheduler] No email provided — skipping sequence init");
+      return;
+    }
+
     const db = await getDb();
     if (!db) {
       console.error("[Email Scheduler] Database connection failed");
       return;
     }
 
-    // Create 7 email records (Day 0-6)
-    const emails = [];
-    for (let day = 0; day <= 6; day++) {
-      emails.push({
+    const now = new Date();
+
+    // Create email records for each day in the sequence
+    const emails = SEQUENCE_DAYS.map((day, index) => {
+      const scheduledAt = new Date(now);
+      scheduledAt.setDate(scheduledAt.getDate() + day - 1); // day 1 = today, day 2 = tomorrow, etc.
+      // Set to 9am local time (approximate)
+      scheduledAt.setHours(9, 0, 0, 0);
+
+      return {
         leadId: parseInt(leadId) || 0,
+        email,
+        chronotype: chronotype || "Bear",
         sequenceType: "7day",
-        emailNumber: day + 1,
+        emailNumber: index + 1,
+        scheduledAt,
         status: "pending" as const,
-      });
-    }
+      };
+    });
 
     await db.insert(emailSequences).values(emails);
-    console.log(`[Email Scheduler] Initialized 7-day sequence for lead ${leadId}`);
+    console.log(`[Email Scheduler] ✅ Initialized 5-email sequence for ${email} (chronotype: ${chronotype})`);
   } catch (err) {
     console.error("[Email Scheduler] Error initializing sequence:", err);
   }
