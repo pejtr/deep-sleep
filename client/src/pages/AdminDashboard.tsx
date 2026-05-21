@@ -711,7 +711,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas" | "integrations">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "tiktok" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas" | "integrations">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -758,6 +758,7 @@ export default function AdminDashboard() {
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
     { id: "campaigns", label: "Campaigns", icon: TrendingUp },
+    { id: "tiktok", label: "TikTok", icon: Zap },
     { id: "reddit", label: "Reddit Ads", icon: Target },
     { id: "feedback", label: "Feedback", icon: MessageSquare },
     { id: "timeline", label: "Timeline", icon: TrendingUp },
@@ -949,6 +950,9 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* ── TikTok Ads Tab ───────────────────────────────────────────────── */}
+        {activeTab === "tiktok" && <TikTokAdsTab />}
+
         {/* ── Reddit Ads Tab ───────────────────────────────────────────────── */}
         {activeTab === "reddit" && <RedditAdsTab />}
 
@@ -1019,21 +1023,37 @@ export default function AdminDashboard() {
                     const varA = pageResults.find(r => r.variant === "A");
                     const varB = pageResults.find(r => r.variant === "B");
                     const winner = varA && varB ? (varA.convRate > varB.convRate ? "A" : varB.convRate > varA.convRate ? "B" : null) : null;
+                    const pValue = varA?.pValue ?? varB?.pValue;
+                    const isSignificant = varA?.isSignificant || varB?.isSignificant;
                     return (
                       <div key={page} className="rounded-xl p-4" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center justify-between mb-2">
                           <p className="text-sm font-semibold capitalize" style={{ color: C.textPrimary }}>{page.replace("upsell", "Upsell ")} Page</p>
-                          {winner && <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: `${C.green}20`, color: C.green }}>Variant {winner} winning</span>}
+                          <div className="flex items-center gap-2">
+                            {isSignificant && winner && <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: `${C.green}20`, color: C.green }}>Variant {winner} wins ✓</span>}
+                            {!isSignificant && (varA || varB) && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${C.gold}15`, color: C.gold }}>Collecting data...</span>}
+                          </div>
                         </div>
+                        {pValue !== undefined && (
+                          <div className="flex items-center gap-3 mb-3 p-2 rounded-lg" style={{ background: isSignificant ? `${C.green}08` : `${C.gold}08`, border: `1px solid ${isSignificant ? C.green : C.gold}25` }}>
+                            <span className="text-xs" style={{ color: C.textMuted }}>p-value:</span>
+                            <span className="text-xs font-bold" style={{ color: isSignificant ? C.green : C.gold }}>{pValue.toFixed(4)}</span>
+                            <span className="text-xs" style={{ color: C.textMuted }}>·</span>
+                            <span className="text-xs" style={{ color: isSignificant ? C.green : C.gold }}>{isSignificant ? "95%+ confidence" : "Need more samples"}</span>
+                          </div>
+                        )}
                         <div className="grid grid-cols-2 gap-3">
                           {[varA, varB].map((v, vi) => v ? (
-                            <div key={vi} className="rounded-lg p-3" style={{ background: winner === v.variant ? `${C.green}10` : C.card, border: `1px solid ${winner === v.variant ? `${C.green}40` : C.cardBorder}` }}>
-                              <p className="text-xs font-bold mb-2" style={{ color: winner === v.variant ? C.green : C.textSecondary }}>Variant {v.variant} {winner === v.variant ? "★" : ""}</p>
+                            <div key={vi} className="rounded-lg p-3" style={{ background: winner === v.variant && isSignificant ? `${C.green}10` : C.card, border: `1px solid ${winner === v.variant && isSignificant ? `${C.green}40` : C.cardBorder}` }}>
+                              <p className="text-xs font-bold mb-2" style={{ color: winner === v.variant && isSignificant ? C.green : C.textSecondary }}>Variant {v.variant} {winner === v.variant && isSignificant ? "★" : ""}</p>
                               <div className="space-y-1">
                                 <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Shown</span><span className="text-xs font-semibold" style={{ color: C.textPrimary }}>{v.impressions}</span></div>
                                 <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Converted</span><span className="text-xs font-semibold" style={{ color: C.textPrimary }}>{v.conversions}</span></div>
-                                <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Conv. Rate</span><span className="text-xs font-bold" style={{ color: winner === v.variant ? C.green : C.textPrimary }}>{v.convRate}%</span></div>
+                                <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Conv. Rate</span><span className="text-xs font-bold" style={{ color: winner === v.variant && isSignificant ? C.green : C.textPrimary }}>{v.convRate}%</span></div>
                                 <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Revenue</span><span className="text-xs font-semibold" style={{ color: C.gold }}>${v.totalRevenue}</span></div>
+                                {v.uplift !== undefined && v.uplift !== 0 && (
+                                  <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Uplift</span><span className="text-xs font-bold" style={{ color: (v.uplift ?? 0) > 0 ? C.green : C.red }}>{(v.uplift ?? 0) > 0 ? "+" : ""}{v.uplift}%</span></div>
+                                )}
                               </div>
                             </div>
                           ) : null)}
@@ -1117,6 +1137,169 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ── TikTok Ads Tab Component ─────────────────────────────────────────────────
+function TikTokAdsTab() {
+  const { data: account } = trpc.tiktok.getAccount.useQuery();
+  const { data: campaigns } = trpc.tiktok.getCampaigns.useQuery();
+
+  // KPI metrics — live when API key is set, placeholder until then
+  const kpis = [
+    { label: "Daily Budget", value: "€101/day", sub: "TESTHNED campaign", color: C.gold, icon: DollarSign },
+    { label: "Impressions", value: "—", sub: "Pending approval", color: C.purple, icon: BarChart3 },
+    { label: "Link Clicks", value: "—", sub: "Awaiting review", color: C.blue, icon: Activity },
+    { label: "CTR", value: "—", sub: "Target: >1.5%", color: C.teal, icon: TrendingUp },
+    { label: "CPC", value: "—", sub: "Target: <$0.50", color: C.green, icon: Zap },
+    { label: "ROAS", value: "—", sub: "Target: >3×", color: C.pink, icon: Sparkles },
+  ];
+
+  const optimizationSteps = [
+    { done: true, text: "Campaign TESTHNED created — €101/day budget set" },
+    { done: false, text: "Campaign under review — approval expected within 1–24h" },
+    { done: false, text: "Add TikTok Pixel to track ViewContent + Purchase events" },
+    { done: false, text: "Upload 3–5 creative variants (hook test: problem vs. solution)" },
+    { done: false, text: "Enable Advantage+ audience targeting for sleep-related interests" },
+    { done: false, text: "Set up Custom Audience from website visitors (retargeting)" },
+    { done: false, text: "A/B test landing page: quiz vs. direct VSL" },
+    { done: false, text: "Scale winning ad set: 2× budget every 3 days if ROAS >3×" },
+  ];
+
+  const creativeIdeas = [
+    { hook: "POV: You haven't slept properly in weeks...", type: "Problem-aware", ctr: "High" },
+    { hook: "I fixed my sleep in 7 nights with this protocol", type: "Testimonial", ctr: "Very High" },
+    { hook: "Sleep doctors don't want you to know this", type: "Curiosity", ctr: "High" },
+    { hook: "The 7-night reset that actually works", type: "Solution-aware", ctr: "Medium" },
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>🎵</div>
+          <div>
+            <h2 className="text-sm font-bold" style={{ color: C.textPrimary }}>TikTok Ads Manager</h2>
+            <p className="text-xs" style={{ color: C.textSecondary }}>Account: {account?.advertiser_name ?? "Deep Sleep Reset"} · ID: {account?.advertiser_id || "7631884469462089744"}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: C.gold }}>Under Review</span>
+          <a href="https://ads.tiktok.com/i18n/manage/campaign?aadvid=7631884469462089744" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition-all hover:opacity-80"
+            style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textSecondary }}>
+            <ExternalLink className="w-3 h-3" />
+            Open TikTok Ads
+          </a>
+        </div>
+      </div>
+
+      {/* KPI Grid */}
+      <div className="grid grid-cols-3 gap-3">
+        {kpis.map(kpi => (
+          <div key={kpi.label} className="rounded-2xl p-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+            <div className="flex items-center gap-2 mb-2">
+              <kpi.icon className="w-3.5 h-3.5" style={{ color: kpi.color }} />
+              <p className="text-xs" style={{ color: C.textSecondary }}>{kpi.label}</p>
+            </div>
+            <p className="text-xl font-bold" style={{ color: kpi.value === "—" ? C.textMuted : C.textPrimary }}>{kpi.value}</p>
+            <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>{kpi.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Active Campaigns */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Active Campaigns</h3>
+        {campaigns && campaigns.length > 0 ? (
+          <div className="space-y-2">
+            {campaigns.map((c: { campaign_id: string; campaign_name: string; budget: number; status: string }) => (
+              <div key={c.campaign_id} className="flex items-center justify-between p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div>
+                  <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{c.campaign_name}</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>ID: {c.campaign_id}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs" style={{ color: C.gold }}>€{c.budget}/day</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: c.status === 'ENABLE' ? `${C.green}20` : `${C.gold}20`, color: c.status === 'ENABLE' ? C.green : C.gold }}>{c.status}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {/* Placeholder — real data once API token is configured */}
+            <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+              <div>
+                <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>TESTHNED</p>
+                <p className="text-xs" style={{ color: C.textMuted }}>Deep Sleep Reset — $4 · Awareness objective</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs" style={{ color: C.gold }}>€101/day</span>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${C.gold}20`, color: C.gold }}>Under Review</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <p className="text-xs mt-3" style={{ color: C.textMuted }}>💡 Live campaign data available after setting TIKTOK_ADS_ACCESS_TOKEN in Settings → Integrations</p>
+      </div>
+
+      {/* Creative Ideas */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>🎬 Creative Hook Ideas</h3>
+        <div className="space-y-2">
+          {creativeIdeas.map((idea, i) => (
+            <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0" style={{ background: `${C.purple}20`, color: C.purple }}>{i + 1}</div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium" style={{ color: C.textPrimary }}>\"{ idea.hook}\"</p>
+                <p className="text-xs" style={{ color: C.textMuted }}>{idea.type}</p>
+              </div>
+              <span className="text-xs px-2 py-0.5 rounded-full shrink-0" style={{ background: idea.ctr === 'Very High' ? `${C.green}20` : `${C.gold}20`, color: idea.ctr === 'Very High' ? C.green : C.gold }}>CTR: {idea.ctr}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Optimization Checklist */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>✅ TikTok Optimization Checklist</h3>
+        <div className="space-y-2">
+          {optimizationSteps.map((item, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              {item.done
+                ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" style={{ color: C.green }} />
+                : <Clock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: C.textSecondary }} />
+              }
+              <p className="text-xs" style={{ color: item.done ? C.textSecondary : C.textPrimary }}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Target Audiences */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>🎯 Target Audiences</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { name: "Insomnia Sufferers", age: "25–54", interest: "Sleep disorders, health", size: "~2M EU", color: C.purple },
+            { name: "Biohackers", age: "22–40", interest: "Optimization, nootropics", size: "~500K EU", color: C.teal },
+            { name: "Stressed Professionals", age: "28–45", interest: "Productivity, wellness", size: "~3M EU", color: C.blue },
+            { name: "New Parents", age: "25–38", interest: "Baby sleep, exhaustion", size: "~1.5M EU", color: C.gold },
+          ].map(aud => (
+            <div key={aud.name} className="p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full" style={{ background: aud.color }} />
+                <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{aud.name}</p>
+              </div>
+              <p className="text-xs" style={{ color: C.textMuted }}>Age: {aud.age} · {aud.interest}</p>
+              <p className="text-xs mt-0.5" style={{ color: aud.color }}>{aud.size}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

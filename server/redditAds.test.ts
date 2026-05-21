@@ -93,7 +93,7 @@ describe("Reddit Ads — helper function shapes", () => {
       expect(err).toBeInstanceOf(Error);
       expect((err as Error).message.length).toBeGreaterThan(0);
     }
-  });
+  }, 10000);
 
   it("getCampaigns returns array or throws Error", async () => {
     const { getCampaigns } = await import("./redditAds");

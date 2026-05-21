@@ -525,6 +525,29 @@ export async function markUpsellConverted(sessionId: string, page: string, reven
     .where(and(eqFn(upsellAbTests.sessionId, sessionId), eqFn(upsellAbTests.page, page)));
 }
 
+/**
+ * Two-proportion z-test for A/B statistical significance
+ * Returns p-value (two-tailed). p < 0.05 = statistically significant.
+ */
+function twoProportionZTest(n1: number, c1: number, n2: number, c2: number): number {
+  if (n1 === 0 || n2 === 0) return 1;
+  const p1 = c1 / n1;
+  const p2 = c2 / n2;
+  const pPool = (c1 + c2) / (n1 + n2);
+  const se = Math.sqrt(pPool * (1 - pPool) * (1 / n1 + 1 / n2));
+  if (se === 0) return 1;
+  const z = Math.abs(p1 - p2) / se;
+  // Approximate p-value using normal distribution CDF
+  const pValue = 2 * (1 - normalCDF(z));
+  return Math.round(pValue * 10000) / 10000;
+}
+function normalCDF(z: number): number {
+  const t = 1 / (1 + 0.2316419 * Math.abs(z));
+  const d = 0.3989423 * Math.exp(-z * z / 2);
+  const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.7814779 + t * (-1.8212560 + t * 1.3302744))));
+  return z > 0 ? 1 - p : p;
+}
+
 export async function getUpsellAbResults(): Promise<{
   page: string;
   variant: string;
@@ -533,6 +556,9 @@ export async function getUpsellAbResults(): Promise<{
   convRate: number;
   totalRevenue: number;
   avgRevenue: number;
+  pValue?: number;
+  isSignificant?: boolean;
+  uplift?: number;
 }[]> {
   const db = await getDb();
   if (!db) return [];
@@ -549,7 +575,7 @@ export async function getUpsellAbResults(): Promise<{
     }
     map.set(key, cur);
   }
-  return Array.from(map.entries()).map(([key, v]) => {
+  const results = Array.from(map.entries()).map(([key, v]) => {
     const [page, variant] = key.split("|");
     return {
       page,
@@ -561,6 +587,21 @@ export async function getUpsellAbResults(): Promise<{
       avgRevenue: v.conversions > 0 ? Math.round((v.revenue / v.conversions) * 100) / 100 : 0,
     };
   }).sort((a, b) => a.page.localeCompare(b.page) || a.variant.localeCompare(b.variant));
+
+  // Add statistical significance per page (compare A vs B)
+  // pages variable unused — kept for readability
+  void results.map(r => r.page);
+  return results.map(r => {
+    const pageResults = results.filter(x => x.page === r.page);
+    const varA = pageResults.find(x => x.variant === 'A');
+    const varB = pageResults.find(x => x.variant === 'B');
+    if (!varA || !varB) return { ...r, pValue: undefined, isSignificant: false, uplift: undefined };
+    const pValue = twoProportionZTest(varA.impressions, varA.conversions, varB.impressions, varB.conversions);
+    const isSignificant = pValue < 0.05;
+    const baseRate = r.variant === 'B' ? varA.convRate : varB.convRate;
+    const uplift = baseRate > 0 ? Math.round(((r.convRate - baseRate) / baseRate) * 10000) / 100 : undefined;
+    return { ...r, pValue, isSignificant, uplift };
+  });
 }
 
 // ── Blog Helpers ─────────────────────────────────────────────────────────────

@@ -164,16 +164,31 @@ export default function ExpressCheckout(props: ExpressCheckoutProps) {
   // Don't render on error
   if (error) return null;
 
+  const isSubscription = props.productId === "subscription";
+
   return (
     <div className="w-full">
       <Elements
         stripe={stripePromise}
-        options={{
-          mode: "payment",
+        options={isSubscription ? {
+          mode: "subscription" as const,
           amount: Math.max(amountInSmallest, 50),
           currency: currCode,
           appearance: {
-            theme: "night",
+            theme: "night" as const,
+            variables: {
+              colorPrimary: "#c9a84c",
+              colorBackground: "#0f1729",
+              colorText: "#e0ddd5",
+              borderRadius: "12px",
+            },
+          },
+        } : {
+          mode: "payment" as const,
+          amount: Math.max(amountInSmallest, 50),
+          currency: currCode,
+          appearance: {
+            theme: "night" as const,
             variables: {
               colorPrimary: "#c9a84c",
               colorBackground: "#0f1729",

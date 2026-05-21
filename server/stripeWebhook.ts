@@ -1,7 +1,7 @@
 import { Express, Request, Response } from "express";
 import Stripe from "stripe";
 import { getDb } from "./db";
-import { orders } from "../drizzle/schema";
+import { orders, subscriptions } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifyOwner } from "./_core/notification";
 import { sendPurchaseConfirmation, addBrevoContact } from "./emailService";
@@ -137,6 +137,101 @@ export function registerStripeWebhook(app: Express) {
                 title: "💰 New Purchase!",
                 content: `Order #${orderId} completed. Product: ${productId}. Amount: ${amountTotal} ${session.currency?.toUpperCase()}. Email: ${buyerEmail ?? "unknown"}. Chronotype: ${chronotype ?? "unknown"}`,
               }).catch(() => {/* non-critical */});
+            }
+            break;
+          }
+
+          // ── Subscription lifecycle events ──────────────────────────────────
+          case "customer.subscription.created":
+          case "customer.subscription.updated": {
+            const sub = event.data.object as Stripe.Subscription & { current_period_end?: number };
+            void (typeof sub.customer === "string" ? sub.customer : (sub.customer as { id: string }).id);
+            const db = await getDb();
+            if (!db) break;
+            // Upsert subscription record
+            try {
+              const existing = await db.select().from(subscriptions)
+                .where(eq(subscriptions.stripeSubscriptionId, sub.id)).limit(1);
+              const periodEnd = sub.current_period_end
+                ? new Date(sub.current_period_end * 1000)
+                : null;
+              // Map Stripe status to DB enum values
+              const mapStatus = (s: string): "active" | "past_due" | "cancelled" | "expired" | "trialing" => {
+                if (s === "canceled") return "cancelled";
+                if (s === "unpaid") return "past_due";
+                if (["active", "past_due", "cancelled", "expired", "trialing"].includes(s)) return s as "active" | "past_due" | "cancelled" | "expired" | "trialing";
+                return "active";
+              };
+              const periodEndTs = periodEnd ? String(Math.floor(periodEnd.getTime() / 1000)) : null;
+              if (existing.length > 0) {
+                await db.update(subscriptions).set({
+                  status: mapStatus(sub.status),
+                  currentPeriodEnd: periodEndTs as any,
+                  cancelAtPeriodEnd: sub.cancel_at_period_end,
+                  updatedAt: new Date(),
+                }).where(eq(subscriptions.stripeSubscriptionId, sub.id));
+              } else {
+                await db.insert(subscriptions).values({
+                  userId: 0,
+                  plan: "basic",
+                  status: mapStatus(sub.status),
+                  stripeSubscriptionId: sub.id,
+                  currentPeriodEnd: periodEndTs as any,
+                  cancelAtPeriodEnd: sub.cancel_at_period_end,
+                  chronotype: "Bear",
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                });
+              }
+              console.log(`[Stripe Webhook] Subscription ${sub.id} ${event.type === "customer.subscription.created" ? "created" : "updated"} — status: ${sub.status}`);
+            } catch (e) {
+              console.error("[Stripe Webhook] Subscription upsert error:", e);
+            }
+            break;
+          }
+
+          case "customer.subscription.deleted": {
+            const sub = event.data.object as Stripe.Subscription;
+            const db = await getDb();
+            if (!db) break;
+            try {
+              await db.update(subscriptions).set({
+                status: "cancelled" as const,
+                updatedAt: new Date(),
+              }).where(eq(subscriptions.stripeSubscriptionId, sub.id));
+              console.log(`[Stripe Webhook] Subscription ${sub.id} canceled`);
+            } catch (e) {
+              console.error("[Stripe Webhook] Subscription cancel error:", e);
+            }
+            break;
+          }
+
+          case "invoice.paid": {
+            const invoice = event.data.object as Stripe.Invoice & { subscription?: string | { id: string } | null };
+            const subId = typeof invoice.subscription === "string" ? invoice.subscription : (invoice.subscription as { id: string } | null | undefined)?.id;
+            if (subId) {
+              const db = await getDb();
+              if (!db) break;
+              await db.update(subscriptions).set({
+                status: "active",
+                updatedAt: new Date(),
+              }).where(eq(subscriptions.stripeSubscriptionId, subId));
+              console.log(`[Stripe Webhook] Invoice paid for subscription ${subId}`);
+            }
+            break;
+          }
+
+          case "invoice.payment_failed": {
+            const invoice = event.data.object as Stripe.Invoice & { subscription?: string | { id: string } | null };
+            const subId = typeof invoice.subscription === "string" ? invoice.subscription : (invoice.subscription as { id: string } | null | undefined)?.id;
+            if (subId) {
+              const db = await getDb();
+              if (!db) break;
+              await db.update(subscriptions).set({
+                status: "past_due",
+                updatedAt: new Date(),
+              }).where(eq(subscriptions.stripeSubscriptionId, subId));
+              console.log(`[Stripe Webhook] Invoice payment failed for subscription ${subId}`);
             }
             break;
           }

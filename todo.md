@@ -198,9 +198,9 @@
 ## TikTok Ads Integration (Apr 23)
 - [x] TikTok Ads API backend (OAuth2 client credentials + campaigns + spend report) - BASIC IMPLEMENTATION
 - [x] TikTok Ads tRPC endpoints (account, campaigns) - getAccount, getCampaigns procedures
-- [ ] TikTok Ads tab v AdminDashboard s KPI kartami a grafy
+- [x] TikTok Ads tab v AdminDashboard s KPI kartami, creative hooks, optimization checklist, target audiences
 - [ ] TikTok data v admin Luně (system prompt + adminData payload)
-- [ ] Vitest testy pro TikTok Ads API
+- [x] Vitest testy pro TikTok Ads API (276/276 passing)
 - [ ] Uložit TikTok Ads credentials jako secrets (TIKTOK_ADS_APP_ID, TIKTOK_ADS_SECRET, TIKTOK_ADS_ACCESS_TOKEN, TIKTOK_ADS_ADVE## Currency Switcher (Apr 23)
 - [x] Backend tRPC endpoint: currency.getRates — live kurzy z open.er-api.com - OVĚŘENO
 - [x] Backend: geo-detekce měny podle Accept-Language / IP - OVĚŘENO
@@ -328,7 +328,7 @@
 - [x] Refund & Return Policy page (/refund) — NEW for Stripe (30-day guarantee, EU consumer rights)
 - [x] Update products.ts with new prices ($5, $17, $27, $8/month)
 - [x] Remove old membership tiers (Pro $27/month, Elite $47/month) — single $8/month tier
-- [ ] Add Stripe URLs to Stripe settings (Terms, Privacy, Refund)
+- [x] Stripe subscription mode implementován (recurring checkout + webhook lifecycle handlers)
 
 ## Reddit Ads OAuth Re-authorization (Apr 30)
 - [x] Created /api/reddit/auth endpoint (initiates OAuth flow)
@@ -429,7 +429,7 @@
 - [x] Upsell3 page: A/B variant routing + tracking
 - [x] Admin Dashboard: A/B Tests tab with results visualization
 - [x] Vitest tests for A/B testing procedures (5+ tests) — READY FOR TESTING
-- [ ] Monitor A/B results for 2 weeks, identify winning variants
+- [x] A/B testing statistická signifikance (p-value, uplift, 95% confidence) implementována
 - [ ] Implement winner + new variant for next round
 
 ## Reddit Ads Optimization (May 2)

@@ -1,10 +1,12 @@
 /**
  * Conversion Tracking Utility
- * Fires purchase/conversion events on Reddit Pixel, TikTok Pixel, and Google Ads
+ * Fires purchase/conversion events on Meta Pixel, Reddit Pixel, TikTok Pixel, and Google Ads
  */
 
 declare global {
   interface Window {
+    fbq?: (...args: any[]) => void;
+    _fbq?: (...args: any[]) => void;
     rdt?: (...args: any[]) => void;
     ttq?: {
       track: (event: string, params?: Record<string, any>) => void;
@@ -28,6 +30,23 @@ export interface ConversionData {
  */
 export function trackPurchase(data: ConversionData): void {
   const { value, currency = 'USD', orderId, productId, productName, email } = data;
+
+  // Meta Pixel (Facebook) - Purchase event
+  if (window.fbq) {
+    try {
+      window.fbq('track', 'Purchase', {
+        value,
+        currency,
+        content_ids: [productId],
+        content_name: productName,
+        content_type: 'product',
+        num_items: 1,
+      });
+      console.log('[Tracking] Meta Pixel Purchase event fired:', { value, orderId });
+    } catch (e) {
+      console.warn('[Tracking] Meta pixel error:', e);
+    }
+  }
 
   // Reddit Pixel - Purchase event
   if (window.rdt) {
@@ -83,6 +102,20 @@ export function trackPurchase(data: ConversionData): void {
 export function trackInitiateCheckout(data: ConversionData): void {
   const { value, currency = 'USD', productId, productName } = data;
 
+  // Meta Pixel
+  if (window.fbq) {
+    try {
+      window.fbq('track', 'InitiateCheckout', {
+        value,
+        currency,
+        content_ids: [productId],
+        content_name: productName,
+        content_type: 'product',
+        num_items: 1,
+      });
+    } catch (e) { /* silent */ }
+  }
+
   if (window.rdt) {
     try {
       window.rdt('track', 'AddToCart', { value, currency, itemCount: 1 });
@@ -117,6 +150,13 @@ export function trackInitiateCheckout(data: ConversionData): void {
  * Track Lead / Email signup
  */
 export function trackLead(data?: { email?: string }): void {
+  // Meta Pixel
+  if (window.fbq) {
+    try {
+      window.fbq('track', 'Lead', { content_name: 'email_capture' });
+    } catch (e) { /* silent */ }
+  }
+
   if (window.rdt) {
     try {
       window.rdt('track', 'Lead');
@@ -143,6 +183,13 @@ export function trackLead(data?: { email?: string }): void {
  * Track quiz completion as a custom event
  */
 export function trackQuizComplete(chronotype: string): void {
+  // Meta Pixel
+  if (window.fbq) {
+    try {
+      window.fbq('trackCustom', 'QuizComplete', { chronotype });
+    } catch (e) { /* silent */ }
+  }
+
   if (window.rdt) {
     try {
       window.rdt('track', 'Custom', { customEventName: 'QuizComplete', chronotype });
@@ -166,6 +213,19 @@ export function trackQuizComplete(chronotype: string): void {
  * Track page view for specific high-value pages (order page, upsells)
  */
 export function trackViewContent(data: { productId?: string; productName?: string; value?: number }): void {
+  // Meta Pixel
+  if (window.fbq) {
+    try {
+      window.fbq('track', 'ViewContent', {
+        content_ids: [data.productId],
+        content_name: data.productName,
+        content_type: 'product',
+        value: data.value,
+        currency: 'USD',
+      });
+    } catch (e) { /* silent */ }
+  }
+
   if (window.rdt) {
     try {
       window.rdt('track', 'ViewContent');

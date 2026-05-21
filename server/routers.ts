@@ -812,19 +812,34 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           ? Math.round((cents / 100) * rate)
           : Math.round(cents * rate);
         let finalAmount: number = convertCents(amountCents);
+        // Subscription mode: use recurring price_data for "subscription" product
+        const isSubscription = input.productId === "subscription";
         // Build line items — always include main product, optionally add upsell
-        const lineItems: { price_data: { currency: string; product_data: { name: string; description: string }; unit_amount: number }; quantity: number }[] = [
-          {
-            price_data: {
-              currency,
-              product_data: {
-                name: productName,
-                description: "Instant digital download. Science-backed sleep protocol.",
+        const lineItems: any[] = [
+          isSubscription
+            ? {
+                price_data: {
+                  currency,
+                  product_data: {
+                    name: productName,
+                    description: "Monthly sleep protocol updates, AI coaching, and community access.",
+                  },
+                  unit_amount: finalAmount,
+                  recurring: { interval: "month" as const },
+                },
+                quantity: 1,
+              }
+            : {
+                price_data: {
+                  currency,
+                  product_data: {
+                    name: productName,
+                    description: "Instant digital download. Science-backed sleep protocol.",
+                  },
+                  unit_amount: finalAmount,
+                },
+                quantity: 1,
               },
-              unit_amount: finalAmount,
-            },
-            quantity: 1,
-          },
         ];
         // If includeUpsell is set, add upsell as 2nd line item (e.g. bump on Order page)
         let upsellAmount = 0;
@@ -872,7 +887,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
             },
           },
           line_items: lineItems,
-          mode: "payment",
+          mode: isSubscription ? "subscription" : "payment",
           allow_promotion_codes: true,
           customer_email: input.email,
           // Route success based on product: main → upsell1, oto1 → upsell2, oto2 → thankyou
