@@ -117,7 +117,11 @@ const FEEDBACK_PROMPT_EN = "By the way — how would you rate your sleep problem
 const FEEDBACK_PROMPT_CS = "Mimochodem — jak bys ohodnotil/a své problémy se spánkem na škále 1-5? (1 = mírné, 5 = závažné) Pomůže mi to dát ti lepší rady! 🌙";
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function SleepChatBot() {
+interface SleepChatBotProps {
+  forceMode?: "sales" | "admin" | "affiliate" | "post_purchase";
+}
+
+export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   const { lang } = useI18n();
   const { user } = useAuth();
   const [location] = useLocation();
@@ -271,7 +275,7 @@ export default function SleepChatBot() {
     setShowFeedbackStars(false);
 
     // Determine mode and build admin data payload
-    const mode = isAdminMode ? "admin" : isAffiliateMode ? "affiliate" : "sales";
+    const mode = forceMode ?? (isAdminMode ? "admin" : isAffiliateMode ? "affiliate" : "sales");
     const adminDataPayload = isAdminMode ? {
       revenue: adminStats?.revenue ?? 0,
       orders: adminStats?.completedOrderCount ?? adminStats?.orderCount ?? 0,

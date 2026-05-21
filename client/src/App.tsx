@@ -36,6 +36,8 @@ const BlogList = lazy(() => import("./pages/BlogList"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const SleepChatBot = lazy(() => import("./components/SleepChatBot"));
 const Chat = lazy(() => import("./pages/Chat").then((m) => ({ default: m.ChatPage })));
+const Members = lazy(() => import("./pages/Members"));
+const MembersLogin = lazy(() => import("./pages/MembersLogin"));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
@@ -71,7 +73,9 @@ function Router() {
         <Route path="/blog/:slug" component={BlogPost} />
         <Route path="/blog" component={BlogList} />
         <Route path="/chat" component={Chat} />
-        <Route path="/chatbot" component={SleepChatBot} />
+        <Route path="/chatbot">{() => <SleepChatBot />}</Route>
+        <Route path="/members/login" component={MembersLogin} />
+        <Route path="/members" component={Members} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/settings" component={Settings} />
         <Route path="/analytics" component={AnalyticsDashboard} />

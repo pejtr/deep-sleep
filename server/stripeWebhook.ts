@@ -7,6 +7,7 @@ import { notifyOwner } from "./_core/notification";
 import { sendPurchaseConfirmation, addBrevoContact } from "./emailService";
 import { initializeEmailSequence } from "./emailScheduler";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
+import { onPurchaseComplete } from "./emailSequenceService";
 
 export function registerStripeWebhook(app: Express) {
   // CRITICAL: raw body parser must be registered BEFORE express.json()
@@ -113,6 +114,11 @@ export function registerStripeWebhook(app: Express) {
                 }).then(ok => {
                   console.log(`[Stripe Webhook] Brevo contact ${ok ? "✅ added" : "❌ failed"} → ${buyerEmail} (${chronotype ?? "unknown"})`);
                 }).catch(() => {/* non-critical */});
+              }
+
+              // Trigger automated email sequence (fire-and-forget)
+              if (buyerEmail) {
+                onPurchaseComplete(buyerEmail, parseInt(orderId), chronotype ?? "Bear").catch(() => {/* non-critical */});
               }
 
               // Dispatch outbound webhook event (fire-and-forget)
