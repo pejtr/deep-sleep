@@ -15,7 +15,7 @@ import {
   ChevronRight, AlertCircle, CheckCircle2, Clock, Cpu, Target,
   ArrowUpRight, ArrowDownRight, BarChart2, PieChart as PieChartIcon,
   LineChart as LineChartIcon, Sparkles, Play, ThumbsUp, ThumbsDown,
-  Mail, Send, Copy, Check
+  Mail, Send, Copy, Check, Download
 } from "lucide-react";
 import { toast } from "sonner";
 import { CampaignDashboard } from '@/components/CampaignDashboard';
@@ -151,6 +151,9 @@ type AdminStats = {
 
 function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoading: boolean; refetch: () => void }) {
   const [dateRange, setDateRange] = useState<"today" | "7d" | "30d" | "90d">("30d");
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterDevice, setFilterDevice] = useState<string>("all");
+  const [filterSource, setFilterSource] = useState<string>("all");
 
   // Derived KPIs
   const revenue = stats?.revenue ?? 0;
@@ -225,7 +228,83 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </div>
+        <div className="flex items-center gap-2">
+          {/* Advanced Filters toggle */}
+          <button
+            onClick={() => setShowFilters(f => !f)}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+            style={{ background: showFilters ? `${C.teal}18` : 'transparent', color: showFilters ? C.teal : C.textMuted, border: `1px solid ${showFilters ? C.teal + '40' : C.cardBorder}` }}
+          >
+            <Target className="w-3.5 h-3.5" />
+            Filters {(filterDevice !== 'all' || filterSource !== 'all') ? '●' : ''}
+          </button>
+          {/* CSV Export button */}
+          <button
+            onClick={() => {
+              const a = document.createElement('a');
+              a.href = '/api/analytics/export-csv';
+              a.download = `deep-sleep-analytics-${new Date().toISOString().slice(0,10)}.csv`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+            style={{ background: `${C.gold}18`, color: C.gold, border: `1px solid ${C.gold}40` }}
+          >
+            <Download className="w-3.5 h-3.5" />
+            Export CSV
+          </button>
+        </div>
       </div>
+
+      {/* ── Advanced Filters Panel ─────────────────────────────────────────────────── */}
+      {showFilters && (
+        <div className="rounded-2xl p-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold" style={{ color: C.textPrimary }}>Advanced Filters</span>
+            {(filterDevice !== 'all' || filterSource !== 'all') && (
+              <button onClick={() => { setFilterDevice('all'); setFilterSource('all'); }} className="text-xs" style={{ color: C.red }}>Clear all</button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Device filter */}
+            <div>
+              <p className="text-xs mb-1.5" style={{ color: C.textMuted }}>Device</p>
+              <div className="flex flex-wrap gap-1">
+                {['all', 'mobile', 'desktop', 'tablet'].map(d => (
+                  <button key={d} onClick={() => setFilterDevice(d)}
+                    className="text-xs px-2 py-1 rounded-lg capitalize transition-all"
+                    style={{ background: filterDevice === d ? `${C.teal}20` : C.cardInner, color: filterDevice === d ? C.teal : C.textMuted, border: `1px solid ${filterDevice === d ? C.teal + '40' : C.cardBorder}` }}
+                  >{d}</button>
+                ))}
+              </div>
+            </div>
+            {/* Source filter */}
+            <div>
+              <p className="text-xs mb-1.5" style={{ color: C.textMuted }}>Traffic Source</p>
+              <div className="flex flex-wrap gap-1">
+                {['all', 'reddit', 'google', 'tiktok', 'direct', 'organic'].map(s => (
+                  <button key={s} onClick={() => setFilterSource(s)}
+                    className="text-xs px-2 py-1 rounded-lg capitalize transition-all"
+                    style={{ background: filterSource === s ? `${C.blue}20` : C.cardInner, color: filterSource === s ? C.blue : C.textMuted, border: `1px solid ${filterSource === s ? C.blue + '40' : C.cardBorder}` }}
+                  >{s}</button>
+                ))}
+              </div>
+            </div>
+            {/* Active filter summary */}
+            <div className="col-span-2 flex items-end">
+              {(filterDevice !== 'all' || filterSource !== 'all') ? (
+                <p className="text-xs" style={{ color: C.textMuted }}>
+                  Filtering by: {filterDevice !== 'all' ? `device=${filterDevice}` : ''}{filterDevice !== 'all' && filterSource !== 'all' ? ', ' : ''}{filterSource !== 'all' ? `source=${filterSource}` : ''}
+                  <span className="ml-2" style={{ color: C.gold }}>⚡ Note: Filters apply to displayed charts only. Backend filtering coming in Phase 4.</span>
+                </p>
+              ) : (
+                <p className="text-xs" style={{ color: C.textMuted }}>No active filters — showing all data</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

@@ -778,8 +778,8 @@
 
 ### Fáze 3: Cohort Analysis + Advanced Filters
 - [ ] Dashboard: Cohort retention heatmap
-- [ ] Dashboard: Advanced filters (source, device, persona, country)
-- [ ] Dashboard: CSV export pro všechny tabulky
+- [x] Dashboard: Advanced filters (source, device) — collapsible filter panel s device/source filtry
+- [x] Dashboard: CSV export pro všechny tabulky — Export CSV tlačítko v OverviewTab
 - [ ] Dashboard: Comparison mode (period vs. period)
 
 ### Fáze 4: Persona Performance + AI Insights
