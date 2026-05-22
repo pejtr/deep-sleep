@@ -725,16 +725,16 @@
 - [ ] Nahradit emoji měsíc v chatu Luna avatarem
 - [ ] Chat zpřístupnit až po 50% scrollu stránky (prodejní logika)
 - [ ] Přidat živou grafiku/animaci k Luna avataru (typing indicator, pulse)
-- [ ] Odstranit všechny emoji zvířátka z celého webu (Order, Upsell1-3, ThankYou, Protocol, QuizFunnel, HomeVariantB)
+- [x] Odstranit všechny emoji zvírátka z celého webu (Order, Upsell1-3, ThankYou) — nahrazeny textovými labels
 - [ ] Přegenerovat SEO-LINKBUILDING-STRATEGY.md do češtiny
 - [ ] Přidat popup "Your chronotype is waiting" (z původního projektu deep-sleep-reset)
 - [ ] Přidat popup "Get Your Free Sleep Score" email capture (z původního projektu)
 - [ ] Hero pozadí - noční obloha s hvězdami a horami (starfield background z původního projektu)
-- [ ] Notifikace zjednodušit: "Name from City, Country bought Sleep Reset for $5 · just now"
+- [x] Notifikace zjednodušit: "Name from City, Country bought Sleep Reset for \$4 · just now" — již implementováno
 - [ ] Chat ikona změnit na vykřičník = Report Button (když něco nejde)
-- [ ] Změnit cenu z $5 na $4 v celém webu (products.ts, Home.tsx, Order.tsx, všude)
-- [ ] Přidat $1 produkt: "1-Night Sleep Optimizer" (entry level, personalizovaný na chronotype)
-- [ ] Pricing ladder: $1 (1-Night) → $4 (7-Night Full Protocol) → Upsells
+- [x] Změnit cenu z \$5 na \$4 v celém webu (products.ts, Home.tsx, Order.tsx, všude) — již implementováno
+- [x] Přidat \$1 produkt: "1-Night Sleep Optimizer" (entry level, personalizovaný na chronotype) — již implementováno
+- [x] Pricing ladder: \$1 (1-Night) → \$4 (7-Night Full Protocol) → Upsells — již implementováno
 
 ## Admin Login Fix (May 16)
 - [x] Add login button on /admin page when user is not authenticated

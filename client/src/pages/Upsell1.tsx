@@ -8,7 +8,7 @@ import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { toast } from "sonner";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
-const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "🦁", Bear: "🐻", Wolf: "🐺", Dolphin: "🐬" };
+const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "Lion", Bear: "Bear", Wolf: "Wolf", Dolphin: "Dolphin" };
 const CHRONOTYPE_TIMES: Record<Chronotype, string> = {
   Lion: "10 PM – 6 AM", Bear: "11 PM – 7 AM", Wolf: "12 AM – 8 AM", Dolphin: "11:30 PM – 6:30 AM",
 };
@@ -29,7 +29,7 @@ const CHRONOTYPE_TESTIMONIALS: Record<Chronotype, { text: string; name: string }
 function VariantA({ chronotype, onAccept, onDecline, loading }: {
   chronotype: Chronotype; onAccept: () => void; onDecline: () => void; loading: boolean;
 }) {
-  const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
+  const icon = CHRONOTYPE_ICONS[chronotype] ?? "Bear";
   const pain = CHRONOTYPE_PAIN[chronotype] ?? "struggle with poor sleep quality";
   const [liveViewers] = useState(() => Math.floor(Math.random() * 12) + 23);
   const testimonial = CHRONOTYPE_TESTIMONIALS[chronotype];
@@ -167,7 +167,7 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
 function VariantB({ chronotype, onAccept, onDecline, loading }: {
   chronotype: Chronotype; onAccept: () => void; onDecline: () => void; loading: boolean;
 }) {
-  const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
+  const icon = CHRONOTYPE_ICONS[chronotype] ?? "Bear";
   const testimonial = CHRONOTYPE_TESTIMONIALS[chronotype];
 
   return (

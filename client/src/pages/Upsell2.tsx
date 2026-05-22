@@ -8,7 +8,7 @@ import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { toast } from "sonner";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
-const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "🦁", Bear: "🐻", Wolf: "🐺", Dolphin: "🐬" };
+const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "Lion", Bear: "Bear", Wolf: "Wolf", Dolphin: "Dolphin" };
 
 const TRACKS = [
   { name: "Deep Forest Rain", duration: "60 min", desc: "Natural soundscape that triggers parasympathetic response", value: "$9" },
@@ -221,7 +221,7 @@ export default function Upsell2() {
   const search = useSearch();
   const params = new URLSearchParams(search);
   const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
-  const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
+  const icon = CHRONOTYPE_ICONS[chronotype] ?? "Bear";
   const [loading, setLoading] = useState(false);
   const [variant, setVariant] = useState<"A" | "B" | null>(null);
   const { track } = useTrackBehavior();

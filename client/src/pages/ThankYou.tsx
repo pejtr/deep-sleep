@@ -4,13 +4,13 @@ import { Star, Share2, Copy, Check, Moon } from "lucide-react";
 import { useTrackBehavior } from "@/hooks/useSession";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
-const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "🦁", Bear: "🐻", Wolf: "🐺", Dolphin: "🐬" };
+const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "Lion", Bear: "Bear", Wolf: "Wolf", Dolphin: "Dolphin" };
 
 export default function ThankYou() {
   const search = useSearch();
   const params = new URLSearchParams(search);
   const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
-  const icon = CHRONOTYPE_ICONS[chronotype] ?? "🐻";
+  const icon = CHRONOTYPE_ICONS[chronotype] ?? "Bear";
   const { track } = useTrackBehavior();
 
   const [showReview, setShowReview] = useState(false);
