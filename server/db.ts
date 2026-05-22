@@ -346,6 +346,20 @@ export async function getAllBuyerEmails() {
   }).map(o => ({ email: o.email!, productId: o.productId, chronotype: o.chronotype }));
 }
 
+export async function getAllFeedbacks() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(feedbacks).orderBy(feedbacks.createdAt);
+}
+
+export async function getLatestAiInsights(limit = 5) {
+  const db = await getDb();
+  if (!db) return [];
+  const { aiInsights } = await import('../drizzle/schema');
+  const { desc: descFn } = await import('drizzle-orm');
+  return db.select().from(aiInsights).orderBy(descFn(aiInsights.createdAt)).limit(limit);
+}
+
 
 /// ── Timeline Metrics ─────────────────────────────────────────────────────
 export async function getHourlyMetrics(startDate: number, endDate: number) {

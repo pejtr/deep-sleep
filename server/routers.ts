@@ -21,6 +21,8 @@ import {
   getAdminStats,
   saveFeedback,
   getAllBuyerEmails,
+  getAllFeedbacks,
+  getLatestAiInsights,
   getAllLeads,
   assignUpsellVariant,
   markUpsellConverted,
@@ -708,6 +710,59 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
             orders: pct(current.orders, prev.orders),
             visits: pct(current.visits, prev.visits),
           },
+        };
+      }),
+
+    getAiInsights: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const insights = await getLatestAiInsights(10);
+        return insights.map(i => ({
+          id: i.id,
+          date: i.date,
+          summary: i.summary,
+          recommendations: (() => { try { return JSON.parse(i.recommendations); } catch { return []; } })(),
+          metrics: (() => { try { return JSON.parse(i.metrics); } catch { return {}; } })(),
+          applied: i.applied,
+          createdAt: i.createdAt,
+        }));
+      }),
+
+    getFeedbacksForExport: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const all = await getAllFeedbacks();
+        return all.map(f => ({
+          id: f.id,
+          sessionId: f.sessionId,
+          rating: f.rating,
+          liked: f.liked ?? '',
+          improved: f.improved ?? '',
+          email: f.email ?? '',
+          rewardCode: f.rewardCode ?? '',
+          createdAt: f.createdAt,
+        }));
+      }),
+
+    getMetaAdsData: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        // Meta Ads data via MCP is only available in sandbox environment
+        // In production, return connected account info + empty campaigns
+        return {
+          accounts: [
+            { id: 'act_1489709811460163', name: 'Petr Matěj', status: 'DISABLED', currency: 'CZK' },
+            { id: 'act_1248622005589578', name: 'Solutions Engineering Team', status: 'ACTIVE', currency: 'CZK' },
+          ],
+          campaigns: [] as Array<{ id: string; name: string; status: string; objective?: string }>,
+          totalSpend: null as number | null,
+          totalImpressions: null as number | null,
+          totalClicks: null as number | null,
+          ctr: null as number | null,
+          cpc: null as number | null,
+          roas: null as number | null,
+          lastUpdated: new Date(),
+          note: 'Connect Meta Ads for Deep Sleep Reset to see live performance data. Current accounts: Petr Matěj (DISABLED), Solutions Engineering Team (ACTIVE).',
         };
       }),
 

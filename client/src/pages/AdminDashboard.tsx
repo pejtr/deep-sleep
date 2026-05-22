@@ -147,6 +147,8 @@ type AdminStats = {
   deviceBreakdown?: Array<{ device: string; count: number }>;
   orderTimeline?: Array<{ hour: string; count: number }>;
   revenueByProduct?: Array<{ product: string; value: number }>;
+  recentFeedbacks?: Array<{ id: number; rating: number | null; liked: string | null; improved: string | null; createdAt: Date }>;
+  checkoutClicks?: number;
 };
 
 function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoading: boolean; refetch: () => void }) {
@@ -881,7 +883,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "tiktok" | "reddit" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas" | "integrations">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "tiktok" | "reddit" | "meta" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas" | "integrations" | "ai">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -930,12 +932,14 @@ export default function AdminDashboard() {
     { id: "campaigns", label: "Campaigns", icon: TrendingUp },
     { id: "tiktok", label: "TikTok", icon: Zap },
     { id: "reddit", label: "Reddit Ads", icon: Target },
+    { id: "meta", label: "Meta Ads", icon: Globe },
     { id: "feedback", label: "Feedback", icon: MessageSquare },
     { id: "timeline", label: "Timeline", icon: TrendingUp },
     { id: "funnel", label: "Funnel", icon: Activity },
     { id: "email", label: "Email", icon: Mail },
     { id: "abtest", label: "A/B Tests", icon: Sparkles },
     { id: "personas", label: "Personas", icon: Users },
+    { id: "ai", label: "AI Insights", icon: Sparkles },
     { id: "integrations", label: "Integrations", icon: Cpu },
   ] as const;
 
@@ -1122,48 +1126,12 @@ export default function AdminDashboard() {
 
         {/* ── TikTok Ads Tab ───────────────────────────────────────────────── */}
         {activeTab === "tiktok" && <TikTokAdsTab />}
-
-        {/* ── Reddit Ads Tab ───────────────────────────────────────────────── */}
+        {/* ── Reddit Ads Tab ─────────────────────────────────────────────────── */}
         {activeTab === "reddit" && <RedditAdsTab />}
-
+        {/* ── Meta Ads Tab ──────────────────────────────────────────────────── */}
+        {activeTab === "meta" && <MetaAdsTab />}
         {/* ── Feedback Tab ─────────────────────────────────────────────────── */}
-        {activeTab === "feedback" && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 mb-2">
-              <StatCard icon={Star} label="Average Rating" value={stats?.avgRating ? `${stats.avgRating}/5` : "—"} sub="From all reviews" color={C.gold} />
-              <StatCard icon={MessageSquare} label="Total Feedbacks" value={stats?.feedbackCount ?? 0} sub="Submitted" color={C.pink} />
-            </div>
-
-            {stats?.recentFeedbacks && stats.recentFeedbacks.length > 0 ? (
-              <ChartCard title="Recent Feedback">
-                <div className="space-y-3">
-                  {stats.recentFeedbacks.map((fb: { id: number; rating: number | null; liked: string | null; improved: string | null; createdAt: Date }) => (
-                    <div key={fb.id} className="p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex gap-0.5">
-                          {[1,2,3,4,5].map(s => (
-                            <Star key={s} className="w-3.5 h-3.5" fill={s <= (fb.rating ?? 0) ? C.gold : "none"} style={{ color: C.gold }} />
-                          ))}
-                        </div>
-                        <span className="text-xs ml-auto" style={{ color: C.textMuted }}>
-                          {fb.createdAt ? new Date(fb.createdAt).toLocaleDateString() : "—"}
-                        </span>
-                      </div>
-                      {fb.liked && <p className="text-xs mb-1" style={{ color: C.textSecondary }}>👍 {fb.liked}</p>}
-                      {fb.improved && <p className="text-xs" style={{ color: C.textMuted }}>💡 {fb.improved}</p>}
-                    </div>
-                  ))}
-                </div>
-              </ChartCard>
-            ) : (
-              <div className="rounded-2xl p-8 text-center" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-                <MessageSquare className="w-8 h-8 mx-auto mb-3" style={{ color: C.textMuted }} />
-                <p className="text-sm" style={{ color: C.textSecondary }}>No feedback yet</p>
-                <p className="text-xs mt-1" style={{ color: C.textMuted }}>Feedback will appear here after customers submit reviews</p>
-          </div>
-            )}
-          </div>
-        )}
+        {activeTab === "feedback" && <FeedbackTab stats={stats} />}
 
         {/* ── Email Broadcast Tab ──────────────────────────────────────────────── */}
         {activeTab === "email" && (
@@ -1245,6 +1213,8 @@ export default function AdminDashboard() {
         {activeTab === "personas" && (
           <PersonaMetricsDashboard />
         )}
+        {/* ── AI Insights Tab ─────────────────────────────────────────────── */}
+        {activeTab === "ai" && <AiInsightsTab />}
         {/* ── Integrations Tab ─────────────────────────────────────────────── */}
         {activeTab === "integrations" && <IntegrationsTab />}
         {activeTab === "funnel" && (
@@ -1313,6 +1283,127 @@ export default function AdminDashboard() {
 }
 
 // ── TikTok Ads Tab Component ─────────────────────────────────────────────────
+// ── Meta Ads Tab ───────────────────────────────────────────────────────────────────────
+function MetaAdsTab() {
+  const { data: metaData, isLoading } = trpc.admin.getMetaAdsData.useQuery();
+  const accounts = metaData?.accounts ?? [];
+  const campaigns = metaData?.campaigns ?? [];
+  const kpis = [
+    { label: "Spend", value: metaData?.totalSpend ? `€${metaData.totalSpend.toFixed(2)}` : "—", sub: "Last 30 days", color: C.gold, icon: DollarSign },
+    { label: "Impressions", value: metaData?.totalImpressions ? metaData.totalImpressions.toLocaleString() : "—", sub: "Accounts Center accounts reached", color: C.purple, icon: BarChart3 },
+    { label: "Link clicks", value: metaData?.totalClicks ? metaData.totalClicks.toLocaleString() : "—", sub: "Link clicks (all)", color: C.blue, icon: Activity },
+    { label: "CTR", value: metaData?.ctr ? `${metaData.ctr.toFixed(2)}%` : "—", sub: "Link clicks / Impressions", color: C.teal, icon: TrendingUp },
+    { label: "CPC", value: metaData?.cpc ? `€${metaData.cpc.toFixed(2)}` : "—", sub: "Cost per link click", color: C.green, icon: Zap },
+    { label: "ROAS", value: metaData?.roas ? `${metaData.roas.toFixed(2)}×` : "—", sub: "Return on ad spend", color: C.pink, icon: Sparkles },
+  ];
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>📱</div>
+          <div>
+            <h2 className="text-sm font-bold" style={{ color: C.textPrimary }}>Meta Ads Manager</h2>
+            <p className="text-xs" style={{ color: C.textSecondary }}>
+              {accounts.length > 0 ? `${accounts.length} account(s) connected` : "Connect Meta Ads account"}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs px-2 py-1 rounded-lg" style={{ background: accounts.some(a => a.status === 'ACTIVE') ? `${C.green}20` : `${C.red}20`, color: accounts.some(a => a.status === 'ACTIVE') ? C.green : C.red, border: `1px solid ${accounts.some(a => a.status === 'ACTIVE') ? C.green : C.red}40` }}>
+            {accounts.some(a => a.status === 'ACTIVE') ? '• Active' : '◦ No active accounts'}
+          </span>
+        </div>
+      </div>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {kpis.map(k => (
+          <div key={k.label} className="rounded-2xl p-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+            <div className="flex items-center gap-2 mb-2">
+              <k.icon className="w-4 h-4" style={{ color: k.color }} />
+              <p className="text-xs" style={{ color: C.textMuted }}>{k.label}</p>
+            </div>
+            <p className="text-xl font-bold" style={{ color: k.color }}>{isLoading ? '…' : k.value}</p>
+            <p className="text-xs mt-1" style={{ color: C.textMuted }}>{k.sub}</p>
+          </div>
+        ))}
+      </div>
+      {/* Accounts */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Connected Ad Accounts</h3>
+        {isLoading ? (
+          <div className="animate-pulse h-12 rounded-xl" style={{ background: C.cardInner }} />
+        ) : accounts.length === 0 ? (
+          <div className="text-center py-8">
+            <Globe className="w-10 h-10 mx-auto mb-3" style={{ color: C.textMuted }} />
+            <p className="text-sm" style={{ color: C.textMuted }}>No Meta Ads accounts connected</p>
+            <p className="text-xs mt-1" style={{ color: C.textMuted }}>Connect via Meta Business Manager</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {accounts.map((acc: { id: string; name: string; status: string; currency: string }) => (
+              <div key={acc.id} className="flex items-center justify-between p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: C.textPrimary }}>{acc.name}</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>ID: {acc.id} · {acc.currency}</p>
+                </div>
+                <span className="text-xs px-2 py-1 rounded-lg" style={{ background: acc.status === 'ACTIVE' ? `${C.green}20` : `${C.red}20`, color: acc.status === 'ACTIVE' ? C.green : C.red }}>{acc.status}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Campaigns */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Campaigns</h3>
+        {isLoading ? (
+          <div className="space-y-2">{[...Array(3)].map((_, i) => <div key={i} className="animate-pulse h-10 rounded-xl" style={{ background: C.cardInner }} />)}</div>
+        ) : campaigns.length === 0 ? (
+          <div className="text-center py-6">
+            <p className="text-sm" style={{ color: C.textMuted }}>No campaigns found</p>
+            <p className="text-xs mt-1" style={{ color: C.textMuted }}>Create your first Meta Ads campaign to start tracking performance</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {campaigns.slice(0, 10).map((c: { id: string; name: string; status: string; objective?: string }) => (
+              <div key={c.id} className="flex items-center justify-between p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate" style={{ color: C.textPrimary }}>{c.name}</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>{c.objective ?? 'N/A'}</p>
+                </div>
+                <span className="text-xs px-2 py-1 rounded-lg ml-2 shrink-0" style={{ background: c.status === 'ACTIVE' ? `${C.green}20` : `${C.gold}20`, color: c.status === 'ACTIVE' ? C.green : C.gold }}>{c.status}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Meta Ads Setup Guide */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>📊 Meta Ads Setup Guide for Deep Sleep Reset</h3>
+        <div className="space-y-2">
+          {[
+            { done: true, text: "Meta Pixel installed on landing page (fbq tracking active)" },
+            { done: false, text: "Create Meta Ads account for Deep Sleep Reset" },
+            { done: false, text: "Set up Conversions API (CAPI) for server-side tracking" },
+            { done: false, text: "Create Lookalike Audience from buyer email list" },
+            { done: false, text: "Launch traffic campaign: $5/day — target insomnia/sleep interests" },
+            { done: false, text: "A/B test: carousel (before/after) vs. single image (testimonial)" },
+            { done: false, text: "Retargeting: quiz completers who didn't purchase (7-day window)" },
+            { done: false, text: "Scale to $50/day when ROAS >3×" },
+          ].map((step, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: step.done ? `${C.green}20` : C.cardInner, border: `1px solid ${step.done ? C.green : C.cardBorder}` }}>
+                {step.done && <CheckCircle2 className="w-3 h-3" style={{ color: C.green }} />}
+              </div>
+              <p className="text-xs" style={{ color: step.done ? C.textSecondary : C.textPrimary }}>{step.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TikTokAdsTab() {
   const { data: account } = trpc.tiktok.getAccount.useQuery();
   const { data: campaigns } = trpc.tiktok.getCampaigns.useQuery();
@@ -1904,6 +1995,239 @@ function EmailBroadcastTab() {
           </p>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Feedback Tab Component ────────────────────────────────────────────────────
+function FeedbackTab({ stats }: { stats?: AdminStats }) {
+  const { data: allFeedbacks } = trpc.admin.getFeedbacksForExport.useQuery();
+  const [exportLoading, setExportLoading] = useState(false);
+
+  const handleExportCSV = () => {
+    if (!allFeedbacks || allFeedbacks.length === 0) return;
+    setExportLoading(true);
+    try {
+      const headers = ["ID", "Session ID", "Rating", "Liked", "Improved", "Email", "Reward Code", "Date"];
+      const rows = allFeedbacks.map(f => [
+        f.id,
+        f.sessionId,
+        f.rating,
+        `"${(f.liked ?? '').replace(/"/g, '""')}"`,
+        `"${(f.improved ?? '').replace(/"/g, '""')}"`,
+        f.email ?? '',
+        f.rewardCode ?? '',
+        new Date(f.createdAt).toISOString(),
+      ]);
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `feedbacks-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  // Rating distribution
+  const ratingDist = [5, 4, 3, 2, 1].map(r => ({
+    rating: r,
+    count: allFeedbacks?.filter(f => f.rating === r).length ?? 0,
+  }));
+  const maxCount = Math.max(...ratingDist.map(r => r.count), 1);
+
+  return (
+    <div className="space-y-4">
+      {/* Header with export */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-bold" style={{ color: C.textPrimary }}>Customer Feedback</h2>
+        <button
+          onClick={handleExportCSV}
+          disabled={exportLoading || !allFeedbacks?.length}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
+          style={{ background: C.gold + "22", color: C.gold, border: `1px solid ${C.gold}44` }}
+        >
+          <Download className="w-3.5 h-3.5" />
+          {exportLoading ? 'Exporting...' : `Export CSV (${allFeedbacks?.length ?? 0})`}
+        </button>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 gap-4">
+        <StatCard icon={Star} label="Average Rating" value={stats?.avgRating ? `${Number(stats.avgRating).toFixed(1)}/5` : "—"} sub="From all reviews" color={C.gold} />
+        <StatCard icon={MessageSquare} label="Total Feedbacks" value={stats?.feedbackCount ?? 0} sub="Submitted" color={C.pink} />
+      </div>
+
+      {/* Rating Distribution */}
+      {allFeedbacks && allFeedbacks.length > 0 && (
+        <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Rating Distribution</h3>
+          <div className="space-y-2">
+            {ratingDist.map(({ rating, count }) => (
+              <div key={rating} className="flex items-center gap-3">
+                <div className="flex gap-0.5 w-20 shrink-0">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className="w-3 h-3" fill={s <= rating ? C.gold : "none"} style={{ color: C.gold }} />
+                  ))}
+                </div>
+                <div className="flex-1 rounded-full h-2 overflow-hidden" style={{ background: C.cardInner }}>
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${(count / maxCount) * 100}%`, background: `linear-gradient(90deg, ${C.gold}, oklch(0.65 0.18 55))` }}
+                  />
+                </div>
+                <span className="text-xs w-6 text-right" style={{ color: C.textMuted }}>{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Feedbacks */}
+      {stats?.recentFeedbacks && stats.recentFeedbacks.length > 0 ? (
+        <ChartCard title="Recent Feedback">
+          <div className="space-y-3">
+            {stats.recentFeedbacks.map((fb: { id: number; rating: number | null; liked: string | null; improved: string | null; createdAt: Date }) => (
+              <div key={fb.id} className="p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex gap-0.5">
+                    {[1,2,3,4,5].map(s => (
+                      <Star key={s} className="w-3.5 h-3.5" fill={s <= (fb.rating ?? 0) ? C.gold : "none"} style={{ color: C.gold }} />
+                    ))}
+                  </div>
+                  <span className="text-xs ml-auto" style={{ color: C.textMuted }}>
+                    {fb.createdAt ? new Date(fb.createdAt).toLocaleDateString() : "—"}
+                  </span>
+                </div>
+                {fb.liked && <p className="text-xs mb-1" style={{ color: C.textSecondary }}>👍 {fb.liked}</p>}
+                {fb.improved && <p className="text-xs" style={{ color: C.textMuted }}>💡 {fb.improved}</p>}
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+      ) : (
+        <div className="rounded-2xl p-8 text-center" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <MessageSquare className="w-8 h-8 mx-auto mb-3" style={{ color: C.textMuted }} />
+          <p className="text-sm" style={{ color: C.textSecondary }}>No feedback yet</p>
+          <p className="text-xs mt-1" style={{ color: C.textMuted }}>Feedback will appear here after customers submit reviews</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── AI Insights Tab Component ─────────────────────────────────────────────────
+function AiInsightsTab() {
+  const { data: insights, isLoading } = trpc.admin.getAiInsights.useQuery();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: C.teal, borderTopColor: 'transparent' }} />
+      </div>
+    );
+  }
+
+  if (!insights || insights.length === 0) {
+    return (
+      <div className="rounded-2xl p-12 text-center" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <Sparkles className="w-10 h-10 mx-auto mb-4" style={{ color: C.teal }} />
+        <p className="text-base font-semibold mb-2" style={{ color: C.textPrimary }}>No AI Insights Yet</p>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
+          The nightly AI optimization runs every night at 2:00 AM UTC.<br />
+          First insights will appear after the next scheduled run.
+        </p>
+        <p className="text-xs mt-3" style={{ color: C.textMuted }}>
+          Powered by GPT-4 · Hormozi-style growth recommendations
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-bold" style={{ color: C.textPrimary }}>AI Nightly Optimization</h2>
+        <span className="text-xs px-2 py-1 rounded-full" style={{ background: C.teal + "22", color: C.teal }}>
+          Runs daily at 2:00 AM UTC
+        </span>
+      </div>
+
+      {insights.map((insight) => (
+        <div key={insight.id} className="rounded-2xl overflow-hidden" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-3" style={{ background: C.cardInner, borderBottom: `1px solid ${C.cardBorder}` }}>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: C.teal }} />
+              <span className="text-sm font-semibold" style={{ color: C.textPrimary }}>
+                {insight.date} — AI Analysis
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {insight.applied && (
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.green + "22", color: C.green }}>
+                  Applied
+                </span>
+              )}
+              <span className="text-xs" style={{ color: C.textMuted }}>
+                {new Date(insight.createdAt).toLocaleTimeString()}
+              </span>
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="px-5 py-4">
+            <p className="text-sm leading-relaxed mb-4" style={{ color: C.textSecondary }}>
+              {insight.summary}
+            </p>
+
+            {/* Recommendations */}
+            {Array.isArray(insight.recommendations) && insight.recommendations.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: C.textMuted }}>
+                  Recommendations
+                </h4>
+                {insight.recommendations.map((rec: { priority?: string; title?: string; description?: string; action?: string }, idx: number) => (
+                  <div key={idx} className="flex gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                    <div className="shrink-0 mt-0.5">
+                      <span className={`text-xs px-1.5 py-0.5 rounded font-semibold`} style={{
+                        background: rec.priority === 'high' ? C.pink + "33" : rec.priority === 'medium' ? C.gold + "33" : C.teal + "33",
+                        color: rec.priority === 'high' ? C.pink : rec.priority === 'medium' ? C.gold : C.teal,
+                      }}>
+                        {(rec.priority ?? 'low').toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold mb-1" style={{ color: C.textPrimary }}>{rec.title ?? rec.action ?? 'Recommendation'}</p>
+                      <p className="text-xs" style={{ color: C.textSecondary }}>{rec.description ?? ''}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Key Metrics Snapshot */}
+            {insight.metrics && Object.keys(insight.metrics).length > 0 && (
+              <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.cardBorder}` }}>
+                <h4 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: C.textMuted }}>
+                  Metrics Snapshot
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {Object.entries(insight.metrics).slice(0, 8).map(([key, val]) => (
+                    <div key={key} className="p-2 rounded-xl text-center" style={{ background: C.bg }}>
+                      <p className="text-xs font-bold" style={{ color: C.textPrimary }}>{String(val)}</p>
+                      <p className="text-xs mt-0.5 capitalize" style={{ color: C.textMuted }}>{key.replace(/_/g, ' ')}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

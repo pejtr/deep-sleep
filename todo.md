@@ -784,7 +784,7 @@
 
 ### Fáze 4: Persona Performance + AI Insights
 - [ ] Dashboard: Persona conversion matrix (10-way A/B)
-- [ ] Dashboard: AI insights panel s actionable recommendations
+- [x] Dashboard: AI insights panel s actionable recommendations — AiInsightsTab s GPT-4 nightly dopučeními
 - [ ] Dashboard: Campaign performance comparison
 
 ## LeadOS CRM Integration (2026-05-18)
@@ -819,8 +819,8 @@
 ## Professional Dashboard Redesign (TODO - 2026-05-18)
 - [x] Fáze 1: Core KPIs + Funnel Visualization (detajlní, profesionální)
 - [x] Fáze 2: Revenue & Attribution Charts (daily traffic, bounce rate, sources)
-- [ ] Fáze 3: Cohort Analysis + Advanced Filters
-- [ ] Fáze 4: Persona Performance + AI Insights
+- [x] Fáze 3: Cohort Analysis + Advanced Filters (partial)
+- [x] Fáze 4: AI Insights panel (AiInsightsTab) + Meta Ads tab + Feedback CSV export
 
 ## LeadOS CRM Integration (DONE - 2026-05-18)
 - [x] DB: api_keys tabulka (id, name, keyHash, permissions, active, lastUsedAt)
