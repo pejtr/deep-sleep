@@ -146,6 +146,7 @@ type AdminStats = {
   referrerBreakdown?: Array<{ source: string; visits: number }>;
   deviceBreakdown?: Array<{ device: string; count: number }>;
   orderTimeline?: Array<{ hour: string; count: number }>;
+  revenueByProduct?: Array<{ product: string; value: number }>;
 };
 
 function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoading: boolean; refetch: () => void }) {
@@ -170,6 +171,34 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
   ];
 
   const orderTimelineData = stats?.orderTimeline ?? [];
+
+  // Timeline metrics query (daily, driven by dateRange)
+  const timelineDays = dateRange === "today" ? 1 : dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
+  const { data: timelineData, isLoading: timelineLoading } = trpc.admin.getTimelineMetrics.useQuery(
+    { granularity: "daily", days: timelineDays },
+    { refetchOnWindowFocus: false }
+  );
+
+  // Trend indicators (% change vs. previous period)
+  const { data: trendData } = trpc.admin.getStatsTrend.useQuery(
+    { days: timelineDays },
+    { refetchOnWindowFocus: false }
+  );
+  const trends = trendData?.trends;
+
+  // Helper: render trend badge
+  const TrendBadge = ({ pct }: { pct: number | null | undefined }) => {
+    if (pct === null || pct === undefined) return null;
+    const isPos = pct >= 0;
+    return (
+      <span className="text-xs px-1.5 py-0.5 rounded-full font-semibold" style={{
+        background: isPos ? `${C.green}18` : `${C.red}18`,
+        color: isPos ? C.green : C.red,
+      }}>
+        {isPos ? '▲' : '▼'} {Math.abs(pct)}%
+      </span>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -216,7 +245,10 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
                 </div>
                 <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${C.green}18`, color: C.green }}>Paid only</span>
               </div>
-              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>${revenue.toFixed(2)}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>${revenue.toFixed(2)}</p>
+                <TrendBadge pct={trends?.revenue} />
+              </div>
               <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Total Revenue</p>
               <p className="text-xs mt-1" style={{ color: C.green }}>AOV: ${aov.toFixed(2)}</p>
             </div>
@@ -226,7 +258,10 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
               <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${C.gold}18` }}>
                 <ShoppingCart className="w-4 h-4" style={{ color: C.gold }} />
               </div>
-              <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{completedOrders}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold" style={{ color: C.textPrimary }}>{completedOrders}</p>
+                <TrendBadge pct={trends?.orders} />
+              </div>
               <p className="text-xs mt-0.5" style={{ color: C.textSecondary }}>Completed Orders</p>
               <p className="text-xs mt-1" style={{ color: C.textMuted }}>{orders - completedOrders} pending</p>
             </div>
@@ -304,37 +339,54 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
               </div>
             </div>
 
-            {/* Revenue Timeline */}
+            {/* Revenue Trend (daily, date-range driven) */}
             <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Order Activity (last 48h)</h3>
-              {orderTimelineData.length > 0 ? (
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold" style={{ color: C.textPrimary }}>Revenue Trend</h3>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${C.green}18`, color: C.green }}>Last {timelineDays}d</span>
+              </div>
+              {timelineLoading ? (
+                <div className="h-44 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border-2 animate-spin" style={{ borderColor: `${C.gold} transparent transparent transparent` }} />
+                </div>
+              ) : timelineData && timelineData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={orderTimelineData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+                  <AreaChart data={timelineData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
                     <defs>
-                      <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={C.green} stopOpacity={0.4} />
+                      <linearGradient id="revGrad2" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={C.green} stopOpacity={0.35} />
                         <stop offset="95%" stopColor={C.green} stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="ordGrad2" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={C.gold} stopOpacity={0.25} />
+                        <stop offset="95%" stopColor={C.gold} stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" />
-                    <XAxis dataKey="hour" tick={{ fill: C.textMuted, fontSize: 9 }} />
-                    <YAxis tick={{ fill: C.textMuted, fontSize: 9 }} allowDecimals={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area type="monotone" dataKey="count" name="Orders" stroke={C.green} fill="url(#revGrad)" strokeWidth={2} dot={false} />
+                    <XAxis dataKey="day" tick={{ fill: C.textMuted, fontSize: 9 }} tickFormatter={(v: string) => v.slice(5)} />
+                    <YAxis yAxisId="rev" orientation="left" tick={{ fill: C.textMuted, fontSize: 9 }} tickFormatter={(v: number) => `$${v}`} />
+                    <YAxis yAxisId="ord" orientation="right" tick={{ fill: C.textMuted, fontSize: 9 }} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{ background: "oklch(0.11 0.03 265)", border: `1px solid ${C.cardBorder}`, borderRadius: 8, fontSize: 11 }}
+                      labelStyle={{ color: C.textPrimary }}
+                      formatter={(value: number, name: string) => [name === "Revenue" ? `$${value.toFixed(2)}` : value, name]}
+                    />
+                    <Area yAxisId="rev" type="monotone" dataKey="revenue" name="Revenue" stroke={C.green} fill="url(#revGrad2)" strokeWidth={2} dot={false} />
+                    <Area yAxisId="ord" type="monotone" dataKey="orders" name="Orders" stroke={C.gold} fill="url(#ordGrad2)" strokeWidth={1.5} dot={false} />
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="flex flex-col items-center justify-center h-44 gap-2">
                   <Clock className="w-8 h-8" style={{ color: C.textMuted }} />
-                  <p className="text-xs" style={{ color: C.textMuted }}>No order data yet</p>
-                  <p className="text-xs" style={{ color: C.textMuted }}>Timeline will appear after first purchase</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>No revenue data yet</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>Chart appears after first completed order</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* ── Secondary Metrics Row ─────────────────────────────────────────────────────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* ── Secondary Metrics Row ────────────────────────────────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Traffic Sources */}
             <ChartCard title="Traffic Sources">
               {stats?.referrerBreakdown && stats.referrerBreakdown.length > 0 ? (
@@ -377,6 +429,45 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
                 </ResponsiveContainer>
               ) : (
                 <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No device data yet</p>
+              )}
+            </ChartCard>
+
+            {/* Revenue by Product */}
+            <ChartCard title="Revenue by Product">
+              {stats?.revenueByProduct && stats.revenueByProduct.length > 0 ? (
+                <>
+                  <ResponsiveContainer width="100%" height={120}>
+                    <PieChart>
+                      <Pie
+                        data={stats.revenueByProduct.map(p => ({ name: p.product, value: p.value }))}
+                        cx="50%" cy="50%" innerRadius={30} outerRadius={50} paddingAngle={3} dataKey="value"
+                      >
+                        {stats.revenueByProduct.map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={[C.green, C.gold, C.blue, C.purple, C.teal, C.pink][index % 6]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(v: number) => [`$${v.toFixed(2)}`, 'Revenue']} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="space-y-1 mt-2">
+                    {stats.revenueByProduct.slice(0, 4).map((p, i) => {
+                      const colors = [C.green, C.gold, C.blue, C.purple, C.teal, C.pink];
+                      const totalRev = stats.revenueByProduct!.reduce((s, x) => s + x.value, 0);
+                      const pct = totalRev > 0 ? (p.value / totalRev * 100).toFixed(0) : '0';
+                      return (
+                        <div key={p.product} className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-2 h-2 rounded-full" style={{ background: colors[i % colors.length] }} />
+                            <span className="text-xs truncate max-w-[90px]" style={{ color: C.textSecondary }}>{p.product}</span>
+                          </div>
+                          <span className="text-xs font-bold" style={{ color: colors[i % colors.length] }}>${p.value.toFixed(2)} ({pct}%)</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <p className="text-xs text-center py-6" style={{ color: C.textMuted }}>No product data yet</p>
               )}
             </ChartCard>
 

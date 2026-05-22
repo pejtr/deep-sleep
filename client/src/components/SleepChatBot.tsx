@@ -347,7 +347,7 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   const displayName = isAdminMode ? "Luna" : isAffiliateMode ? "Luna" : persona.name;
   const displayEmoji = isAdminMode ? "✨" : isAffiliateMode ? "💰" : persona.emoji;
   const displayTagline = isAdminMode
-    ? `Stats: $${adminStats?.revenue?.toFixed(0) ?? "—"} rev · ${adminStats?.orderCount ?? "—"} orders`
+    ? `Stats: $${adminStats?.revenue?.toFixed(0) ?? "—"} rev · ${adminStats?.completedOrderCount ?? adminStats?.orderCount ?? "—"} orders`
     : isAffiliateMode ? "Affiliate Guide · Online"
     : persona.tagline;
   const displayColor = isAdminMode ? "oklch(0.55 0.18 65)" : isAffiliateMode ? "oklch(0.55 0.18 65)" : persona.color;

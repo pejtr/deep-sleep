@@ -312,7 +312,17 @@ export async function getAdminStats() {
   });
   const avgTimeToCheckout = timeCount > 0 ? Math.round(totalTimeMin / timeCount * 10) / 10 : 0;
 
-  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout };
+  // Revenue by product (for donut chart)
+  const productRevenueMap = new Map<string, number>();
+  completedOrders.forEach(o => {
+    const product = o.productId ?? 'unknown';
+    productRevenueMap.set(product, (productRevenueMap.get(product) ?? 0) + toUsd(o.amount, o.currency));
+  });
+  const revenueByProduct = Array.from(productRevenueMap.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([product, value]) => ({ product, value: Math.round(value * 100) / 100 }));
+
+  return { quizCount: quiz.length, orderCount: allOrders.length, completedOrderCount: completedOrders.length, leadCount: leads.length, revenue, feedbackCount: fbs.length, avgRating: Math.round(avgRating * 10) / 10, behaviorCount: behaviors.length, recentOrders, recentFeedbacks, quizStarts, checkoutClicks, uniqueBuyers, duplicateAttempts, referrerBreakdown, orderTimeline, deviceBreakdown, avgTimeToCheckout, revenueByProduct };
 }
 
 // ── Email broadcast helpers ───────────────────────────────────────────────────

@@ -679,6 +679,38 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
     stats: protectedProcedure.query(async () => getAdminStats()),
     getAbResults: protectedProcedure.query(async () => getUpsellAbResults()),
 
+    getStatsTrend: protectedProcedure
+      .input(z.object({
+        days: z.number().int().min(1).max(90).default(30),
+      }))
+      .query(async ({ input }) => {
+        const { getDailyMetrics } = await import("./db");
+        const now = Date.now();
+        const periodMs = input.days * 24 * 60 * 60 * 1000;
+        const [currentData, prevData] = await Promise.all([
+          getDailyMetrics(now - periodMs, now),
+          getDailyMetrics(now - 2 * periodMs, now - periodMs),
+        ]);
+        const sum = (data: typeof currentData) => ({
+          revenue: data.reduce((s, d) => s + (d.revenue ?? 0), 0),
+          orders: data.reduce((s, d) => s + (d.orders ?? 0), 0),
+          visits: data.reduce((s, d) => s + (d.visits ?? 0), 0),
+        });
+        const current = sum(currentData);
+        const prev = sum(prevData);
+        const pct = (curr: number, p: number) =>
+          p === 0 ? null : Math.round(((curr - p) / p) * 1000) / 10;
+        return {
+          current,
+          prev,
+          trends: {
+            revenue: pct(current.revenue, prev.revenue),
+            orders: pct(current.orders, prev.orders),
+            visits: pct(current.visits, prev.visits),
+          },
+        };
+      }),
+
     getTimelineMetrics: protectedProcedure
       .input(z.object({
         granularity: z.enum(["hourly", "daily"]).default("daily"),

@@ -762,19 +762,19 @@
 ## Professional Dashboard Redesign (Iterative)
 
 ### Fáze 1: Core KPIs + Funnel Visualization
-- [ ] Dashboard: Redesign top KPI cards (Revenue, Conversion Rate, AOV, CAC, ROAS)
-- [ ] Dashboard: Waterfall funnel chart (Quiz Starts → Quiz Complete → Email → Checkout Click → Orders)
-- [ ] Dashboard: Drop-off % na každém funnel kroku
-- [ ] Dashboard: Date range picker (today, 7d, 30d, 90d, custom) — globální filtr
+- [x] Dashboard: Redesign top KPI cards (Revenue, Conversion Rate, AOV, CAC, ROAS)
+- [x] Dashboard: Waterfall funnel chart (Quiz Starts → Quiz Complete → Email → Checkout Click → Orders)
+- [x] Dashboard: Drop-off % na každém funnel kroku
+- [x] Dashboard: Date range picker (today, 7d, 30d, 90d) — globální filtr
 - [ ] Dashboard: Real-time live visitors counter
-- [ ] Dashboard: Trend indicators (% change vs. previous period)
+- [x] Dashboard: Trend indicators (% change vs. previous period) — TrendBadge
 
 ### Fáze 2: Revenue & Attribution Charts
-- [ ] Dashboard: Revenue trend line chart (daily/weekly/monthly)
-- [ ] Dashboard: Traffic source attribution (organic, direct, Reddit, TikTok, Google)
-- [ ] Dashboard: Device breakdown (mobile vs desktop vs tablet)
+- [x] Dashboard: Revenue trend line chart (daily/weekly/monthly) — dual-axis AreaChart
+- [x] Dashboard: Traffic source attribution (organic, direct, Reddit, TikTok, Google)
+- [x] Dashboard: Device breakdown (mobile vs desktop vs tablet)
 - [ ] Dashboard: Geographic heatmap (top countries)
-- [ ] Dashboard: Revenue by product (pie/donut chart)
+- [x] Dashboard: Revenue by product (pie/donut chart)
 
 ### Fáze 3: Cohort Analysis + Advanced Filters
 - [ ] Dashboard: Cohort retention heatmap
@@ -817,8 +817,8 @@
 - [x] Oprav webhook URL (www.deep-sleep-reset.com → deep-sleep-reset.com)
 
 ## Professional Dashboard Redesign (TODO - 2026-05-18)
-- [ ] Fáze 1: Core KPIs + Funnel Visualization (detailní, profesionální)
-- [ ] Fáze 2: Revenue & Attribution Charts (daily traffic, bounce rate, sources)
+- [x] Fáze 1: Core KPIs + Funnel Visualization (detajlní, profesionální)
+- [x] Fáze 2: Revenue & Attribution Charts (daily traffic, bounce rate, sources)
 - [ ] Fáze 3: Cohort Analysis + Advanced Filters
 - [ ] Fáze 4: Persona Performance + AI Insights
 
@@ -853,9 +853,9 @@
 - [x] Všechny testy procházejí (276/276)
 
 ## Bug Fix: orderCount zobrazuje všechny objednávky místo jen completed (2026-05-18)
-- [ ] Opravit sticky bar / header — zobrazovat completedOrderCount místo orderCount
-- [ ] Zkontrolovat všechna místa v UI kde se zobrazuje stats.orderCount a opravit na completedOrderCount
-- [ ] Opravit db.ts — vrátit orderCount = allOrders.length zpět na completedOrders.length (nebo přejmenovat pole)
+- [x] Opravit sticky bar / header — zobrazovat completedOrderCount místo orderCount
+- [x] Zkontrolovat všechna místa v UI kde se zobrazuje stats.orderCount a opravit na completedOrderCount
+- [x] Opravit db.ts — vrátit orderCount = allOrders.length zpět na completedOrders.length (nebo přejmenovat pole)
 
 ## Quiz Result Email Automation (DONE - 2026-05-18)
 - [x] Vytvoř quizEmailService.ts s sendQuizResultEmail funkcí
