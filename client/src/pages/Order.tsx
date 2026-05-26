@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
-import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check, Download, Zap, Moon, Brain } from "lucide-react";
+import { Lock, Shield, Star, ArrowRight, Users, CreditCard, Plus, Check, Download, Zap, Moon, Brain, Feather, Sparkles } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import TrustBar from "@/components/TrustBar";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
@@ -77,11 +77,51 @@ export default function Order() {
         </div>
 
         {/* TikTok viral badge */}
-        <div className="flex items-center justify-center gap-2 mb-8 px-4 py-2 rounded-full mx-auto w-fit"
+        <div className="flex items-center justify-center gap-2 mb-6 px-4 py-2 rounded-full mx-auto w-fit"
           style={{ background: "oklch(0.12 0.03 290)", border: "1px solid oklch(0.55 0.15 290 / 0.5)" }}>
           <span className="text-sm">▶</span>
           <span className="text-xs font-bold" style={{ color: "oklch(0.80 0.14 290)" }}>As seen on TikTok</span>
           <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>· 244K+ views</span>
+        </div>
+
+        {/* Luna Fate Section */}
+        <div className="rounded-3xl p-6 mb-8 relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg, oklch(0.10 0.04 280), oklch(0.08 0.06 260))", border: "1px solid oklch(0.45 0.12 280 / 0.4)" }}>
+          <div className="orb w-48 h-48 opacity-20" style={{ background: "oklch(0.55 0.18 280)", top: "-30%", right: "-10%", position: "absolute", borderRadius: "50%", filter: "blur(40px)" }} />
+          <div className="flex items-start gap-4 relative z-10">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-ZRuJw2SPLknXZS2RAKU4vn.webp"
+              alt="Luna — your dream guide"
+              className="w-16 h-16 rounded-full flex-shrink-0 object-cover"
+              style={{ border: "2px solid oklch(0.65 0.18 280 / 0.6)", boxShadow: "0 0 20px oklch(0.55 0.18 280 / 0.3)" }}
+            />
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <Feather className="w-3.5 h-3.5" style={{ color: "oklch(0.72 0.16 280)" }} />
+                <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.72 0.16 280)" }}>Luna speaks</span>
+              </div>
+              <p className="text-sm leading-relaxed italic" style={{ color: "oklch(0.88 0.03 265)" }}>
+                "The elders say: <strong style={{ color: "oklch(0.82 0.16 65)", fontStyle: "normal" }}>you do not find sleep — sleep finds you</strong>, when you stop fighting your nature.
+                You came here for a reason. Your body has been sending signals. Tonight, you answer."
+              </p>
+              <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 265)" }}>— Luna, Dream Guide &amp; Sleep Scientist</p>
+            </div>
+          </div>
+          <div className="mt-4 pt-4 relative z-10" style={{ borderTop: "1px solid oklch(0.25 0.04 280 / 0.5)" }}>
+            <div className="grid grid-cols-3 gap-3 text-center">
+              {[
+                { icon: "🌙", label: "Nights 1–3", desc: "Fall asleep 47 min faster" },
+                { icon: "🦅", label: "Nights 4–5", desc: "Deep sleep +31% longer" },
+                { icon: "⭐", label: "Night 7", desc: "Wake refreshed, no alarm" },
+              ].map((s, i) => (
+                <div key={i} className="rounded-xl p-2" style={{ background: "oklch(0.12 0.03 265 / 0.6)" }}>
+                  <div className="text-xl mb-1">{s.icon}</div>
+                  <div className="text-xs font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>{s.label}</div>
+                  <div className="text-xs" style={{ color: "oklch(0.55 0.04 265)" }}>{s.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Pricing Tiers Selector */}

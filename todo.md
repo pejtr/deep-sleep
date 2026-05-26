@@ -941,3 +941,15 @@
 
 ## Analyzing Animation (May 26)
 - [ ] Přidat "Analyzing your sleep biology..." animaci mezi core otázky a email gate (buduje napětí, zvyšuje konverzi)
+
+## TikTok Landing Page (May 26)
+- [ ] Vytvořit /tiktok landing page — mobile-first, autoplay video slot, krátký headline, social proof, CTA
+- [ ] Registrovat /tiktok route v App.tsx
+
+## Luna + Hormozi Upsell Redesign (May 26)
+- [x] Luna persona na Order.tsx pre-checkout (fate/destiny narrative, Lakota wisdom, 3-step result timeline)
+- [x] Luna persona na Upsell1.tsx (Mitákuye Oyásʼiŋ quote, chronotype medicine framing)
+- [x] Sitemap.xml pro fixinsomnia.quest + deepsleep.my
+- [x] TikTok landing page /tiktok vytvořena a zaregistrována v App.tsx
+- [x] Analyzing animation přidána do Quiz.tsx (phase: "analyzing")
+- [x] 290/290 testů projde

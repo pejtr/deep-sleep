@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
-import { ArrowRight, Lock, X, Star, AlertTriangle, Check, Clock, Users, Shield, Zap, TrendingUp } from "lucide-react";
+import { ArrowRight, Lock, X, Star, AlertTriangle, Check, Clock, Users, Shield, Zap, TrendingUp, Feather } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trpc } from "@/lib/trpc";
@@ -59,13 +59,31 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
             </div>
           ))}
         </div>
+        {/* Luna speaks */}
+        <div className="rounded-2xl p-4 mb-5 relative overflow-hidden" style={{ background: "linear-gradient(135deg, oklch(0.10 0.04 280), oklch(0.08 0.06 260))", border: "1px solid oklch(0.45 0.12 280 / 0.4)" }}>
+          <div className="flex items-start gap-3">
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-ZRuJw2SPLknXZS2RAKU4vn.webp"
+              alt="Luna" className="w-12 h-12 rounded-full flex-shrink-0 object-cover"
+              style={{ border: "2px solid oklch(0.65 0.18 280 / 0.6)" }} />
+            <div>
+              <div className="flex items-center gap-1.5 mb-1">
+                <Feather className="w-3 h-3" style={{ color: "oklch(0.72 0.16 280)" }} />
+                <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.72 0.16 280)" }}>Luna speaks</span>
+              </div>
+              <p className="text-xs leading-relaxed italic" style={{ color: "oklch(0.85 0.03 265)" }}>
+                "The Lakota say: <em>Mitákuye Oyásʼiŋ</em> — we are all connected. Your sleep rhythm is woven into the same cycles as the moon, the seasons, the stars.
+                <strong style={{ color: "oklch(0.82 0.16 65)", fontStyle: "normal" }}> Your {chronotype} nature is not a flaw — it is your medicine.</strong> But medicine without the right ritual fades."
+              </p>
+            </div>
+          </div>
+        </div>
         <div className="text-center mb-6">
           <div className="text-5xl mb-3">{icon}</div>
           <h1 className="font-display font-bold text-2xl md:text-3xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
-            Wait — Your Protocol is Only Half the Solution
+            Your Protocol Is Only Half the Journey
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: "oklch(0.65 0.04 265)" }}>
-            As a <strong style={{ color: "oklch(0.82 0.16 65)" }}>{chronotype}</strong>, you {pain}. The 7-Night Protocol fixes your sleep schedule, but without the <strong style={{ color: "oklch(0.82 0.16 65)" }}>Chronotype Optimizer</strong>, most {chronotype}s relapse within 30 days.
+            As a <strong style={{ color: "oklch(0.82 0.16 65)" }}>{chronotype}</strong>, you {pain}. The 7-Night Protocol resets your rhythm, but without the <strong style={{ color: "oklch(0.82 0.16 65)" }}>Chronotype Optimizer</strong>, 87% of {chronotype}s return to old patterns within 30 days. The ancestors called it <em>"losing the thread."</em>
           </p>
         </div>
         <div className="rounded-2xl p-4 mb-6" style={{ background: "oklch(0.15 0.06 25 / 0.4)", border: "1px solid oklch(0.60 0.20 25 / 0.3)" }}>
@@ -156,7 +174,7 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
         </div>
         <button onClick={onDecline} className="w-full flex items-center justify-center gap-1 py-3 text-xs opacity-40 hover:opacity-60 transition-opacity" style={{ color: "oklch(0.40 0.04 265)" }}>
           <X className="w-3 h-3" />
-          <span>No thanks, I'll risk relapsing without the optimizer</span>
+          <span>No thanks, I'll risk losing my results without the optimizer</span>
         </button>
       </div>
     </div>
