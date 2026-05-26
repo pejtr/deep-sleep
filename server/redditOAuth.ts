@@ -12,12 +12,11 @@ const REDDIT_TOKEN_URL = "https://www.reddit.com/api/v1/access_token";
 // Official docs: https://business.reddithelp.com/s/article/authenticate-your-developer-application
 const SCOPES = "adsread,adsconversions,history,adsedit,read";
 
-/** Build the correct redirect URI — always HTTPS on production, respects X-Forwarded-Proto */
-function buildRedirectUri(req: Request): string {
-  // X-Forwarded-Proto is set by the Manus reverse proxy
-  const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol;
-  const host  = (req.headers["x-forwarded-host"] as string) || req.get("host") || "fixinsomnia.quest";
-  return `${proto}://${host}/api/reddit/callback`;
+/** Build the correct redirect URI — always uses the registered production domain.
+ * NEVER use req.host/protocol — Cloud Run internal URLs differ from the public domain.
+ */
+function buildRedirectUri(_req: Request): string {
+  return process.env.REDDIT_REDIRECT_URI || "https://fixinsomnia.quest/api/reddit/callback";
 }
 
 export function registerRedditOAuthRoutes(app: Express) {
