@@ -48,6 +48,42 @@ const SEGMENTS: Record<string, {
     cta: "Take the Free Chronotype Quiz",
     metaTitle: "Tired But Wired — 7-Night Sleep Reset for High Performers",
   },
+  "/sleep-reset": {
+    headline: "Reset Your Sleep in 7 Nights",
+    subheadline: "A structured behavioral protocol to rebuild your natural sleep rhythm — without pills, devices, or guesswork.",
+    hook: "Your sleep isn't broken. It's been disrupted. And disrupted patterns can be reset.",
+    pain: "You've tried sleep hygiene tips, apps, supplements, and routines. Nothing sticks because they treat symptoms, not the underlying sleep drive.",
+    solution: "The 7-Night Deep Sleep Reset uses CBT-I inspired stimulus control and sleep restriction to rebuild your body's natural sleep pressure from scratch.",
+    cta: "Start Your Free Sleep Reset Quiz",
+    metaTitle: "Reset Your Sleep in 7 Nights — CBT-I Inspired Protocol",
+  },
+  "/no-pills": {
+    headline: "Better Sleep Without Pills",
+    subheadline: "A behavioral sleep reset for people who want a sustainable, drug-free sleep routine.",
+    hook: "Pills mask the symptom. This protocol fixes the pattern.",
+    pain: "Melatonin worked for a week. Magnesium helped a bit. Prescription sleep aids left you groggy. You're tired of depending on something external to fall asleep.",
+    solution: "The 7-Night Deep Sleep Reset retrains your body's natural sleep drive using behavioral science — no supplements, no devices, no dependency.",
+    cta: "Take the Free Drug-Free Sleep Quiz",
+    metaTitle: "Better Sleep Without Pills — 7-Night Behavioral Reset",
+  },
+  "/productivity-sleep": {
+    headline: "Sleep Is Your #1 Productivity System",
+    subheadline: "High performers who fix their sleep report 40% better focus, faster decisions, and more energy by noon.",
+    hook: "You optimize your calendar, your diet, your workouts. But you're still sleeping like a student.",
+    pain: "You wake up unrefreshed, reach for coffee immediately, and hit a wall at 2 PM. Your output suffers, your mood suffers, and no productivity hack fixes what bad sleep breaks.",
+    solution: "The 7-Night Deep Sleep Reset is a performance protocol — not a wellness trend. It rebuilds deep sleep architecture so your brain consolidates learning, clears waste, and wakes sharp.",
+    cta: "Take the Free Sleep Performance Quiz",
+    metaTitle: "Sleep as a Productivity System — 7-Night Deep Sleep Reset",
+  },
+  "/cbti-inspired": {
+    headline: "The CBT-I Inspired Sleep Reset",
+    subheadline: "CBT-I is the gold standard for insomnia. This 7-night protocol adapts its core techniques into a practical daily system.",
+    hook: "CBT-I has a 70-80% success rate for chronic insomnia. This protocol brings those techniques home.",
+    pain: "Therapy waitlists are months long. Sleep clinics are expensive. Most CBT-I apps are confusing or incomplete. You want the real techniques without the barriers.",
+    solution: "The 7-Night Deep Sleep Reset distills the core CBT-I principles — stimulus control, sleep restriction, cognitive restructuring — into a clear, step-by-step daily guide.",
+    cta: "Start the Free CBT-I Sleep Assessment",
+    metaTitle: "CBT-I Inspired Sleep Reset — 7-Night Protocol",
+  },
 };
 
 export default function SegmentLanding() {
@@ -60,8 +96,20 @@ export default function SegmentLanding() {
   const [matchedRacing] = useRoute("/racing-thoughts");
   const [matchedMelatonin] = useRoute("/melatonin-alternative");
   const [matchedTired] = useRoute("/tired-but-wired");
+  const [matchedSleepReset] = useRoute("/sleep-reset");
+  const [matchedNoPills] = useRoute("/no-pills");
+  const [matchedProductivity] = useRoute("/productivity-sleep");
+  const [matchedCbti] = useRoute("/cbti-inspired");
 
-  const path = matchedWakeUp ? "/3am-wake-up" : matchedRacing ? "/racing-thoughts" : matchedMelatonin ? "/melatonin-alternative" : "/tired-but-wired";
+  const path = matchedWakeUp ? "/3am-wake-up"
+    : matchedRacing ? "/racing-thoughts"
+    : matchedMelatonin ? "/melatonin-alternative"
+    : matchedTired ? "/tired-but-wired"
+    : matchedSleepReset ? "/sleep-reset"
+    : matchedNoPills ? "/no-pills"
+    : matchedProductivity ? "/productivity-sleep"
+    : matchedCbti ? "/cbti-inspired"
+    : "/3am-wake-up";
   const segment = SEGMENTS[path] || SEGMENTS["/3am-wake-up"]!;
 
   useEffect(() => {

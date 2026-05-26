@@ -926,6 +926,12 @@
 - [x] Bridge page (/bridge) — post-checkout warm-up → upsell chain
 - [x] Exit-intent popup component (email capture + discount)
 - [ ] TikTok-optimized meta tags (OG image, description) for all pages
+- [ ] Fix TikTok landing page pricing copy ($5 → $7)
+- [ ] Add UTM/behavior tracking to TikTokLanding.tsx
+- [ ] Add UTM analytics tracking to Order.tsx and CheckoutSuccess.tsx
+- [ ] Build /insomnia dedicated landing page (CBT-I focused, Reddit-safe)
+- [ ] Redesign Upsell2.tsx with Luna persona + Hormozi value stack
+- [ ] Redesign Upsell3.tsx with Luna persona + Hormozi value stack
 - [ ] Reddit-safe compliance disclaimers on all pages
 - [ ] Affiliate outreach email templates (DFY scripts for creators)
 
@@ -966,3 +972,17 @@
 - [x] Trust badges sekce — SSL 256-bit, 30-day guarantee, instant download, CBT-I backed, 2847 buyers
 - [x] "X people viewing this right now" live social proof counter na Order stránce
 - [x] Urgency copy update — "Only X spots left at this price" dynamicky se snižující číslo
+
+## Targeting Strategy — Segment Landing Pages (May 26)
+- [x] Fix Order.tsx JSX adjacent elements error (line 291) — stale Vite log, build passes clean
+- [ ] Build /3am landing page — "Wake Up at 3 AM?" + Free 3 AM Protocol CTA
+- [ ] Build /tired-but-wired landing page — "Tired All Day. Wide Awake at Night?"
+- [ ] Build /racing-thoughts landing page — "Mind Racing at Night?"
+- [ ] Build /sleep-reset landing page — "Reset Your Sleep Rhythm in 7 Nights"
+- [ ] Build /no-pills landing page — "A Non-Pill Sleep Routine"
+- [ ] Build /productivity-sleep landing page — "Sleep Is a Productivity System"
+- [ ] Build /cbti-inspired landing page — "A CBT-I Inspired Sleep Reset"
+- [x] Register all 8 segment routes in App.tsx (4 original + 4 new)
+- [ ] Add UTM analytics tracking (pageview + quiz_start + checkout_start + purchase events)
+- [ ] Update Reddit ad copy to safe/transparent style (no hype claims)
+- [ ] Retry Reddit API campaigns with new safe copy

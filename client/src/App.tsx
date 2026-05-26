@@ -93,6 +93,10 @@ function Router() {
         <Route path="/racing-thoughts" component={SegmentLanding} />
         <Route path="/melatonin-alternative" component={SegmentLanding} />
         <Route path="/tired-but-wired" component={SegmentLanding} />
+        <Route path="/sleep-reset" component={SegmentLanding} />
+        <Route path="/no-pills" component={SegmentLanding} />
+        <Route path="/productivity-sleep" component={SegmentLanding} />
+        <Route path="/cbti-inspired" component={SegmentLanding} />
         <Route path="/affiliates/join" component={AffiliateJoin} />
         <Route path="/affiliates/dashboard" component={AffiliateDashboard} />
         <Route path="/quiz-funnel" component={QuizFunnel} />

@@ -84,7 +84,7 @@ export default function Order() {
           {timerMins}:{timerSecStr}
         </span>
         <span className="text-xs hidden sm:inline" style={{ color: "oklch(0.65 0.08 65)" }}>
-          — Price goes to ${selectedTier === "discount" ? "5" : "19"} after
+          — Price goes to ${selectedTier === "discount" ? "9" : "27"} after
         </span>
       </div>
 
@@ -214,6 +214,7 @@ export default function Order() {
 
             <div className="mb-4">
               <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(1)}</span>
+              <span className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 265)" }}>Quick start — 1 night</span>
               <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
             </div>
 
@@ -229,7 +230,7 @@ export default function Order() {
             </button>
           </div>
 
-          {/* $4 Full Tier */}
+          {/* $7 Full Tier */}
           <div
             onClick={() => setSelectedTier("main")}
             className="glass-card rounded-3xl p-6 relative overflow-hidden cursor-pointer transition-all duration-200"
@@ -269,8 +270,8 @@ export default function Order() {
             </div>
 
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
-              <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(4)}</span>
+              <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(97)}</span>
+              <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(7)}</span>
               <div className="badge-popular">89% OFF</div>
             </div>
 
@@ -289,7 +290,7 @@ export default function Order() {
           </div>
         </div>
 
-          {/* Selected Product Card */}
+        {/* Selected Product Card */}
         <div className="glass-card rounded-3xl p-8 mb-6 relative overflow-hidden"
           style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
           <div className="orb orb-gold w-40 h-40 opacity-10" style={{ top: "-20%", right: "-10%" }} />
@@ -333,10 +334,10 @@ export default function Order() {
           {/* Price with currency switcher */}
           <div className="flex items-center gap-3 mb-4">
             {selectedTier === "main" && (
-              <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(47)}</span>
+              <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(97)}</span>
             )}
             <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>
-              {formatPrice(selectedTier === "discount" ? 1 : 4)}
+              {formatPrice(selectedTier === "discount" ? 1 : 7)}
             </span>
             {selectedTier === "main" && (
               <div>
@@ -390,8 +391,8 @@ export default function Order() {
                     Get a fully personalized sleep schedule, meal timing, and light exposure plan built specifically for your {chronotype} chronotype. Most people see 2x faster results.
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(17)}</span>
-                    <span className="text-base font-black" style={{ color: "oklch(0.78 0.18 65)" }}>Add for just {formatPrice(3)}</span>
+                    <span className="text-xs line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(27)}</span>
+                    <span className="text-base font-black" style={{ color: "oklch(0.78 0.18 65)" }}>Add for just {formatPrice(11)}</span>
                   </div>
                 </div>
               </div>
@@ -432,7 +433,7 @@ export default function Order() {
           {/* Price increase warning */}
           <div className="rounded-lg p-3 mb-4" style={{ background: "oklch(0.15 0.08 15 / 0.2)", border: "1px solid oklch(0.65 0.15 15 / 0.5)" }}>
             <p className="text-xs font-semibold" style={{ color: "oklch(0.65 0.15 15)" }}>
-              Price increases to ${selectedTier === "discount" ? "5" : "19"} in 48 hours
+              Price increases to ${selectedTier === "discount" ? "9" : "27"} in 48 hours
             </p>
             <p className="text-xs opacity-75 mt-1" style={{ color: "oklch(0.65 0.15 15)" }}>
               Lock in this special price now before it expires
@@ -452,7 +453,7 @@ export default function Order() {
             <span>
               {selectedTier === "discount" 
                 ? `Get 1-Night Optimizer — ${formatPrice(1)}`
-                : (bumpSelected ? `Get Protocol + Optimizer — ${formatPrice(4)} + ${formatPrice(3)}` : `Get My ${chronotype} Protocol — ${formatPrice(4)}`)
+                : (bumpSelected ? `Get Protocol + Audio Pack — ${formatPrice(7)} + ${formatPrice(11)}` : `Get My ${chronotype} Protocol — ${formatPrice(7)}`)
               }
             </span>
             <ArrowRight className="w-5 h-5" />

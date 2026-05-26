@@ -940,7 +940,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
     createSession: publicProcedure
       .input(
         z.object({
-          productId: z.enum(["main", "entry", "discount", "oto1", "oto2", "subscription", "bump"]).default("main"),
+          productId: z.enum(["main", "entry", "discount", "oto1", "oto2", "subscription", "bump", "backend"]).default("main"),
           includeUpsell: z.string().optional(), // e.g. "oto1" — adds upsell as 2nd line item alongside main
           sessionId: z.string(),
           email: z.string().email().optional(),
@@ -960,20 +960,21 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          entry: 100, main: 400, discount: 400, oto1: 1700, oto2: 2700, subscription: 800, bump: 300,
+          entry: 100, main: 700, discount: 700, oto1: 3700, oto2: 1900, subscription: 999, bump: 1100, backend: 9700,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           entry: "1-Night Sleep Optimizer",
           main: "Deep Sleep Reset — 7-Night Protocol",
           discount: "Deep Sleep Reset — 7-Night Protocol (Special Offer)",
-          oto1: "30-Day Sleep Transformation",
-          oto2: "Deep Sleep Toolkit",
-          subscription: "Sleep Optimizer Membership — Monthly",
-          bump: "Chronotype Optimizer — 30-Day Plan (Add-on)",
+          oto1: "Deep Sleep Reset Pro Toolkit",
+          oto2: "Emergency 3 AM Rescue Toolkit",
+          subscription: "Sleep Audio Library — Monthly",
+          bump: "Premium Sleep Audio Pack (12 Tracks)",
+          backend: "Deep Sleep Reset Advanced — 30-Day Mastery Program",
         };
         // Geo-pricing: low-tier countries get reduced prices
         const LOW_TIER_PRICES: Record<string, number> = {
-          entry: 100, main: 100, discount: 100, oto1: 500, oto2: 800, subscription: 300, bump: 100,
+          entry: 100, main: 200, discount: 200, oto1: 900, oto2: 500, subscription: 299, bump: 300, backend: 2500,
         };
         const amountCents = input.isLowTier
           ? (LOW_TIER_PRICES[input.productId] ?? 100)
