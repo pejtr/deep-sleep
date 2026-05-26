@@ -17,6 +17,7 @@ import { trpc } from "@/lib/trpc";
 import { HeroAnimated } from "@/components/HeroAnimated";
 import { useBehaviorTracking } from "@/hooks/useBehaviorTracking";
 import { setMetaTags } from "@/lib/metaTags";
+import { useTransition } from "@/contexts/TransitionContext";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp";
 const CLOCK_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/3am-clock-XJszaQCHaCqerz7QvxDA8P.webp";
@@ -147,14 +148,22 @@ export default function Home() {
     return () => { document.title = "Deep Sleep Reset"; };
   }, []);
 
+  const { navigateWithTransition } = useTransition();
+
   const handleStartQuiz = () => {
     track("cta_click", { page: "home", element: "start_quiz" });
-    navigate("/quiz");
+    navigateWithTransition(
+      () => navigate("/quiz"),
+      { message: "Loading your sleep quiz...", subMessage: "30 seconds to your chronotype", delay: 700 }
+    );
   };
 
   const handleBuyNow = () => {
     track("cta_click", { page: "home", element: "buy_now" });
-    navigate("/order");
+    navigateWithTransition(
+      () => navigate("/order"),
+      { message: "Preparing your protocol...", subMessage: "Setting up secure checkout", delay: 900 }
+    );
   };
 
   return (

@@ -986,3 +986,13 @@
 - [ ] Add UTM analytics tracking (pageview + quiz_start + checkout_start + purchase events)
 - [ ] Update Reddit ad copy to safe/transparent style (no hype claims)
 - [ ] Retry Reddit API campaigns with new safe copy
+
+## Quiz CTA Loading Animation (May 26)
+- [x] Build PageTransitionOverlay component (full-screen animated overlay with sleep-themed loading)
+- [x] Build usePageTransition hook (trigger overlay, delay navigation, cleanup)
+- [x] Wire transition into QuizResult.tsx CTA → /order
+- [x] Wire transition into Quiz.tsx final submit → /quiz-result
+- [x] Wire transition into Home.tsx quiz CTA → /quiz
+- [x] Wire transition into all upsell decline buttons (Upsell1, Upsell2, Upsell3)
+- [x] Add CSS keyframe animations for overlay (moonPulse, orbit, dotBounce, fadeSlideUp)
+- [x] TypeScript check passes after changes (0 errors)

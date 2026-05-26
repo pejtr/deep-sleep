@@ -4,6 +4,7 @@ import { Moon, ArrowLeft, Zap, Shield, Lock, Mail, ChevronRight } from "lucide-r
 import { trpc } from "@/lib/trpc";
 import { getSessionId, getAbVariant, setChronotype, useTrackBehavior } from "@/hooks/useSession";
 import { setMetaTags } from "@/lib/metaTags";
+import { useTransition } from "@/contexts/TransitionContext";
 
 interface Question {
   id: number;
@@ -130,6 +131,7 @@ export default function Quiz() {
 
   const submitMutation = trpc.quiz.submit.useMutation();
   const captureLead = trpc.leads.capture.useMutation();
+  const { navigateWithTransition } = useTransition();
 
   useEffect(() => {
     setMetaTags({
@@ -165,7 +167,14 @@ export default function Quiz() {
       });
       setChronotype(result.chronotype);
       track("quiz_complete", { page: "quiz", value: { chronotype: result.chronotype, questions: finalAnswers.length } });
-      navigate(`/result?chronotype=${result.chronotype}`);
+      navigateWithTransition(
+        () => navigate(`/result?chronotype=${result.chronotype}`),
+        {
+          message: "Analyzing your sleep profile...",
+          subMessage: `Calculating your ${result.chronotype} chronotype score`,
+          delay: 1600,
+        }
+      );
     } catch (err) {
       console.error(err);
       setSubmitting(false);

@@ -10,6 +10,7 @@ import CountdownTimer from "@/components/CountdownTimer";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { toast } from "sonner";
+import { useTransition } from "@/contexts/TransitionContext";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -329,9 +330,14 @@ export default function Upsell3() {
     }
   };
 
+  const { navigateWithTransition } = useTransition();
+
   const handleDecline = () => {
     track("upsell_decline", { page: "upsell3", value: { chronotype, variant } });
-    navigate(`/thankyou?chronotype=${chronotype}`);
+    navigateWithTransition(
+      () => navigate(`/thankyou?chronotype=${chronotype}`),
+      { message: "Preparing your download...", subMessage: "Your protocol is ready", delay: 800 }
+    );
   };
 
   if (!variant) {

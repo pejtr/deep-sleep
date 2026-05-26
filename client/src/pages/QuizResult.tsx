@@ -9,6 +9,7 @@ import LiveSalesNotification from "@/components/LiveSalesNotification";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { trackQuizComplete, trackLead, trackViewContent } from "@/lib/conversionTracking";
+import { useTransition } from "@/contexts/TransitionContext";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -103,9 +104,18 @@ export default function QuizResult() {
     }
   };
 
+  const { navigateWithTransition } = useTransition();
+
   const handleGetProtocol = () => {
     track("cta_click", { page: "quiz_result", element: "get_protocol", value: { chronotype } });
-    navigate(`/order?chronotype=${chronotype}`);
+    navigateWithTransition(
+      () => navigate(`/order?chronotype=${chronotype}`),
+      {
+        message: `Preparing your ${chronotype} Protocol...`,
+        subMessage: "Personalizing your 7-night sleep plan",
+        delay: 1400,
+      }
+    );
   };
 
   return (

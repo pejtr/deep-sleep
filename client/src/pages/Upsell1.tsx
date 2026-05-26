@@ -6,6 +6,7 @@ import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { toast } from "sonner";
+import { useTransition } from "@/contexts/TransitionContext";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "Lion", Bear: "Bear", Wolf: "Wolf", Dolphin: "Dolphin" };
@@ -334,9 +335,14 @@ export default function Upsell1() {
     }
   };
 
+  const { navigateWithTransition } = useTransition();
+
   const handleDecline = () => {
     track("upsell_decline", { page: "upsell1", value: { chronotype, variant } });
-    navigate(`/upsell2?chronotype=${chronotype}`);
+    navigateWithTransition(
+      () => navigate(`/upsell2?chronotype=${chronotype}`),
+      { message: "Loading next offer...", subMessage: "One more upgrade for you", delay: 600 }
+    );
   };
 
   if (!variant) {

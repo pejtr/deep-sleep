@@ -7,6 +7,7 @@ import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
+import { TransitionProvider } from "./contexts/TransitionContext";
 import { captureUTM } from "@/hooks/useSession";
 import "./index.css";
 
@@ -61,7 +62,9 @@ createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
       <CurrencyProvider>
-        <App />
+        <TransitionProvider>
+          <App />
+        </TransitionProvider>
       </CurrencyProvider>
     </QueryClientProvider>
   </trpc.Provider>
