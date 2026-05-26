@@ -4,9 +4,11 @@
  * Designed for TikTok ad traffic: high scroll velocity, short attention span
  */
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { CheckoutButton } from "@/components/CheckoutButton";
-import { getSessionId } from "@/hooks/useSession";
+import { getSessionId, captureUTM } from "@/hooks/useSession";
+import { useTrackBehavior } from "@/hooks/useSession";
+import { trackLead, trackViewContent } from "@/lib/conversionTracking";
 import { Star, Play, Pause, Volume2, VolumeX, ChevronDown, Shield, Zap, Clock, CheckCircle2 } from "lucide-react";
 
 // ── Design tokens (match global dark cosmic theme) ────────────────────────
@@ -25,7 +27,7 @@ const C = {
 // ── Social proof data ─────────────────────────────────────────────────────
 const REVIEWS = [
   { name: "Sarah M.", loc: "Austin, TX", text: "Slept 7 hours straight on Night 3. I cried.", stars: 5 },
-  { name: "Jake R.", loc: "London, UK", text: "Tried everything. This $5 guide actually worked.", stars: 5 },
+  { name: "Jake R.", loc: "London, UK", text: "Tried everything. This guide actually worked.", stars: 5 },
   { name: "Priya K.", loc: "Toronto, CA", text: "The 90-min rule changed my life. No joke.", stars: 5 },
   { name: "Tom W.", loc: "Sydney, AU", text: "Night shift nurse. Finally sleeping again.", stars: 5 },
 ];
@@ -42,13 +44,28 @@ const VIDEO_PLACEHOLDER = "https://commondatastorage.googleapis.com/gtv-videos-b
 
 export default function TikTokLanding() {
   const [, navigate] = useLocation();
+  const search = useSearch();
   const sessionId = getSessionId();
+  const { track } = useTrackBehavior();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [videoError, setVideoError] = useState(false);
   const [activeReview, setActiveReview] = useState(0);
   const [liveCount] = useState(() => Math.floor(Math.random() * 30) + 18);
+
+  // Capture UTM params and fire page_view on mount
+  useEffect(() => {
+    captureUTM();
+    const params = new URLSearchParams(search);
+    const utmSource = params.get("utm_source") || "tiktok";
+    const utmCampaign = params.get("utm_campaign") || "";
+    track("page_view", {
+      page: "tiktok_landing",
+      value: { utm_source: utmSource, utm_campaign: utmCampaign, channel: "tiktok" },
+    });
+    trackViewContent({ productId: "main", productName: "Deep Sleep Reset Protocol", value: 7 });
+  }, []);
 
   // Auto-rotate reviews
   useEffect(() => {
@@ -85,6 +102,11 @@ export default function TikTokLanding() {
     setIsMuted(video.muted);
   };
 
+  const handleQuizStart = () => {
+    track("quiz_start", { page: "tiktok_landing", value: { source: "tiktok_cta" } });
+    navigate("/quiz");
+  };
+
   return (
     <div className="min-h-screen font-sans" style={{ background: C.bg, color: C.text }}>
 
@@ -94,7 +116,7 @@ export default function TikTokLanding() {
         <span className="animate-pulse">🔴</span>
         <span>{liveCount} people watching this right now</span>
         <span>·</span>
-        <span>Only $5 today</span>
+        <span>Only $7 today</span>
       </div>
 
       {/* ── Hero: headline + video ───────────────────────────────────────── */}
@@ -201,9 +223,18 @@ export default function TikTokLanding() {
           <div className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl text-base font-bold"
             style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }}>
             <Zap className="w-5 h-5" />
-            Get Instant Access — $5
+            Get Instant Access — $7
           </div>
         </CheckoutButton>
+
+        {/* Quiz CTA alternative */}
+        <button
+          onClick={handleQuizStart}
+          className="w-full mt-3 py-3 px-6 rounded-2xl text-sm font-semibold transition-all"
+          style={{ background: "oklch(0.82 0.16 65 / 0.12)", color: C.gold, border: `1px solid oklch(0.82 0.16 65 / 0.3)` }}
+        >
+          Or take the free chronotype quiz first →
+        </button>
 
         <p className="text-xs text-center mt-2" style={{ color: C.textMuted }}>
           Instant download · 30-day money-back guarantee · No subscription
@@ -227,7 +258,7 @@ export default function TikTokLanding() {
       <section className="px-4 py-4 max-w-lg mx-auto">
         <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.border}` }}>
           <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: C.gold }}>
-            What's inside — $5
+            What's inside — $7
           </p>
           <div className="space-y-3">
             {[
@@ -333,9 +364,10 @@ export default function TikTokLanding() {
       <section className="px-4 py-4 max-w-lg mx-auto">
         <div className="space-y-2">
           {[
-            { q: "Is this a subscription?", a: "No. One-time payment of $5. You own it forever." },
+            { q: "Is this a subscription?", a: "No. One-time payment of $7. You own it forever." },
             { q: "How is this different from sleep tips I've read?", a: "This is a structured 7-night CBT-I protocol — the same approach used by sleep clinics. Not random tips." },
             { q: "What if it doesn't work for me?", a: "Full refund within 30 days. No questions, no forms, no hassle." },
+            { q: "Is this medical advice?", a: "No. This is an educational wellness guide based on evidence-informed CBT-I principles. Always consult a doctor for medical concerns." },
           ].map((item) => (
             <details key={item.q} className="rounded-xl overflow-hidden group"
               style={{ background: C.card, border: `1px solid ${C.border}` }}>
@@ -361,7 +393,7 @@ export default function TikTokLanding() {
           <div className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl text-base font-bold"
             style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }}>
             <Zap className="w-5 h-5" />
-            Start Sleeping Better Tonight — $5
+            Start Sleeping Better Tonight — $7
           </div>
         </CheckoutButton>
 
@@ -378,7 +410,13 @@ export default function TikTokLanding() {
           ))}
         </div>
 
-        <p className="text-xs text-center mt-4" style={{ color: C.textMuted }}>
+        {/* Compliance disclaimer */}
+        <p className="text-xs text-center mt-4 px-2" style={{ color: C.textMuted }}>
+          This is an educational wellness guide based on evidence-informed CBT-I principles. Not medical advice.
+          Results vary. Always consult a healthcare professional for medical concerns.
+        </p>
+
+        <p className="text-xs text-center mt-3" style={{ color: C.textMuted }}>
           Questions? <a href="/contact" className="underline" style={{ color: C.goldDim }}>Contact us</a>
           {" · "}
           <a href="/privacy" className="underline" style={{ color: C.goldDim }}>Privacy</a>

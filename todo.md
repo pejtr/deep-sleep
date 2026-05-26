@@ -926,12 +926,12 @@
 - [x] Bridge page (/bridge) — post-checkout warm-up → upsell chain
 - [x] Exit-intent popup component (email capture + discount)
 - [ ] TikTok-optimized meta tags (OG image, description) for all pages
-- [ ] Fix TikTok landing page pricing copy ($5 → $7)
-- [ ] Add UTM/behavior tracking to TikTokLanding.tsx
-- [ ] Add UTM analytics tracking to Order.tsx and CheckoutSuccess.tsx
-- [ ] Build /insomnia dedicated landing page (CBT-I focused, Reddit-safe)
-- [ ] Redesign Upsell2.tsx with Luna persona + Hormozi value stack
-- [ ] Redesign Upsell3.tsx with Luna persona + Hormozi value stack
+- [x] Fix TikTok landing page pricing copy ($5 → $7)
+- [x] Add UTM/behavior tracking to TikTokLanding.tsx
+- [x] Add UTM analytics tracking to Order.tsx and CheckoutSuccess.tsx
+- [x] Build /insomnia dedicated landing page (CBT-I focused, Reddit-safe)
+- [x] Redesign Upsell2.tsx with Luna persona + Hormozi value stack ($19 downsell)
+- [x] Redesign Upsell3.tsx with Luna persona + Hormozi value stack ($8/mo membership)
 - [ ] Reddit-safe compliance disclaimers on all pages
 - [ ] Affiliate outreach email templates (DFY scripts for creators)
 

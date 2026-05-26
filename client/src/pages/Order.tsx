@@ -8,7 +8,7 @@ import LiveSalesNotification from "@/components/LiveSalesNotification";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { trpc } from "@/lib/trpc";
-import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
+import { getSessionId, useTrackBehavior, captureUTM } from "@/hooks/useSession";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import ExpressCheckout from "@/components/ExpressCheckout";
 import { trackViewContent } from "@/lib/conversionTracking";
@@ -63,8 +63,9 @@ export default function Order() {
   const { formatPrice, currency } = useCurrency();
 
   useEffect(() => {
+    captureUTM();
     track("page_view", { page: "order", value: { chronotype } });
-    trackViewContent({ productId: selectedTier === "discount" ? "discount" : "main", productName: selectedTier === "discount" ? "1-Night Optimizer" : "Deep Sleep Reset Protocol", value: selectedTier === "discount" ? 1 : 5 });
+    trackViewContent({ productId: selectedTier === "discount" ? "discount" : "main", productName: selectedTier === "discount" ? "1-Night Optimizer" : "Deep Sleep Reset Protocol", value: selectedTier === "discount" ? 1 : 7 });
   }, [selectedTier]);
 
   return (

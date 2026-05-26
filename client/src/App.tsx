@@ -43,6 +43,8 @@ const Bridge = lazy(() => import("./pages/Bridge"));
 const SegmentLanding = lazy(() => import("./pages/SegmentLanding"));
 const AffiliateJoin = lazy(() => import("./pages/AffiliateJoin"));
 const AffiliateDashboard = lazy(() => import("./pages/AffiliateDashboard"));
+const TikTokLanding = lazy(() => import("./pages/TikTokLanding"));
+const InsomniaLanding = lazy(() => import("./pages/InsomniaLanding"));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
@@ -97,6 +99,8 @@ function Router() {
         <Route path="/no-pills" component={SegmentLanding} />
         <Route path="/productivity-sleep" component={SegmentLanding} />
         <Route path="/cbti-inspired" component={SegmentLanding} />
+        <Route path="/tiktok" component={TikTokLanding} />
+        <Route path="/insomnia" component={InsomniaLanding} />
         <Route path="/affiliates/join" component={AffiliateJoin} />
         <Route path="/affiliates/dashboard" component={AffiliateDashboard} />
         <Route path="/quiz-funnel" component={QuizFunnel} />

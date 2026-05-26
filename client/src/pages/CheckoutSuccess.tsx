@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { getSessionId } from "@/hooks/useSession";
+import { getSessionId, useTrackBehavior, getUTMData } from "@/hooks/useSession";
 import { ArrowRight, Mail, Download, Check, Moon, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { trackPurchase } from "@/lib/conversionTracking";
@@ -18,6 +18,7 @@ const NEXT_STEP: Record<string, string> = {
 
 export default function CheckoutSuccess() {
   const [, navigate] = useLocation();
+  const { track } = useTrackBehavior();
   const [productId, setProductId] = useState("main");
   const [orderId, setOrderId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -48,13 +49,27 @@ export default function CheckoutSuccess() {
       captureLead.mutate({ email: em, sessionId: getSessionId(), source: "stripe_success" });
     }
     // Fire purchase conversion on all platforms
-    const priceMap: Record<string, number> = { entry: 1, main: 4, discount: 4, oto1: 17, oto2: 27, subscription: 8 };
+    const priceMap: Record<string, number> = { entry: 1, main: 7, discount: 7, bump: 11, oto1: 37, oto2: 19, subscription: 8 };
+    const purchaseValue = priceMap[pid] || 7;
+    const utmData = getUTMData();
     trackPurchase({
-      value: priceMap[pid] || 4,
+      value: purchaseValue,
       orderId: oid ?? undefined,
       productId: pid,
       productName: `Deep Sleep Reset - ${pid}`,
       email: em ?? undefined,
+    });
+    // Internal behavior tracking with UTM attribution
+    track("purchase", {
+      page: "checkout_success",
+      value: {
+        product_id: pid,
+        order_id: oid,
+        value: purchaseValue,
+        utm_source: utmData?.utmSource,
+        utm_campaign: utmData?.utmCampaign,
+        utm_medium: utmData?.utmMedium,
+      },
     });
   }, []);
 
