@@ -353,7 +353,7 @@ export default function Order() {
           <div className="mb-4">
             <ExpressCheckout
               productId={selectedTier}
-              includeUpsell={selectedTier === "main" && bumpSelected ? "oto1" : undefined}
+              includeUpsell={selectedTier === "main" && bumpSelected ? "bump" : undefined}
               sessionId={getSessionId()}
               chronotype={chronotype}
               amount={selectedTier === "discount" ? 1 : (bumpSelected ? 7 : 4)}
@@ -393,7 +393,7 @@ export default function Order() {
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
             productId={selectedTier}
-            includeUpsell={selectedTier === "main" && bumpSelected ? "oto1" : undefined}
+            includeUpsell={selectedTier === "main" && bumpSelected ? "bump" : undefined}
             sessionId={getSessionId()}
             chronotype={chronotype}
             className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg"

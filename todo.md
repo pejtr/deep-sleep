@@ -953,3 +953,9 @@
 - [x] TikTok landing page /tiktok vytvořena a zaregistrována v App.tsx
 - [x] Analyzing animation přidána do Quiz.tsx (phase: "analyzing")
 - [x] 290/290 testů projde
+
+## CRITICAL BUG FIX (May 26)
+- [ ] Opravit checkout: order bump a subscription se automaticky přidávají do košíku bez souhlasu uživatele
+- [ ] Order bump musí být opt-in checkbox (ne auto-přidaný)
+- [ ] Subscription musí být oddělená opt-in volba (ne součást základního checkout)
+- [ ] Ověřit že 7-Night Protocol za 83 Kč = přesně 83 Kč v Stripe checkout (bez přidaných položek)

@@ -6,9 +6,9 @@ import { getUTMData } from "@/hooks/useSession";
 import { trackInitiateCheckout } from "@/lib/conversionTracking";
 
 interface CheckoutButtonProps {
-  productId?: "main" | "entry" | "discount" | "oto1" | "oto2" | "subscription";
+  productId?: "main" | "entry" | "discount" | "oto1" | "oto2" | "subscription" | "bump";
   /** When set, adds this product as a 2nd line item alongside the main product */
-  includeUpsell?: "oto1" | "oto2";
+  includeUpsell?: "oto1" | "oto2" | "bump";
   sessionId: string;
   email?: string;
   chronotype?: string;

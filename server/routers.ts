@@ -940,7 +940,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
     createSession: publicProcedure
       .input(
         z.object({
-          productId: z.enum(["main", "entry", "discount", "oto1", "oto2", "subscription"]).default("main"),
+          productId: z.enum(["main", "entry", "discount", "oto1", "oto2", "subscription", "bump"]).default("main"),
           includeUpsell: z.string().optional(), // e.g. "oto1" — adds upsell as 2nd line item alongside main
           sessionId: z.string(),
           email: z.string().email().optional(),
@@ -960,7 +960,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       .mutation(async ({ input }) => {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
         const PRODUCT_PRICES: Record<string, number> = {
-          entry: 100, main: 400, discount: 400, oto1: 1700, oto2: 2700, subscription: 800,
+          entry: 100, main: 400, discount: 400, oto1: 1700, oto2: 2700, subscription: 800, bump: 300,
         };
         const PRODUCT_NAMES: Record<string, string> = {
           entry: "1-Night Sleep Optimizer",
@@ -969,10 +969,11 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           oto1: "30-Day Sleep Transformation",
           oto2: "Deep Sleep Toolkit",
           subscription: "Sleep Optimizer Membership — Monthly",
+          bump: "Chronotype Optimizer — 30-Day Plan (Add-on)",
         };
         // Geo-pricing: low-tier countries get reduced prices
         const LOW_TIER_PRICES: Record<string, number> = {
-          entry: 100, main: 100, discount: 100, oto1: 500, oto2: 800, subscription: 300,
+          entry: 100, main: 100, discount: 100, oto1: 500, oto2: 800, subscription: 300, bump: 100,
         };
         const amountCents = input.isLowTier
           ? (LOW_TIER_PRICES[input.productId] ?? 100)
