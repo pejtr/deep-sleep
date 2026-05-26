@@ -12,6 +12,14 @@ const REDDIT_TOKEN_URL = "https://www.reddit.com/api/v1/access_token";
 // Official docs: https://business.reddithelp.com/s/article/authenticate-your-developer-application
 const SCOPES = "adsread,adsconversions,history,adsedit,read";
 
+/** Build the correct redirect URI — always HTTPS on production, respects X-Forwarded-Proto */
+function buildRedirectUri(req: Request): string {
+  // X-Forwarded-Proto is set by the Manus reverse proxy
+  const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol;
+  const host  = (req.headers["x-forwarded-host"] as string) || req.get("host") || "fixinsomnia.quest";
+  return `${proto}://${host}/api/reddit/callback`;
+}
+
 export function registerRedditOAuthRoutes(app: Express) {
   /**
    * GET /api/reddit/auth
@@ -24,9 +32,7 @@ export function registerRedditOAuthRoutes(app: Express) {
       return res.status(500).json({ error: "REDDIT_ADS_CLIENT_ID not configured" });
     }
 
-    // Use the origin from the request to build redirect URI
-    // Use the actual production domain (not the old placeholder)
-    const redirectUri = `${req.protocol}://${req.get("host")}/api/reddit/callback`;
+    const redirectUri = buildRedirectUri(req);
 
     const state = Math.random().toString(36).substring(2, 15);
 
@@ -85,7 +91,7 @@ export function registerRedditOAuthRoutes(app: Express) {
         throw new Error("Reddit OAuth credentials not configured");
       }
 
-      const redirectUri = `${req.protocol}://${req.get("host")}/api/reddit/callback`;
+      const redirectUri = buildRedirectUri(req);
       const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
       const body = new URLSearchParams({
