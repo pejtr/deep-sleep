@@ -987,7 +987,7 @@
 - [ ] Update Reddit ad copy to safe/transparent style (no hype claims)
 - [ ] Retry Reddit API campaigns with new safe copy
 
-## Quiz CTA Loading Animation (May 26)
+## Quiz CTA Loading Animation + Checkout Fade-in (May 26)
 - [x] Build PageTransitionOverlay component (full-screen animated overlay with sleep-themed loading)
 - [x] Build usePageTransition hook (trigger overlay, delay navigation, cleanup)
 - [x] Wire transition into QuizResult.tsx CTA → /order
@@ -996,3 +996,7 @@
 - [x] Wire transition into all upsell decline buttons (Upsell1, Upsell2, Upsell3)
 - [x] Add CSS keyframe animations for overlay (moonPulse, orbit, dotBounce, fadeSlideUp)
 - [x] TypeScript check passes after changes (0 errors)
+- [x] Add staggered checkout-reveal CSS keyframe animation to index.css (7 delay steps)
+- [x] Wire pageReady state in Order.tsx tied to isTransitioning from TransitionContext
+- [x] Apply staggered reveal classes to 7 content blocks: header, FOMO badges, TikTok badge, Luna section, pricing tiers, product card, TrustBar
+- [x] TypeScript check passes after checkout fade-in changes (0 errors)

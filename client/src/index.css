@@ -399,3 +399,23 @@
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0);    }
 }
+
+/* ── Checkout Page Staggered Reveal (after loading overlay) ─────────── */
+@keyframes checkout-reveal {
+  from { opacity: 0; transform: translateY(16px); filter: blur(2px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+.checkout-reveal {
+  opacity: 0;
+  animation: checkout-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Stagger delays — apply alongside .checkout-reveal */
+.checkout-reveal-d0  { animation-delay: 0.05s; }
+.checkout-reveal-d1  { animation-delay: 0.15s; }
+.checkout-reveal-d2  { animation-delay: 0.28s; }
+.checkout-reveal-d3  { animation-delay: 0.42s; }
+.checkout-reveal-d4  { animation-delay: 0.58s; }
+.checkout-reveal-d5  { animation-delay: 0.72s; }
+.checkout-reveal-d6  { animation-delay: 0.88s; }

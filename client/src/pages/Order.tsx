@@ -12,6 +12,7 @@ import { getSessionId, useTrackBehavior, captureUTM } from "@/hooks/useSession";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import ExpressCheckout from "@/components/ExpressCheckout";
 import { trackViewContent } from "@/lib/conversionTracking";
+import { useTransition } from "@/contexts/TransitionContext";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -61,12 +62,25 @@ export default function Order() {
   const timerSecStr = String(timerSecs % 60).padStart(2, '0');
   const { track } = useTrackBehavior();
   const { formatPrice, currency } = useCurrency();
+  const { isTransitioning } = useTransition();
+
+  // Trigger staggered reveal once the loading overlay has cleared
+  const [pageReady, setPageReady] = useState(false);
+  useEffect(() => {
+    if (!isTransitioning) {
+      // Small buffer so the overlay fade-out completes before reveal starts
+      const t = setTimeout(() => setPageReady(true), 80);
+      return () => clearTimeout(t);
+    }
+  }, [isTransitioning]);
 
   useEffect(() => {
     captureUTM();
     track("page_view", { page: "order", value: { chronotype } });
     trackViewContent({ productId: selectedTier === "discount" ? "discount" : "main", productName: selectedTier === "discount" ? "1-Night Optimizer" : "Deep Sleep Reset Protocol", value: selectedTier === "discount" ? 1 : 7 });
   }, [selectedTier]);
+
+  const r = (delay: number) => pageReady ? `checkout-reveal checkout-reveal-d${delay}` : "opacity-0";
 
   return (
     <div className="min-h-screen pb-32 md:pb-0" style={{ background: "oklch(0.07 0.025 255)" }}>
@@ -93,7 +107,7 @@ export default function Order() {
       <CountdownTimer variant="banner" label="Locked-in price expires in:" />
 
       {/* Header */}
-      <div className="relative z-10 container py-4 flex items-center justify-center">
+      <div className={`relative z-10 container py-4 flex items-center justify-center ${r(0)}`}>
         <div className="flex items-center gap-2">
           <Lock className="w-4 h-4" style={{ color: "oklch(0.78 0.18 65)" }} />
           <span className="text-sm font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>
@@ -105,7 +119,7 @@ export default function Order() {
       <div className="relative z-10 container max-w-2xl mx-auto py-8">
 
         {/* Live FOMO indicators — 3 badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <div className={`flex flex-wrap items-center justify-center gap-3 mb-8 ${r(1)}`}>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "oklch(0.12 0.04 145 / 0.6)", border: "1px solid oklch(0.45 0.14 145 / 0.4)" }}>
             <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "oklch(0.65 0.20 145)" }} />
             <span className="text-xs" style={{ color: "oklch(0.65 0.20 145)" }}>
@@ -127,7 +141,7 @@ export default function Order() {
         </div>
 
         {/* TikTok viral badge */}
-        <div className="flex items-center justify-center gap-2 mb-6 px-4 py-2 rounded-full mx-auto w-fit"
+        <div className={`flex items-center justify-center gap-2 mb-6 px-4 py-2 rounded-full mx-auto w-fit ${r(2)}`}
           style={{ background: "oklch(0.12 0.03 290)", border: "1px solid oklch(0.55 0.15 290 / 0.5)" }}>
           <span className="text-sm">▶</span>
           <span className="text-xs font-bold" style={{ color: "oklch(0.80 0.14 290)" }}>As seen on TikTok</span>
@@ -135,7 +149,7 @@ export default function Order() {
         </div>
 
         {/* Luna Fate Section */}
-        <div className="rounded-3xl p-6 mb-8 relative overflow-hidden"
+        <div className={`rounded-3xl p-6 mb-8 relative overflow-hidden ${r(3)}`}
           style={{ background: "linear-gradient(135deg, oklch(0.10 0.04 280), oklch(0.08 0.06 260))", border: "1px solid oklch(0.45 0.12 280 / 0.4)" }}>
           <div className="orb w-48 h-48 opacity-20" style={{ background: "oklch(0.55 0.18 280)", top: "-30%", right: "-10%", position: "absolute", borderRadius: "50%", filter: "blur(40px)" }} />
           <div className="flex items-start gap-4 relative z-10">
@@ -175,7 +189,7 @@ export default function Order() {
         </div>
 
         {/* Pricing Tiers Selector */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 ${r(4)}`}>
           {/* $1 Entry Tier */}
           <div
             onClick={() => setSelectedTier("discount")}
@@ -292,7 +306,7 @@ export default function Order() {
         </div>
 
         {/* Selected Product Card */}
-        <div className="glass-card rounded-3xl p-8 mb-6 relative overflow-hidden"
+        <div className={`glass-card rounded-3xl p-8 mb-6 relative overflow-hidden ${r(5)}`}
           style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
           <div className="orb orb-gold w-40 h-40 opacity-10" style={{ top: "-20%", right: "-10%" }} />
 
@@ -494,7 +508,7 @@ export default function Order() {
         </div>
 
         {/* Original TrustBar */}
-        <TrustBar />
+        <div className={r(6)}><TrustBar /></div>
       </div>
 
       {/* Sticky Mobile CTA */}
