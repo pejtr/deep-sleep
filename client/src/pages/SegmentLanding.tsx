@@ -117,6 +117,20 @@ export default function SegmentLanding() {
     tracked.current = true;
     document.title = segment.metaTitle;
     track("page_view", { page: `segment_${path.replace("/", "")}` });
+    // OG meta tags for social sharing (TikTok, Reddit, etc.)
+    const setMeta = (prop: string, content: string, attr = "property") => {
+      let el = document.querySelector(`meta[${attr}="${prop}"]`) as HTMLMetaElement | null;
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, prop); document.head.appendChild(el); }
+      el.content = content;
+    };
+    setMeta("og:title", segment.metaTitle);
+    setMeta("og:description", segment.subheadline);
+    setMeta("og:url", window.location.href);
+    setMeta("og:image", "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/og-variant-a-sleep-deprived-hye2KT2i6vNEAo2u9i22xr.webp");
+    setMeta("og:image:width", "1200");
+    setMeta("og:image:height", "630");
+    setMeta("twitter:title", segment.metaTitle, "name");
+    setMeta("twitter:description", segment.subheadline, "name");
   }, []);
 
   return (

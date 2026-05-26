@@ -304,6 +304,10 @@ export default function QuizResult() {
         <div className="mt-10">
           <TrustBar variant="compact" />
         </div>
+        {/* Compliance disclaimer */}
+        <p className="text-xs text-center mt-4 max-w-md mx-auto" style={{ color: "oklch(0.35 0.04 265)" }}>
+          This is an educational wellness guide based on evidence-informed CBT-I principles. Not medical advice. Results vary. Always consult a qualified healthcare professional for medical concerns.
+        </p>
       </div>
 
       {/* Sticky mobile CTA */}

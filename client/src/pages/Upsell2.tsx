@@ -224,6 +224,9 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
           <X className="w-3 h-3" />
           <span>No thanks, I'll try to quiet my mind on my own</span>
         </button>
+        <p className="text-xs text-center mt-2 max-w-md mx-auto" style={{ color: "oklch(0.28 0.04 265)" }}>
+          Educational wellness guide based on evidence-informed CBT-I principles. Not medical advice. Results vary.
+        </p>
       </div>
     </div>
   );
@@ -297,6 +300,9 @@ function VariantB({ chronotype, onAccept, onDecline, loading }: {
           <X className="w-3 h-3" />
           <span>No thanks, I'll skip the audio pack</span>
         </button>
+        <p className="text-xs text-center mt-2 max-w-md mx-auto" style={{ color: "oklch(0.28 0.04 265)" }}>
+          Educational wellness guide based on evidence-informed CBT-I principles. Not medical advice. Results vary.
+        </p>
       </div>
     </div>
   );

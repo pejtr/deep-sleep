@@ -177,6 +177,9 @@ function VariantA({ chronotype, onAccept, onDecline, loading }: {
           <X className="w-3 h-3" />
           <span>No thanks, I'll risk losing my results without the optimizer</span>
         </button>
+        <p className="text-xs text-center mt-3 max-w-md mx-auto" style={{ color: "oklch(0.28 0.04 265)" }}>
+          Educational wellness guide based on evidence-informed CBT-I principles. Not medical advice. Results vary.
+        </p>
       </div>
     </div>
   );
@@ -285,6 +288,9 @@ function VariantB({ chronotype, onAccept, onDecline, loading }: {
           <X className="w-3 h-3" />
           <span>No thanks, I don't need permanent results</span>
         </button>
+        <p className="text-xs text-center mt-3 max-w-md mx-auto" style={{ color: "oklch(0.28 0.04 265)" }}>
+          Educational wellness guide based on evidence-informed CBT-I principles. Not medical advice. Results vary.
+        </p>
       </div>
     </div>
   );

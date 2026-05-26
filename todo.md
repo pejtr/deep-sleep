@@ -925,7 +925,7 @@
 - [ ] Segment landing pages: /3am-wake-up, /racing-thoughts, /melatonin-alternative
 - [x] Bridge page (/bridge) — post-checkout warm-up → upsell chain
 - [x] Exit-intent popup component (email capture + discount)
-- [ ] TikTok-optimized meta tags (OG image, description) for all pages
+- [x] TikTok-optimized meta tags (OG image, description) for all pages (index.html, TikTokLanding, SegmentLanding)
 - [x] Fix TikTok landing page pricing copy ($5 → $7)
 - [x] Add UTM/behavior tracking to TikTokLanding.tsx
 - [x] Add UTM analytics tracking to Order.tsx and CheckoutSuccess.tsx
@@ -937,7 +937,7 @@
 - [x] Reddit CAPI: trackLeadConversion() zapojen do routers.ts (quiz.submit)
 - [x] TypeScript check: 0 chyb po všech změnách
 - [x] 290/290 testů projde
-- [ ] Reddit-safe compliance disclaimers on all pages
+- [x] Reddit-safe compliance disclaimers on all pages (Home, Order, QuizResult, Upsell1, Upsell2, Upsell3)
 - [ ] Affiliate outreach email templates (DFY scripts for creators)
 
 ## Quiz Shortening (May 26)
