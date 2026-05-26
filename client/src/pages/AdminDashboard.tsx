@@ -15,7 +15,7 @@ import {
   ChevronRight, AlertCircle, CheckCircle2, Clock, Cpu, Target,
   ArrowUpRight, ArrowDownRight, BarChart2, PieChart as PieChartIcon,
   LineChart as LineChartIcon, Sparkles, Play, ThumbsUp, ThumbsDown,
-  Mail, Send, Copy, Check, Download
+  Mail, Send, Copy, Check, Download, Plus, Loader2, Rocket, Pause, PlayCircle
 } from "lucide-react";
 import { toast } from "sonner";
 import { CampaignDashboard } from '@/components/CampaignDashboard';
@@ -610,12 +610,52 @@ function RedditAdsTab() {
   const [chartType, setChartType] = useState<"line" | "bar" | "area">("area");
   const [appliedSuggestions, setAppliedSuggestions] = useState<Set<number>>(new Set());
   const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<number>>(new Set());
+  const [launchingTemplate, setLaunchingTemplate] = useState<string | null>(null);
+  const [togglingCampaign, setTogglingCampaign] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newCampaignName, setNewCampaignName] = useState("");
+  const [newCampaignObjective, setNewCampaignObjective] = useState<"TRAFFIC" | "CONVERSIONS">("TRAFFIC");
 
   const { startDate, endDate } = useMemo(() => getDateRange(range), [range]);
 
   const { data: account, isLoading: accountLoading } = trpc.reddit.account.useQuery();
-  const { data: campaigns, isLoading: campaignsLoading } = trpc.reddit.campaigns.useQuery();
+  const { data: campaigns, isLoading: campaignsLoading, refetch: refetchCampaigns } = trpc.reddit.campaigns.useQuery();
   const { data: report, isLoading: reportLoading, refetch } = trpc.reddit.report.useQuery({ startDate, endDate });
+  const { data: templates } = trpc.reddit.templates.useQuery();
+
+  const launchTemplateMutation = trpc.reddit.launchTemplate.useMutation({
+    onSuccess: (data) => {
+      toast.success(data.message);
+      refetchCampaigns();
+      setLaunchingTemplate(null);
+    },
+    onError: (err) => {
+      toast.error(`Failed: ${err.message}`);
+      setLaunchingTemplate(null);
+    },
+  });
+
+  const updateStatusMutation = trpc.reddit.updateStatus.useMutation({
+    onSuccess: () => {
+      toast.success("Campaign status updated");
+      refetchCampaigns();
+      setTogglingCampaign(null);
+    },
+    onError: (err) => {
+      toast.error(`Failed: ${err.message}`);
+      setTogglingCampaign(null);
+    },
+  });
+
+  const createCampaignMutation = trpc.reddit.createCampaign.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Campaign "${data.name}" created (PAUSED)`);
+      refetchCampaigns();
+      setShowCreateForm(false);
+      setNewCampaignName("");
+    },
+    onError: (err) => toast.error(`Failed: ${err.message}`),
+  });
 
   const isLoading = accountLoading || campaignsLoading || reportLoading;
 
@@ -831,6 +871,17 @@ function RedditAdsTab() {
                     style={{ background: c.status === "ACTIVE" ? "oklch(0.55 0.18 145 / 0.15)" : "oklch(0.55 0.04 265 / 0.15)", color: c.status === "ACTIVE" ? C.green : C.textSecondary }}>
                     {c.status}
                   </span>
+                  <button
+                    onClick={() => {
+                      setTogglingCampaign(c.id);
+                      updateStatusMutation.mutate({ campaignId: c.id, status: c.status === "ACTIVE" ? "PAUSED" : "ACTIVE" });
+                    }}
+                    disabled={togglingCampaign === c.id}
+                    className="flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition-all hover:opacity-80 disabled:opacity-50"
+                    style={{ background: c.status === "ACTIVE" ? "oklch(0.55 0.04 265 / 0.15)" : "oklch(0.55 0.18 145 / 0.15)", color: c.status === "ACTIVE" ? C.textSecondary : C.green }}>
+                    {togglingCampaign === c.id ? <Loader2 className="w-3 h-3 animate-spin" /> : c.status === "ACTIVE" ? <Pause className="w-3 h-3" /> : <PlayCircle className="w-3 h-3" />}
+                    {c.status === "ACTIVE" ? "Pause" : "Activate"}
+                  </button>
                 </div>
               </div>
             ))}
@@ -844,6 +895,79 @@ function RedditAdsTab() {
           </div>
         )}
       </ChartCard>
+
+      {/* 1-Click Campaign Templates */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Rocket className="w-4 h-4" style={{ color: C.gold }} />
+          <h3 className="text-sm font-semibold" style={{ color: C.textPrimary }}>1-Click Campaign Templates</h3>
+          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "oklch(0.55 0.18 65 / 0.15)", color: C.gold }}>deepsleep.my</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {(templates ?? []).map((tpl) => (
+            <div key={tpl.id} className="rounded-xl p-4 flex flex-col gap-3" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+              <div>
+                <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{tpl.name}</p>
+                <p className="text-xs mt-1" style={{ color: C.textSecondary }}>{tpl.adTitle}</p>
+                <p className="text-xs mt-1" style={{ color: C.textMuted }}>Budget: ${(tpl.dailyBudgetCents / 100).toFixed(0)}/day · {tpl.geoLocations?.join(", ")}</p>
+                <p className="text-xs mt-1" style={{ color: C.textMuted }}>r/{tpl.subreddits?.slice(0, 3).join(", r/")}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setLaunchingTemplate(tpl.id);
+                  launchTemplateMutation.mutate({ templateId: tpl.id });
+                }}
+                disabled={launchingTemplate === tpl.id}
+                className="flex items-center justify-center gap-2 text-xs px-3 py-2 rounded-lg font-medium transition-all hover:opacity-80 disabled:opacity-50"
+                style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }}>
+                {launchingTemplate === tpl.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Rocket className="w-3.5 h-3.5" />}
+                {launchingTemplate === tpl.id ? "Creating..." : "Launch Campaign"}
+              </button>
+            </div>
+          ))}
+          {/* Custom campaign form */}
+          {showCreateForm ? (
+            <div className="rounded-xl p-4 flex flex-col gap-3" style={{ background: C.cardInner, border: `1px solid ${C.gold}40` }}>
+              <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>New Custom Campaign</p>
+              <input
+                type="text"
+                placeholder="Campaign name..."
+                value={newCampaignName}
+                onChange={e => setNewCampaignName(e.target.value)}
+                className="text-xs px-3 py-2 rounded-lg outline-none"
+                style={{ background: C.bg, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+              />
+              <select
+                value={newCampaignObjective}
+                onChange={e => setNewCampaignObjective(e.target.value as "TRAFFIC" | "CONVERSIONS")}
+                className="text-xs px-3 py-2 rounded-lg outline-none"
+                style={{ background: C.bg, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}>
+                <option value="TRAFFIC">TRAFFIC</option>
+                <option value="CONVERSIONS">CONVERSIONS</option>
+              </select>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => createCampaignMutation.mutate({ name: newCampaignName, objective: newCampaignObjective })}
+                  disabled={!newCampaignName || createCampaignMutation.isPending}
+                  className="flex-1 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-all hover:opacity-80 disabled:opacity-50"
+                  style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }}>
+                  {createCampaignMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                  Create
+                </button>
+                <button onClick={() => setShowCreateForm(false)} className="text-xs px-3 py-2 rounded-lg" style={{ background: C.cardInner, color: C.textSecondary }}>Cancel</button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="rounded-xl p-4 flex flex-col items-center justify-center gap-2 border-dashed transition-all hover:opacity-80"
+              style={{ background: "transparent", border: `2px dashed ${C.cardBorder}` }}>
+              <Plus className="w-5 h-5" style={{ color: C.textMuted }} />
+              <span className="text-xs" style={{ color: C.textMuted }}>Custom Campaign</span>
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* AI Suggestions */}
       <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>

@@ -383,3 +383,250 @@ export async function getCampaignPerformance(
 
   return merged;
 }
+
+// ── Campaign / Ad Set / Ad creation ──────────────────────────────────────────
+
+export interface CreateCampaignInput {
+  name: string;
+  objective: "TRAFFIC" | "CONVERSIONS" | "VIDEO_VIEWS" | "BRAND_AWARENESS" | "APP_INSTALLS";
+  status?: "ACTIVE" | "PAUSED";
+}
+
+export interface CreateAdSetInput {
+  campaignId: string;
+  name: string;
+  dailyBudgetCents: number; // in cents, e.g. 1000 = $10.00
+  startTime: string; // ISO 8601
+  endTime?: string;
+  subreddits?: string[]; // e.g. ["insomnia", "sleep", "anxiety"]
+  geoLocations?: string[]; // e.g. ["US", "GB", "CA"]
+  bidType?: "CPM" | "CPC" | "CPV";
+  bidAmountCents?: number;
+}
+
+export interface CreateAdInput {
+  adSetId: string;
+  name: string;
+  title: string;
+  text: string;
+  url: string;
+  callToAction?: "LEARN_MORE" | "SHOP_NOW" | "SIGN_UP" | "DOWNLOAD" | "GET_STARTED";
+  thumbnailUrl?: string;
+}
+
+async function redditAdsPost<T>(path: string, body: unknown): Promise<T> {
+  const token = await getAccessToken();
+  const username = process.env.REDDIT_ADS_USERNAME;
+
+  const response = await fetch(`${REDDIT_ADS_BASE}${path}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "User-Agent": `DeepSleepReset/1.0 by ${username || "DeepSleeper"}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Reddit Ads API POST error ${response.status}: ${text}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+async function redditAdsPatch<T>(path: string, body: unknown): Promise<T> {
+  const token = await getAccessToken();
+  const username = process.env.REDDIT_ADS_USERNAME;
+
+  const response = await fetch(`${REDDIT_ADS_BASE}${path}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "User-Agent": `DeepSleepReset/1.0 by ${username || "DeepSleeper"}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Reddit Ads API PATCH error ${response.status}: ${text}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+/**
+ * Create a new campaign
+ */
+export async function createCampaign(input: CreateCampaignInput): Promise<RedditCampaign> {
+  const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+  if (!accountId) throw new Error("REDDIT_ADS_ACCOUNT_ID not set");
+
+  const data = await redditAdsPost<{ data: RedditCampaign }>(
+    `/ad_accounts/${accountId}/campaigns`,
+    {
+      name: input.name,
+      objective: input.objective,
+      status: input.status ?? "PAUSED", // Start paused for review
+    }
+  );
+  return data.data;
+}
+
+export interface RedditAdSet {
+  id: string;
+  name: string;
+  campaign_id: string;
+  status: string;
+  daily_budget_cents: number;
+  start_time: string;
+  end_time?: string;
+}
+
+/**
+ * Create a new ad set (ad group) within a campaign
+ */
+export async function createAdSet(input: CreateAdSetInput): Promise<RedditAdSet> {
+  const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+  if (!accountId) throw new Error("REDDIT_ADS_ACCOUNT_ID not set");
+
+  const body: Record<string, unknown> = {
+    name: input.name,
+    campaign_id: input.campaignId,
+    daily_budget_cents: input.dailyBudgetCents,
+    start_time: input.startTime,
+    status: "PAUSED",
+  };
+
+  if (input.endTime) body.end_time = input.endTime;
+  if (input.bidType) body.bid_type = input.bidType;
+  if (input.bidAmountCents) body.bid_amount_cents = input.bidAmountCents;
+
+  if (input.subreddits && input.subreddits.length > 0) {
+    body.targeting = {
+      ...(body.targeting as object ?? {}),
+      subreddits: input.subreddits.map(s => ({ name: s })),
+    };
+  }
+
+  if (input.geoLocations && input.geoLocations.length > 0) {
+    body.targeting = {
+      ...(body.targeting as object ?? {}),
+      locations: input.geoLocations.map(c => ({ country: c })),
+    };
+  }
+
+  const data = await redditAdsPost<{ data: RedditAdSet }>(
+    `/ad_accounts/${accountId}/ad_sets`,
+    body
+  );
+  return data.data;
+}
+
+export interface RedditAd {
+  id: string;
+  name: string;
+  ad_set_id: string;
+  status: string;
+  title: string;
+  text: string;
+  url: string;
+  call_to_action?: string;
+}
+
+/**
+ * Create a new ad (creative) within an ad set
+ */
+export async function createAd(input: CreateAdInput): Promise<RedditAd> {
+  const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+  if (!accountId) throw new Error("REDDIT_ADS_ACCOUNT_ID not set");
+
+  const body: Record<string, unknown> = {
+    name: input.name,
+    ad_set_id: input.adSetId,
+    status: "PAUSED",
+    creative: {
+      type: "LINK",
+      title: input.title,
+      text: input.text,
+      url: input.url,
+      call_to_action: input.callToAction ?? "LEARN_MORE",
+    },
+  };
+
+  if (input.thumbnailUrl) {
+    (body.creative as Record<string, unknown>).thumbnail_url = input.thumbnailUrl;
+  }
+
+  const data = await redditAdsPost<{ data: RedditAd }>(
+    `/ad_accounts/${accountId}/ads`,
+    body
+  );
+  return data.data;
+}
+
+/**
+ * Update campaign status (ACTIVE / PAUSED)
+ */
+export async function updateCampaignStatus(
+  campaignId: string,
+  status: "ACTIVE" | "PAUSED"
+): Promise<RedditCampaign> {
+  const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+  if (!accountId) throw new Error("REDDIT_ADS_ACCOUNT_ID not set");
+
+  const data = await redditAdsPatch<{ data: RedditCampaign }>(
+    `/ad_accounts/${accountId}/campaigns/${campaignId}`,
+    { status }
+  );
+  return data.data;
+}
+
+/**
+ * Deep Sleep Reset — pre-built campaign templates
+ * Ready to launch with one click
+ */
+export const CAMPAIGN_TEMPLATES = [
+  {
+    id: "insomnia_traffic",
+    name: "Deep Sleep — Insomnia Traffic (Reddit)",
+    objective: "TRAFFIC" as const,
+    adSetName: "Insomnia Subreddits — Tier 1",
+    dailyBudgetCents: 1500, // $15/day
+    subreddits: ["insomnia", "sleep", "anxiety", "mentalhealth", "selfimprovement"],
+    geoLocations: ["US", "GB", "CA", "AU"],
+    adTitle: "Can't Sleep? Your Brain Is Running the Wrong Program",
+    adText: "Most insomniacs have the wrong sleep type. Take the 30-second quiz to find yours — free protocol included.",
+    callToAction: "LEARN_MORE" as const,
+    url: "https://deepsleep.my/quiz?utm_source=reddit&utm_medium=paid&utm_campaign=insomnia_traffic",
+  },
+  {
+    id: "sleep_science",
+    name: "Deep Sleep — Sleep Science (Reddit)",
+    objective: "TRAFFIC" as const,
+    adSetName: "Sleep Science Subreddits — Tier 1",
+    dailyBudgetCents: 1000, // $10/day
+    subreddits: ["sleep", "sleephackers", "biohacking", "nootropics", "productivity"],
+    geoLocations: ["US", "GB", "CA"],
+    adTitle: "Your Chronotype Is Ruining Your Sleep",
+    adText: "CBT-I based 7-night protocol. No pills. No supplements. Just your biology, finally working for you.",
+    callToAction: "LEARN_MORE" as const,
+    url: "https://deepsleep.my/quiz?utm_source=reddit&utm_medium=paid&utm_campaign=sleep_science",
+  },
+  {
+    id: "anxiety_sleep",
+    name: "Deep Sleep — Anxiety + Sleep (Reddit)",
+    objective: "TRAFFIC" as const,
+    adSetName: "Anxiety Subreddits — Tier 1",
+    dailyBudgetCents: 1200, // $12/day
+    subreddits: ["anxiety", "depression", "mentalhealth", "ptsd", "adhd"],
+    geoLocations: ["US", "GB", "CA", "AU"],
+    adTitle: "3 AM Wake-Ups? This Isn't Anxiety. It's Your Circadian Rhythm.",
+    adText: "Free 3 AM Rescue Protocol — 47,000+ people used it last month. Takes 30 seconds.",
+    callToAction: "GET_STARTED" as const,
+    url: "https://deepsleep.my/squeeze?utm_source=reddit&utm_medium=paid&utm_campaign=anxiety_sleep",
+  },
+];

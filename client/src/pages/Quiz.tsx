@@ -117,7 +117,7 @@ const MICRO_COPY = [
 
 export default function Quiz() {
   const [, navigate] = useLocation();
-  const [phase, setPhase] = useState<"core" | "email" | "bonus" | "submitting">("core");
+  const [phase, setPhase] = useState<"core" | "analyzing" | "email" | "bonus" | "submitting">("core");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
@@ -185,8 +185,8 @@ export default function Quiz() {
     }
 
     if (phase === "core" && currentIdx >= CORE_QUESTIONS.length - 1) {
-      // Core done → show email gate
-      setPhase("email");
+      // Core done → show analyzing animation → then email gate
+      setPhase("analyzing");
     } else if (phase === "bonus" && questionIndex >= BONUS_QUESTIONS.length - 1) {
       // Bonus done → submit
       await submitQuiz(newAnswers, email || undefined);
@@ -253,7 +253,73 @@ export default function Quiz() {
     }
   };
 
-  // ── Email Gate Screen ──────────────────────────────────────────────────────
+  // ── Analyzing Animation Screen (builds anticipation) ──────────────────────────────
+  useEffect(() => {
+    if (phase === "analyzing") {
+      const timer = setTimeout(() => setPhase("email"), 3200);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
+
+  if (phase === "analyzing") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center" style={{ background: "oklch(0.07 0.025 255)" }}>
+        <div className="orb orb-gold w-72 h-72 opacity-10" style={{ top: "-5%", right: "5%" }} />
+        <div className="orb orb-blue w-48 h-48 opacity-8" style={{ bottom: "10%", left: "-5%" }} />
+
+        <div className="relative z-10 text-center space-y-6 max-w-sm mx-auto px-4">
+          {/* Animated progress ring */}
+          <div className="relative mx-auto w-24 h-24">
+            <svg className="w-24 h-24 animate-spin" style={{ animationDuration: "3s" }} viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="oklch(0.78 0.18 65 / 0.15)" strokeWidth="6" />
+              <circle cx="50" cy="50" r="42" fill="none" stroke="oklch(0.78 0.18 65)" strokeWidth="6"
+                strokeDasharray="264" strokeDashoffset="66" strokeLinecap="round" />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Moon className="w-8 h-8" style={{ color: "oklch(0.82 0.16 65)" }} />
+            </div>
+          </div>
+
+          {/* Animated steps */}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold animate-pulse" style={{ color: "oklch(0.82 0.16 65)" }}>
+              Analyzing your sleep biology...
+            </p>
+            <div className="space-y-2 text-xs" style={{ color: "oklch(0.55 0.04 265)" }}>
+              <p className="animate-in fade-in slide-in-from-bottom-1 duration-500" style={{ animationDelay: "0.5s", animationFillMode: "both" }}>
+                ✓ Circadian rhythm pattern detected
+              </p>
+              <p className="animate-in fade-in slide-in-from-bottom-1 duration-500" style={{ animationDelay: "1.2s", animationFillMode: "both" }}>
+                ✓ Matching with chronotype database...
+              </p>
+              <p className="animate-in fade-in slide-in-from-bottom-1 duration-500" style={{ animationDelay: "2.0s", animationFillMode: "both" }}>
+                ✓ Personalizing your 7-night protocol
+              </p>
+            </div>
+          </div>
+
+          {/* Trust bar */}
+          <div className="w-full rounded-full h-1.5 overflow-hidden" style={{ background: "oklch(0.15 0.02 255)" }}>
+            <div className="h-full rounded-full transition-all ease-out" 
+              style={{ 
+                background: "linear-gradient(90deg, oklch(0.78 0.18 65), oklch(0.7 0.2 45))",
+                width: "100%",
+                animation: "grow-bar 3s ease-out forwards",
+              }} />
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes grow-bar {
+            from { width: 0%; }
+            to { width: 100%; }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // ── Email Gate Screen ──────────────────────────────────────────────────────────
   if (phase === "email") {
     return (
       <div className="min-h-screen flex flex-col" style={{ background: "oklch(0.07 0.025 255)" }}>

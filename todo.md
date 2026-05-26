@@ -938,3 +938,6 @@
 - [x] Affiliate ref wired do Stripe checkout metadata
 - [x] onQuizComplete trigger wired do leads.capture
 - [x] 290/290 testů projde
+
+## Analyzing Animation (May 26)
+- [ ] Přidat "Analyzing your sleep biology..." animaci mezi core otázky a email gate (buduje napětí, zvyšuje konverzi)

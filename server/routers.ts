@@ -6,7 +6,10 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "./_core/llm";
-import { getCampaigns, getCampaignSummary, getAdAccount, getCampaignPerformance } from "./redditAds";
+import {
+  getCampaigns, getCampaignSummary, getAdAccount, getCampaignPerformance,
+  createCampaign, createAdSet, createAd, updateCampaignStatus, CAMPAIGN_TEMPLATES,
+} from "./redditAds";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
 import { sendQuizResultEmail, addQuizContactToBrevo } from "./quizEmailService";
 import { onQuizComplete } from "./emailSequenceService";
@@ -617,6 +620,99 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           return [];
         }
       }),
+
+    // Campaign creation
+    createCampaign: protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        objective: z.enum(["TRAFFIC", "CONVERSIONS", "VIDEO_VIEWS", "BRAND_AWARENESS", "APP_INSTALLS"]),
+        status: z.enum(["ACTIVE", "PAUSED"]).default("PAUSED"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        return createCampaign(input);
+      }),
+
+    createAdSet: protectedProcedure
+      .input(z.object({
+        campaignId: z.string(),
+        name: z.string(),
+        dailyBudgetCents: z.number().int().min(100),
+        startTime: z.string(),
+        endTime: z.string().optional(),
+        subreddits: z.array(z.string()).optional(),
+        geoLocations: z.array(z.string()).optional(),
+        bidType: z.enum(["CPM", "CPC", "CPV"]).optional(),
+        bidAmountCents: z.number().int().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        return createAdSet(input);
+      }),
+
+    createAd: protectedProcedure
+      .input(z.object({
+        adSetId: z.string(),
+        name: z.string(),
+        title: z.string(),
+        text: z.string(),
+        url: z.string().url(),
+        callToAction: z.enum(["LEARN_MORE", "SHOP_NOW", "SIGN_UP", "DOWNLOAD", "GET_STARTED"]).optional(),
+        thumbnailUrl: z.string().url().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        return createAd(input);
+      }),
+
+    updateStatus: protectedProcedure
+      .input(z.object({
+        campaignId: z.string(),
+        status: z.enum(["ACTIVE", "PAUSED"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        return updateCampaignStatus(input.campaignId, input.status);
+      }),
+
+    // Launch a pre-built template campaign (one-click)
+    launchTemplate: protectedProcedure
+      .input(z.object({ templateId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const tpl = CAMPAIGN_TEMPLATES.find(t => t.id === input.templateId);
+        if (!tpl) throw new TRPCError({ code: "NOT_FOUND", message: "Template not found" });
+
+        // 1. Create campaign
+        const campaign = await createCampaign({ name: tpl.name, objective: tpl.objective, status: "PAUSED" });
+
+        // 2. Create ad set
+        const adSet = await createAdSet({
+          campaignId: campaign.id,
+          name: tpl.adSetName,
+          dailyBudgetCents: tpl.dailyBudgetCents,
+          startTime: new Date().toISOString(),
+          subreddits: tpl.subreddits,
+          geoLocations: tpl.geoLocations,
+        });
+
+        // 3. Create ad
+        const ad = await createAd({
+          adSetId: adSet.id,
+          name: `${tpl.name} — Ad 1`,
+          title: tpl.adTitle,
+          text: tpl.adText,
+          url: tpl.url,
+          callToAction: tpl.callToAction,
+        });
+
+        return { campaign, adSet, ad, message: `Campaign "${tpl.name}" created (PAUSED). Review and activate in Reddit Ads Manager.` };
+      }),
+
+    templates: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      return CAMPAIGN_TEMPLATES;
+    }),
   }),
   // ── Currency ─────────────────────────────────────────────────────────────────────────────────────────
   currency: router({
