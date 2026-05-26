@@ -932,6 +932,11 @@
 - [x] Build /insomnia dedicated landing page (CBT-I focused, Reddit-safe)
 - [x] Redesign Upsell2.tsx with Luna persona + Hormozi value stack ($19 downsell)
 - [x] Redesign Upsell3.tsx with Luna persona + Hormozi value stack ($8/mo membership)
+- [x] Reddit CAPI v3: redditPixel.ts přepsán na správný endpoint s REDDIT_CAPI_TOKEN
+- [x] Reddit CAPI: trackPurchaseConversion() zapojen do stripeWebhook.ts (checkout.session.completed)
+- [x] Reddit CAPI: trackLeadConversion() zapojen do routers.ts (quiz.submit)
+- [x] TypeScript check: 0 chyb po všech změnách
+- [x] 290/290 testů projde
 - [ ] Reddit-safe compliance disclaimers on all pages
 - [ ] Affiliate outreach email templates (DFY scripts for creators)
 

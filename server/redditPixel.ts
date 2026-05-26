@@ -1,159 +1,138 @@
 /**
- * Reddit Conversion Pixel Tracking
- * Fires conversion events for remarketing and audience building
+ * Reddit Conversions API (CAPI) — Server-side conversion tracking
+ * Uses the CONVERSIONAPIMANUS bearer token for ad-blocker-resistant tracking.
+ * Docs: https://ads-api.reddit.com/docs/v3/#tag/Conversions
  */
 
-const REDDIT_PIXEL_ID = process.env.REDDIT_PIXEL_ID || "t2_deepsleep";
+import crypto from "crypto";
 
-export interface ConversionEvent {
-  type: "PageVisit" | "Purchase" | "Lead" | "AddToCart" | "ViewContent";
+const REDDIT_AD_ACCOUNT_ID = "a2_iw4up15u7778";
+
+/** SHA-256 hash a string (lowercase + trimmed) for privacy-safe matching */
+function sha256(value: string): string {
+  return crypto.createHash("sha256").update(value.toLowerCase().trim()).digest("hex");
+}
+
+export interface CapiEvent {
+  event_type: "Purchase" | "Lead" | "ViewContent" | "PageVisit" | "AddToCart";
+  event_at?: string; // ISO 8601 — defaults to now
+  click_id?: string; // rdt_cid from URL param
+  email?: string;
+  external_id?: string;
+  ip_address?: string;
+  user_agent?: string;
   value?: number;
   currency?: string;
-  email?: string;
-  chronotype?: string;
-  source?: string;
+  item_count?: number;
+  conversion_id?: string; // dedup key — use orderId or sessionId
 }
 
 /**
- * Fire conversion pixel event to Reddit
- * Used for tracking purchases, leads, and audience building
+ * Fire a server-side Reddit Conversions API event.
+ * Silently swallows errors — never block the purchase flow.
  */
-export async function fireRedditPixel(event: ConversionEvent) {
-  try {
-    if (!process.env.REDDIT_PIXEL_ID) {
-      console.warn("[Reddit Pixel] Pixel ID not configured");
-      return;
-    }
-
-    const payload = {
-      pixel_id: REDDIT_PIXEL_ID,
-      event_type: event.type,
-      timestamp: Math.floor(Date.now() / 1000),
-      user_data: {
-        email_hash: event.email ? hashEmail(event.email) : undefined,
-        external_id: event.email, // For audience matching
-      },
-      conversion_data: {
-        value: event.value || 0,
-        currency: event.currency || "USD",
-        content_type: "product",
-        content_id: event.chronotype || "sleep-protocol",
-      },
-      metadata: {
-        chronotype: event.chronotype,
-        source: event.source || "website",
-      },
-    };
-
-    // Send to Reddit Conversion API
-    const response = await fetch("https://ads.reddit.com/api/v2.0/conversions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.REDDIT_ADS_ACCESS_TOKEN}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      console.error("[Reddit Pixel] Error:", response.statusText);
-      return;
-    }
-
-    console.log(`[Reddit Pixel] ${event.type} event fired for ${event.email}`);
-  } catch (err) {
-    console.error("[Reddit Pixel] Fatal error:", err);
+export async function fireRedditCapi(event: CapiEvent): Promise<void> {
+  const token = process.env.REDDIT_CAPI_TOKEN;
+  if (!token) {
+    console.warn("[Reddit CAPI] REDDIT_CAPI_TOKEN not set — skipping");
+    return;
   }
-}
 
-/**
- * Hash email for privacy-preserving audience matching
- */
-function hashEmail(email: string): string {
-  const crypto = require("crypto");
-  return crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
-}
+  const now = new Date().toISOString();
 
-/**
- * Track purchase conversion
- */
-export async function trackPurchaseConversion(
-  email: string,
-  amount: number,
-  chronotype: string
-) {
-  await fireRedditPixel({
-    type: "Purchase",
-    value: amount,
-    currency: "USD",
-    email,
-    chronotype,
-    source: "stripe-checkout",
-  });
-}
+  const payload = {
+    test_mode: false,
+    events: [
+      {
+        event_type: event.event_type,
+        event_at: event.event_at ?? now,
+        event_metadata: {
+          ...(event.value !== undefined && { value: event.value }),
+          ...(event.currency && { currency: event.currency }),
+          ...(event.item_count !== undefined && { item_count: event.item_count }),
+          ...(event.conversion_id && { conversion_id: event.conversion_id }),
+        },
+        user: {
+          ...(event.email && { email: sha256(event.email) }),
+          ...(event.external_id && { external_id: sha256(event.external_id) }),
+          ...(event.ip_address && { ip_address: event.ip_address }),
+          ...(event.user_agent && { user_agent: event.user_agent }),
+          ...(event.click_id && { click_id: event.click_id }),
+        },
+      },
+    ],
+  };
 
-/**
- * Track lead generation
- */
-export async function trackLeadConversion(email: string, chronotype: string) {
-  await fireRedditPixel({
-    type: "Lead",
-    email,
-    chronotype,
-    source: "quiz-completion",
-  });
-}
-
-/**
- * Track page view for audience building
- */
-export async function trackPageView(email?: string, chronotype?: string) {
-  await fireRedditPixel({
-    type: "PageVisit",
-    email,
-    chronotype,
-    source: "website-visit",
-  });
-}
-
-/**
- * Create audience segment based on chronotype
- */
-export async function createChronotypeAudience(chronotype: string) {
   try {
-    const response = await fetch(
-      `https://ads.reddit.com/api/v2.0/audiences`,
+    const res = await fetch(
+      `https://ads-api.reddit.com/api/v3/conversions/events/${REDDIT_AD_ACCOUNT_ID}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.REDDIT_ADS_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: `${chronotype} Sleep Protocol Audience`,
-          description: `Users interested in ${chronotype} chronotype sleep solutions`,
-          targeting_criteria: {
-            interests: ["sleep", "health", "wellness", chronotype.toLowerCase()],
-            keywords: [
-              `${chronotype} sleep`,
-              "sleep protocol",
-              "insomnia treatment",
-            ],
-          },
-        }),
+        body: JSON.stringify(payload),
       }
     );
 
-    if (!response.ok) {
-      console.error("[Reddit Audience] Error:", response.statusText);
-      return null;
+    const body = await res.text();
+    if (!res.ok) {
+      console.error(`[Reddit CAPI] ${event.event_type} failed ${res.status}: ${body}`);
+    } else {
+      console.log(`[Reddit CAPI] ✅ ${event.event_type} fired — status ${res.status}`);
     }
-
-    const data = await response.json();
-    console.log(`[Reddit Audience] Created audience for ${chronotype}`);
-    return data.id;
   } catch (err) {
-    console.error("[Reddit Audience] Error:", err);
-    return null;
+    console.error("[Reddit CAPI] Network error:", err);
   }
+}
+
+// ── Convenience wrappers ──────────────────────────────────────────────────────
+
+export async function trackPurchaseConversion(
+  email: string,
+  amount: number,
+  orderId: string,
+  opts?: { ip?: string; userAgent?: string; clickId?: string }
+) {
+  await fireRedditCapi({
+    event_type: "Purchase",
+    email,
+    external_id: email,
+    value: amount,
+    currency: "USD",
+    item_count: 1,
+    conversion_id: `order_${orderId}`,
+    ip_address: opts?.ip,
+    user_agent: opts?.userAgent,
+    click_id: opts?.clickId,
+  });
+}
+
+export async function trackLeadConversion(
+  email: string,
+  opts?: { ip?: string; userAgent?: string; clickId?: string }
+) {
+  await fireRedditCapi({
+    event_type: "Lead",
+    email,
+    external_id: email,
+    conversion_id: `lead_${sha256(email)}_${Date.now()}`,
+    ip_address: opts?.ip,
+    user_agent: opts?.userAgent,
+    click_id: opts?.clickId,
+  });
+}
+
+export async function trackPageView(
+  opts?: { email?: string; ip?: string; userAgent?: string; clickId?: string }
+) {
+  await fireRedditCapi({
+    event_type: "PageVisit",
+    email: opts?.email,
+    external_id: opts?.email,
+    ip_address: opts?.ip,
+    user_agent: opts?.userAgent,
+    click_id: opts?.clickId,
+  });
 }

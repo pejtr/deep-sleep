@@ -12,7 +12,8 @@ describe("Conversion Tracking Implementation", () => {
 
   describe("Pixel Scripts in index.html", () => {
     it("has Reddit Pixel script with correct ID", () => {
-      expect(indexHtml).toContain("rdt('init','a2_iw4up15u7778')");
+      // Advanced Matching format: rdt('init','a2_iw4up15u7778', { externalId, email })
+      expect(indexHtml).toContain("rdt('init','a2_iw4up15u7778'");
       expect(indexHtml).toContain("rdt('track', 'PageVisit')");
       expect(indexHtml).toContain("redditstatic.com/ads/pixel.js");
     });

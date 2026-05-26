@@ -11,6 +11,7 @@ import {
   createCampaign, createAdSet, createAd, updateCampaignStatus, CAMPAIGN_TEMPLATES,
 } from "./redditAds";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
+import { trackLeadConversion } from "./redditPixel";
 import { sendQuizResultEmail, addQuizContactToBrevo } from "./quizEmailService";
 import { onQuizComplete } from "./emailSequenceService";
 import {
@@ -200,6 +201,8 @@ export const appRouter = router({
             source: "quiz",
             sessionId: input.sessionId,
           }).catch(() => {/* non-critical */});
+          // Reddit CAPI server-side lead event
+          trackLeadConversion(input.email).catch(() => {/* non-critical */});
         }
         return { chronotype };
       }),

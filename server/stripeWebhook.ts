@@ -9,6 +9,7 @@ import { initializeEmailSequence } from "./emailScheduler";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
 import { onPurchaseComplete, cancelAbandonCart } from "./emailSequenceService";
 import { createAffiliateConversion } from "./db";
+import { trackPurchaseConversion } from "./redditPixel";
 
 export function registerStripeWebhook(app: Express) {
   // CRITICAL: raw body parser must be registered BEFORE express.json()
@@ -136,6 +137,19 @@ export function registerStripeWebhook(app: Express) {
                   customerEmail: buyerEmail ?? null,
                   productKey: productId,
                 }).catch(() => {/* non-critical */});
+              }
+
+              // ── Reddit CAPI server-side purchase event ──────────────────────
+              if (buyerEmail) {
+                trackPurchaseConversion(
+                  buyerEmail,
+                  amountTotal,
+                  orderId,
+                  {
+                    ip: (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim(),
+                    userAgent: req.headers["user-agent"] as string | undefined,
+                  }
+                ).catch(() => {/* non-critical */});
               }
 
               // Dispatch outbound webhook event (fire-and-forget)
