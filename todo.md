@@ -959,3 +959,10 @@
 - [ ] Order bump musí být opt-in checkbox (ne auto-přidaný)
 - [ ] Subscription musí být oddělená opt-in volba (ne součást základního checkout)
 - [ ] Ověřit že 7-Night Protocol za 83 Kč = přesně 83 Kč v Stripe checkout (bez přidaných položek)
+
+## Checkout Urgency & Trust Badges (May 26)
+- [x] Dynamický odpočet na Order.tsx — session-persistent 15min timer "Price locks in X:XX" (červený, pulsující)
+- [x] Sticky urgency bar nahoře Order stránky — "⚡ Offer expires in X:XX — Price goes to $19 after"
+- [x] Trust badges sekce — SSL 256-bit, 30-day guarantee, instant download, CBT-I backed, 2847 buyers
+- [x] "X people viewing this right now" live social proof counter na Order stránce
+- [x] Urgency copy update — "Only X spots left at this price" dynamicky se snižující číslo

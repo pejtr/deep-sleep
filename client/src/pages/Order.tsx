@@ -28,9 +28,37 @@ export default function Order() {
   const [selectedTier, setSelectedTier] = useState<"discount" | "main">("main");
 
   const [buyers] = useState(() => Math.floor(Math.random() * 15) + 8);
-  const [viewers] = useState(() => Math.floor(Math.random() * 60) + 180);
+  const [viewers, setViewers] = useState(() => Math.floor(Math.random() * 60) + 180);
+  const [spotsLeft] = useState(() => Math.floor(Math.random() * 8) + 3);
   const [loading, setLoading] = useState(false);
   const [bumpSelected, setBumpSelected] = useState(false);
+  const [timerSecs, setTimerSecs] = useState(() => {
+    const stored = sessionStorage.getItem('checkout_timer');
+    return stored ? parseInt(stored, 10) : 15 * 60;
+  });
+
+  // Countdown timer — session-persistent
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTimerSecs(s => {
+        const next = s > 0 ? s - 1 : 0;
+        sessionStorage.setItem('checkout_timer', String(next));
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Slowly decrease viewers for social proof
+  useEffect(() => {
+    const id = setInterval(() => {
+      setViewers(v => v > 120 ? v - Math.floor(Math.random() * 2) : v);
+    }, 8000);
+    return () => clearInterval(id);
+  }, []);
+
+  const timerMins = String(Math.floor(timerSecs / 60)).padStart(2, '0');
+  const timerSecStr = String(timerSecs % 60).padStart(2, '0');
   const { track } = useTrackBehavior();
   const { formatPrice, currency } = useCurrency();
 
@@ -44,6 +72,21 @@ export default function Order() {
       {/* Orbs */}
       <div className="orb orb-gold w-80 h-80 opacity-15" style={{ top: "-5%", right: "-5%" }} />
       <div className="orb orb-purple w-64 h-64 opacity-10" style={{ bottom: "20%", left: "-10%" }} />
+
+      {/* Sticky urgency bar — pulsing red/amber */}
+      <div className="sticky top-0 z-50 w-full py-2 px-4 flex items-center justify-center gap-3"
+        style={{ background: timerSecs < 300 ? "oklch(0.35 0.18 15)" : "oklch(0.18 0.08 30)", borderBottom: "1px solid oklch(0.55 0.18 45 / 0.5)" }}>
+        <span className="text-xs font-black uppercase tracking-wider" style={{ color: timerSecs < 300 ? "oklch(0.95 0.05 65)" : "oklch(0.88 0.14 65)" }}>
+          ⚡ Special price expires in:
+        </span>
+        <span className="font-black text-sm tabular-nums px-2 py-0.5 rounded-md"
+          style={{ background: "oklch(0.78 0.18 65)", color: "black", animation: timerSecs < 60 ? "pulse 0.8s infinite" : "none" }}>
+          {timerMins}:{timerSecStr}
+        </span>
+        <span className="text-xs hidden sm:inline" style={{ color: "oklch(0.65 0.08 65)" }}>
+          — Price goes to ${selectedTier === "discount" ? "5" : "19"} after
+        </span>
+      </div>
 
       {/* Urgency banner */}
       <CountdownTimer variant="banner" label="Locked-in price expires in:" />
@@ -60,18 +103,24 @@ export default function Order() {
 
       <div className="relative z-10 container max-w-2xl mx-auto py-8">
 
-        {/* Live FOMO indicators */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>
-              <span className="font-semibold" style={{ color: "oklch(0.70 0.04 265)" }}>{buyers} people</span> bought in the last hour
+        {/* Live FOMO indicators — 3 badges */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "oklch(0.12 0.04 145 / 0.6)", border: "1px solid oklch(0.45 0.14 145 / 0.4)" }}>
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "oklch(0.65 0.20 145)" }} />
+            <span className="text-xs" style={{ color: "oklch(0.65 0.20 145)" }}>
+              <strong>{buyers}</strong> bought in last hour
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Users className="w-3 h-3" style={{ color: "oklch(0.50 0.04 265)" }} />
-            <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>
-              <span className="font-semibold" style={{ color: "oklch(0.70 0.04 265)" }}>{viewers}</span> viewing this page
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "oklch(0.12 0.04 265 / 0.6)", border: "1px solid oklch(0.45 0.08 265 / 0.4)" }}>
+            <Users className="w-3 h-3" style={{ color: "oklch(0.65 0.10 265)" }} />
+            <span className="text-xs" style={{ color: "oklch(0.65 0.10 265)" }}>
+              <strong>{viewers}</strong> viewing now
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "oklch(0.15 0.08 30 / 0.6)", border: "1px solid oklch(0.65 0.18 45 / 0.5)" }}>
+            <span className="text-xs font-black" style={{ color: "oklch(0.78 0.18 45)" }}>🔥</span>
+            <span className="text-xs" style={{ color: "oklch(0.78 0.18 45)" }}>
+              Only <strong>{spotsLeft} spots</strong> at this price
             </span>
           </div>
         </div>
@@ -416,7 +465,33 @@ export default function Order() {
           </div>
         </div>
 
-        {/* Trust indicators */}
+        {/* Enhanced Trust Badges */}
+        <div className="mt-8 rounded-2xl p-5" style={{ background: "oklch(0.10 0.03 265 / 0.6)", border: "1px solid oklch(0.25 0.04 265 / 0.5)" }}>
+          <p className="text-xs font-bold text-center uppercase tracking-widest mb-4" style={{ color: "oklch(0.50 0.04 265)" }}>Your purchase is protected</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { icon: "🔒", title: "256-bit SSL", desc: "Bank-level encryption" },
+              { icon: "✅", title: "30-Day Guarantee", desc: "Full refund, no questions" },
+              { icon: "⚡", title: "Instant Download", desc: "Access in 60 seconds" },
+              { icon: "🧠", title: "CBT-I Backed", desc: "#1 evidence-based method" },
+            ].map((b, i) => (
+              <div key={i} className="flex flex-col items-center text-center gap-1 p-3 rounded-xl" style={{ background: "oklch(0.12 0.03 265 / 0.5)" }}>
+                <span className="text-2xl">{b.icon}</span>
+                <span className="text-xs font-bold" style={{ color: "oklch(0.82 0.08 265)" }}>{b.title}</span>
+                <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>{b.desc}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 pt-4 flex items-center justify-center gap-2" style={{ borderTop: "1px solid oklch(0.20 0.03 265 / 0.5)" }}>
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(s => <span key={s} style={{ color: "oklch(0.78 0.18 65)" }}>★</span>)}
+            </div>
+            <span className="text-xs font-semibold" style={{ color: "oklch(0.78 0.18 65)" }}>4.9/5</span>
+            <span className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>from 2,847 verified buyers</span>
+          </div>
+        </div>
+
+        {/* Original TrustBar */}
         <TrustBar />
       </div>
 
