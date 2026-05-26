@@ -50,6 +50,7 @@ function ExpressCheckoutInner({
 
     try {
       const utm = getUTMData();
+      const affiliateRef = sessionStorage.getItem("affiliate_ref") || undefined;
       const result = await createSession.mutateAsync({
         productId,
         includeUpsell,
@@ -59,6 +60,7 @@ function ExpressCheckoutInner({
         currency: currency.code.toLowerCase(),
         isLowTier,
         origin: window.location.origin,
+        affiliateRef,
         ...utm,
       });
 

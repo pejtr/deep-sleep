@@ -15,51 +15,33 @@ type Phase = "quiz" | "email" | "result";
 
 const CHRONOTYPE_ICONS: Record<Chronotype, string> = { Lion: "🦁", Bear: "🐻", Wolf: "🐺", Dolphin: "🐬" };
 
-// ── Quiz questions (5 — optimized for speed) ─────────────────────────────────
+// ── Quiz questions (3 — minimum friction, maximum conversion) ────────────────
 const QUESTIONS = [
   {
-    text: "If you had no alarm, what time would you naturally wake up?",
+    text: "What time does your body naturally want to wake up?",
     options: [
-      "🌅 Before 6:30am — I'm up with the sun",
-      "☀️ 6:30–8:30am — A reasonable morning",
-      "🌤️ 8:30–10:30am — I need my sleep",
-      "After 10:30am — I'm a true night owl",
+      "Before 6:30am — I'm up with the sun",
+      "6:30–8:30am — A reasonable morning",
+      "8:30–10:30am — I need my sleep",
+      "After 10:30am — Night owl energy",
     ],
   },
   {
-    text: "When do you feel most mentally sharp?",
+    text: "When does your brain feel sharpest?",
     options: [
-      "🌄 Early morning (5–9am)",
-      "🌞 Mid-morning to early afternoon (9am–1pm)",
-      "🌆 Late afternoon to evening (5–9pm)",
-      "🌃 Late night (9pm–2am)",
+      "Early morning (5–9am)",
+      "Mid-morning to early afternoon (9am–1pm)",
+      "Late afternoon to evening (5–9pm)",
+      "Late night (9pm–2am)",
     ],
   },
   {
-    text: "What's your ideal bedtime?",
+    text: "What happens when you try to fall asleep?",
     options: [
-      "Before 9pm",
-      "9–11pm",
-      "11pm–1am",
-      "After 1am",
-    ],
-  },
-  {
-    text: "How would you describe your sleep quality?",
-    options: [
-      "😴 Deep and restful — I sleep like a log",
-      "😐 Decent — I wake occasionally",
-      "😰 Light and fragmented — I wake often",
-      "😩 Terrible — I lie awake for hours",
-    ],
-  },
-  {
-    text: "How do you handle stress before bed?",
-    options: [
-      "😌 I rarely feel stressed at bedtime",
-      "I sometimes worry but can let it go",
-      "I need distraction to wind down",
-      "😰 My mind races — I can't stop thinking",
+      "I fall asleep within minutes — no issues",
+      "Takes 15-30 min but I get there",
+      "I toss and turn — mind won't shut off",
+      "Hours of lying awake — it's torture",
     ],
   },
 ];
@@ -243,7 +225,7 @@ export default function QuizFunnel() {
             <div className="progress-bar-fill transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
           <p className="text-center text-xs mt-1" style={{ color: "oklch(0.45 0.04 265)" }}>
-            {current + 1} of {QUESTIONS.length} — takes 60 seconds
+            {current + 1} of {QUESTIONS.length} — takes 30 seconds
           </p>
         </div>
 

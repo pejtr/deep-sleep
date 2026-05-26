@@ -53,28 +53,44 @@ describe("Product structure — Stripe-based (Gumroad deprecated)", () => {
 });
 
 describe("Quiz — accepts 5-answer array (from 8-question frontend)", () => {
-  it("accepts exactly 5 answers and returns valid chronotype", async () => {
+  it("accepts 3 core answers and returns valid chronotype", async () => {
     const result = await caller.quiz.submit({
-      sessionId: "test-8q-quiz",
+      sessionId: "test-3q-quiz",
+      answers: [0, 1, 2],
+    });
+    expect(["Lion", "Bear", "Wolf", "Dolphin"]).toContain(result.chronotype);
+  });
+
+  it("accepts 5 answers (core + bonus) and returns valid chronotype", async () => {
+    const result = await caller.quiz.submit({
+      sessionId: "test-5q-quiz",
       answers: [0, 1, 2, 1, 0],
     });
     expect(["Lion", "Bear", "Wolf", "Dolphin"]).toContain(result.chronotype);
   });
 
-  it("rejects fewer than 5 answers", async () => {
+  it("accepts 6 answers (core + all bonus) and returns valid chronotype", async () => {
+    const result = await caller.quiz.submit({
+      sessionId: "test-6q-quiz",
+      answers: [0, 1, 2, 1, 0, 3],
+    });
+    expect(["Lion", "Bear", "Wolf", "Dolphin"]).toContain(result.chronotype);
+  });
+
+  it("rejects fewer than 3 answers", async () => {
     await expect(
       caller.quiz.submit({
         sessionId: "test-short",
-        answers: [0, 1, 2],
+        answers: [0, 1],
       })
     ).rejects.toThrow();
   });
 
-  it("rejects more than 5 answers", async () => {
+  it("rejects more than 6 answers", async () => {
     await expect(
       caller.quiz.submit({
         sessionId: "test-long",
-        answers: [0, 1, 2, 1, 0, 3],
+        answers: [0, 1, 2, 1, 0, 3, 2],
       })
     ).rejects.toThrow();
   });

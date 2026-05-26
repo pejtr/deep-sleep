@@ -928,3 +928,13 @@
 - [ ] TikTok-optimized meta tags (OG image, description) for all pages
 - [ ] Reddit-safe compliance disclaimers on all pages
 - [ ] Affiliate outreach email templates (DFY scripts for creators)
+
+## Quiz Shortening (May 26)
+- [x] Zkrátit quiz na 3 hlavní otázky (core chronotype detection)
+- [x] Přidat 3 volitelné doplňující otázky (optional, "Want more personalized results?")
+- [x] Aktualizovat scoring logiku pro 3-otázkový režim (min 3, max 6 answers)
+- [x] Aktualizovat QuizFunnel.tsx pro stejný 3-otázkový formát
+- [x] Email gate mezi core a bonus otázkami ("Where should we send your results?")
+- [x] Affiliate ref wired do Stripe checkout metadata
+- [x] onQuizComplete trigger wired do leads.capture
+- [x] 290/290 testů projde

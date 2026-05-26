@@ -9,6 +9,7 @@ import { invokeLLM } from "./_core/llm";
 import { getCampaigns, getCampaignSummary, getAdAccount, getCampaignPerformance } from "./redditAds";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
 import { sendQuizResultEmail, addQuizContactToBrevo } from "./quizEmailService";
+import { onQuizComplete } from "./emailSequenceService";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -46,18 +47,11 @@ const CHRONOTYPE_SCORES: Record<string, number[]> = {
 };
 
 function calculateChronotype(answers: number[]): "Lion" | "Bear" | "Wolf" | "Dolphin" {
-  // Simple scoring: sum per type based on answer index mapping
+  // Scoring works with 3-6 answers — each answer maps to a chronotype
   const scores = { Lion: 0, Bear: 0, Wolf: 0, Dolphin: 0 };
-  const mappings: Array<Record<number, keyof typeof scores>> = [
-    { 0: "Lion", 1: "Bear", 2: "Wolf", 3: "Dolphin" },
-    { 0: "Lion", 1: "Bear", 2: "Wolf", 3: "Dolphin" },
-    { 0: "Lion", 1: "Bear", 2: "Wolf", 3: "Dolphin" },
-    { 0: "Lion", 1: "Bear", 2: "Wolf", 3: "Dolphin" },
-    { 0: "Lion", 1: "Bear", 2: "Wolf", 3: "Dolphin" },
-  ];
-  answers.forEach((ans, i) => {
-    const mapping = mappings[i];
-    if (mapping && mapping[ans]) scores[mapping[ans]]++;
+  const mapping: Record<number, keyof typeof scores> = { 0: "Lion", 1: "Bear", 2: "Wolf", 3: "Dolphin" };
+  answers.forEach((ans) => {
+    if (mapping[ans]) scores[mapping[ans]]++;
   });
   return (Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "Bear") as "Lion" | "Bear" | "Wolf" | "Dolphin";
 }
@@ -165,7 +159,7 @@ export const appRouter = router({
     submit: publicProcedure
       .input(z.object({
         sessionId: z.string(),
-        answers: z.array(z.number().int().min(0).max(3)).length(5),
+        answers: z.array(z.number().int().min(0).max(3)).min(3).max(6),
         abVariant: z.string().optional(),
         email: z.string().email().optional(),
       }))
@@ -303,12 +297,17 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
         source: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        await captureEmailLead({
+        const result = await captureEmailLead({
           email: input.email,
           sessionId: input.sessionId,
           chronotype: input.chronotype,
           source: input.source ?? "quiz_result",
         });
+        // Trigger abandon cart + welcome email sequence
+        if (input.source === "quiz_result" || input.source === "quiz_funnel_reddit" || input.source === "quiz_funnel_tiktok" || input.source === "quiz_funnel") {
+          const leadId = (result as any)?.insertId ?? 0;
+          onQuizComplete(input.email, leadId, input.chronotype ?? "Bear").catch(() => {/* non-critical */});
+        }
         return { success: true };
       }),
   }),
@@ -859,6 +858,7 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           utmContent: z.string().optional(),
           utmTerm: z.string().optional(),
           referrer: z.string().optional(),
+          affiliateRef: z.string().optional(),
         })
       )
       .mutation(async ({ input }) => {
@@ -994,6 +994,8 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
             productId: input.productId,
             orderId: String(orderId),
             chronotype: input.chronotype ?? "",
+            customer_email: input.email ?? "",
+            affiliateRef: input.affiliateRef ?? "",
           },
           client_reference_id: input.sessionId,
         });

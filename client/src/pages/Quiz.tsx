@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Moon, ArrowLeft, Zap, Shield, Lock } from "lucide-react";
+import { Moon, ArrowLeft, Zap, Shield, Lock, Mail, ChevronRight } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, getAbVariant, setChronotype, useTrackBehavior } from "@/hooks/useSession";
 import { setMetaTags } from "@/lib/metaTags";
@@ -8,34 +8,72 @@ import { setMetaTags } from "@/lib/metaTags";
 interface Question {
   id: number;
   text: string;
+  subtext?: string;
   options: string[];
+  insight?: string[]; // mini-insight per answer selection
 }
 
-// ── 5 questions — aligned with backend validation (.length(5)) ──────────────
-const QUESTIONS: Question[] = [
+// ── 3 CORE questions — maximum signal, minimum friction ──────────────────────
+const CORE_QUESTIONS: Question[] = [
   {
     id: 1,
-    text: "If you had no alarm, what time would you naturally wake up?",
+    text: "What time does your body naturally want to wake up?",
+    subtext: "Without an alarm — your biology knows.",
     options: [
-      "🌅 Before 6:30am — I'm up with the sun",
-      "☀️ 6:30–8:30am — A reasonable morning",
-      "🌤️ 8:30–10:30am — I need my sleep",
-      "After 10:30am — I'm a true night owl",
+      "Before 6:30am — I'm up with the sun",
+      "6:30–8:30am — A reasonable morning",
+      "8:30–10:30am — I need my sleep",
+      "After 10:30am — Night owl energy",
+    ],
+    insight: [
+      "Early riser pattern — possible Lion chronotype",
+      "Balanced rhythm — possible Bear chronotype",
+      "Evening-shifted — possible Wolf chronotype",
+      "Extreme night owl — possible Dolphin or Wolf",
     ],
   },
   {
     id: 2,
-    text: "When do you feel most mentally sharp?",
+    text: "When does your brain feel sharpest?",
+    subtext: "Your peak mental performance window reveals everything.",
     options: [
-      "🌄 Early morning (5–9am)",
-      "🌞 Mid-morning to early afternoon (9am–1pm)",
-      "🌆 Late afternoon to evening (5–9pm)",
-      "🌃 Late night (9pm–2am)",
+      "Early morning (5–9am)",
+      "Mid-morning to early afternoon (9am–1pm)",
+      "Late afternoon to evening (5–9pm)",
+      "Late night (9pm–2am)",
+    ],
+    insight: [
+      "Morning peak — Lion energy pattern confirmed",
+      "Midday peak — classic Bear rhythm",
+      "Evening peak — Wolf creative surge",
+      "Night peak — Dolphin or extreme Wolf",
     ],
   },
   {
     id: 3,
+    text: "What happens when you try to fall asleep?",
+    subtext: "This is the key question. Be honest.",
+    options: [
+      "I fall asleep within minutes — no issues",
+      "Takes 15-30 min but I get there",
+      "I toss and turn — mind won't shut off",
+      "Hours of lying awake — it's torture",
+    ],
+    insight: [
+      "Strong sleep drive — your protocol will be straightforward",
+      "Mild sleep onset delay — very fixable in 3 nights",
+      "Racing mind pattern — your protocol needs specific wind-down triggers",
+      "Severe onset insomnia — your 7-night protocol will target this specifically",
+    ],
+  },
+];
+
+// ── 3 BONUS questions — optional, for "more personalized" results ────────────
+const BONUS_QUESTIONS: Question[] = [
+  {
+    id: 4,
     text: "What's your ideal bedtime?",
+    subtext: "When does your body want to sleep?",
     options: [
       "Before 9pm",
       "9–11pm",
@@ -44,88 +82,117 @@ const QUESTIONS: Question[] = [
     ],
   },
   {
-    id: 4,
-    text: "How would you describe your sleep quality?",
+    id: 5,
+    text: "How do you feel 2 hours after waking?",
+    subtext: "Your morning energy reveals your sleep architecture.",
     options: [
-      "😴 Deep and restful — I sleep like a log",
-      "😐 Decent — I wake occasionally",
-      "😰 Light and fragmented — I wake often",
-      "😩 Terrible — I lie awake for hours",
+      "Alert and ready to go",
+      "Okay after coffee",
+      "Groggy — takes a while to feel human",
+      "Exhausted no matter what",
     ],
   },
   {
-    id: 5,
-    text: "How do you handle stress before bed?",
+    id: 6,
+    text: "What usually wakes you at night?",
+    subtext: "This determines which protocol module you need most.",
     options: [
-      "😌 I rarely feel stressed at bedtime",
-      "I sometimes worry but can let it go",
-      "I need distraction to wind down",
-      "😰 My mind races — I can't stop thinking",
+      "Nothing — I sleep through",
+      "Bathroom or noise",
+      "Anxiety or racing thoughts",
+      "I wake at 3am and can't get back to sleep",
     ],
   },
 ];
 
-// Neuropsychological micro-copy — builds commitment + urgency per question
+// Micro-copy per question — builds commitment
 const MICRO_COPY = [
   "Your body already knows the answer...",
   "This reveals your hidden energy pattern.",
   "Most insomniacs get this wrong.",
-  "Be honest — this is the key question.",
-  "Last one. Your protocol depends on this.",
+  "Almost there — refining your profile...",
+  "This helps personalize Night 1.",
+  "Final detail for your protocol.",
 ];
 
 export default function Quiz() {
   const [, navigate] = useLocation();
+  const [phase, setPhase] = useState<"core" | "email" | "bonus" | "submitting">("core");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const [insightText, setInsightText] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { track } = useTrackBehavior();
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const insightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const submitMutation = trpc.quiz.submit.useMutation();
+  const captureLead = trpc.leads.capture.useMutation();
 
   useEffect(() => {
     setMetaTags({
-      title: "60-Second Sleep Quiz — Find Your Chronotype | Deep Sleep Reset",
-      description: "Discover your sleep chronotype (Lion, Bear, Wolf, or Dolphin) and get a personalized 7-night sleep protocol. Free, instant results.",
+      title: "Free Sleep Score — Find Your Chronotype | Deep Sleep Reset",
+      description: "Discover your sleep chronotype in 30 seconds. Get a personalized sleep protocol based on your biology. Free, instant results.",
       image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp",
       url: window.location.href,
     });
     track("page_view", { page: "quiz" });
     return () => {
       if (advanceTimer.current) clearTimeout(advanceTimer.current);
+      if (insightTimer.current) clearTimeout(insightTimer.current);
     };
   }, []);
 
-  const progress = ((current) / QUESTIONS.length) * 100;
-  const question = QUESTIONS[current];
+  const allQuestions = phase === "bonus" ? BONUS_QUESTIONS : CORE_QUESTIONS;
+  const questionIndex = phase === "bonus" ? current - CORE_QUESTIONS.length : current;
+  const question = allQuestions[questionIndex];
+  const totalSteps = phase === "bonus" ? CORE_QUESTIONS.length + BONUS_QUESTIONS.length : CORE_QUESTIONS.length;
+  const progress = ((current + 1) / (totalSteps + 1)) * 100; // +1 for email step
+
+  const submitQuiz = async (finalAnswers: number[], userEmail?: string) => {
+    setPhase("submitting");
+    setSubmitting(true);
+    try {
+      const sessionId = getSessionId();
+      const abVariant = getAbVariant();
+      const result = await submitMutation.mutateAsync({
+        sessionId,
+        answers: finalAnswers,
+        abVariant,
+        email: userEmail,
+      });
+      setChronotype(result.chronotype);
+      track("quiz_complete", { page: "quiz", value: { chronotype: result.chronotype, questions: finalAnswers.length } });
+      navigate(`/result?chronotype=${result.chronotype}`);
+    } catch (err) {
+      console.error(err);
+      setSubmitting(false);
+      setPhase("core");
+    }
+  };
 
   const advanceQuiz = async (sel: number, currentIdx: number, currentAnswers: number[]) => {
     const newAnswers = [...currentAnswers, sel];
     setAnswers(newAnswers);
     track("quiz_answer", { page: "quiz", value: { question: currentIdx + 1, answer: sel } });
 
-    if (currentIdx < QUESTIONS.length - 1) {
+    // Show insight for core questions
+    if (phase === "core" && CORE_QUESTIONS[currentIdx]?.insight?.[sel]) {
+      setInsightText(CORE_QUESTIONS[currentIdx].insight![sel]);
+      insightTimer.current = setTimeout(() => setInsightText(null), 1800);
+    }
+
+    if (phase === "core" && currentIdx >= CORE_QUESTIONS.length - 1) {
+      // Core done → show email gate
+      setPhase("email");
+    } else if (phase === "bonus" && questionIndex >= BONUS_QUESTIONS.length - 1) {
+      // Bonus done → submit
+      await submitQuiz(newAnswers, email || undefined);
+    } else {
       setCurrent(c => c + 1);
       setSelected(null);
-    } else {
-      setSubmitting(true);
-      try {
-        const sessionId = getSessionId();
-        const abVariant = getAbVariant();
-        const result = await submitMutation.mutateAsync({
-          sessionId,
-          answers: newAnswers,
-          abVariant,
-        });
-        setChronotype(result.chronotype);
-        track("quiz_complete", { page: "quiz", value: { chronotype: result.chronotype } });
-        navigate(`/result?chronotype=${result.chronotype}`);
-      } catch (err) {
-        console.error(err);
-        setSubmitting(false);
-      }
     }
   };
 
@@ -135,11 +202,48 @@ export default function Quiz() {
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
     advanceTimer.current = setTimeout(() => {
       advanceQuiz(idx, current, answers);
-    }, 300);
+    }, 350);
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      // Capture lead immediately
+      const sessionId = getSessionId();
+      captureLead.mutate({ email, sessionId, chronotype: undefined, source: "quiz_result" });
+      track("email_capture", { page: "quiz", value: { email } });
+    }
+    // Show bonus questions option or submit directly
+    setPhase("bonus");
+    setCurrent(CORE_QUESTIONS.length);
+    setSelected(null);
+  };
+
+  const handleSkipEmail = () => {
+    // Skip email, go to bonus or submit
+    setPhase("bonus");
+    setCurrent(CORE_QUESTIONS.length);
+    setSelected(null);
+  };
+
+  const handleSkipBonus = async () => {
+    // Skip bonus questions, submit with core answers only
+    await submitQuiz(answers, email || undefined);
   };
 
   const handleBack = () => {
     if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    if (phase === "email") {
+      setPhase("core");
+      setCurrent(CORE_QUESTIONS.length - 1);
+      setSelected(answers[answers.length - 1] ?? null);
+      setAnswers(a => a.slice(0, -1));
+      return;
+    }
+    if (phase === "bonus" && questionIndex === 0) {
+      setPhase("email");
+      return;
+    }
     if (current === 0) {
       navigate("/");
     } else {
@@ -148,6 +252,115 @@ export default function Quiz() {
       setAnswers(a => a.slice(0, -1));
     }
   };
+
+  // ── Email Gate Screen ──────────────────────────────────────────────────────
+  if (phase === "email") {
+    return (
+      <div className="min-h-screen flex flex-col" style={{ background: "oklch(0.07 0.025 255)" }}>
+        <div className="orb orb-gold w-72 h-72 opacity-10" style={{ top: "-5%", right: "5%" }} />
+        <div className="orb orb-blue w-48 h-48 opacity-8" style={{ bottom: "10%", left: "-5%" }} />
+
+        <div className="relative z-10 container py-3 flex items-center justify-between">
+          <button onClick={handleBack} className="flex items-center gap-1.5 text-sm"
+            style={{ color: "oklch(0.50 0.04 265)" }}>
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </button>
+          <div className="flex items-center gap-2">
+            <Moon className="w-4 h-4" style={{ color: "oklch(0.82 0.16 65)" }} />
+            <span className="text-sm font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>
+              Deep Sleep Reset
+            </span>
+          </div>
+          <div className="w-16" />
+        </div>
+
+        <div className="relative z-10 flex-1 container py-8 flex flex-col items-center justify-center max-w-md mx-auto w-full">
+          {/* Success indicator */}
+          <div className="mb-6 flex items-center gap-2 px-4 py-2 rounded-full"
+            style={{ background: "oklch(0.45 0.15 145 / 0.15)", border: "1px solid oklch(0.55 0.15 145 / 0.3)" }}>
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "oklch(0.7 0.2 145)" }} />
+            <span className="text-xs font-medium" style={{ color: "oklch(0.7 0.2 145)" }}>
+              Your Sleep Score is ready
+            </span>
+          </div>
+
+          <h2 className="font-display font-bold text-2xl md:text-3xl text-center mb-3 leading-tight"
+            style={{ color: "oklch(0.95 0.01 265)" }}>
+            Where should we send<br />your results?
+          </h2>
+
+          <p className="text-sm text-center mb-6" style={{ color: "oklch(0.55 0.04 265)" }}>
+            Get your personalized chronotype profile + a free 3 AM Rescue Protocol
+          </p>
+
+          <form onSubmit={handleEmailSubmit} className="w-full space-y-3">
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "oklch(0.50 0.04 265)" }} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm outline-none transition-all"
+                style={{
+                  background: "oklch(0.12 0.02 255)",
+                  border: "1px solid oklch(0.78 0.18 65 / 0.3)",
+                  color: "oklch(0.95 0.01 265)",
+                }}
+                autoFocus
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                background: "linear-gradient(135deg, oklch(0.78 0.18 65), oklch(0.7 0.2 45))",
+                color: "oklch(0.1 0.01 265)",
+                boxShadow: "0 4px 20px oklch(0.78 0.18 65 / 0.3)",
+              }}
+            >
+              <span>See My Sleep Score</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </form>
+
+          <button
+            onClick={handleSkipEmail}
+            className="mt-4 text-xs underline underline-offset-2 opacity-50 hover:opacity-80 transition-opacity"
+            style={{ color: "oklch(0.55 0.04 265)" }}
+          >
+            Skip — show results without email
+          </button>
+
+          {/* Trust signals */}
+          <div className="mt-8 flex items-center justify-center gap-4 text-xs" style={{ color: "oklch(0.35 0.04 265)" }}>
+            <span className="inline-flex items-center gap-1"><Lock className="w-3 h-3" /> No spam ever</span>
+            <span className="inline-flex items-center gap-1"><Shield className="w-3 h-3" /> Unsubscribe anytime</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Submitting Screen ──────────────────────────────────────────────────────
+  if (phase === "submitting" || submitting) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center" style={{ background: "oklch(0.07 0.025 255)" }}>
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full"
+            style={{ background: "oklch(0.78 0.18 65 / 0.1)", color: "oklch(0.78 0.18 65)" }}>
+            <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            <span className="text-sm font-semibold">Analyzing your sleep biology...</span>
+          </div>
+          <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>
+            Matching you with 1 of 4 chronotype profiles
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!question) return null;
 
@@ -184,7 +397,7 @@ export default function Quiz() {
         </button>
       </div>
 
-      {/* Progress bar — prominent */}
+      {/* Progress bar */}
       <div className="relative z-10 container pb-1">
         <div className="progress-bar">
           <div
@@ -194,30 +407,51 @@ export default function Quiz() {
         </div>
         <div className="flex items-center justify-between mt-1.5">
           <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>
-            Question {current + 1} of {QUESTIONS.length}
+            {phase === "bonus" ? (
+              <span>Bonus question {questionIndex + 1} of {BONUS_QUESTIONS.length}</span>
+            ) : (
+              <span>Question {current + 1} of {CORE_QUESTIONS.length}</span>
+            )}
           </p>
           <p className="text-xs font-medium" style={{ color: "oklch(0.82 0.16 65)" }}>
-            {Math.round(progress)}% complete
+            {phase === "bonus" ? "Personalizing..." : `${Math.round(progress)}% complete`}
           </p>
         </div>
       </div>
 
-      {/* Question — centered, max impact */}
+      {/* Question — centered */}
       <div className="relative z-10 flex-1 container py-6 flex flex-col items-center justify-center max-w-xl mx-auto w-full">
         <div className="w-full">
-          {/* Micro-copy — neuropsychological nudge */}
-          <p className="text-xs font-medium mb-3 text-center italic"
+          {/* Micro-copy */}
+          <p className="text-xs font-medium mb-2 text-center italic"
             style={{ color: "oklch(0.55 0.12 65)" }}>
-            {MICRO_COPY[current]}
+            {MICRO_COPY[current] ?? "Refining your profile..."}
           </p>
 
           {/* Question text */}
-          <h2 className="font-display font-bold text-xl md:text-2xl mb-5 leading-snug text-center"
+          <h2 className="font-display font-bold text-xl md:text-2xl mb-2 leading-snug text-center"
             style={{ color: "oklch(0.95 0.01 265)" }}>
             {question.text}
           </h2>
 
-          {/* Options — tap to auto-advance */}
+          {/* Subtext */}
+          {question.subtext && (
+            <p className="text-xs text-center mb-5" style={{ color: "oklch(0.45 0.04 265)" }}>
+              {question.subtext}
+            </p>
+          )}
+
+          {/* Insight flash */}
+          {insightText && (
+            <div className="mb-4 text-center animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <span className="inline-block px-3 py-1.5 rounded-full text-xs font-medium"
+                style={{ background: "oklch(0.45 0.15 145 / 0.15)", color: "oklch(0.7 0.2 145)", border: "1px solid oklch(0.55 0.15 145 / 0.3)" }}>
+                {insightText}
+              </span>
+            </div>
+          )}
+
+          {/* Options */}
           <div className="flex flex-col gap-2.5">
             {question.options.map((option, idx) => (
               <button
@@ -242,25 +476,22 @@ export default function Quiz() {
             ))}
           </div>
 
+          {/* Skip bonus option */}
+          {phase === "bonus" && (
+            <button
+              onClick={handleSkipBonus}
+              className="mt-4 w-full text-center text-xs underline underline-offset-2 opacity-60 hover:opacity-90 transition-opacity py-2"
+              style={{ color: "oklch(0.55 0.04 265)" }}
+            >
+              Skip — show my results now
+            </button>
+          )}
+
           {/* Tap hint */}
-          {selected === null && !submitting && (
+          {selected === null && !submitting && phase === "core" && (
             <p className="text-center text-xs mt-4" style={{ color: "oklch(0.40 0.04 265)" }}>
               Tap an answer — it auto-advances
             </p>
-          )}
-
-          {/* Submitting state — builds anticipation */}
-          {submitting && (
-            <div className="mt-6 text-center space-y-3">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
-                style={{ background: "oklch(0.78 0.18 65 / 0.1)", color: "oklch(0.78 0.18 65)" }}>
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm font-medium">Analyzing your chronotype...</span>
-              </div>
-              <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>
-                Matching you with 1 of 4 sleep profiles...
-              </p>
-            </div>
           )}
         </div>
       </div>
@@ -270,7 +501,7 @@ export default function Quiz() {
         <div className="flex items-center justify-center gap-4 text-xs" style={{ color: "oklch(0.35 0.04 265)" }}>
           <span className="inline-flex items-center gap-1"><Lock className="w-3 h-3" /> Private</span>
           <span className="inline-flex items-center gap-1"><Shield className="w-3 h-3" /> No spam</span>
-          <span>60 seconds</span>
+          <span>{phase === "core" ? "30 seconds" : "Almost done"}</span>
         </div>
       </div>
     </div>

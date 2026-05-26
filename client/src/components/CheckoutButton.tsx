@@ -56,6 +56,7 @@ export function CheckoutButton({
       productName: `Deep Sleep Reset - ${productId}`,
     });
     const utm = getUTMData();
+    const affiliateRef = sessionStorage.getItem("affiliate_ref") || undefined;
     createSession.mutate({
       productId,
       includeUpsell,
@@ -65,6 +66,7 @@ export function CheckoutButton({
       currency: currency.code.toLowerCase(),
       isLowTier,
       origin: window.location.origin,
+      affiliateRef,
       ...utm,
     });
   };
