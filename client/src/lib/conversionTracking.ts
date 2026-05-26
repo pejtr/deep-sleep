@@ -210,6 +210,31 @@ export function trackQuizComplete(chronotype: string): void {
 }
 
 /**
+ * Reddit Advanced Matching — call after user email is known (login, checkout)
+ * Updates the pixel init with email and externalId for better match quality
+ */
+export function rdtSetAdvancedMatch(data: { email?: string; externalId?: string }): void {
+  if (!window.rdt) return;
+  try {
+    if (data.email) {
+      // Store for next page load (init reads this)
+      (window as any).__rdt_email = data.email;
+    }
+    if (data.externalId) {
+      try { localStorage.setItem('dsrSessionId', data.externalId); } catch (e) { /* silent */ }
+    }
+    // Re-init with advanced matching data for current session
+    window.rdt('init', 'a2_iw4up15u7778', {
+      externalId: data.externalId || (function(){try{return localStorage.getItem('dsrSessionId')||'';}catch(e){return '';}}()),
+      email: data.email || '',
+    });
+    console.log('[Tracking] Reddit Advanced Matching updated:', { email: data.email ? '***' : 'none', externalId: data.externalId });
+  } catch (e) {
+    console.warn('[Tracking] Reddit Advanced Matching error:', e);
+  }
+}
+
+/**
  * Track page view for specific high-value pages (order page, upsells)
  */
 export function trackViewContent(data: { productId?: string; productName?: string; value?: number }): void {
