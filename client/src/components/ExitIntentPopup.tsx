@@ -176,7 +176,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
             {[1,2,3,4,5].map(i => (
               <Star key={i} className="w-3.5 h-3.5 fill-current" style={{ color: "oklch(0.82 0.16 65)" }} />
             ))}
-            <span className="text-xs ml-1" style={{ color: "oklch(0.55 0.04 265)" }}>12,847 people fixed their sleep</span>
+            <span className="text-xs ml-1" style={{ color: "oklch(0.55 0.04 265)" }}>Rated 4.8/5 by our users</span>
           </div>
 
           {/* Email input (optional) */}

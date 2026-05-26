@@ -38,6 +38,11 @@ const SleepChatBot = lazy(() => import("./components/SleepChatBot"));
 const Chat = lazy(() => import("./pages/Chat").then((m) => ({ default: m.ChatPage })));
 const Members = lazy(() => import("./pages/Members"));
 const MembersLogin = lazy(() => import("./pages/MembersLogin"));
+const Squeeze = lazy(() => import("./pages/Squeeze"));
+const Bridge = lazy(() => import("./pages/Bridge"));
+const SegmentLanding = lazy(() => import("./pages/SegmentLanding"));
+const AffiliateJoin = lazy(() => import("./pages/AffiliateJoin"));
+const AffiliateDashboard = lazy(() => import("./pages/AffiliateDashboard"));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
@@ -82,6 +87,14 @@ function Router() {
         <Route path="/ab-testing" component={AbTestingDashboard} />
         <Route path="/checkout/success" component={CheckoutSuccess} />
         <Route path="/protocol" component={Protocol} />
+        <Route path="/squeeze" component={Squeeze} />
+        <Route path="/bridge" component={Bridge} />
+        <Route path="/3am-wake-up" component={SegmentLanding} />
+        <Route path="/racing-thoughts" component={SegmentLanding} />
+        <Route path="/melatonin-alternative" component={SegmentLanding} />
+        <Route path="/tired-but-wired" component={SegmentLanding} />
+        <Route path="/affiliates/join" component={AffiliateJoin} />
+        <Route path="/affiliates/dashboard" component={AffiliateDashboard} />
         <Route path="/quiz-funnel" component={QuizFunnel} />
         <Route path="/sleep-quiz" component={QuizFunnel} />
         <Route path="/404" component={NotFound} />

@@ -14,18 +14,18 @@ const TESTIMONIALS = [
 // const GUMROAD_URL = "https://deepsleepreset.gumroad.com/l/fdtifc?price=5";
 
 export default function FloatingSocialProofBar() {
-  const [liveCount, setLiveCount] = useState(849);
+  const [liveCount, setLiveCount] = useState(47);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [, navigate] = useLocation();
 
-  // Slowly increment live count
+  // Slowly increment live count (realistic range)
   useEffect(() => {
     const interval = setInterval(() => {
       setLiveCount(prev => {
-        const change = Math.random() > 0.4 ? 1 : 0;
-        return prev + change;
+        const change = Math.random() > 0.6 ? 1 : 0;
+        return Math.min(prev + change, 120);
       });
-    }, 8000);
+    }, 12000);
     return () => clearInterval(interval);
   }, []);
 
@@ -55,7 +55,7 @@ export default function FloatingSocialProofBar() {
             </svg>
             <span className="text-lg font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>{liveCount.toLocaleString()}</span>
           </div>
-          <span className="text-xs hidden sm:inline" style={{ color: "oklch(0.50 0.04 265)" }}>lives changed<br />this week</span>
+          <span className="text-xs hidden sm:inline" style={{ color: "oklch(0.50 0.04 265)" }}>people trying<br />this week</span>
         </div>
 
         {/* Center: Quiz button (mobile) + Testimonial (desktop) */}

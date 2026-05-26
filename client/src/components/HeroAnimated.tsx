@@ -52,11 +52,11 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             </div>
 
             <p className="text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: "oklch(0.70 0.04 265)" }}>
-              The 7-night protocol that fixes insomnia without pills, supplements, or willpower.
+              The 7-night protocol that helps you sleep better without pills, supplements, or willpower.
             </p>
 
             <p className="text-sm max-w-xl" style={{ color: "oklch(0.50 0.04 265)" }}>
-              Based on CBT-I — the #1 clinician-recommended insomnia treatment with an 80% success rate.
+              Based on CBT-I principles — the #1 behavioral approach recommended by sleep medicine professionals.
             </p>
 
             {/* 3 Checkmarks */}
@@ -64,15 +64,15 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
               <div className="flex items-center gap-2">
                 <span className="text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>&#10003;</span>
                 <div>
-                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>CBT-I Certified</p>
-                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Clinically proven treatment</p>
+                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>CBT-I Based</p>
+                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Evidence-informed approach</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl" style={{ color: "oklch(0.82 0.16 65)" }}>&#10003;</span>
                 <div>
-                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>80% Success Rate</p>
-                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Fastest insomnia fix</p>
+                  <p className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>7-Night Protocol</p>
+                  <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>Structured daily guidance</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                 ))}
               </div>
               <p className="text-sm" style={{ color: "oklch(0.40 0.04 265)" }}>
-                <span className="font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>849</span> lives changed this week
+                <span className="font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>Join</span> people sleeping better this week
               </p>
             </div>
           </div>

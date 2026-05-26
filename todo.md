@@ -866,3 +866,65 @@
 - [x] Integruj sendQuizResultEmail do quiz.submit procedury
 - [x] Integruj addQuizContactToBrevo pro seznam quiz completers (listId: 3)
 - [x] Opravit orderCount na completedOrderCount všude v UI (AdminDashboard, SleepChatBot)
+
+## 100B Integration — Revenue Maximization (May 26)
+- [ ] Email Sequence Manager — 7-day Brevo drip automation (AdminEmailSequence)
+- [ ] Affiliate Program — DB schema (affiliates, affiliate_clicks, affiliate_conversions)
+- [ ] Affiliate Program — backend tRPC procedures (register, track, payout)
+- [ ] Affiliate Program — frontend /affiliates page + affiliate dashboard
+- [ ] Squeeze Page — /squeeze single opt-in lead capture page
+- [ ] Email Capture Popup — exit-intent + timed popup for email collection
+- [ ] Lead Scoring — automatic lead quality scoring based on behavior
+- [ ] Instagram DM Auto-Responder — keyword rules CRUD + Meta API
+- [ ] Lead Management API — /api/v1/leads, /api/v1/orders, /api/v1/analytics
+- [ ] LeadOS CRM webhook — real-time sale events push
+- [ ] Blog + Newsletter — blog posts, newsletter subscription, SEO content
+- [ ] Pre-Checkout Popup — add-ons carousel, live total counter
+
+## Sales Launch Critical Path (from analysis - May 26)
+
+### Claim Cleanup + Compliance
+- [x] Soften headline: "Sleep Better in 7 Nights" instead of "Fix Insomnia"
+- [ ] Remove/soften "10,000+ lives changed" → "Early access price while we collect outcomes"
+- [ ] Remove fake "847 reviews" / "9-10 people purchased in the last hour"
+- [ ] Add compliance disclaimer (educational wellness, not medical advice)
+- [ ] Add CLAIMS.md to repo
+- [ ] Soften "clinically proven" → "evidence-informed CBT-I principles"
+- [ ] Add FAQ section (Is this medical? Safe with meds? Sleep apnea? Instant access? Subscription?)
+
+### Squeeze + Bridge + Exit-Intent
+- [x] Create /squeeze page — "Get Your Free 3 AM Rescue Protocol" email capture
+- [x] Create /bridge page — post-checkout confirmation → countdown → upsell
+- [x] Exit-intent popup on landing page (email capture + discount offer)
+
+### Affiliate Program Backend
+- [x] Affiliate registration endpoint (public sign-up)
+- [x] Affiliate click tracking (ref=XXXX parameter)
+- [x] Affiliate conversion attribution (link click → purchase)
+- [x] Affiliate dashboard (clicks, conversions, earnings, payout history)
+- [x] Affiliate commission: 50% on $4 frontend, 30% on upsells
+
+### Nurture Email Sequence (non-buyers)
+- [ ] "3 AM Rescue Protocol" free PDF/page as lead magnet
+- [ ] Email 1 (immediate): Your 3 AM Rescue Protocol + CTA
+- [ ] Email 2 (+3 hours): Why sleep tips usually fail + CTA
+- [ ] Email 3 (evening 19:30): Tonight is the easiest time to start
+- [ ] Email 4 (next morning): How did you sleep? + segmentation
+- [ ] Email 5 (day 2): The bed-sleep connection + CTA
+- [ ] Abandoned cart email (1h after checkout start without completion)
+
+### Landing Page CRO
+- [ ] Add "What happens after payment" section below CTA
+- [ ] Add product screenshots/mockups (Night 1, Sleep Journal, 3 AM Protocol)
+- [ ] Add "Instant access · 7 nights · 30-day refund · No subscription" trust row
+- [ ] Headline A/B test: current vs "Sleep Better in 7 Nights — Without Pills"
+
+## Reddit + TikTok Launch Strategy (2026-05-26)
+- [x] Squeeze page (/squeeze) — email capture → quiz redirect
+- [x] Newsletter subscribe tRPC endpoint (newsletter.subscribe)
+- [ ] Segment landing pages: /3am-wake-up, /racing-thoughts, /melatonin-alternative
+- [x] Bridge page (/bridge) — post-checkout warm-up → upsell chain
+- [x] Exit-intent popup component (email capture + discount)
+- [ ] TikTok-optimized meta tags (OG image, description) for all pages
+- [ ] Reddit-safe compliance disclaimers on all pages
+- [ ] Affiliate outreach email templates (DFY scripts for creators)

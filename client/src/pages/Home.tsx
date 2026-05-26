@@ -94,7 +94,7 @@ const NIGHT_JOURNEY = [
   { night: 1, title: "The Sleep Audit", desc: "Identify the hidden patterns sabotaging your sleep." },
   { night: 2, title: "The Stimulus Reset", desc: "Retrain your brain to associate bed with sleep — not anxiety." },
   { night: 3, title: "The Circadian Realignment", desc: "Sync your internal clock with your chronotype." },
-  { night: 4, title: "The Breathing Protocol", desc: "Clinically proven to reduce sleep onset by 60%." },
+  { night: 4, title: "The Breathing Protocol", desc: "Designed to help you fall asleep faster using evidence-based techniques." },
   { night: 5, title: "The Anchor Technique", desc: "Lock in your new sleep pattern — works even for shift workers." },
   { night: 6, title: "The Cognitive Reframe", desc: "Eliminate the racing thoughts that keep you up." },
   { night: 7, title: "The Lifetime Protocol", desc: "Your personalized sleep system — built for life." },
@@ -128,22 +128,22 @@ export default function Home() {
     track("page_view", { page: "home" });
 
     setMetaTags({
-      title: "Deep Sleep Reset — Fix Insomnia in 7 Nights | $4",
-      description: "Science-backed 7-night sleep protocol based on CBT-I. 80% success rate. No pills, no supplements. Just $4.",
+      title: "Deep Sleep Reset — Sleep Better in 7 Nights | $4",
+      description: "A CBT-I inspired 7-night sleep protocol for people who wake up tired or wide awake at 3 AM. Instant access. No pills. Just $4.",
       image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/og-variant-a-sleep-deprived-hye2KT2i6vNEAo2u9i22xr.webp",
       url: window.location.href,
     });
   }, []);
 
   useEffect(() => {
-    document.title = "Deep Sleep Reset — Fix Insomnia in 7 Nights | $4";
+    document.title = "Deep Sleep Reset — Sleep Better in 7 Nights | $4";
     let kwMeta = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
     if (!kwMeta) {
       kwMeta = document.createElement("meta");
       kwMeta.name = "keywords";
       document.head.appendChild(kwMeta);
     }
-    kwMeta.content = "fix insomnia, sleep protocol, CBT-I, chronotype quiz, sleep better, deep sleep, insomnia treatment, sleep deprivation, 7 night sleep reset";
+    kwMeta.content = "sleep better, sleep protocol, CBT-I, chronotype quiz, deep sleep, sleep reset, 7 night protocol, sleep improvement, natural sleep";
     return () => { document.title = "Deep Sleep Reset"; };
   }, []);
 
@@ -210,7 +210,7 @@ export default function Home() {
             ))}
           </div>
           <p className="text-xs text-center mt-6 font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>
-            4.9/5 from 847+ verified users
+            Rated 4.9/5 by early access users
           </p>
         </section>
       </AnimatedSection>

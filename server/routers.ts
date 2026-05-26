@@ -1439,5 +1439,44 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         return getGeoPricingFromIp(ip);
       }),
   }),
+  affiliate: router({
+    register: publicProcedure
+      .input(z.object({ email: z.string().email(), name: z.string().min(1) }))
+      .mutation(async ({ input }) => {
+        const { getAffiliateByEmail, createAffiliate } = await import("./db");
+        const existing = await getAffiliateByEmail(input.email);
+        if (existing) return { code: existing.code, message: "Already registered" };
+        const code = `ds_${input.name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8)}_${Math.random().toString(36).slice(2, 6)}`;
+        await createAffiliate({ email: input.email, name: input.name, code, commissionPercent: 50, status: "active" });
+        return { code, message: "Welcome!" };
+      }),
+    trackClick: publicProcedure
+      .input(z.object({ refCode: z.string(), landingUrl: z.string().optional(), utmCampaign: z.string().optional() }))
+      .mutation(async ({ input, ctx }) => {
+        const { trackAffiliateClick } = await import("./db");
+        const ip = (ctx.req.headers["x-forwarded-for"] as string)?.split(",")[0] || "";
+        const ipHash = ip ? Buffer.from(ip).toString("base64").slice(0, 16) : undefined;
+        const userAgent = (ctx.req.headers["user-agent"] as string)?.slice(0, 512);
+        await trackAffiliateClick({ refCode: input.refCode, ipHash, landingUrl: input.landingUrl, userAgent, utmCampaign: input.utmCampaign });
+        return { ok: true };
+      }),
+    getStats: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ input }) => {
+        const { getAffiliateByEmail, getAffiliateStats } = await import("./db");
+        const aff = await getAffiliateByEmail(input.email);
+        if (!aff) return null;
+        return getAffiliateStats(aff.code);
+      }),
+  }),
+  newsletter: router({
+    subscribe: publicProcedure
+      .input(z.object({ email: z.string().email(), firstName: z.string().optional(), source: z.string().default("squeeze") }))
+      .mutation(async ({ input }) => {
+        const { subscribeNewsletter } = await import("./db");
+        await subscribeNewsletter({ email: input.email, firstName: input.firstName, source: input.source });
+        return { ok: true };
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

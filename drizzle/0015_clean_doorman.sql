@@ -1,0 +1,1 @@
+ALTER TABLE `email_sequences` MODIFY COLUMN `emailStatus` enum('pending','sent','opened','clicked','bounced','cancelled') NOT NULL DEFAULT 'pending';

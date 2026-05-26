@@ -3,7 +3,7 @@ import { emailSequences } from "../drizzle/schema";
 import { eq, and, isNull, lt } from "drizzle-orm";
 import { addBrevoContact } from "./emailService";
 
-export type SequenceType = "welcome" | "7day" | "upsell" | "retention" | "post_purchase";
+export type SequenceType = "welcome" | "7day" | "upsell" | "retention" | "post_purchase" | "abandon_cart";
 
 interface EmailTemplate {
   subject: string;
@@ -103,6 +103,42 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
         <p>Share your story — your review helps others transform their sleep too.</p>
         <p><a href="https://{{domain}}/reviews" style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></p>
         <p>— Luna</p>
+      `,
+    },
+  },
+  "abandon_cart": {
+    1: {
+      subject: "You left your sleep protocol behind...",
+      htmlBody: `
+        <h2>Hi {{firstName}},</h2>
+        <p>You took our Sleep Chronotype Quiz and discovered you're a <strong>{{chronotype}}</strong>.</p>
+        <p>But you didn't grab your personalized protocol yet.</p>
+        <p>Here's what other {{chronotype}}s are saying:</p>
+        <blockquote style="border-left: 3px solid #f59e0b; padding-left: 12px; margin: 16px 0; color: #555;">
+          "I went from 3+ hours of tossing to falling asleep in under 15 minutes. Night 3 was the turning point." &mdash; Sarah M.
+        </blockquote>
+        <p>Your protocol is still waiting. And it's just <strong>$4</strong>.</p>
+        <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Get Your {{chronotype}} Protocol ($4)</a></p>
+        <p>30-day money-back guarantee. No risk.</p>
+        <p>&mdash; Luna</p>
+      `,
+    },
+    2: {
+      subject: "Last chance: Your {{chronotype}} protocol expires tonight",
+      htmlBody: `
+        <h2>Hi {{firstName}},</h2>
+        <p>This is my last email about this.</p>
+        <p>Your personalized {{chronotype}} Sleep Protocol is still available at the introductory price of <strong>$4</strong>.</p>
+        <p>After tonight, the price goes back to $19.</p>
+        <p><strong>What you get:</strong></p>
+        <ul>
+          <li>7-Night Protocol (personalized for {{chronotype}})</li>
+          <li>Sleep Environment Checklist</li>
+          <li>4 ASMR Sleep Tracks</li>
+          <li>30-Day Sleep Tracker</li>
+        </ul>
+        <p><a href="https://{{domain}}/order?chronotype={{chronotype}}&discount=LASTCHANCE" style="background: #dc2626; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Claim $4 Price Before Midnight &rarr;</a></p>
+        <p>&mdash; Luna</p>
       `,
     },
   },
@@ -258,6 +294,28 @@ export async function onQuizComplete(email: string, leadId: number, chronotype: 
   // Send welcome email immediately
   await scheduleEmailSequence(leadId, email, "welcome", chronotype, 0);
 
+  // Schedule abandon cart (2 hours later — cancelled if they purchase)
+  await scheduleEmailSequence(leadId, email, "abandon_cart", chronotype, 2 * 60);
+
   // Schedule upsell email (4 days later)
   await scheduleEmailSequence(leadId, email, "upsell", chronotype, 4 * 24 * 60);
+}
+
+/**
+ * Cancel abandon cart sequence when user purchases
+ */
+export async function cancelAbandonCart(email: string) {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db
+    .update(emailSequences)
+    .set({ status: "cancelled" })
+    .where(
+      and(
+        eq(emailSequences.email, email),
+        eq(emailSequences.sequenceType, "abandon_cart"),
+        eq(emailSequences.status, "pending")
+      )
+    );
 }

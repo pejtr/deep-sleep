@@ -225,7 +225,7 @@ export const emailSequences = mysqlTable("email_sequences", {
   sentAt: timestamp("sentAt"),
   openedAt: timestamp("openedAt"),
   clickedAt: timestamp("clickedAt"),
-  status: mysqlEnum("emailStatus", ["pending", "sent", "opened", "clicked", "bounced"]).default("pending").notNull(),
+  status: mysqlEnum("emailStatus", ["pending", "sent", "opened", "clicked", "bounced", "cancelled"]).default("pending").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -354,3 +354,60 @@ export const outboundWebhooks = mysqlTable("outbound_webhooks", {
 
 export type OutboundWebhook = typeof outboundWebhooks.$inferSelect;
 export type InsertOutboundWebhook = typeof outboundWebhooks.$inferInsert;
+
+// ── Affiliate Clicks (tracking each visit with ?ref=CODE) ────────────────────
+export const affiliateClicks = mysqlTable("affiliate_clicks", {
+  id: int("id").autoincrement().primaryKey(),
+  refCode: varchar("refCode", { length: 64 }).notNull(),
+  ipHash: varchar("ipHash", { length: 64 }),
+  landingUrl: varchar("landingUrl", { length: 512 }),
+  userAgent: varchar("userAgent", { length: 512 }),
+  utmCampaign: varchar("utmCampaign", { length: 256 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type AffiliateClick = typeof affiliateClicks.$inferSelect;
+export type InsertAffiliateClick = typeof affiliateClicks.$inferInsert;
+
+// ── Affiliate Conversions (when an order is attributed to an affiliate) ──────
+export const affiliateConversions = mysqlTable("affiliate_conversions", {
+  id: int("id").autoincrement().primaryKey(),
+  refCode: varchar("refCode", { length: 64 }).notNull(),
+  orderId: int("orderId").notNull(),
+  orderAmountCents: int("orderAmountCents").notNull(),
+  commissionCents: int("commissionCents").notNull(),
+  status: mysqlEnum("affConvStatus", ["pending", "approved", "paid", "reversed"]).default("pending").notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }),
+  productKey: varchar("productKey", { length: 64 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  paidAt: timestamp("paidAt"),
+});
+export type AffiliateConversion = typeof affiliateConversions.$inferSelect;
+export type InsertAffiliateConversion = typeof affiliateConversions.$inferInsert;
+
+// ── Affiliate Payouts ────────────────────────────────────────────────────────
+export const affiliatePayouts = mysqlTable("affiliate_payouts", {
+  id: int("id").autoincrement().primaryKey(),
+  refCode: varchar("refCode", { length: 64 }).notNull(),
+  amountCents: int("amountCents").notNull(),
+  payoutMethod: varchar("payoutMethod", { length: 32 }).default("paypal"),
+  payoutAddress: varchar("payoutAddress", { length: 320 }),
+  status: mysqlEnum("payoutStatus", ["pending", "completed", "failed"]).default("pending").notNull(),
+  note: text("note"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+export type AffiliatePayout = typeof affiliatePayouts.$inferSelect;
+export type InsertAffiliatePayout = typeof affiliatePayouts.$inferInsert;
+
+// ── Newsletter Subscribers ───────────────────────────────────────────────────
+export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  firstName: varchar("firstName", { length: 128 }),
+  source: varchar("source", { length: 64 }).default("squeeze").notNull(), // squeeze, blog, exit_popup, footer
+  confirmed: boolean("confirmed").default(false).notNull(),
+  confirmToken: varchar("confirmToken", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;

@@ -7,7 +7,8 @@ import { notifyOwner } from "./_core/notification";
 import { sendPurchaseConfirmation, addBrevoContact } from "./emailService";
 import { initializeEmailSequence } from "./emailScheduler";
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
-import { onPurchaseComplete } from "./emailSequenceService";
+import { onPurchaseComplete, cancelAbandonCart } from "./emailSequenceService";
+import { createAffiliateConversion } from "./db";
 
 export function registerStripeWebhook(app: Express) {
   // CRITICAL: raw body parser must be registered BEFORE express.json()
@@ -116,9 +117,25 @@ export function registerStripeWebhook(app: Express) {
                 }).catch(() => {/* non-critical */});
               }
 
+              // Cancel abandon cart emails (they purchased!)
+              if (buyerEmail) {
+                cancelAbandonCart(buyerEmail).catch(() => {/* non-critical */});
+              }
               // Trigger automated email sequence (fire-and-forget)
               if (buyerEmail) {
                 onPurchaseComplete(buyerEmail, parseInt(orderId), chronotype ?? "Bear").catch(() => {/* non-critical */});
+              }
+              // Track affiliate conversion if ref code in metadata
+              const affiliateRef = session.metadata?.affiliateRef;
+              if (affiliateRef) {
+                createAffiliateConversion({
+                  refCode: affiliateRef,
+                  orderId: parseInt(orderId),
+                  orderAmountCents: Math.round(amountTotal * 100),
+                  commissionCents: Math.round(amountTotal * 100 * 0.5), // 50% commission
+                  customerEmail: buyerEmail ?? null,
+                  productKey: productId,
+                }).catch(() => {/* non-critical */});
               }
 
               // Dispatch outbound webhook event (fire-and-forget)

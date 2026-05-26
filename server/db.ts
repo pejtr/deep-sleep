@@ -27,6 +27,12 @@ import {
   upsellAbTests,
   blogPosts,
   InsertBlogPost,
+  affiliateClicks,
+  InsertAffiliateClick,
+  affiliateConversions,
+  InsertAffiliateConversion,
+  newsletterSubscribers,
+  InsertNewsletterSubscriber,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -509,6 +515,56 @@ export async function createAffiliate(data: InsertAffiliate) {
   const db = await getDb();
   if (!db) return null;
   return db.insert(affiliates).values(data);
+}
+
+export async function getAffiliateByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(affiliates).where(eq(affiliates.email, email)).limit(1);
+  return result[0] ?? null;
+}
+
+export async function trackAffiliateClick(data: InsertAffiliateClick) {
+  const db = await getDb();
+  if (!db) return null;
+  return db.insert(affiliateClicks).values(data);
+}
+
+export async function createAffiliateConversion(data: InsertAffiliateConversion) {
+  const db = await getDb();
+  if (!db) return null;
+  return db.insert(affiliateConversions).values(data);
+}
+
+export async function getAffiliateStats(code: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const [clicks, conversions] = await Promise.all([
+    db.select().from(affiliateClicks).where(eq(affiliateClicks.refCode, code)).catch(() => []),
+    db.select().from(affiliateConversions).where(eq(affiliateConversions.refCode, code)).catch(() => []),
+  ]);
+  const earnings = conversions.reduce((sum, c) => sum + c.commissionCents, 0);
+  return {
+    code,
+    clicks: clicks.length,
+    conversions: conversions.length,
+    earnings,
+    pendingEarnings: conversions.filter(c => c.status === 'pending').reduce((sum, c) => sum + c.commissionCents, 0),
+    paidEarnings: conversions.filter(c => c.status === 'paid').reduce((sum, c) => sum + c.commissionCents, 0),
+  };
+}
+
+// ── Newsletter Subscribers ────────────────────────────────────────────────────────
+
+export async function subscribeNewsletter(data: InsertNewsletterSubscriber) {
+  const db = await getDb();
+  if (!db) return null;
+  // Upsert — if email exists, just update source
+  try {
+    return await db.insert(newsletterSubscribers).values(data).onDuplicateKeyUpdate({ set: { source: data.source } });
+  } catch {
+    return null;
+  }
 }
 
 // ── Email Sequences ────────────────────────────────────────────────────────
