@@ -16,7 +16,7 @@ async function refreshAccessToken(): Promise<string> {
   const username = process.env.REDDIT_ADS_USERNAME;
 
   if (!clientId || !clientSecret || !refreshToken) {
-    throw new Error("Reddit Ads OAuth credentials not configured");
+    throw new Error("Reddit Ads OAuth credentials not configured — missing CLIENT_ID, CLIENT_SECRET or REFRESH_TOKEN");
   }
 
   const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
@@ -42,37 +42,47 @@ async function refreshAccessToken(): Promise<string> {
   }
 
   const data = (await response.json()) as { access_token: string; expires_in: number };
+  // Persist refreshed token back into env so other modules (pixel etc.) pick it up
+  process.env.REDDIT_ADS_ACCESS_TOKEN = data.access_token;
   cachedToken = {
     token: data.access_token,
-    expiresAt: Date.now() + data.expires_in * 1000,
+    expiresAt: Date.now() + (data.expires_in ?? 3600) * 1000,
   };
 
+  console.log("[Reddit Ads] Token refreshed, expires in", data.expires_in, "s");
   return cachedToken.token;
 }
 
 async function getAccessToken(): Promise<string> {
-  // Return cached token if still valid (with 60s buffer)
-  if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
+  // Return cached token if still valid (with 120s buffer)
+  if (cachedToken && Date.now() < cachedToken.expiresAt - 120_000) {
     return cachedToken.token;
   }
 
-  // Try to use stored access token first (from initial OAuth)
+  // Prefer refresh_token flow (always produces a fresh short-lived token)
+  const refreshToken = process.env.REDDIT_ADS_REFRESH_TOKEN;
+  if (refreshToken) {
+    return refreshAccessToken();
+  }
+
+  // Last resort: use the stored access token as-is (may be expired)
   const storedToken = process.env.REDDIT_ADS_ACCESS_TOKEN;
   if (storedToken) {
+    console.warn("[Reddit Ads] No refresh token — using stored access token (may be expired)");
     cachedToken = {
       token: storedToken,
-      expiresAt: Date.now() + 86400 * 1000, // 24h
+      expiresAt: Date.now() + 3600 * 1000,
     };
     return storedToken;
   }
 
-  // Fall back to refresh token to get new access token
-  return refreshAccessToken();
+  throw new Error("Reddit Ads: no access token or refresh token available. Re-authenticate via /api/reddit/auth");
 }
 
 async function redditAdsRequest<T>(
   path: string,
-  params?: Record<string, string>
+  params?: Record<string, string>,
+  retry = true
 ): Promise<T> {
   const token = await getAccessToken();
   const url = new URL(`${REDDIT_ADS_BASE}${path}`);
@@ -87,6 +97,13 @@ async function redditAdsRequest<T>(
       "User-Agent": `DeepSleepReset/1.0 by ${username || "DeepSleeper"}`,
     },
   });
+
+  // On 401: clear cached token and retry once using refresh token
+  if (response.status === 401 && retry) {
+    console.warn("[Reddit Ads] 401 received — clearing token cache and retrying with fresh token");
+    cachedToken = null;
+    return redditAdsRequest<T>(path, params, false);
+  }
 
   if (!response.ok) {
     const text = await response.text();

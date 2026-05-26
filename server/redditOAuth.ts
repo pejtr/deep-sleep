@@ -25,7 +25,8 @@ export function registerRedditOAuthRoutes(app: Express) {
     }
 
     // Use the origin from the request to build redirect URI
-    const redirectUri = "https://www.deep-sleep-reset.com/api/reddit/callback";
+    // Use the actual production domain (not the old placeholder)
+    const redirectUri = `${req.protocol}://${req.get("host")}/api/reddit/callback`;
 
     const state = Math.random().toString(36).substring(2, 15);
 
@@ -84,7 +85,7 @@ export function registerRedditOAuthRoutes(app: Express) {
         throw new Error("Reddit OAuth credentials not configured");
       }
 
-      const redirectUri = "https://www.deep-sleep-reset.com/api/reddit/callback";
+      const redirectUri = `${req.protocol}://${req.get("host")}/api/reddit/callback`;
       const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
       const body = new URLSearchParams({
