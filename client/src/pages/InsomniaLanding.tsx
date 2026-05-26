@@ -154,7 +154,7 @@ export default function InsomniaLanding() {
           </button>
           <CheckoutButton sessionId={sessionId} productId="main" className="w-full">
             <div className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-sm font-semibold"
-              style={{ background: "oklch(0.82 0.16 65 / 0.12)", color: C.gold, border: `1px solid oklch(0.82 0.16 65 / 0.3)` }}>
+              style={{ background: `linear-gradient(135deg, oklch(0.68 0.18 55), oklch(0.60 0.20 45))`, color: "#000", border: "none" }}>
               <ArrowRight className="w-4 h-4" />
               Get the 7-Night Protocol — $7
             </div>
@@ -395,7 +395,7 @@ export default function InsomniaLanding() {
             </button>
             <CheckoutButton sessionId={sessionId} productId="main" className="w-full">
               <div className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-sm font-semibold"
-                style={{ background: "oklch(0.82 0.16 65 / 0.12)", color: C.gold, border: `1px solid oklch(0.82 0.16 65 / 0.3)` }}>
+                style={{ background: `linear-gradient(135deg, oklch(0.68 0.18 55), oklch(0.60 0.20 45))`, color: "#000", border: "none" }}>
                 <ArrowRight className="w-4 h-4" />
                 Skip Quiz — Get Protocol Now ($7)
               </div>
