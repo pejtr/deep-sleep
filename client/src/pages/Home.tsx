@@ -160,9 +160,10 @@ export default function Home() {
 
   const handleBuyNow = () => {
     track("cta_click", { page: "home", element: "buy_now" });
+    // Quiz-first flow: always go through quiz before order for personalization
     navigateWithTransition(
-      () => navigate("/order"),
-      { message: "Preparing your protocol...", subMessage: "Setting up secure checkout", delay: 900 }
+      () => navigate("/quiz"),
+      { message: "Starting your sleep quiz...", subMessage: "Find your chronotype in 30 seconds", delay: 700 }
     );
   };
 
@@ -442,7 +443,7 @@ export default function Home() {
       <FloatingSocialProofBar />
       <ExitIntentPopup />
       <SupportButton />
-      <StickyMobileCTA />
+      <StickyMobileCTA label="Find My Chronotype" onClick={handleStartQuiz} />
     </div>
   );
 }

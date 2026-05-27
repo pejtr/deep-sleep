@@ -1,0 +1,63 @@
+Starting video analysis...
+Submitting video analysis task...
+Task submitted (ID: video-analysis-f23d503b-5f99-4267-a9b5-bdcc70fd6f91)
+[8s] Status: Analyzing video content with AI...
+[33s] Still processing, please wait...
+[50s] Status: Analysis completed
+[50s] Analysis completed!
+Full analysis result saved to: /home/ubuntu/video_xtuYTdUt4wA_analysis_20260527_035848.md
+Note: This tool performs AI-based visual and audio analysis, not verbatim transcription. For detailed speech transcription, use `manus-speech-to-text` instead.
+Analysis result:
+
+Na základě detailní analýzy poskytnutého videa je nutné hned na úvod uvést jednu zásadní věc: **Video je affiliate recenzí prodejní stránky (sales page) a bonusové stránky. Neobsahuje žádnou reálnou ukázku (demo) samotného softwaru Cash Injector.** 
+
+Ve videu **není ukázán dashboard aplikace, nejsou ukázány e-mailové sekvence, ani interní funnel flow softwaru.** Ukázán je pouze screenshot výdělků z platformy WarriorPlus (v čase 08:34).
+
+Zde je kompletní extrakce informací o systému Cash Injector přesně tak, jak jsou prezentovány na prodejní stránce ve videu, a následný návrh, jak tyto principy aplikovat na produkt typu "Sleep Protocol".
+
+### 1. Jak funguje Cash Injector krok za krokem (podle videa)
+Systém je prezentován jako "Reverse Piggyback App", která řeší hlavní problém začátečníků: návštěvnost (traffic). Aplikace má za úkol automaticky psát vysoce konverzní recenze na affiliate produkty a umisťovat je před obrovské publikum.
+
+Na prodejní stránce (v čase 09:07) je proces popsán ve 3 krocích:
+*   **Krok 01: Drop In Your Link (Vložte svůj odkaz):** Vložíte svůj affiliate odkaz, zadáte vaši niku (niche) a cílové publikum. Nevyžaduje se žádné složité nastavení, API klíče ani integrace.
+*   **Krok 02: Hit 'Inject Now' (Klikněte na Inject Now):** Aplikace okamžitě vytvoří kampaň (příspěvek) připravenou ke zveřejnění a zařadí váš odkaz do fronty pro umístění před "kupce připravené nakupovat". Z textu vyplývá, že aplikace generuje obsah za vás (Zero Content Creation).
+*   **Krok 03: Watch The Clicks Roll In (Sledujte přicházející kliknutí):** Autor videa (v čase 03:36) tvrdí, že příspěvek je odeslán do specifické veřejné skupiny, která má 45 až 49 milionů měsíčních uživatelů. Tím získáte 80-100 kliknutí denně bez toho, abyste museli budovat vlastní publikum.
+
+### 2. Jaké kampaně nabízí
+Video nezobrazuje rozhraní pro výběr kampaní. Z kontextu prodejní stránky a komentáře autora se jedná výhradně o **"Review posts" (Recenzní příspěvky)**. Aplikace za vás napíše recenzi na produkt, který propagujete, a vloží do ní váš affiliate odkaz.
+
+### 3. Jak vypadá Dashboard
+**Dashboard aplikace Cash Injector ve videu ukázán NENÍ.** 
+V čase 08:34 je na prodejní stránce ukázán pouze statický screenshot, který ukazuje výdělky ($89 za včerejšek, $14,467 za tento měsíc). Autor videa jasně říká, že se jedná o screenshot z "WarriorPlus dashboardu" (platforma pro affiliate sítě) patřící tvůrci jménem Robin Palmer. Nejedná se o uživatelské rozhraní Cash Injectoru.
+
+### 4. Email sekvence a Funnel Flow
+*   **Email sekvence:** Ve videu nejsou zmíněny ani ukázány žádné e-mailové sekvence. Systém se podle prezentace spoléhá na přímý traffic ze sociálních skupin přímo na affiliate odkaz.
+*   **Funnel flow:** Interní funnel není ukázán. Z hlediska nákupního funnelu samotného Cash Injectoru je na prodejní stránce (čase 08:02) vidět, že existuje základní produkt a následné "OTOs" (One Time Offers - upselly).
+
+### 5. Pricing (Cenotvorba)
+Z prodejní stránky (čase 08:02) vyplývají dvě cenové možnosti:
+*   **Základní verze (Front-end): $17.97**
+*   **Kompletní balíček (Complete Bundle Deal): $199** (Tato možnost vám umožní přeskočit všechny upselly/OTOs a získat vše najednou).
+*   **Záruka:** Produkt má "Iron-Clad 30-Day Guarantee" (30denní garanci vrácení peněz).
+
+---
+
+### APLIKACE NA "SLEEP PROTOCOL" PRO MAXIMÁLNÍ MONETIZACI
+
+Ačkoliv video neobsahuje reálné demo, prezentuje **marketingový model**, který lze na produkt typu "Sleep Protocol" (např. doplněk stravy, e-book, online kurz pro lepší spánek) aplikovat následovně:
+
+**1. Využití principu "Zero Content Review" (Automatizované recenze)**
+*   Místo zdlouhavého natáčení videí o spánku využijte AI (jak slibuje Cash Injector) k vygenerování vysoce konverzních textových recenzí vašeho Sleep Protocol produktu. 
+*   *Aplikace:* Text musí zdůrazňovat "pain points" (nespavost, únava během dne, brain fog) a prezentovat váš protokol jako okamžité řešení.
+
+**2. Princip "Piggyback Traffic" (Parazitování na existujícím publiku)**
+*   Základem Cash Injectoru je vkládání odkazů tam, kde už jsou miliony lidí. 
+*   *Aplikace:* Najděte masivní skupiny na Facebooku, Redditu nebo fórech zaměřené na biohacking, zdravý životní styl, fitness, nebo přímo na problémy se spánkem. Zde publikujte své AI vygenerované recenze s affiliate odkazem na váš Sleep Protocol.
+
+**3. Vytvoření neodolatelné "Bonus Page" (Bonusové stránky)**
+*   Autor videa (čase 04:58) ukazuje, že klíčem k affiliate prodejům je nabídnout vlastní bonusy, pokud si lidé koupí produkt přes váš odkaz. Používá k tomu odpočet (urgenci).
+*   *Aplikace:* Vytvořte jednoduchou stránku s odpočtem. Pokud si lidé koupí váš Sleep Protocol, nabídněte jim zdarma bonusy (např. PDF "5 bylin pro hluboký spánek", MP3 s binaurálními beaty pro usínání, nebo přístup do soukromé skupiny).
+
+**4. High-Ticket Upsell (Z drahého produktu ještě dražší)**
+*   Mezi bonusy Cash Injectoru (čase 11:15) je "High-Ticket Funnel Product". 
+*   *Aplikace:* Jakmile si zákazník koupí základní Sleep Protocol (např. e-book za $17), váš funnel by ho měl okamžitě přesměrovat na "OTO" (One Time Offer) – například na prémiový 1-on-1 spánkový coaching nebo roční zásobu suplementů za $199 (stejný cenový model jako má Cash Injector Bundle).

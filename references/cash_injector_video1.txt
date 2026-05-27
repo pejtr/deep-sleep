@@ -1,0 +1,37 @@
+Starting video analysis...
+Submitting video analysis task...
+Task submitted (ID: video-analysis-1e982cd4-2329-4765-8e4e-acbaa0eb10a5)
+[8s] Status: Analyzing video content with AI...
+[27s] Status: Analysis completed
+[27s] Analysis completed!
+Full analysis result saved to: /home/ubuntu/video_67qs7xGt_hs_analysis_20260527_035751.md
+Note: This tool performs AI-based visual and audio analysis, not verbatim transcription. For detailed speech transcription, use `manus-speech-to-text` instead.
+Analysis result:
+
+Na základě detailní vizuální a zvukové analýzy poskytnutého videa musím upozornit na zásadní skutečnost: **Video neobsahuje téměř žádné z technických a strategických informací, které ve svém promptu požadujete.** 
+
+Jedná se o klasické prodejní video (tzv. "talking head" VSL - Video Sales Letter), kde muž (který se představuje jako Robin Palmer) mluví přímo do kamery. Během celých 2 minut a 17 sekund nedojde k jediné ukázce obrazovky, softwaru, ani k vysvětlení jakékoliv marketingové strategie.
+
+Zde je přesný rozbor toho, co video **skutečně obsahuje**, a co naopak **chybí**:
+
+### Co ve videu SKUTEČNĚ JE (Analýza obsahu):
+*   **Název systému:** Autor systém nenazývá "Cash Injector", ale označuje ho jako **"Reverse piggyback system"** (Reverzní systém přiživení se) nebo prostě "my traffic system" (můj systém na návštěvnost).
+*   **Jak to funguje (krok za krokem podle videa):** 
+    1. Strávíte 10 minut úvodním nastavením.
+    2. Vložíte svůj affiliate odkaz do jeho aplikace.
+    3. Aplikace "udělá vše za vás". Podle autora vhazuje "malé háčky na návštěvnost do tekoucí řeky", což má přivádět motivované kupující.
+    4. Není potřeba psát texty, točit videa, ani budovat publikum.
+*   **Slibované výsledky:** Autor tvrdí, že úplní nováčci získávají 80 až 100 kliknutí od kupujících denně a průměrně vydělávají 57 dolarů denně (zmiňuje případovou studii studenta Josepha).
+*   **Cena:** Systém má být po vstupu "100% zdarma", ale na konci videa vyzývá ke kliknutí na "tlačítko koupit níže" (Buy button below). Konkrétní cena nezazní.
+
+### Co ve videu CHYBÍ (Není zmíněno ani ukázáno):
+*   **Kampaně:** Nejsou zde absolutně žádné zmínky o kampaních typu *flash sale*, *reactivation* nebo *VIP bundle*.
+*   **Dashboard (Nástěnka):** Ve videu není ukázán žádný software, rozhraní ani dashboard. Celou dobu vidíme pouze mluvícího muže v obývacím pokoji.
+*   **Emailové sekvence:** Nejsou zmíněny ani ukázány.
+*   **Funnel flow (Průchod trychtýřem):** Není vysvětlen žádný marketingový trychtýř.
+*   **Konkrétní pricing (Ceník):** Částka za pořízení systému není uvedena.
+
+### Aplikace na "Sleep Protocol" produkt pro maximální monetizaci:
+Vzhledem k tomu, že video neobsahuje **žádné reálné marketingové mechanismy, strategie, ukázky trychtýřů ani e-mailů**, nelze z tohoto konkrétního klipu extrahovat nic, co by se dalo strategicky aplikovat na prodej produktu zaměřeného na spánkový protokol. 
+
+Video pouze prodává myšlenku "zázračné aplikace", do které vložíte odkaz a ona generuje peníze bez práce. Pokud hledáte inspiraci pro strukturu kampaní (flash sales, VIP bundles) nebo e-mailové sekvence pro váš produkt, toto konkrétní video vám tyto informace bohužel neposkytne.

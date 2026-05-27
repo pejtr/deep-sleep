@@ -125,6 +125,37 @@ export async function getContactStats() {
   const notUploadedToReddit = leads.filter((l: LeadWithScore) => !l.redditAudienceUploaded).length;
   const conversionRate = total > 0 ? ((buyers / total) * 100).toFixed(1) : "0";
 
+  // Geo stats
+  const byCountry = leads.reduce((acc: Record<string, { count: number; name: string }>, l: LeadWithScore) => {
+    const code = ((l as any).country ?? "").toUpperCase() || "XX";
+    const name = (l as any).countryName ?? code;
+    if (!acc[code]) acc[code] = { count: 0, name };
+    acc[code].count++;
+    return acc;
+  }, {});
+  const topCountries = Object.entries(byCountry)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 10)
+    .map(([code, { count, name }]) => ({ code, name, count }));
+
+  const byLanguage = leads.reduce((acc: Record<string, number>, l: LeadWithScore) => {
+    const lang = ((l as any).browserLang ?? l.language ?? "unknown").split("-")[0].toLowerCase();
+    acc[lang] = (acc[lang] || 0) + 1;
+    return acc;
+  }, {});
+
+  const cityMap = leads
+    .filter((l: LeadWithScore) => (l as any).city)
+    .reduce((acc: Record<string, number>, l: LeadWithScore) => {
+      const city = (l as any).city as string;
+      acc[city] = (acc[city] || 0) + 1;
+      return acc;
+    }, {});
+  const topCities = Object.entries(cityMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([city, count]) => ({ city, count }));
+
   return {
     total,
     buyers,
@@ -137,6 +168,9 @@ export async function getContactStats() {
     bySource,
     byLifecycle,
     notUploadedToReddit,
+    topCountries,
+    byLanguage,
+    topCities,
   };
 }
 
@@ -148,7 +182,7 @@ export function leadsToCSV(leads: LeadWithScore[]): string {
     "lifecycleStage", "leadScore", "computedScore",
     "convertedToCustomer", "totalRevenue",
     "emailsOpened", "emailsClicked",
-    "country", "language", "tags",
+    "country", "countryName", "city", "region", "timezone", "browserLang", "language", "tags",
     "subscribed", "createdAt",
   ];
 
@@ -165,7 +199,9 @@ export function leadsToCSV(leads: LeadWithScore[]): string {
     l.lifecycleStage ?? "lead", l.leadScore ?? 0, l.computedScore,
     l.convertedToCustomer ? "yes" : "no", l.totalRevenue ?? "0",
     l.emailsOpened ?? 0, l.emailsClicked ?? 0,
-    l.country ?? "", l.language ?? "", l.tags ?? "",
+    l.country ?? "", (l as any).countryName ?? "", (l as any).city ?? "",
+    (l as any).region ?? "", (l as any).timezone ?? "", (l as any).browserLang ?? "",
+    l.language ?? "", l.tags ?? "",
     l.subscribed ? "yes" : "no", new Date(l.createdAt).toISOString(),
   ]);
 

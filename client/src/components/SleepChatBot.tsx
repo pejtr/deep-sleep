@@ -67,9 +67,9 @@ const PERSONAS: Record<PersonaId, Persona> = {
     name: "Luna",
     emoji: "🔬",
     tagline: "Sleep Science Expert · Online",
-    style: "You are Petra, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($4) as the evidence-based solution.",
-    welcomeEn: "Hi, I'm Petra 🔬 Sleep science is my specialty. CBT-I — the method behind Deep Sleep Reset — has an 80% success rate in clinical trials. What sleep challenges can I help you understand?",
-    welcomeCs: "Ahoj, jsem Petra 🔬 Spánková věda je moje specializace. CBT-I — metoda za Deep Sleep Reset — má 80% úspěšnost v klinických studiích. Jaké spánkové problémy ti mohu pomoci pochopit?",
+    style: "You are Luna, a scientific and evidence-based AI sleep expert. You cite research, use precise language, and explain the neuroscience behind sleep. Use phrases like 'Research shows...', 'CBT-I clinical trials demonstrate...', 'The science is clear...'. You're credible and authoritative. Always guide toward the Deep Sleep Reset guide ($4) as the evidence-based solution.",
+    welcomeEn: "Hi, I'm Luna 🔬 Sleep science is my specialty. CBT-I — the method behind Deep Sleep Reset — has an 80% success rate in clinical trials. What sleep challenges can I help you understand?",
+    welcomeCs: "Ahoj, jsem Luna 🔬 Spánková věda je moje specializace. CBT-I — metoda za Deep Sleep Reset — má 80% úspěšnost v klinických studiích. Jaké spánkové problémy ti mohu pomoci pochopit?",
     proactiveEn: "Still browsing? 🔬 Quick fact: 68% of adults have clinically significant sleep issues. CBT-I (the method in Deep Sleep Reset) outperforms sleep medication in every study. It's $4 and it works.",
     proactiveCs: "Stále procházíš? 🔬 Rychlý fakt: 68 % dospělých má klinicky významné problémy se spánkem. CBT-I (metoda v Deep Sleep Reset) překonává léky na spaní v každé studii. Stojí $4 a funguje.",
     exitEn: "Before you leave 🔬 — The research is unambiguous: untreated sleep problems worsen over time. CBT-I has an 80% success rate. Deep Sleep Reset is $4. The ROI on your sleep is infinite.",
@@ -101,16 +101,11 @@ function renderMarkdown(text: string) {
   return <div dangerouslySetInnerHTML={{ __html: withLinks }} />;
 }
 
-// Pick a stable persona per session
+// Pick a stable persona per session — always Luna for consistent brand identity
 function getSessionPersona(): PersonaId {
-  const stored = sessionStorage.getItem("chatbot_persona");
-  if (stored && (stored === "luna" || stored === "petra" || stored === "lucie")) {
-    return stored as PersonaId;
-  }
-  const personas: PersonaId[] = ["luna", "petra", "lucie"];
-  const picked = personas[Math.floor(Math.random() * personas.length)]!;
-  sessionStorage.setItem("chatbot_persona", picked);
-  return picked;
+  // Always use luna persona for consistent brand identity
+  // petra/lucie variants kept for future A/B testing but currently disabled
+  return "luna";
 }
 
 const FEEDBACK_PROMPT_EN = "By the way — how would you rate your sleep problems on a scale of 1-5? (1 = mild, 5 = severe) This helps me give you better advice! 🌙";
@@ -149,6 +144,7 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   const [feedbackAsked, setFeedbackAsked] = useState(false);
   const [showFeedbackStars, setShowFeedbackStars] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState(0);
+  const [showQuizCta, setShowQuizCta] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -164,6 +160,10 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
           setMessages(prev => [...prev, { role: "assistant", content: prompt }]);
           setShowFeedbackStars(true);
         }, 1500);
+      }
+      // Show quiz CTA after 3+ exchanges in sales mode
+      if (newCount >= 3 && isSalesMode && !showQuizCta) {
+        setTimeout(() => setShowQuizCta(true), 2500);
       }
     },
     onError: () => {
@@ -410,7 +410,7 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
       {(scrolledPast50 || isAdminMode || isAffiliateMode) && (
         <button
           onClick={() => open ? setOpen(false) : openChat("manual")}
-          className="fixed bottom-28 md:bottom-24 right-5 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-36 md:bottom-24 right-5 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
           style={{
             background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
             boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,
@@ -436,7 +436,7 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
       {/* Chat window */}
       {open && (
         <div
-          className="fixed bottom-20 right-5 z-50 flex flex-col rounded-2xl overflow-hidden shadow-2xl"
+          className="fixed bottom-36 md:bottom-20 right-5 z-50 flex flex-col rounded-2xl overflow-hidden shadow-2xl"
           style={{
             width: "min(380px, calc(100vw - 2.5rem))",
             height: "min(520px, calc(100vh - 12rem))",
@@ -469,6 +469,16 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
               <p className="text-xs" style={{ color: "oklch(0.55 0.04 265)" }}>{displayTagline}</p>
             </div>
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+            <button
+              onClick={() => setOpen(false)}
+              className="ml-2 p-2 rounded-full transition-all shrink-0 flex items-center justify-center"
+              style={{ background: "oklch(0.18 0.04 265)", color: "oklch(0.75 0.04 265)", border: "1px solid oklch(0.28 0.04 265)" }}
+              aria-label="Close chat"
+              onMouseEnter={e => { e.currentTarget.style.background = "oklch(0.25 0.06 265)"; e.currentTarget.style.color = "oklch(0.95 0.01 265)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "oklch(0.18 0.04 265)"; e.currentTarget.style.color = "oklch(0.75 0.04 265)"; }}
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           {/* Messages */}
@@ -580,6 +590,38 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
                   {q}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Quiz CTA — appears after 3+ exchanges */}
+          {showQuizCta && isSalesMode && (
+            <div
+              className="mx-3 mb-2 rounded-xl p-3 flex items-center gap-3 shrink-0"
+              style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 65 / 0.12), oklch(0.45 0.16 55 / 0.08))", border: "1px solid oklch(0.55 0.18 65 / 0.3)" }}
+            >
+              <span className="text-lg shrink-0">🎯</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold" style={{ color: "oklch(0.88 0.04 265)" }}>
+                  {lang === "cs" ? "Zjisti svůj chronotyp" : "Discover your chronotype"}
+                </p>
+                <p className="text-xs" style={{ color: "oklch(0.55 0.04 265)" }}>
+                  {lang === "cs" ? "Personalizovaný protokol spánku" : "Get your personalized sleep protocol"}
+                </p>
+              </div>
+              <a
+                href="/quiz"
+                className="text-xs font-bold px-3 py-1.5 rounded-lg shrink-0 transition-all hover:opacity-90"
+                style={{ background: `linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))`, color: "white" }}
+              >
+                {lang === "cs" ? "Spustit quiz →" : "Take quiz →"}
+              </a>
+              <button
+                onClick={() => setShowQuizCta(false)}
+                className="shrink-0 p-1 rounded-full"
+                style={{ color: "oklch(0.45 0.04 265)" }}
+              >
+                <X className="w-3 h-3" />
+              </button>
             </div>
           )}
 

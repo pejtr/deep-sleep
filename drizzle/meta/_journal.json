@@ -134,6 +134,13 @@
       "when": 1779866798166,
       "tag": "0018_broken_shadowcat",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1779869202678,
+      "tag": "0019_mean_ricochet",
+      "breakpoints": true
     }
   ]
 }

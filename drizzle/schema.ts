@@ -455,3 +455,25 @@ export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
 });
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;
+
+// ── Cash Injection Campaigns ──────────────────────────────────────────────────
+export const campaigns = mysqlTable("campaigns", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  type: mysqlEnum("campaignType", ["FLASH_SALE", "REACTIVATION", "VIP_BUNDLE", "UPSELL_BLAST"]).notNull(),
+  name: varchar("name", { length: 128 }).notNull(),
+  status: mysqlEnum("campaignStatus", ["DRAFT", "SENDING", "SENT", "FAILED"]).default("DRAFT").notNull(),
+  targetCount: int("targetCount").default(0).notNull(),
+  sentCount: int("sentCount").default(0).notNull(),
+  openCount: int("openCount").default(0),
+  clickCount: int("clickCount").default(0),
+  convertedCount: int("convertedCount").default(0),
+  revenue: int("revenue").default(0),
+  subject: varchar("subject", { length: 256 }),
+  preheader: varchar("preheader", { length: 256 }),
+  htmlBody: text("htmlBody"),
+  source: varchar("source", { length: 32 }).default("admin"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  sentAt: timestamp("sentAt"),
+});
+export type Campaign = typeof campaigns.$inferSelect;
+export type InsertCampaign = typeof campaigns.$inferInsert;

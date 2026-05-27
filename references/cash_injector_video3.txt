@@ -1,0 +1,61 @@
+Starting video analysis...
+Submitting video analysis task...
+Task submitted (ID: video-analysis-35df59c3-01f2-4f92-8d42-99cab4309d4c)
+[8s] Status: Analyzing video content with AI...
+[33s] Still processing, please wait...
+[45s] Status: Analysis completed
+[45s] Analysis completed!
+Full analysis result saved to: /home/ubuntu/video_0CG5x9T30oA_analysis_20260527_040055.md
+Note: This tool performs AI-based visual and audio analysis, not verbatim transcription. For detailed speech transcription, use `manus-speech-to-text` instead.
+Analysis result:
+
+Na základě detailní analýzy poskytnutého videa (které je spíše propagační recenzí samotného tvůrce Robina Palmera než hloubkovým technickým demem) vám přináším rozbor toho, co je ve videu skutečně vidět, a jak to aplikovat na váš produkt.
+
+Zde je přesný rozbor podle vašich bodů:
+
+### 1. Jak přesně vypadá dashboard (uživatelské rozhraní)
+*   **Design:** Dashboard má velmi jednoduchý, čistý "Dark mode" (tmavý) design se zelenými a bílými texty/tlačítky.
+*   **Struktura:** Rozhraní je rozděleno do dvou hlavních částí:
+    *   **Členská sekce (Members Area):** Obsahuje uvítací a tréninková videa (např. "This Is The Big Picture") a tlačítka pro registraci do tréninku nebo připojení do bezplatné komunity.
+    *   **Samotná aplikace (Cash Injector APP):** Jednoduchý formulářový systém bez složitých navigačních menu. Vše se odehrává na jedné stránce, kde se postupuje krok za krokem směrem dolů.
+
+### 2. Jaké jsou konkrétní funkce
+Systém se neskládá ze složitých nástrojů, ale ze tří základních pilířů:
+*   **AI Content Generator (Fire a New Cash Injection):** Nástroj pro automatické generování textových recenzí na základě URL adresy prodejní stránky.
+*   **Skool Komunita:** Přístup do veřejné skupiny na platformě "Skool" (kterou autor vlastní/platí), kam uživatelé publikují vygenerované recenze.
+*   **Traffic Rotator:** Systém, do kterého uživatel vloží odkaz na svůj publikovaný příspěvek, a autor slibuje, že na tento odkaz bude posílat návštěvnost.
+
+### 3. Jak funguje AI content generator
+Ve videu (čas 05:01) je přesně vidět, jak se generátor nastavuje. Uživatel musí vyplnit následující pole:
+*   **Auto-Fill From A Sales Page URL:** Zde se vloží odkaz na prodejní stránku produktu, který chcete propagovat.
+*   **Offer Name:** Název produktu (např. *The 5-Minute Profit System*).
+*   **Niche / Topic:** Výklenek nebo téma (např. *side hustles, fitness, copywriting*).
+*   **What it helps people do:** Co to lidem pomáhá udělat (např. *make their first $100 online*).
+*   **Who it's for:** Pro koho je produkt určen (např. *complete beginners with 30 min/day*).
+*   **Tone (Tón textu):** Výběr ze čtyř tlačítek: *Friendly* (Přátelský), *Bold & Direct* (Odvážný a přímý), *Story-driven* (Založený na příběhu), *Curious / Hook-first* (Vzbuzující zvědavost).
+*   Následně se klikne na zelené tlačítko s ikonou blesku a AI vygeneruje text recenze.
+
+### 4. Jak se spouštějí kampaně
+Spuštění kampaně je manuální proces o třech krocích (ukázáno od 05:22):
+1.  **Krok 1 (Generování):** Pomocí výše zmíněného AI nástroje vygenerujete text recenze a zkopírujete jej.
+2.  **Krok 2 (Publikování):** Otevřete určenou skupinu na platformě Skool, vytvoříte nový příspěvek a vložíte do něj vygenerovaný text (do kterého umístíte svůj affiliate nebo prodejní odkaz). Příspěvek publikujete.
+3.  **Krok 3 (Odeslání do rotátoru):** Zkopírujete URL adresu tohoto konkrétního příspěvku na Skoolu a vložíte ji zpět do aplikace Cash Injector do pole "Paste the URL of your Skool review post". Kliknete na "Submit Your Skool Link". Tím je kampaň spuštěna a zařazena do systému pro získání návštěvnosti.
+
+### 5. Jaké metriky se zobrazují
+**Ve videu nejsou ukázány absolutně žádné analytické metriky.**
+Dashboard neobsahuje žádné grafy, počty zobrazení, kliknutí, CTR (míru prokliku) ani konverze. Aplikace funguje pouze jako "vstupní formulář" pro vygenerování textu a odeslání odkazu. Úspěšnost kampaně byste museli měřit externě (např. přes zkracovače odkazů jako Bitly, nebo přímo ve vašem affiliate/prodejním systému).
+
+---
+
+### Aplikace na "Sleep Protocol" produkt pro maximální monetizaci
+Pokud byste tento systém použili pro vlastní nebo affiliate produkt zaměřený na "Sleep Protocol" (Protokol pro lepší spánek), postupovali byste v AI generátoru takto:
+
+1.  **Auto-Fill URL:** Vložíte URL vaší prodejní stránky (landing page) Sleep Protokolu.
+2.  **Offer Name:** *[Název vašeho produktu, např. Deep Sleep Mastery Protocol]*
+3.  **Niche / Topic:** *Health & Wellness, Biohacking, Sleep Optimization, Insomnia relief.*
+4.  **What it helps people do:** *Fall asleep in minutes, achieve deep REM sleep, wake up fully energized without coffee, cure insomnia naturally.* (Usnout do pár minut, dosáhnout hlubokého REM spánku, probudit se plný energie bez kávy, přirozeně vyléčit nespavost).
+5.  **Who it's for:** *Busy professionals, people suffering from insomnia, biohackers, stressed individuals.* (Zaneprázdnění profesionálové, lidé trpící nespavostí, biohackeři, vystresovaní jedinci).
+6.  **Výběr tónu (Klíčové pro monetizaci):**
+    *   Doporučuji zvolit **"Story-driven"** (Lidé v oblasti zdraví nejlépe reagují na osobní příběhy, např. "Jak mi nespavost ničila kariéru, dokud jsem neobjevil tento protokol...").
+    *   Nebo **"Curious / Hook-first"** (např. "Děláte před spaním tuto jednu fatální chybu?").
+7.  **Monetizace:** Vygenerovaný text vložíte na platformu Skool. **Zásadní je do textu vložit váš prodejní odkaz.** Autor videa spoléhá na to, že Skool má vysokou autoritu ve vyhledávačích (SEO) a že rotátor přivede počáteční návštěvnost. Pro maximální efekt by měl váš text obsahovat silnou výzvu k akci (Call to Action) směřující přímo na vaši prodejní stránku.

@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `campaigns` (\n\t`id` varchar(64) NOT NULL,\n\t`campaignType` enum('FLASH_SALE','REACTIVATION','VIP_BUNDLE','UPSELL_BLAST') NOT NULL,\n\t`name` varchar(128) NOT NULL,\n\t`campaignStatus` enum('DRAFT','SENDING','SENT','FAILED') NOT NULL DEFAULT 'DRAFT',\n\t`targetCount` int NOT NULL DEFAULT 0,\n\t`sentCount` int NOT NULL DEFAULT 0,\n\t`openCount` int DEFAULT 0,\n\t`clickCount` int DEFAULT 0,\n\t`convertedCount` int DEFAULT 0,\n\t`revenue` int DEFAULT 0,\n\t`subject` varchar(256),\n\t`preheader` varchar(256),\n\t`htmlBody` text,\n\t`source` varchar(32) DEFAULT 'admin',\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`sentAt` timestamp,\n\tCONSTRAINT `campaigns_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute CREATE TABLE `campaigns` (\n\t`id` varchar(64) NOT NULL,\n\t`campaignType` enum('FLASH_SALE','REACTIVATION','VIP_BUNDLE','UPSELL_BLAST') NOT NULL,\n\t`name` varchar(128) NOT NULL,\n\t`campaignStatus` enum('DRAFT','SENDING','SENT','FAILED') NOT NULL DEFAULT 'DRAFT',\n\t`targetCount` int NOT NULL DEFAULT 0,\n\t`sentCount` int NOT NULL DEFAULT 0,\n\t`openCount` int DEFAULT 0,\n\t`clickCount` int DEFAULT 0,\n\t`convertedCount` int DEFAULT 0,\n\t`revenue` int DEFAULT 0,\n\t`subject` varchar(256),\n\t`preheader` varchar(256),\n\t`htmlBody` text,\n\t`source` varchar(32) DEFAULT 'admin',\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`sentAt` timestamp,\n\tCONSTRAINT `campaigns_id` PRIMARY KEY(`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 336
+}

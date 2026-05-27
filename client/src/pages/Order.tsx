@@ -24,8 +24,21 @@ export default function Order() {
   const [, navigate] = useLocation();
   const search = useSearch();
   const params = new URLSearchParams(search);
-  const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
-  const IconComponent = CHRONOTYPE_ICONS[chronotype] ?? Moon;
+  const chronotype = (params.get("chronotype") ?? "") as Chronotype;
+  const IconComponent = CHRONOTYPE_ICONS[chronotype as keyof typeof CHRONOTYPE_ICONS] ?? Moon;
+
+  // Quiz-first guard: redirect to quiz if no chronotype in URL
+  useEffect(() => {
+    if (!params.get("chronotype")) {
+      // Check sessionStorage for previously captured chronotype
+      const savedChronotype = sessionStorage.getItem('quiz_chronotype');
+      if (savedChronotype) {
+        navigate(`/order?chronotype=${savedChronotype}`);
+      } else {
+        navigate('/quiz');
+      }
+    }
+  }, []);
   const [selectedTier, setSelectedTier] = useState<"discount" | "main">("main");
 
   const [buyers] = useState(() => Math.floor(Math.random() * 15) + 8);
@@ -326,25 +339,65 @@ export default function Order() {
             </div>
           </div>
 
-          {/* What's included */}
-          <div className="flex flex-col gap-2 mb-6">
+          {/* What's included — Value Stack */}
+          <div className="flex flex-col gap-2 mb-4">
             {(selectedTier === "discount" ? [
-              "Tonight's Sleep Optimization Guide",
-              "Chronotype-Specific Protocol",
-              "Sleep Trigger Audio (5 min)",
+              { item: "Tonight's Sleep Optimization Guide", value: "$19" },
+              { item: "Chronotype-Specific Protocol", value: "$17" },
+              { item: "Sleep Trigger Audio (5 min)", value: "$9" },
             ] : [
-              `${chronotype} Chronotype Sleep Guide (PDF)`,
-              "7-Night Protocol Tracker & Schedule",
-              `${chronotype}-Specific Wind-Down Ritual`,
-              "Deep Sleep Trigger Audio (10 min)",
-              "Lifetime access + future updates",
-            ]).map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-xs flex-shrink-0" style={{ color: "oklch(0.78 0.18 65)" }}>✓</span>
-                <span className="text-sm" style={{ color: "oklch(0.70 0.04 265)" }}>{item}</span>
+              { item: `${chronotype} Chronotype Sleep Guide (PDF)`, value: "$47" },
+              { item: "7-Night Protocol Tracker & Schedule", value: "$27" },
+              { item: `${chronotype}-Specific Wind-Down Ritual`, value: "$19" },
+              { item: "Deep Sleep Trigger Audio (10 min)", value: "$19" },
+              { item: "Lifetime access + future updates", value: "$47" },
+            ]).map(({ item, value }, i) => (
+              <div key={i} className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs flex-shrink-0" style={{ color: "oklch(0.78 0.18 65)" }}>✓</span>
+                  <span className="text-sm" style={{ color: "oklch(0.70 0.04 265)" }}>{item}</span>
+                </div>
+                <span className="text-xs font-semibold flex-shrink-0" style={{ color: "oklch(0.55 0.04 265)" }}>{value}</span>
               </div>
             ))}
           </div>
+
+          {/* Bonus Bundle — FREE */}
+          {selectedTier === "main" && (
+            <div className="rounded-2xl p-4 mb-4" style={{ background: "oklch(0.78 0.18 65 / 0.07)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>🎁 FREE BONUSES</span>
+                <span className="text-xs line-through" style={{ color: "oklch(0.45 0.04 265)" }}>$63 value</span>
+              </div>
+              {[
+                { icon: "📋", name: "Chronotype Blueprint PDF", desc: "Your personalized daily schedule", value: "$27" },
+                { icon: "✅", name: "Sleep Trigger Checklist", desc: "17 science-backed sleep triggers", value: "$19" },
+                { icon: "🎧", name: "Night 1 ASMR Audio (10 min)", desc: "Guided relaxation for your first night", value: "$17" },
+              ].map(({ icon, name, desc, value }, i) => (
+                <div key={i} className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{icon}</span>
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.88 0.08 65)" }}>{name}</p>
+                      <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>{desc}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold flex-shrink-0" style={{ color: "oklch(0.55 0.04 265)" }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Value Anchoring Total */}
+          {selectedTier === "main" && (
+            <div className="flex items-center justify-between rounded-xl px-4 py-3 mb-4" style={{ background: "oklch(0.12 0.03 265)", border: "1px solid oklch(0.25 0.04 265)" }}>
+              <span className="text-sm font-semibold" style={{ color: "oklch(0.70 0.04 265)" }}>Total value:</span>
+              <div className="flex items-center gap-2">
+                <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$222</span>
+                <span className="text-xs font-black px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>TODAY ONLY: $7</span>
+              </div>
+            </div>
+          )}
 
           {/* Price with currency switcher */}
           <div className="flex items-center gap-3 mb-4">

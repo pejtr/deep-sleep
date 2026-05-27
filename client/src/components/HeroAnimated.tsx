@@ -88,22 +88,22 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <button
                 onClick={() => {
-                  navigate?.("/order");
+                  navigate?.("/quiz");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="border-2 rounded-xl px-6 py-3 text-base font-bold transition-all cursor-pointer"
                 style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >
-                TRY FOR $1
+                FIND MY CHRONOTYPE →
               </button>
               <button
                 onClick={() => {
-                  navigate?.("/order");
+                  navigate?.("/quiz");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold cursor-pointer"
               >
-                START MY 7-NIGHT SLEEP PLAN | $4 TODAY
+                START MY SLEEP QUIZ — FREE
               </button>
               <button
                 onClick={() => {

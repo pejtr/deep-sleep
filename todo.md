@@ -1040,3 +1040,73 @@
 - [ ] Admin Contact Intelligence: přidat filter podle country a jazyka
 - [ ] Admin Overview: přidat "Top Countries" widget (pie/bar chart) v stats
 - [ ] Brevo email sekvence: použít browserLang pro výběr jazyka emailu (EN/CS/SK)
+
+## Bonus Bundle + Uvítací Email (May 27)
+- [ ] Order.tsx: Přidat "FREE Bonus Bundle" sekci ($61 hodnota) před pricing — 3 bonusy: Chronotype Blueprint PDF ($27), Sleep Trigger Checklist ($19), Night 1 ASMR Audio ($15)
+- [ ] Order.tsx: Bonus sekce zobrazena jen pro main tier ($7), ne pro discount tier ($1)
+- [ ] emailSequenceService.ts: Přidat E0 "Purchase Confirmation" email — ihned po nákupu, se všemi download linky
+- [ ] E0 email: odkaz na 7-Night Protocol (Gumroad), Chronotype Blueprint PDF, Sleep Trigger Checklist, Night 1 ASMR Audio
+- [ ] routers.ts: Triggerovat E0 email při orders.create (po úspěšném Stripe webhook)
+- [ ] Contact Intelligence: zobrazit country flag + city + browserLang + timezone v tabulce leadů
+- [ ] Contact Intelligence: přidat filter podle country a jazyka (select dropdown)
+- [ ] Admin Overview: přidat "Top Countries" widget (bar chart)
+
+## Quiz-First CTA Flow (May 27)
+- [ ] Home.tsx: všechna CTA tlačítka vedou na /quiz (ne /order)
+- [ ] Order.tsx: pokud chybí ?chronotype= v URL → redirect na /quiz
+- [ ] Exit-intent popup: CTA vede na /quiz ("Zjisti svůj chronotyp zdarma")
+- [ ] Abandoned cart email: odkaz vede na /quiz?ref=abandon (ne přímo /order)
+- [ ] Chatbot (Luna): na konci rozhovoru (po 3-5 zprávách nebo při zmínce spánku/produktu) zobrazit CTA tlačítko "Zjisti svůj chronotyp →" vedoucí na /quiz
+
+## Cash Injector Revenue Acceleration Engine (May 27)
+- [ ] Telegram Luna bot: webhook endpoint /api/telegram/webhook v Express
+- [ ] Telegram Luna bot: večerní report (20:00 CET) - revenue, leads, conversions, top country
+- [ ] Telegram Luna bot: příkazy /report, /leads, /revenue, /blast, /campaign, /stats
+- [ ] Telegram Luna bot: Leila Hormozi osobnost - přímá, data-driven, motivující
+- [ ] Cash Injection Engine: DB tabulka cash_campaigns (id, type, name, status, sentCount, revenue, createdAt)
+- [ ] Cash Injection Engine: 4 typy kampaní - FLASH_SALE, REACTIVATION, VIP_BUNDLE, UPSELL_BLAST
+- [ ] Cash Injection Engine: AI generátor email copy (subject + body) pro každý typ kampaně
+- [ ] Cash Injection Engine: "Inject Now" tlačítko v Admin dashboardu → spustí Brevo broadcast
+- [ ] Campaign Template Library: Flash Sale (48h urgency, 30% sleva), Reactivation (dormant 30d+), VIP Bundle ($443 value), Upsell Blast (past buyers → membership)
+- [ ] Revenue Dashboard: campaign ROI tracking - sent/opened/clicked/converted/revenue per kampaň
+- [ ] Quiz-first CTA: Home.tsx handleBuyNow → navigate("/quiz") místo /order
+- [ ] Quiz-first CTA: HeroAnimated.tsx - obě CTA tlačítka → /quiz
+- [ ] Quiz-first CTA: StickyMobileCTA.tsx - hlavní CTA → /quiz
+- [ ] Quiz-first CTA: Order.tsx guard - pokud chybí ?chronotype= → redirect /quiz
+- [ ] Chatbot Luna: po 3+ zprávách zobrazit CTA "Zjisti svůj chronotyp →" vedoucí na /quiz
+- [ ] Bonus Bundle: sekce na Order.tsx - 3 bonusy zdarma ($61 hodnota)
+- [ ] Value Anchoring: Order.tsx - zobrazit $443 celková hodnota → $7 dnes
+- [ ] Exit-intent popup: detekce pohybu myši k hornímu okraji → popup s 10% slevou + 15min timer
+- [ ] Abandoned Cart E1: +1h - zákaznický servis tón "Váš protokol čeká"
+- [ ] Abandoned Cart E2: +24h - logika + social proof + co je uvnitř
+- [ ] Abandoned Cart E3: +48h - scarcity + 10% sleva kód
+- [ ] Uvítací E0 email: ihned po nákupu - všechny download linky (protokol + 3 bonusy)
+- [ ] Contact Intelligence: vlajky zemí u každého leadu (emoji flag z country kódu)
+- [ ] Contact Intelligence: filtry podle country a browserLang
+- [ ] Top Countries widget: pie/bar chart v Admin Overview
+- [ ] trust proxy fix: Express app.set('trust proxy', 1) pro rate limiter
+
+## Bugfixy (May 27, 2026)
+- [ ] Luna píše "Hi, I'm Petra" — opravit system prompt v routers.ts (odstranit Petra jméno)
+- [ ] Chybí křížek (X) pro zavření chat okna v SleepChatBot.tsx header
+- [ ] Countdown timer "Offer expires" zakrytý "Ask Luna" tlačítkem na mobilu — přesunout do sticky top banneru
+
+## QuizResult Redesign (May 27, 2026)
+- [ ] QuizResult.tsx: výraznější pricing sekce — $75 přeškrtnuté, $4 zlaté velké, 93% OFF badge animovaný
+- [ ] QuizResult.tsx: přidat grafiku — chronotype ilustrace (Lion/Bear/Wolf/Dolphin), hvězdné pozadí, glow efekty
+- [ ] QuizResult.tsx: přidat "Your Personalized Protocol is Ready" hero sekci s chronotype ikonou
+- [ ] StickyMobileCTA.tsx: countdown timer přesunout nad CTA tlačítko (ne zakrytý Ask Luna)
+
+## Kontextové Luny (May 27, 2026)
+- [ ] SleepChatBot.tsx: odebrat náhodný výběr persony (Petra/Lucie) — vždy Luna
+- [ ] SleepChatBot.tsx: přidat prop `mode` (sales|quiz|post-purchase|vip) pro kontextový přístup
+- [ ] SleepChatBot.tsx: přidat křížek (X) pro zavření chat okna v headeru
+- [ ] QuizResult.tsx: předat mode="quiz" + chronotype do SleepChatBot — Coach Luna zná tvůj chronotyp
+- [ ] ThankYou.tsx: předat mode="post-purchase" do SleepChatBot — Mentor Luna celebruje nákup
+- [ ] App.tsx/Home.tsx: přihlášení zákazník → mode="vip" — VIP Luna bez prodeje
+- [ ] Server: systémový prompt pro každý mode (sales/quiz/post-purchase/vip)
+
+## Email Persistence Fix (May 27, 2026)
+- [ ] sessionStorage: uložit email při prvním zadání (leads.capture) pod klíčem "user_email"
+- [ ] QuizResult.tsx: při načtení stránky zkontrolovat sessionStorage["user_email"] — pokud existuje, přeskočit email formulář a rovnou zobrazit pricing sekci
+- [ ] QuizResult.tsx: předvyplnit email field pokud je v sessionStorage (UX fallback)

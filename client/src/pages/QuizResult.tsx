@@ -67,8 +67,8 @@ export default function QuizResult() {
   const chronotype = (params.get("chronotype") ?? "Bear") as Chronotype;
   const data = CHRONOTYPE_DATA[chronotype] ?? CHRONOTYPE_DATA.Bear;
 
-  const [email, setEmail] = useState("");
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [email, setEmail] = useState(() => sessionStorage.getItem("user_email") ?? "");
+  const [emailSubmitted, setEmailSubmitted] = useState(() => !!sessionStorage.getItem("user_email"));
   const [emailError, setEmailError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [viewers] = useState(() => Math.floor(Math.random() * 40) + 120);
@@ -79,6 +79,8 @@ export default function QuizResult() {
 
   useEffect(() => {
     track("page_view", { page: "quiz_result", value: { chronotype } });
+    // Save chronotype to sessionStorage for quiz-first guard in Order.tsx
+    sessionStorage.setItem('quiz_chronotype', chronotype);
     // Mark quiz as converted for A/B test
     abMutation.mutate({ sessionId: getSessionId(), testName: "headline" });
     // Fire quiz complete conversion on all platforms
@@ -133,6 +135,7 @@ export default function QuizResult() {
       });
       // Delay success state for smooth animation
       await new Promise(r => setTimeout(r, 600));
+      sessionStorage.setItem("user_email", email);
       setEmailSubmitted(true);
       track("email_capture", { page: "quiz_result", value: { chronotype } });
       trackLead({ email });
