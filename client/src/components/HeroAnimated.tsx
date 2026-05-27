@@ -155,17 +155,22 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                     className="relative w-full rounded-2xl object-cover"
                     style={{ maxHeight: "380px", border: "1px solid oklch(0.78 0.18 65 / 0.35)", boxShadow: "0 20px 60px oklch(0.06 0.025 255 / 0.8)" }}
                   />
-                  {/* Promo photo floating badge */}
-                  <div className="absolute -right-4 top-4 w-20 h-20 rounded-2xl overflow-hidden hidden lg:block" style={{ border: "2px solid oklch(0.78 0.18 65 / 0.6)", boxShadow: "0 8px 24px oklch(0.06 0.025 255 / 0.7)", zIndex: 10 }}>
-                    <img src="/manus-storage/promo-sleep-model_3a2de508.webp" alt="" className="w-full h-full object-cover object-top" />
-                  </div>
-                  {/* Badge overlay */}
+                  {/* Luna badge overlay */}
                   <div
-                    className="absolute bottom-3 left-3 right-3 rounded-xl px-3 py-2 flex items-center gap-2"
-                    style={{ background: "oklch(0.06 0.025 255 / 0.88)", backdropFilter: "blur(8px)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}
+                    className="absolute bottom-3 left-3 right-3 rounded-xl px-3 py-2 flex items-center gap-2.5"
+                    style={{ background: "oklch(0.06 0.025 255 / 0.90)", backdropFilter: "blur(8px)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}
                   >
-                    <div className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style={{ background: "oklch(0.65 0.18 145)" }} />
-                    <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>Luna — Your AI Sleep Guide</span>
+                    <img
+                      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-ZRuJw2SPLknXZS2RAKU4vn.webp"
+                      alt="Luna"
+                      className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                      style={{ border: "1.5px solid oklch(0.78 0.18 65 / 0.5)" }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-xs font-semibold leading-tight" style={{ color: "oklch(0.82 0.16 65)" }}>Luna — Your AI Sleep Guide</span>
+                      <span className="text-xs leading-tight" style={{ color: "oklch(0.55 0.04 265)" }}>AI Coach · Online now</span>
+                    </div>
+                    <div className="w-2 h-2 rounded-full flex-shrink-0 ml-auto animate-pulse" style={{ background: "oklch(0.65 0.18 145)" }} />
                   </div>
                 </div>
               </div>

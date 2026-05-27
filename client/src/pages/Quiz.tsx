@@ -214,13 +214,15 @@ export default function Quiz() {
     }, 350);
   };
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
+   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
       // Capture lead immediately
       const sessionId = getSessionId();
       captureLead.mutate({ email, sessionId, chronotype: undefined, source: "quiz_result" });
       track("email_capture", { page: "quiz", value: { email } });
+      // Mark email as captured so QuizResult hides the Free Cheat Sheet form
+      sessionStorage.setItem("user_email", email);
     }
     // Show bonus questions option or submit directly
     setPhase("bonus");
