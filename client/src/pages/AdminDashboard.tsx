@@ -1189,7 +1189,7 @@ export default function AdminDashboard() {
               <DollarSign className="w-3.5 h-3.5" style={{ color: C.green }} />
               <div className="text-left">
                 <p className="text-xs font-bold leading-none" style={{ color: C.green }}>${(stats.revenue ?? 0).toFixed(2)}</p>
-                <p className="text-xs leading-none mt-0.5" style={{ color: C.textMuted }}>≈ {((stats.revenue ?? 0) * 23.5).toFixed(0)} Kč</p>
+                <p className="text-xs leading-none mt-0.5" style={{ color: C.textMuted }}>total USD revenue</p>
               </div>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: "oklch(0.78 0.18 65 / 0.12)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}>
@@ -1513,7 +1513,7 @@ function NedvedBenchmarkPanel() {
         </div>
         <div className="rounded-xl p-3" style={{ background: C.cardInner, border: `1px solid ${C.purple}25` }}>
           <p className="text-xs font-semibold mb-1" style={{ color: C.purple }}>📈 Diferenciální rovnice (Trik #4)</p>
-          <p className="text-xs" style={{ color: C.textSecondary }}>Nedvěd 2007: 1 návštěvník = 0.1 Kč. Dnes: 1 návštěvník = 100 Kč náklady. Řešení: zvyšuj LTV, ne traffic.</p>
+          <p className="text-xs" style={{ color: C.textSecondary }}>Old school: 1 visitor = $0.001. Today: 1 visitor = $1+ ad cost. Solution: maximize LTV, not traffic.</p>
         </div>
       </div>
     </div>
