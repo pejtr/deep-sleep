@@ -125,7 +125,9 @@ export default function QuizResult() {
         referrer,
         landingPage,
         userAgent: navigator.userAgent,
-        language: navigator.language,
+        language: navigator.language.split("-")[0], // e.g. "cs" from "cs-CZ"
+        browserLang: navigator.language,             // full e.g. "cs-CZ"
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // e.g. "Europe/Prague"
         quizAnswers,
         sleepIssues,
       });

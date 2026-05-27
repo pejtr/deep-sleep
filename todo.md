@@ -1027,3 +1027,16 @@
 - [ ] Sleep Score PDF: personalizovaný report podle chronotypu (Lion/Bear/Wolf/Dolphin)
 - [ ] Sleep Score PDF: generování na serveru (PDFKit/ReportLab) + Brevo attachment
 - [ ] Sleep Score PDF: odkaz v E1 emailu jako "etický úplatek"
+
+## Lead Language & Country Tagging
+- [x] Frontend: detekovat browser language (navigator.language) při lead capture a poslat jako `browserLang`
+- [x] Frontend: odeslat Accept-Language header info + timezone (Intl.DateTimeFormat().resolvedOptions().timeZone) jako `timezone`
+- [x] Backend: IP geolocation při leads.capture — geoip-lite (country, city, region, timezone) — server-side, žádné externí API
+- [x] DB schema: přidat sloupce `countryName` (varchar 64), `city` (varchar 64), `region` (varchar 64), `browserLang` (varchar 16), `timezone` (varchar 64) do tabulky `email_leads`
+- [x] DB migrace aplikována (0018_broken_shadowcat.sql)
+- [x] Backend: uložit country + countryName + city + region + browserLang + timezone do leads záznamu
+- [x] CSP fix: X-Frame-Options odstraňován, frame-ancestors rozšířen pro Manus preview
+- [ ] Admin Contact Intelligence: zobrazit country flag + city + browserLang + timezone v tabulce leadů
+- [ ] Admin Contact Intelligence: přidat filter podle country a jazyka
+- [ ] Admin Overview: přidat "Top Countries" widget (pie/bar chart) v stats
+- [ ] Brevo email sekvence: použít browserLang pro výběr jazyka emailu (EN/CS/SK)

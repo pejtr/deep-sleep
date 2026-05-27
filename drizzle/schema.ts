@@ -85,9 +85,14 @@ export const emailLeads = mysqlTable("email_leads", {
   referrer: varchar("referrer", { length: 512 }),        // full referrer URL
   referrerDomain: varchar("referrerDomain", { length: 128 }), // e.g. reddit.com, tiktok.com
   landingPage: varchar("landingPage", { length: 512 }),  // first page visited
-  // ── User Profile ────────────────────────────────────────────────────────────
+  // ── User Profile ────────────────────────────────────────────────────────────────────────
   country: varchar("country", { length: 4 }),
-  language: varchar("language", { length: 8 }),
+  countryName: varchar("countryName", { length: 64 }),   // e.g. "Czech Republic"
+  city: varchar("city", { length: 64 }),                 // e.g. "Prague"
+  region: varchar("region", { length: 64 }),             // e.g. "Hlavni mesto Praha"
+  timezone: varchar("timezone", { length: 64 }),         // e.g. "Europe/Prague"
+  language: varchar("language", { length: 8 }),          // Accept-Language header top value
+  browserLang: varchar("browserLang", { length: 16 }),   // navigator.language from browser
   firstName: varchar("firstName", { length: 128 }),
   deviceType: varchar("deviceType", { length: 16 }),    // mobile | desktop | tablet
   browser: varchar("browser", { length: 32 }),

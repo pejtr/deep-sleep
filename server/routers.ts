@@ -312,12 +312,14 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
         // Device
         userAgent: z.string().optional(),
         language: z.string().optional(),
-        country: z.string().optional(),
+        browserLang: z.string().optional(), // navigator.language from browser
+        country: z.string().optional(),     // optional override; server will auto-detect from IP
+        timezone: z.string().optional(),    // Intl.DateTimeFormat().resolvedOptions().timeZone
         // Quiz data
         quizAnswers: z.record(z.string(), z.string()).optional(),
         sleepIssues: z.array(z.string()).optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const result = await captureEmailLead({
           email: input.email,
           sessionId: input.sessionId,
@@ -325,7 +327,41 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
           source: input.source ?? "quiz_result",
         });
         const leadId = (result as any)?.insertId ?? 0;
-        // Enrich profile with full attribution + device + quiz data
+        // ── Server-side IP Geolocation ─────────────────────────────────────────
+        let geoCountry: string | undefined = input.country;
+        let geoCountryName: string | undefined;
+        let geoCity: string | undefined;
+        let geoRegion: string | undefined;
+        let geoTimezone: string | undefined = input.timezone;
+        try {
+          const geoip = (await import("geoip-lite")).default;
+          const clientIp = (ctx.req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim()
+            || (ctx.req.headers["x-real-ip"] as string)
+            || ctx.req.socket?.remoteAddress
+            || "";
+          if (clientIp && clientIp !== "127.0.0.1" && clientIp !== "::1") {
+            const geo = geoip.lookup(clientIp);
+            if (geo) {
+              geoCountry = geo.country || geoCountry;
+              geoCity = geo.city || undefined;
+              geoRegion = geo.region || undefined;
+              geoTimezone = geo.timezone || geoTimezone;
+              // Map country code to name
+              const countryNames: Record<string, string> = {
+                US: "United States", GB: "United Kingdom", DE: "Germany",
+                CZ: "Czech Republic", SK: "Slovakia", PL: "Poland",
+                AT: "Austria", FR: "France", IT: "Italy", ES: "Spain",
+                NL: "Netherlands", BE: "Belgium", CH: "Switzerland",
+                CA: "Canada", AU: "Australia", NZ: "New Zealand",
+                HU: "Hungary", RO: "Romania", HR: "Croatia",
+                UA: "Ukraine", RU: "Russia", SE: "Sweden",
+                NO: "Norway", DK: "Denmark", FI: "Finland",
+              };
+              geoCountryName = countryNames[geo.country] || geo.country;
+            }
+          }
+        } catch { /* geoip non-critical */ }
+        // Enrich profile with full attribution + device + geo + quiz data
         const { enrichLeadProfile } = await import("./userProfileBuilder");
         enrichLeadProfile(leadId, {
           email: input.email,
@@ -341,7 +377,12 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
           landingPage: input.landingPage,
           userAgent: input.userAgent,
           language: input.language,
-          country: input.country,
+          browserLang: input.browserLang,
+          country: geoCountry,
+          countryName: geoCountryName,
+          city: geoCity,
+          region: geoRegion,
+          timezone: geoTimezone,
           quizAnswers: input.quizAnswers as Record<string, string> | undefined,
           sleepIssues: input.sleepIssues,
         }).catch(() => {/* non-critical */});

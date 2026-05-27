@@ -54,13 +54,14 @@ async function startServer() {
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         connectSrc: ["'self'", "https://api.stripe.com", "https://api.reddit.com", "https://api.brevo.com", "https://api.manus.im", "wss:", "ws:"],
         frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
-        frameAncestors: ["'self'", "https://manus.im", "https://*.manus.im", "https://*.manus.space", "https://*.manus.computer"],
+        frameAncestors: ["'self'", "https://manus.im", "https://*.manus.im", "https://*.manus.space", "https://*.manus.computer", "https://*.us2.manus.computer", "https://*.us3.manus.computer"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },
     },
     crossOriginEmbedderPolicy: false, // Required for Stripe iframes
     crossOriginOpenerPolicy: false, // Allow iframe embedding
+    frameguard: false, // Disable X-Frame-Options header — frameAncestors CSP handles framing policy
     hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
   }));
 

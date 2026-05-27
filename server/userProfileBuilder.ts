@@ -25,8 +25,13 @@ export interface ProfileInput {
   landingPage?: string;
   // Device
   userAgent?: string;
-  language?: string;
-  country?: string;
+  language?: string;     // Accept-Language header top value (e.g. "cs", "en-US")
+  browserLang?: string; // navigator.language from browser (e.g. "cs-CZ")
+  country?: string;     // ISO 2-letter country code from IP geolocation
+  countryName?: string; // Full country name from IP geolocation
+  city?: string;        // City from IP geolocation
+  region?: string;      // Region/state from IP geolocation
+  timezone?: string;    // Timezone from IP geolocation (e.g. "Europe/Prague")
   // Quiz data
   quizAnswers?: Record<string, string>;
   sleepIssues?: string[];
@@ -166,9 +171,14 @@ export function buildTags(input: ProfileInput): string[] {
 
   // Language tag
   if (input.language && input.language !== "en") tags.push(`lang:${input.language}`);
+  if (input.browserLang) {
+    const bl = input.browserLang.toLowerCase().split("-")[0];
+    if (bl !== "en") tags.push(`blang:${bl}`);
+  }
 
   // Country tag
   if (input.country) tags.push(`country:${input.country.toLowerCase()}`);
+  if (input.city) tags.push(`city:${input.city.toLowerCase().replace(/\s+/g, "-")}`);
 
   // Dedup
   return Array.from(new Set(tags));
@@ -306,7 +316,12 @@ export async function buildUserProfile(input: ProfileInput): Promise<void> {
         ...(referrerDomain && { referrerDomain }),
         ...(input.landingPage && { landingPage: input.landingPage }),
         ...(input.language && { language: input.language }),
+        ...(input.browserLang && { browserLang: input.browserLang }),
         ...(input.country && { country: input.country }),
+        ...(input.countryName && { countryName: input.countryName }),
+        ...(input.city && { city: input.city }),
+        ...(input.region && { region: input.region }),
+        ...(input.timezone && { timezone: input.timezone }),
         ...(deviceType !== "unknown" && { deviceType }),
         ...(browser !== "unknown" && { browser }),
         ...(sleepScore && { sleepScore }),
@@ -348,7 +363,12 @@ export async function enrichLeadProfile(leadId: number, input: ProfileInput): Pr
       referrerDomain: referrerDomain ?? null,
       landingPage: input.landingPage ?? null,
       language: input.language ?? null,
+      browserLang: input.browserLang ?? null,
       country: input.country ?? null,
+      countryName: input.countryName ?? null,
+      city: input.city ?? null,
+      region: input.region ?? null,
+      timezone: input.timezone ?? null,
       deviceType: deviceType !== "unknown" ? deviceType : null,
       browser: browser !== "unknown" ? browser : null,
       sleepScore,
