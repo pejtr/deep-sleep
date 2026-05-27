@@ -426,3 +426,12 @@
   50%  { box-shadow: 0 4px 36px color-mix(in oklch, oklch(0.78 0.18 65) 65%, transparent), 0 0 0 8px color-mix(in oklch, oklch(0.78 0.18 65) 12%, transparent); transform: scale(1.04); }
   100% { box-shadow: 0 4px 24px color-mix(in oklch, oklch(0.78 0.18 65) 40%, transparent); transform: scale(1); }
 }
+
+/* ── Timer urgent pulse — červené pulsování při posledních 3 minutách ── */
+@keyframes timer-pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.62 0.22 25 / 0); }
+  50% { box-shadow: 0 0 24px 6px oklch(0.62 0.22 25 / 0.40); }
+}
+.timer-pulse-red {
+  animation: timer-pulse-red 1.2s ease-in-out infinite;
+}

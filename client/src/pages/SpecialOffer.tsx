@@ -58,10 +58,11 @@ const MICRO_COMMITMENTS = [
 ];
 
 export default function SpecialOffer() {
-  const { minutes, seconds, expired } = useUjnCountdown();
+  const { minutes, seconds, expired, secondsLeft } = useUjnCountdown();
   const { formatPrice, currency, isLowTier } = useCurrency();
   const [email, setEmail] = useState("");
   const sessionId = getSessionId();
+  const isUrgent = !expired && secondsLeft <= 3 * 60; // last 3 minutes
 
   // Get email from URL params
   useEffect(() => {
@@ -72,6 +73,8 @@ export default function SpecialOffer() {
 
   const timerColor = expired
     ? "oklch(0.65 0.20 25)"
+    : isUrgent
+    ? "oklch(0.62 0.22 25)"
     : minutes < 5
     ? "oklch(0.72 0.20 30)"
     : "oklch(0.82 0.16 65)";
@@ -86,29 +89,36 @@ export default function SpecialOffer() {
 
       {/* ── STICKY TIMER BAR ── */}
       <div
-        className="sticky top-0 z-50 py-2.5 px-4 text-center"
+        className={`sticky top-0 z-50 py-2.5 px-4 text-center transition-all duration-500${isUrgent ? " timer-pulse-red" : ""}`}
         style={{
           background: expired
             ? "oklch(0.65 0.20 25 / 0.95)"
+            : isUrgent
+            ? "oklch(0.22 0.08 25 / 0.97)"
             : "oklch(0.08 0.025 255 / 0.97)",
-          borderBottom: `1px solid ${timerColor}40`,
+          borderBottom: `1px solid ${timerColor}60`,
           backdropFilter: "blur(12px)",
         }}
       >
         <div className="flex items-center justify-center gap-2 text-sm font-bold">
-          <Clock className="w-4 h-4" style={{ color: timerColor }} />
+          <Clock className={`w-4 h-4${isUrgent ? " animate-pulse" : ""}`} style={{ color: timerColor }} />
           {expired ? (
             <span style={{ color: "oklch(0.95 0.01 265)" }}>
               This offer has expired. The price has returned to $47.
             </span>
           ) : (
             <>
-              <span style={{ color: "oklch(0.75 0.04 265)" }}>
-                This one-time offer expires in:
+              {isUrgent && (
+                <span className="text-xs font-bold tracking-widest uppercase animate-pulse" style={{ color: "oklch(0.72 0.22 25)" }}>
+                  HURRY —
+                </span>
+              )}
+              <span style={{ color: isUrgent ? "oklch(0.85 0.04 265)" : "oklch(0.75 0.04 265)" }}>
+                {isUrgent ? "Offer expires in:" : "This one-time offer expires in:"}
               </span>
               <span
-                className="font-mono text-lg"
-                style={{ color: timerColor }}
+                className={`font-mono text-lg${isUrgent ? " animate-pulse" : ""}`}
+                style={{ color: timerColor, textShadow: isUrgent ? `0 0 12px oklch(0.62 0.22 25 / 0.8)` : "none" }}
               >
                 {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </span>

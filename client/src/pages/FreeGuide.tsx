@@ -199,6 +199,65 @@ export default function FreeGuide() {
           </div>
         </div>
 
+        {/* ── FREE SAMPLE TIP ── */}
+        <section className="py-10 px-4">
+          <div className="max-w-2xl mx-auto">
+            <div
+              className="rounded-2xl overflow-hidden"
+              style={{ border: "1px solid oklch(0.78 0.18 65 / 0.30)", background: "oklch(0.10 0.025 255)" }}
+            >
+              {/* Header */}
+              <div
+                className="px-5 py-3 flex items-center gap-2"
+                style={{ background: "oklch(0.78 0.18 65 / 0.10)", borderBottom: "1px solid oklch(0.78 0.18 65 / 0.20)" }}
+              >
+                <BookOpen className="w-4 h-4" style={{ color: "oklch(0.82 0.16 65)" }} />
+                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "oklch(0.82 0.16 65)" }}>
+                  Free Sample — Hack #4 from the Guide
+                </span>
+              </div>
+              {/* Content */}
+              <div className="p-5 md:p-6">
+                <h3 className="font-display font-bold text-xl mb-1" style={{ color: "oklch(0.95 0.01 265)" }}>
+                  Fall Asleep in Under 8 Minutes
+                </h3>
+                <p className="text-sm font-semibold mb-4" style={{ color: "oklch(0.82 0.16 65)" }}>
+                  The military technique used by Navy SEALs in combat zones
+                </p>
+                <p className="text-sm mb-3" style={{ color: "oklch(0.72 0.04 265)" }}>
+                  In 1981, the US military developed a sleep protocol to help soldiers fall asleep in any
+                  environment — even under stress, noise, and discomfort. It works in <strong style={{ color: "oklch(0.88 0.01 265)" }}>96% of cases after 6 weeks of practice</strong>.
+                </p>
+                <div
+                  className="rounded-xl p-4 mb-4"
+                  style={{ background: "oklch(0.78 0.18 65 / 0.06)", border: "1px solid oklch(0.78 0.18 65 / 0.18)" }}
+                >
+                  <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "oklch(0.78 0.16 65)" }}>The 3-Step Protocol:</p>
+                  <ol className="space-y-2">
+                    {[
+                      { step: "1", text: "Relax every muscle in your face — jaw, tongue, eyes. Let your face go completely slack." },
+                      { step: "2", text: "Drop your shoulders as low as they'll go. Let your arms fall to your sides, one at a time." },
+                      { step: "3", text: "Exhale and relax your chest. Then your legs, thighs, calves. Picture a warm black room." },
+                    ].map(({ step, text }) => (
+                      <li key={step} className="flex gap-3">
+                        <span
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
+                          style={{ background: "oklch(0.78 0.18 65 / 0.18)", color: "oklch(0.82 0.16 65)" }}
+                        >{step}</span>
+                        <span className="text-sm" style={{ color: "oklch(0.75 0.04 265)" }}>{text}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+                <p className="text-xs italic" style={{ color: "oklch(0.45 0.04 265)" }}>
+                  The remaining 6 hacks in the full guide go even deeper — including the chronotype trick
+                  that adds 90 minutes of deep sleep without changing your schedule.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── WHAT'S INSIDE ── */}
         <section className="py-12 px-4">
           <div className="max-w-2xl mx-auto">

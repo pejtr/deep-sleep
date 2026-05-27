@@ -186,14 +186,27 @@ export default function LeadMagnetPopup({ delayMs = 30000, exitIntent = true }: 
 
           {submitted ? (
             <div
-              className="rounded-xl p-4 text-center"
-              style={{ background: "oklch(0.78 0.18 65 / 0.12)", border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}
+              className="rounded-xl p-6 text-center"
+              style={{ background: "oklch(0.78 0.18 65 / 0.08)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}
             >
-              <p className="font-bold text-lg mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>
-                Check your inbox!
+              {/* Spinning loader */}
+              <div className="flex justify-center mb-4">
+                <div
+                  className="w-12 h-12 rounded-full border-2 border-t-transparent animate-spin"
+                  style={{ borderColor: "oklch(0.78 0.18 65 / 0.3)", borderTopColor: "oklch(0.82 0.16 65)" }}
+                />
+              </div>
+              {/* Animated dots */}
+              <p className="font-bold text-base mb-1" style={{ color: "oklch(0.82 0.16 65)" }}>
+                Generuji vaši unikátní nabídku
+                <span className="inline-flex gap-0.5 ml-1">
+                  <span className="animate-bounce" style={{ animationDelay: "0ms" }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: "150ms" }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: "300ms" }}>.</span>
+                </span>
               </p>
-              <p className="text-sm" style={{ color: "oklch(0.65 0.04 265)" }}>
-                Sending you something special...
+              <p className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>
+                Personalizing your sleep protocol based on your profile
               </p>
             </div>
           ) : (
