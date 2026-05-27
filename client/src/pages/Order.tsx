@@ -161,10 +161,25 @@ export default function Order() {
           <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>· 244K+ views</span>
         </div>
 
-        {/* Luna Fate Section */}
+        {/* Luna Fate Section — NEURO: narrative transportation + micro-commitment */}
         <div className={`rounded-3xl p-6 mb-8 relative overflow-hidden ${r(3)}`}
           style={{ background: "linear-gradient(135deg, oklch(0.10 0.04 280), oklch(0.08 0.06 260))", border: "1px solid oklch(0.45 0.12 280 / 0.4)" }}>
           <div className="orb w-48 h-48 opacity-20" style={{ background: "oklch(0.55 0.18 280)", top: "-30%", right: "-10%", position: "absolute", borderRadius: "50%", filter: "blur(40px)" }} />
+          {/* NEURO: Micro-commitment — "you already took the first step" */}
+          <div className="flex items-center gap-2 mb-3 relative z-10">
+            <div className="flex gap-1">
+              {["Quiz","Results","Protocol"].map((step,i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{background: i < 2 ? "oklch(0.55 0.18 145)" : "oklch(0.78 0.18 65)",color:"black"}}>
+                    {i < 2 ? "✓" : "3"}
+                  </div>
+                  <span className="text-xs" style={{color: i < 2 ? "oklch(0.65 0.18 145)" : "oklch(0.78 0.18 65)",fontWeight: i===2?"bold":"normal"}}>{step}</span>
+                  {i < 2 && <span className="text-xs" style={{color:"oklch(0.30 0.04 265)"}}>›</span>}
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="flex items-start gap-4 relative z-10">
             <img
               src="https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-ZRuJw2SPLknXZS2RAKU4vn.webp"

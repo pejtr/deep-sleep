@@ -357,7 +357,7 @@ export default function Upsell2() {
   const handleDecline = () => {
     track("upsell_decline", { page: "upsell2", value: { chronotype, variant } });
     navigateWithTransition(
-      () => navigate(`/upsell3?chronotype=${chronotype}`),
+      () => navigate(`/upsell/3?chronotype=${chronotype}`),
       { message: "Loading next offer...", subMessage: "Final upgrade for you", delay: 600 }
     );
   };

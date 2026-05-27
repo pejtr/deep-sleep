@@ -70,6 +70,9 @@ function Router() {
         <Route path="/result" component={QuizResult} />
         <Route path="/order" component={Order} />
         <Route path="/upsell/entry" component={UpsellEntry} />
+        <Route path="/upsell/1" component={Upsell1} />
+        <Route path="/upsell/2" component={Upsell2} />
+        <Route path="/upsell/3" component={Upsell3} />
         <Route path="/upsell1" component={Upsell1} />
         <Route path="/upsell2" component={Upsell2} />
         <Route path="/upsell3" component={Upsell3} />

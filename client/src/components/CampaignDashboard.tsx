@@ -39,7 +39,7 @@ export function CampaignDashboard() {
       name: 'Luna Voss - Sleep Transformation',
       platform: 'meta' as const,
       budget: 1000,
-      lunaContent: '/manus-storage/luna-voss-1-sleep-transformation_c6898099.png',
+      lunaContent: '/manus-storage/luna-voss-1-sleep-transformation_5ea417ff.webp',
     };
     
     try {

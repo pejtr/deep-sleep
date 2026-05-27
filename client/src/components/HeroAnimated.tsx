@@ -157,7 +157,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                   />
                   {/* Promo photo floating badge */}
                   <div className="absolute -right-4 top-4 w-20 h-20 rounded-2xl overflow-hidden hidden lg:block" style={{ border: "2px solid oklch(0.78 0.18 65 / 0.6)", boxShadow: "0 8px 24px oklch(0.06 0.025 255 / 0.7)", zIndex: 10 }}>
-                    <img src="/manus-storage/promo-sleep-model_fc789a56.png" alt="" className="w-full h-full object-cover object-top" />
+                    <img src="/manus-storage/promo-sleep-model_3a2de508.webp" alt="" className="w-full h-full object-cover object-top" />
                   </div>
                   {/* Badge overlay */}
                   <div

@@ -6,14 +6,14 @@ import { ArrowRight, Mail, Download, Check, Moon, Sparkles } from "lucide-react"
 import { toast } from "sonner";
 import { trackPurchase } from "@/lib/conversionTracking";
 
-// Upsell sequence: main → upsell1, oto1 → upsell2, oto2 → upsell3, subscription → thankyou
+// Upsell sequence: main → upsell/1, oto1 → upsell/2, oto2 → upsell/3, subscription → thankyou
 const NEXT_STEP: Record<string, string> = {
   entry: "/upsell/entry",
-  main: "/upsell1",
-  oto1: "/upsell2",
-  oto2: "/upsell3",
+  main: "/upsell/1",
+  oto1: "/upsell/2",
+  oto2: "/upsell/3",
   subscription: "/thankyou",
-  discount: "/upsell1",
+  discount: "/upsell/1",
 };
 
 export default function CheckoutSuccess() {

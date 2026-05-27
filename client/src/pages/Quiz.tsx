@@ -497,6 +497,81 @@ export default function Quiz() {
       {/* Question — centered */}
       <div className="relative z-10 flex-1 container py-6 flex flex-col items-center justify-center max-w-xl mx-auto w-full">
         <div className="w-full">
+
+          {/* ── Q1 Mystical Symbol Hook (pattern interrupt + identity priming) ── */}
+          {current === 0 && phase === "core" && (
+            <div className="flex flex-col items-center mb-5 animate-in fade-in slide-in-from-bottom-3 duration-700">
+              {/* Pulsing dreamcatcher SVG */}
+              <div className="relative w-28 h-28 mb-3">
+                <style>{`
+                  @keyframes pulse-ring { 0%,100%{opacity:.15;transform:scale(1)} 50%{opacity:.35;transform:scale(1.08)} }
+                  @keyframes slow-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+                  @keyframes slow-spin-rev { from{transform:rotate(0deg)} to{transform:rotate(-360deg)} }
+                  @keyframes eye-glow { 0%,100%{opacity:.6} 50%{opacity:1} }
+                  @keyframes feather-sway { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+                `}</style>
+                {/* Outer pulse rings */}
+                <div className="absolute inset-0 rounded-full" style={{animation:"pulse-ring 3s ease-in-out infinite",background:"radial-gradient(circle,oklch(0.78 0.18 65/0.2) 0%,transparent 70%)"}} />
+                <div className="absolute inset-2 rounded-full" style={{animation:"pulse-ring 3s ease-in-out infinite",animationDelay:"0.8s",background:"radial-gradient(circle,oklch(0.65 0.18 280/0.15) 0%,transparent 70%)"}} />
+                <svg viewBox="0 0 120 120" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                  {/* Outer hoop */}
+                  <circle cx="60" cy="52" r="38" fill="none" stroke="oklch(0.78 0.18 65)" strokeWidth="1.5" opacity="0.7" style={{animation:"slow-spin 20s linear infinite",transformOrigin:"60px 52px"}} />
+                  {/* Inner sacred web */}
+                  <g style={{animation:"slow-spin-rev 30s linear infinite",transformOrigin:"60px 52px"}}>
+                    {[0,45,90,135,180,225,270,315].map((angle,i) => {
+                      const rad = (angle * Math.PI) / 180;
+                      const x = 60 + 38 * Math.sin(rad);
+                      const y = 52 - 38 * Math.cos(rad);
+                      return <line key={i} x1="60" y1="52" x2={x} y2={y} stroke="oklch(0.78 0.18 65)" strokeWidth="0.6" opacity="0.3" />;
+                    })}
+                    {[12,22,32].map((r,i) => (
+                      <circle key={i} cx="60" cy="52" r={r} fill="none" stroke="oklch(0.65 0.18 280)" strokeWidth="0.5" opacity={0.2 + i*0.1} strokeDasharray={i===1?"3 3":"none"} />
+                    ))}
+                  </g>
+                  {/* Crescent moon */}
+                  <path d="M60 30 A14 14 0 1 1 60 30.01" fill="none" stroke="oklch(0.82 0.16 65)" strokeWidth="0" />
+                  <path d="M52 36 Q60 24 68 36 Q62 32 56 36 Z" fill="oklch(0.82 0.16 65)" opacity="0.8" />
+                  {/* Central eye */}
+                  <ellipse cx="60" cy="52" rx="7" ry="5" fill="oklch(0.07 0.025 255)" stroke="oklch(0.78 0.18 65)" strokeWidth="1" style={{animation:"eye-glow 2.5s ease-in-out infinite"}} />
+                  <ellipse cx="60" cy="52" rx="3.5" ry="3.5" fill="oklch(0.65 0.18 280)" style={{animation:"eye-glow 2.5s ease-in-out infinite"}} />
+                  <circle cx="60" cy="52" r="1.2" fill="oklch(0.95 0.01 265)" />
+                  {/* Stars */}
+                  {[[45,35],[75,35],[48,68],[72,68],[60,20]].map(([sx,sy],i) => (
+                    <circle key={i} cx={sx} cy={sy} r="1.2" fill="oklch(0.82 0.16 65)" opacity="0.7" />
+                  ))}
+                  {/* Feathers */}
+                  <g style={{animation:"feather-sway 4s ease-in-out infinite",transformOrigin:"52px 90px"}}>
+                    <line x1="52" y1="90" x2="48" y2="112" stroke="oklch(0.78 0.18 65)" strokeWidth="1" opacity="0.6" />
+                    {[93,97,101,105,109].map((fy,i) => (
+                      <line key={i} x1={48+i*0.3} y1={fy} x2={48+i*0.3-4+i} y2={fy+2} stroke="oklch(0.65 0.18 280)" strokeWidth="0.8" opacity="0.5" />
+                    ))}
+                  </g>
+                  <g style={{animation:"feather-sway 4s ease-in-out infinite",animationDelay:"0.5s",transformOrigin:"60px 90px"}}>
+                    <line x1="60" y1="90" x2="60" y2="115" stroke="oklch(0.82 0.16 65)" strokeWidth="1.2" opacity="0.7" />
+                    {[93,98,103,108,113].map((fy,i) => (
+                      <line key={i} x1="60" y1={fy} x2={60-4+i} y2={fy+2} stroke="oklch(0.78 0.18 65)" strokeWidth="0.8" opacity="0.5" />
+                    ))}
+                    <circle cx="60" cy="116" r="1.5" fill="oklch(0.65 0.18 280)" opacity="0.8" />
+                  </g>
+                  <g style={{animation:"feather-sway 4s ease-in-out infinite",animationDelay:"1s",transformOrigin:"68px 90px"}}>
+                    <line x1="68" y1="90" x2="72" y2="112" stroke="oklch(0.78 0.18 65)" strokeWidth="1" opacity="0.6" />
+                    {[93,97,101,105,109].map((fy,i) => (
+                      <line key={i} x1={72-i*0.3} y1={fy} x2={72-i*0.3+4-i} y2={fy+2} stroke="oklch(0.65 0.18 280)" strokeWidth="0.8" opacity="0.5" />
+                    ))}
+                  </g>
+                  {/* Turquoise beads */}
+                  {[[52,91],[60,91],[68,91]].map(([bx,by],i) => (
+                    <circle key={i} cx={bx} cy={by} r="2" fill="oklch(0.65 0.25 195)" opacity="0.9" />
+                  ))}
+                </svg>
+              </div>
+              {/* Neuro hook: curiosity gap + identity priming */}
+              <p className="text-xs text-center font-medium tracking-wider uppercase" style={{color:"oklch(0.65 0.18 280)",letterSpacing:"0.12em"}}>
+                The dreamcatcher reveals your sleep spirit
+              </p>
+            </div>
+          )}
+
           {/* Micro-copy */}
           <p className="text-xs font-medium mb-2 text-center italic"
             style={{ color: "oklch(0.55 0.12 65)" }}>

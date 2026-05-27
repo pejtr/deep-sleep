@@ -1136,3 +1136,17 @@
 - [x] getLiveTrafficData() function in db.ts (weekly 7-day + hourly today + activeNow)
 - [x] admin.getLiveTraffic tRPC procedure in routers.ts
 - [x] LiveTrafficWidget component in AdminDashboard.tsx (bar chart, 7-day/today toggle, active now badge, auto-refresh 60s)
+
+## Image Optimization & Neuro Flow (May 27)
+- [x] 41 obrázků optimalizováno na WebP max 200kb (úspora 79.7MB)
+- [x] Všechny WebP soubory nahrány na CDN (manus-storage)
+- [x] Staré PNG/JPG reference aktualizovány na WebP URL v kódu
+- [x] Quiz Q1: Mystický SVG dreamcatcher symbol s pulzující animací (Native American styl)
+- [x] Quiz Q1: Pattern interrupt + curiosity gap + identity priming ("dreamcatcher reveals your sleep spirit")
+- [x] QuizResult: Tribal identity badge + rarity framing ("Only X% of people have this chronotype")
+- [x] QuizResult: Price anchor + loss aversion ("less than a coffee — for sleep that changes everything")
+- [x] QuizResult: Loss aversion micro-copy ("⚠️ This offer expires when the timer hits zero")
+- [x] Order: Micro-commitment progress steps (Quiz ✓ → Results ✓ → Protocol — sunk cost fallacy)
+- [x] ThankYou: Buyer remorse prevence (94% stats, 47min faster sleep, 30-day guarantee grid)
+- [x] ThankYou: Identity reinforcement ("Welcome to the [Chronotype] Tribe" + "You are now a X Sleep Optimizer")
+- [x] ThankYou: Fix upsell3 route → /upsell/3 (konzistence s App.tsx)

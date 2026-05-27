@@ -181,16 +181,29 @@ export default function QuizResult() {
         {/* Result card */}
         <div className="glass-card rounded-3xl p-8 mb-8 text-center relative overflow-hidden">
           <div className="orb orb-gold w-48 h-48 opacity-10" style={{ top: "-20%", right: "-10%" }} />
-          <div className="text-6xl mb-4 animate-float">{data.icon}</div>
-          <div className="badge-popular mb-3">Your Chronotype</div>
-          <h1 className="font-display font-black text-3xl md:text-4xl mb-3" style={{ color: data.color }}>
+          {/* NEURO: Identity reveal animation — dopamin spike na odhalení */}
+          <div className="text-6xl mb-2 animate-float" style={{filter:"drop-shadow(0 0 16px currentColor)"}}>{data.icon}</div>
+          {/* Tribal identity badge — "you belong to a rare group" */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3 text-xs font-bold uppercase tracking-wider"
+            style={{background:`${data.color}18`,border:`1px solid ${data.color}40`,color:data.color}}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{background:data.color}} />
+            Your Sleep Chronotype
+          </div>
+          <h1 className="font-display font-black text-3xl md:text-4xl mb-1" style={{ color: data.color }}>
             You are a {data.title}
           </h1>
+          {/* NEURO: Rarity framing — "only X% of people" — exclusivity trigger */}
+          <p className="text-xs font-medium mb-3" style={{color:"oklch(0.55 0.04 265)"}}>
+            {chronotype === "Dolphin" ? "Only 10% of people have this chronotype" :
+             chronotype === "Lion" ? "Only 15% of people are natural Lions" :
+             chronotype === "Wolf" ? "25% of people are Wolves — night is your power" :
+             "50% of people share your Bear rhythm — but few optimize it"}
+          </p>
           <p className="text-sm md:text-base leading-relaxed mb-6" style={{ color: "oklch(0.70 0.04 265)" }}>
             {data.description}
           </p>
 
-          {/* Live viewers */}
+          {/* Live viewers — NEURO: social proof + FOMO */}
           <div className="flex items-center justify-center gap-2 mb-6">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             <Users className="w-3.5 h-3.5" style={{ color: "oklch(0.50 0.04 265)" }} />
@@ -322,7 +335,7 @@ export default function QuizResult() {
             A complete 7-night step-by-step protocol built specifically for {chronotype} chronotypes — with your exact sleep schedule, wind-down ritual, and deep sleep triggers.
           </p>
 
-          {/* Value stack */}
+          {/* NEURO: Anchoring — show full value before price reveal */}
           <div className="flex flex-col gap-2 mb-6 text-left relative z-10">
             {[
               { item: `${chronotype} Chronotype Sleep Guide (PDF)`, value: "$27" },
@@ -338,11 +351,15 @@ export default function QuizResult() {
             ))}
           </div>
 
-          <div className="flex items-center justify-center gap-3 mb-6 relative z-10">
+          {/* NEURO: Price anchor + loss aversion — "less than a coffee" */}
+          <div className="flex items-center justify-center gap-3 mb-2 relative z-10">
             <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$75</span>
             <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>$4</span>
             <span className="badge-popular">93% OFF</span>
           </div>
+          <p className="text-xs mb-5 relative z-10" style={{color:"oklch(0.45 0.04 265)"}}>
+            Less than a coffee — for sleep that changes everything
+          </p>
 
           <button
             onClick={handleGetProtocol}
@@ -352,7 +369,11 @@ export default function QuizResult() {
             <span>Get My {chronotype} Protocol — $4</span>
             <ArrowRight className="w-5 h-5" />
           </button>
-          <p className="text-xs mt-3 relative z-10" style={{ color: "oklch(0.40 0.04 265)" }}>
+          {/* NEURO: Loss aversion micro-copy */}
+          <p className="text-xs mt-2 relative z-10 font-medium" style={{ color: "oklch(0.65 0.18 25)" }}>
+            ⚠️ This offer expires when the timer hits zero
+          </p>
+          <p className="text-xs mt-1 relative z-10" style={{ color: "oklch(0.40 0.04 265)" }}>
             Secure checkout · Instant PDF access · 30-day money-back guarantee
           </p>
         </div>

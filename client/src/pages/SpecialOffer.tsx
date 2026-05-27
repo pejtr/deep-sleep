@@ -178,7 +178,7 @@ export default function SpecialOffer() {
         <div className="relative rounded-2xl overflow-hidden mb-6" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.30)" }}>
           {/* Promo photo floating badge */}
           <div className="absolute top-3 right-3 w-16 h-16 rounded-xl overflow-hidden z-10" style={{ border: "2px solid oklch(0.78 0.18 65 / 0.6)", boxShadow: "0 4px 16px oklch(0.06 0.025 255 / 0.8)" }}>
-            <img src="/manus-storage/promo-sleep-model_fc789a56.png" alt="" className="w-full h-full object-cover object-top" />
+            <img src="/manus-storage/promo-sleep-model_3a2de508.webp" alt="" className="w-full h-full object-cover object-top" />
           </div>
           <video
             src="/manus-storage/sleep-guide-bed_2e7e0ae5.mp4"

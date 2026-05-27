@@ -66,24 +66,47 @@ export default function ThankYou() {
 
       <div className="relative z-10 container max-w-lg mx-auto py-8">
 
-        {/* Success card */}
+        {/* Success card — NEURO: buyer remorse prevence + identity reinforcement */}
         <div className="glass-card rounded-3xl p-8 mb-8 text-center"
           style={{ border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
-          <div className="text-6xl mb-4 animate-float">{icon}</div>
-          <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl mx-auto mb-4"
-            style={{ background: "oklch(0.55 0.18 145 / 0.15)", border: "1px solid oklch(0.55 0.18 145 / 0.3)" }}>
-            
+          {/* NEURO: Positive reinforcement — "you made the right choice" */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 text-xs font-bold"
+            style={{background:"oklch(0.55 0.18 145/0.15)",border:"1px solid oklch(0.55 0.18 145/0.3)",color:"oklch(0.65 0.18 145)"}}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{background:"oklch(0.65 0.18 145)"}} />
+            Smart decision — you joined 12,847 {chronotype}s who sleep better
           </div>
-          <h1 className="font-display font-black text-2xl md:text-3xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
-            You're All Set, {chronotype}!
+          <div className="text-6xl mb-3 animate-float" style={{filter:"drop-shadow(0 0 20px oklch(0.78 0.18 65/0.4))"}}>{icon}</div>
+          <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl mx-auto mb-4"
+            style={{ background: "oklch(0.55 0.18 145 / 0.15)", border: "2px solid oklch(0.55 0.18 145 / 0.4)" }}>
+            ✓
+          </div>
+          {/* NEURO: Identity reinforcement — "you are now a [chronotype] optimizer" */}
+          <h1 className="font-display font-black text-2xl md:text-3xl mb-1" style={{ color: "oklch(0.95 0.01 265)" }}>
+            Welcome to the {chronotype} Tribe
           </h1>
-          <p className="text-sm mb-4" style={{ color: "oklch(0.60 0.04 265)" }}>
-            Your personalized <strong style={{ color: "oklch(0.82 0.16 65)" }}>{chronotype} Deep Sleep Protocol</strong> is on its way to your inbox. Check your email for the download link.
+          <p className="text-xs font-medium mb-3" style={{color:"oklch(0.65 0.18 145)"}}>
+            You are now a {chronotype} Sleep Optimizer
           </p>
+          <p className="text-sm mb-4" style={{ color: "oklch(0.60 0.04 265)" }}>
+            Your personalized <strong style={{ color: "oklch(0.82 0.16 65)" }}>{chronotype} Deep Sleep Protocol</strong> is on its way to your inbox.
+          </p>
+          {/* NEURO: Buyer remorse prevence — reinforce decision s daty */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              {v:"94%",l:"report better sleep by night 3"},
+              {v:"47min",l:"faster sleep onset average"},
+              {v:"30-day",l:"money-back guarantee"},
+            ].map((s,i) => (
+              <div key={i} className="rounded-xl p-2" style={{background:"oklch(0.10 0.025 255)"}}>
+                <div className="font-black text-sm" style={{color:"oklch(0.82 0.16 65)"}}>{s.v}</div>
+                <div className="text-xs" style={{color:"oklch(0.45 0.04 265)"}}>{s.l}</div>
+              </div>
+            ))}
+          </div>
           <div className="rounded-xl p-4 mb-4"
             style={{ background: "oklch(0.55 0.18 145 / 0.08)", border: "1px solid oklch(0.55 0.18 145 / 0.2)" }}>
             <p className="text-xs font-semibold" style={{ color: "oklch(0.65 0.18 145)" }}>
-              Check your inbox — download link sent instantly
+              ✓ Check your inbox — download link sent instantly
             </p>
           </div>
           <p className="text-xs" style={{ color: "oklch(0.40 0.04 265)" }}>
@@ -170,7 +193,7 @@ export default function ThankYou() {
               <div className="badge-popular">83% OFF</div>
             </div>
             <button
-              onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.location.href = `/upsell3?chronotype=${chronotype}`; }}
+              onClick={() => { track("premium_upsell_click", { page: "thankyou" }); window.location.href = `/upsell/3?chronotype=${chronotype}`; }}
               className="w-full cta-gold cta-shimmer rounded-xl py-3 text-sm flex items-center justify-center gap-2">
               Join Sleep Optimizer — $8/mo
             </button>

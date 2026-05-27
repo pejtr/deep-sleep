@@ -79,7 +79,7 @@ export default function NewsletterSection() {
         <div className="p-6 md:p-8">
           <div className="flex items-start gap-4 mb-5">
             <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0" style={{ border: "2px solid oklch(0.78 0.18 65 / 0.50)", boxShadow: "0 4px 16px oklch(0.78 0.18 65 / 0.15)" }}>
-              <img src="/manus-storage/promo-sleep-model_fc789a56.png" alt="" className="w-full h-full object-cover object-top" />
+              <img src="/manus-storage/promo-sleep-model_3a2de508.webp" alt="" className="w-full h-full object-cover object-top" />
             </div>
             <div>
               {/* Bulvární headline — ZÁVIST pattern */}
