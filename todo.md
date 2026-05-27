@@ -1110,3 +1110,17 @@
 - [ ] sessionStorage: uložit email při prvním zadání (leads.capture) pod klíčem "user_email"
 - [ ] QuizResult.tsx: při načtení stránky zkontrolovat sessionStorage["user_email"] — pokud existuje, přeskočit email formulář a rovnou zobrazit pricing sekci
 - [ ] QuizResult.tsx: předvyplnit email field pokud je v sessionStorage (UX fallback)
+
+## Nedvěd Funnel (Lead Magnet → UJN → Email Sekvence)
+- [ ] DB: tabulka `email_leads` (email, source, quiz_data, ujn_shown, ujn_converted)
+- [ ] DB: tabulka `email_sequences` (lead_id, step, sent_at, opened_at)
+- [ ] tRPC: `leads.captureEmail` — uložit email + zdroj, vrátit UJN token
+- [ ] tRPC: `leads.checkUjn` — ověřit token, vrátit zda UJN platí (24h)
+- [ ] Brevo: email sekvence 5 emailů (welcome+ebook → 3x vzdělávání → prodejní → win-back)
+- [ ] Lead magnet popup — exit-intent + 30s delay, "FREE: 7 Sleep Hacks PDF"
+- [ ] /free-guide stránka — bulvární titulky, hodnota, email capture form
+- [ ] Po email capture → přesměrovat na /special-offer (UJN)
+- [ ] /special-offer stránka — UJN s 15min odpočítáváním, speciální cena
+- [ ] Homepage — "Ideální zákazník" sekce (SOK/PŘEKVAPENÍ pattern)
+- [ ] Homepage — newsletter signup s 10% slevovým kódem
+- [ ] Admin dashboard — Leads tab se statistikami funnelu

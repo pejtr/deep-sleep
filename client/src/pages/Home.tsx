@@ -18,6 +18,7 @@ import { HeroAnimated } from "@/components/HeroAnimated";
 import { useBehaviorTracking } from "@/hooks/useBehaviorTracking";
 import { setMetaTags } from "@/lib/metaTags";
 import { useTransition } from "@/contexts/TransitionContext";
+import NewsletterSection from "@/components/NewsletterSection";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/hero-night-sky-D3pM5pQbCQhppVQxJN45yn.webp";
 const CLOCK_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/3am-clock-XJszaQCHaCqerz7QvxDA8P.webp";
@@ -387,6 +388,7 @@ export default function Home() {
       </AnimatedSection>
 
       {/* ═══════════════ FAQ ═══════════════ */}
+      <NewsletterSection />
       <FAQSection />
 
       {/* ═══════════════ FINAL CTA — HORMOZI CLOSE ═══════════════ */}

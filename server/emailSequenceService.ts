@@ -474,3 +474,25 @@ export async function cancelAbandonCart(email: string) {
       )
     );
 }
+
+/**
+ * Nedvěd funnel: Lead Magnet capture sequence
+ * Trigger: user submits email on /free-guide or LeadMagnetPopup
+ * Flow: E-book delivery → 3× education → hard sell → win-back
+ */
+export async function onLeadMagnetCapture(email: string, leadId: number) {
+  // LM1: Ihned — E-book delivery + UJN reminder
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 0, 1);
+  // LM2: +24h — Value email: The #1 reason you can't sleep
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 24 * 60, 2);
+  // LM3: +48h — 3 mistakes + social proof
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 48 * 60, 3);
+  // LM4: +72h — Testimonial + urgency (price rising)
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 72 * 60, 4);
+  // LM5: +5d — Hard sell + last chance
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 5 * 24 * 60, 5);
+  // LM6: +7d — Downsell: Night 1 free
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 7 * 24 * 60, 6);
+  // LM7: +14d — Win-back: membership upsell
+  await scheduleEmailSequence(leadId, email, "welcome", "Bear", 14 * 24 * 60, 7);
+}

@@ -13,7 +13,7 @@ import {
 import { dispatchWebhookEvent } from "./outboundWebhookDispatcher";
 import { trackLeadConversion } from "./redditPixel";
 import { sendQuizResultEmail, addQuizContactToBrevo } from "./quizEmailService";
-import { onQuizComplete } from "./emailSequenceService";
+import { onQuizComplete, onLeadMagnetCapture } from "./emailSequenceService";
 import {
   saveQuizResult,
   getQuizResultBySession,
@@ -389,6 +389,8 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
         // Trigger abandon cart + welcome email sequence
         if (input.source === "quiz_result" || input.source === "quiz_funnel_reddit" || input.source === "quiz_funnel_tiktok" || input.source === "quiz_funnel") {
           onQuizComplete(input.email, leadId, input.chronotype ?? "Bear").catch(() => {/* non-critical */});
+        } else if (input.source === "lead_magnet" || input.source === "free_guide" || input.source === "newsletter") {
+          onLeadMagnetCapture(input.email, leadId).catch(() => {/* non-critical */});
         }
         return { success: true };
       }),

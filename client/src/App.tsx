@@ -45,6 +45,9 @@ const AffiliateJoin = lazy(() => import("./pages/AffiliateJoin"));
 const AffiliateDashboard = lazy(() => import("./pages/AffiliateDashboard"));
 const TikTokLanding = lazy(() => import("./pages/TikTokLanding"));
 const InsomniaLanding = lazy(() => import("./pages/InsomniaLanding"));
+const FreeGuide = lazy(() => import("./pages/FreeGuide"));
+const SpecialOffer = lazy(() => import("./pages/SpecialOffer"));
+const LeadMagnetPopup = lazy(() => import("./components/LeadMagnetPopup"));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
@@ -105,6 +108,8 @@ function Router() {
         <Route path="/affiliates/dashboard" component={AffiliateDashboard} />
         <Route path="/quiz-funnel" component={QuizFunnel} />
         <Route path="/sleep-quiz" component={QuizFunnel} />
+        <Route path="/free-guide" component={FreeGuide} />
+        <Route path="/special-offer" component={SpecialOffer} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
@@ -122,6 +127,9 @@ function App() {
             <Router />
             <Suspense fallback={null}>
               <SleepChatBot />
+            </Suspense>
+            <Suspense fallback={null}>
+              <LeadMagnetPopup />
             </Suspense>
           </TooltipProvider>
         </ThemeProvider>
