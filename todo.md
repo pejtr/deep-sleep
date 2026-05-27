@@ -1008,16 +1008,20 @@
 - [x] TypeScript check passes after checkout fade-in changes (0 errors)
 
 ## Honza Nedvěd (Inizio) Principy — "První miliarda je nejtěžší"
-- [ ] Lead tagging: auto-tagy při email capture (utm_source, utm_medium, utm_campaign, utm_content, utm_term, referrer doména, landing page, chronotype)
-- [ ] Lead tagging: rozšíření leads.capture tRPC o UTM parametry z frontendu
-- [ ] Lead tagging: zobrazení tagů v Contact Intelligence tabulce + filter
-- [ ] Brevo sekvence E1: ihned — "Tvůj chronotype [X] — zde je tvůj plán" + cheat sheet
-- [ ] Brevo sekvence E2: +1d — "Proč spíš špatně (věda)" — ohřívání
-- [ ] Brevo sekvence E3: +2d — "3 chyby před spaním" — soft sell $5
-- [ ] Brevo sekvence E4: +3d — social proof (Jan, 7 nocí, 0 prášků) + $5
-- [ ] Brevo sekvence E5: +5d — urgency "cena roste na $7"
-- [ ] Brevo sekvence E6: +7d — downsell "Night 1 za $1"
-- [ ] Brevo sekvence E7: +14d — membership upsell $8/mo
+- [x] ROI Kalkulačka panel v Admin Insights tabu (Panáček → Web → $ schéma)
+- [x] US Sleep Market Benchmark panel v Admin Insights tabu (Opisuj od Ameriky)
+- [x] Nedvěd Trik #1 (Opisuj od Ameriky), #2 (Diferenciace), #3 (Panáčci se vracejí), #4 (Diferenciální rovnice) vizualizovány
+- [x] Email sekvence E1-E7 implementována v emailSequenceService.ts
+- [x] Lead tagging: auto-tagy při email capture (utm_source, utm_medium, utm_campaign, utm_content, utm_term, referrer doména, landing page, chronotype)
+- [x] Lead tagging: rozšíření leads.capture tRPC o UTM parametry z frontendu
+- [x] Lead tagging: zobrazení tagů v Contact Intelligence tabulce + filter
+- [x] Brevo sekvence E1: ihned — "Tvůj chronotype [X] — zde je tvůj plán" + cheat sheet
+- [x] Brevo sekvence E2: +1d — "Proč spíš špatně (věda)" — ohřívání
+- [x] Brevo sekvence E3: +2d — "3 chyby před spaním" — soft sell $5
+- [x] Brevo sekvence E4: +3d — social proof (Jan, 7 nocí, 0 prášků) + $5
+- [x] Brevo sekvence E5: +5d — urgency "cena roste na $7"
+- [x] Brevo sekvence E6: +7d — downsell "Night 1 za $1"
+- [x] Brevo sekvence E7: +14d — membership upsell $8/mo
 - [ ] Downsell produkt "Night 1 Only" za $1 — Stripe price + DB záznam
 - [ ] Downsell Stripe checkout session pro "entry" produkt ($1)
 - [ ] Sleep Score PDF: personalizovaný report podle chronotypu (Lion/Bear/Wolf/Dolphin)

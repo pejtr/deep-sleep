@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -1233,8 +1233,180 @@ export default function AdminDashboard() {
               <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>⚙️ Integrations</h3>
               <IntegrationsTab />
             </div>
+            {/* ── Nedvěd ROI Calculator ─────────────────────────────── */}
+            <NedvedRoiPanel />
+            {/* ── Nedvěd Benchmark Panel ───────────────────────────── */}
+            <NedvedBenchmarkPanel />
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ── Nedvěd ROI Calculator Panel ──────────────────────────────────────────────
+function NedvedRoiPanel() {
+  const [cpl, setCpl] = useState(0.5); // cost per lead in USD
+  const [adSpend, setAdSpend] = useState(50); // daily ad spend in USD
+
+  // Calculate derived metrics
+  const leads = adSpend / Math.max(cpl, 0.01);
+  const quizCvr = 0.35; // 35% quiz completion rate
+  const emailCvr = 0.12; // 12% email → purchase
+  const avgOrderValue = 4; // $4 tripwire
+  const upsellRate = 0.45; // 45% take upsell1
+  const upsell1Value = 7; // $7 upsell
+  const ltv = avgOrderValue + upsellRate * upsell1Value; // LTV per buyer
+  const buyers = leads * quizCvr * emailCvr;
+  const revenue = buyers * ltv;
+  const roas = adSpend > 0 ? revenue / adSpend : 0;
+  const breakeven = ltv > 0 ? adSpend / ltv : 0;
+  const profitMargin = revenue > 0 ? ((revenue - adSpend) / revenue) * 100 : 0;
+
+  const roasColor = roas >= 3 ? C.green : roas >= 1.5 ? C.gold : C.red;
+
+  return (
+    <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+      <div className="flex items-center gap-2 mb-1">
+        <DollarSign className="w-4 h-4" style={{ color: C.gold }} />
+        <h3 className="text-sm font-bold" style={{ color: C.textPrimary }}>ROI Kalkulačka — Panáček → Web → $</h3>
+        <span className="text-xs px-2 py-0.5 rounded-full ml-auto" style={{ background: C.gold + "22", color: C.gold }}>Nedvěd Princip</span>
+      </div>
+      <p className="text-xs mb-4" style={{ color: C.textMuted }}>Schéma č. 0.1 z knihy "První miliarda je nejtěžší" — návratnost reklamy v reálném čase</p>
+
+      {/* Input sliders */}
+      <div className="grid grid-cols-2 gap-4 mb-5">
+        <div>
+          <label className="text-xs font-semibold mb-1 block" style={{ color: C.textSecondary }}>Denní ad spend (USD)</label>
+          <div className="flex items-center gap-2">
+            <input type="range" min={5} max={500} step={5} value={adSpend}
+              onChange={e => setAdSpend(Number(e.target.value))}
+              className="flex-1 accent-amber-400" />
+            <span className="text-sm font-bold w-14 text-right" style={{ color: C.gold }}>${adSpend}</span>
+          </div>
+        </div>
+        <div>
+          <label className="text-xs font-semibold mb-1 block" style={{ color: C.textSecondary }}>Cost per Lead (USD)</label>
+          <div className="flex items-center gap-2">
+            <input type="range" min={0.1} max={5} step={0.1} value={cpl}
+              onChange={e => setCpl(Number(e.target.value))}
+              className="flex-1 accent-amber-400" />
+            <span className="text-sm font-bold w-14 text-right" style={{ color: C.gold }}>${cpl.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Funnel flow visualization */}
+      <div className="flex items-center gap-1 mb-5 overflow-x-auto pb-2">
+        {[
+          { label: "Ad Spend", value: `$${adSpend}/d`, color: C.blue },
+          { label: "→ Leads", value: Math.round(leads).toString(), color: C.teal },
+          { label: "→ Quiz", value: Math.round(leads * quizCvr).toString(), color: C.purple },
+          { label: "→ Buyers", value: Math.round(buyers).toString(), color: C.green },
+          { label: "→ Revenue", value: `$${revenue.toFixed(0)}/d`, color: C.gold },
+        ].map((step, i) => (
+          <div key={i} className="flex items-center gap-1 shrink-0">
+            <div className="rounded-lg px-3 py-2 text-center" style={{ background: step.color + "18", border: `1px solid ${step.color}30` }}>
+              <p className="text-xs font-bold" style={{ color: step.color }}>{step.value}</p>
+              <p className="text-xs" style={{ color: C.textMuted }}>{step.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Key metrics */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="rounded-xl p-3 text-center" style={{ background: C.cardInner, border: `1px solid ${roasColor}30` }}>
+          <p className="text-lg font-bold" style={{ color: roasColor }}>{roas.toFixed(2)}×</p>
+          <p className="text-xs" style={{ color: C.textMuted }}>ROAS</p>
+          <p className="text-xs mt-0.5" style={{ color: roas >= 3 ? C.green : C.textMuted }}>{roas >= 3 ? "✓ Profitable" : roas >= 1 ? "Break-even" : "⚠ Loss"}</p>
+        </div>
+        <div className="rounded-xl p-3 text-center" style={{ background: C.cardInner }}>
+          <p className="text-lg font-bold" style={{ color: C.teal }}>${ltv.toFixed(2)}</p>
+          <p className="text-xs" style={{ color: C.textMuted }}>LTV per buyer</p>
+          <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>AOV + upsell</p>
+        </div>
+        <div className="rounded-xl p-3 text-center" style={{ background: C.cardInner }}>
+          <p className="text-lg font-bold" style={{ color: C.purple }}>{Math.round(breakeven)}</p>
+          <p className="text-xs" style={{ color: C.textMuted }}>Buyers to breakeven</p>
+          <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>per day</p>
+        </div>
+        <div className="rounded-xl p-3 text-center" style={{ background: C.cardInner }}>
+          <p className="text-lg font-bold" style={{ color: profitMargin > 0 ? C.green : C.red }}>{profitMargin.toFixed(0)}%</p>
+          <p className="text-xs" style={{ color: C.textMuted }}>Profit margin</p>
+          <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>after ad spend</p>
+        </div>
+      </div>
+
+      {/* Nedvěd tip */}
+      <div className="mt-4 p-3 rounded-xl" style={{ background: C.gold + "10", border: `1px solid ${C.gold}25` }}>
+        <p className="text-xs font-semibold" style={{ color: C.gold }}>💡 Nedvěd Princip #1 — Opisuj od Ameriky</p>
+        <p className="text-xs mt-1" style={{ color: C.textSecondary }}>US sleep market benchmark: CPL $0.80–1.20, ROAS 3–5×, LTV $18–35 (s email sekvencí). Náš cíl: ROAS &gt;3× = škáluj budget 2× každé 3 dny.</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Nedvěd Benchmark Panel ────────────────────────────────────────────────────
+function NedvedBenchmarkPanel() {
+  const benchmarks = [
+    { metric: "CPL (Cost per Lead)", us: "$0.80–1.20", target: "<$1.00", ours: "—", tip: "Optimalizuj ad copy + landing page headline" },
+    { metric: "Quiz Completion Rate", us: "35–45%", target: ">35%", ours: "—", tip: "3 otázky max, progress bar, mobile-first" },
+    { metric: "Email → Purchase CVR", us: "8–15%", target: ">10%", ours: "—", tip: "E1 cheat sheet + E3 social proof + E5 urgency" },
+    { metric: "ROAS (blended)", us: "3–5×", target: ">3×", ours: "—", tip: "Škáluj budget 2× každé 3 dny pokud ROAS >3×" },
+    { metric: "LTV (30-day)", us: "$18–35", target: ">$15", ours: "—", tip: "Upsell sekvence: $4 → $7 → $17 → $8/mo" },
+    { metric: "Upsell Take Rate (OTO1)", us: "30–50%", target: ">35%", ours: "—", tip: "Hormozi: value stack + scarcity + guarantee" },
+    { metric: "Email Open Rate", us: "25–40%", target: ">30%", ours: "—", tip: "Personalizace chronotypu v subject line" },
+    { metric: "Refund Rate", us: "3–8%", target: "<5%", ours: "—", tip: "30-day guarantee + onboarding email sekvence" },
+  ];
+
+  return (
+    <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+      <div className="flex items-center gap-2 mb-1">
+        <Globe className="w-4 h-4" style={{ color: C.blue }} />
+        <h3 className="text-sm font-bold" style={{ color: C.textPrimary }}>Opisuj od Ameriky — US Sleep Market Benchmarky</h3>
+        <span className="text-xs px-2 py-0.5 rounded-full ml-auto" style={{ background: C.blue + "22", color: C.blue }}>Nedvěd Trik #1</span>
+      </div>
+      <p className="text-xs mb-4" style={{ color: C.textMuted }}>"Nejlepší způsob, jak vydělat miliardu, je opisovat od těch, kteří to už udělali." — Honza Nedvěd, Inizio</p>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${C.cardBorder}` }}>
+              <th className="text-left py-2 pr-3 font-semibold" style={{ color: C.textMuted }}>Metrika</th>
+              <th className="text-right py-2 px-3 font-semibold" style={{ color: C.blue }}>US Benchmark</th>
+              <th className="text-right py-2 px-3 font-semibold" style={{ color: C.gold }}>Náš Cíl</th>
+              <th className="text-right py-2 px-3 font-semibold" style={{ color: C.green }}>Aktuálně</th>
+              <th className="text-left py-2 pl-3 font-semibold" style={{ color: C.textMuted }}>Jak dosáhnout</th>
+            </tr>
+          </thead>
+          <tbody>
+            {benchmarks.map((b, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${C.cardBorder}30` }}>
+                <td className="py-2 pr-3 font-medium" style={{ color: C.textPrimary }}>{b.metric}</td>
+                <td className="py-2 px-3 text-right font-semibold" style={{ color: C.blue }}>{b.us}</td>
+                <td className="py-2 px-3 text-right font-semibold" style={{ color: C.gold }}>{b.target}</td>
+                <td className="py-2 px-3 text-right" style={{ color: C.textMuted }}>{b.ours}</td>
+                <td className="py-2 pl-3" style={{ color: C.textSecondary }}>{b.tip}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="rounded-xl p-3" style={{ background: C.cardInner, border: `1px solid ${C.green}25` }}>
+          <p className="text-xs font-semibold mb-1" style={{ color: C.green }}>✅ Diferenciace (Trik #2)</p>
+          <p className="text-xs" style={{ color: C.textSecondary }}>Chronotype quiz = unikátní vstupní bod. US trh to dělá od 2019. My jsme 5 let napřed na CZ/SK trhu.</p>
+        </div>
+        <div className="rounded-xl p-3" style={{ background: C.cardInner, border: `1px solid ${C.gold}25` }}>
+          <p className="text-xs font-semibold mb-1" style={{ color: C.gold }}>🔄 Panáčci se vracejí (Trik #3)</p>
+          <p className="text-xs" style={{ color: C.textSecondary }}>Email sekvence E1–E7 = zákazník se vrací. Membership $8/mo = recurring revenue. Cíl: 30% zákazníků = opakující se.</p>
+        </div>
+        <div className="rounded-xl p-3" style={{ background: C.cardInner, border: `1px solid ${C.purple}25` }}>
+          <p className="text-xs font-semibold mb-1" style={{ color: C.purple }}>📈 Diferenciální rovnice (Trik #4)</p>
+          <p className="text-xs" style={{ color: C.textSecondary }}>Nedvěd 2007: 1 návštěvník = 0.1 Kč. Dnes: 1 návštěvník = 100 Kč náklady. Řešení: zvyšuj LTV, ne traffic.</p>
+        </div>
       </div>
     </div>
   );
