@@ -422,7 +422,17 @@ export default function Home() {
         <div className="section-divider mb-4" />
         <div className="flex items-center justify-center gap-2 mb-2">
           <Moon className="w-4 h-4" style={{ color: "oklch(0.40 0.04 265)" }} />
-          <span className="text-xs" style={{ color: "oklch(0.40 0.04 265)" }}>Deep Sleep Reset</span>
+          <span className="text-xs font-semibold" style={{ color: "oklch(0.40 0.04 265)" }}>Deep Sleep Reset</span>
+          <span className="text-xs" style={{ color: "oklch(0.30 0.04 265)" }}>·</span>
+          <a
+            href="https://www.deepsleep.my"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs hover:underline transition-colors"
+            style={{ color: "oklch(0.55 0.10 65)" }}
+          >
+            DeepSleep.my
+          </a>
         </div>
         <p className="text-xs" style={{ color: "oklch(0.30 0.04 265)" }}>
           © 2026 Deep Sleep Reset. All rights reserved.
