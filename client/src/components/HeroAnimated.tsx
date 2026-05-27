@@ -107,7 +107,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                 className="border-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
                 style={{ borderColor: "oklch(0.82 0.16 65 / 0.5)", color: "oklch(0.82 0.16 65)" }}
               >
-                <span className="text-base">🤖</span> Chat with Luna — Free
+                <span className="text-base">🌙</span> Chat with Luna — Free
               </button>
             </div>
 
