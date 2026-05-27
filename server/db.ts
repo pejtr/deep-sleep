@@ -926,3 +926,122 @@ export async function getRecentOrders(limit: number = 10) {
     return [];
   }
 }
+
+// ── Live Traffic Widget ───────────────────────────────────────────────────────
+export async function getLiveTrafficData() {
+  const db = await getDb();
+  if (!db) return { weekly: [], daily: [], activeNow: 0, todayVisits: 0, todayOrders: 0 };
+
+  const now = Date.now();
+  const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const fiveMinAgo = now - 5 * 60 * 1000;
+
+  // Currency conversion rates
+  const APPROX_RATES_TO_USD: Record<string, number> = {
+    usd: 1, eur: 1.172, gbp: 1.349, czk: 0.0482, cad: 0.732, aud: 0.645,
+    pln: 0.262, huf: 0.00281, ron: 0.236, inr: 0.012, brl: 0.201, mxn: 0.058,
+    chf: 1.112, sek: 0.097, nok: 0.095, dkk: 0.157, sgd: 0.746, nzd: 0.599,
+    zar: 0.054, jpy: 0.0065,
+  };
+  const toUsd = (amount: string | number, currency?: string | null): number => {
+    const amt = parseFloat(String(amount));
+    if (!currency || currency.toLowerCase() === 'usd') return amt;
+    const rate = APPROX_RATES_TO_USD[currency.toLowerCase()] ?? 1;
+    return amt * rate;
+  };
+
+  // Weekly data (last 7 days)
+  const [weekBehaviors, weekOrders] = await Promise.all([
+    db.select().from(behaviorEvents).where(gte(behaviorEvents.createdAt, new Date(sevenDaysAgo))),
+    db.select().from(orders).where(and(gte(orders.createdAt, new Date(sevenDaysAgo)), eq(orders.status, 'completed'))),
+  ]);
+
+  // Build weekly day map
+  const weekMap = new Map<string, { visits: number; orders: number; revenue: number; leads: number }>();
+  // Seed all 7 days
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now - i * 24 * 60 * 60 * 1000);
+    const key = d.toISOString().slice(0, 10);
+    weekMap.set(key, { visits: 0, orders: 0, revenue: 0, leads: 0 });
+  }
+
+  weekBehaviors.forEach(b => {
+    const day = new Date(b.createdAt).toISOString().slice(0, 10);
+    if (weekMap.has(day)) {
+      const d = weekMap.get(day)!;
+      if (b.event === 'page_view') d.visits++;
+    }
+  });
+
+  weekOrders.forEach(o => {
+    const day = new Date(o.createdAt).toISOString().slice(0, 10);
+    if (weekMap.has(day)) {
+      const d = weekMap.get(day)!;
+      d.orders++;
+      d.revenue += toUsd(o.amount, o.currency);
+    }
+  });
+
+  // Get leads per day
+  const weekLeads = await db.select().from(emailLeads).where(gte(emailLeads.createdAt, new Date(sevenDaysAgo)));
+  weekLeads.forEach(l => {
+    const day = new Date(l.createdAt).toISOString().slice(0, 10);
+    if (weekMap.has(day)) {
+      weekMap.get(day)!.leads++;
+    }
+  });
+
+  const weekly = Array.from(weekMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([day, data]) => ({
+      day,
+      label: new Date(day).toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }),
+      ...data,
+    }));
+
+  // Daily hourly breakdown (today)
+  const todayBehaviors = weekBehaviors.filter(b => new Date(b.createdAt) >= todayStart);
+  const todayOrdersData = weekOrders.filter(o => new Date(o.createdAt) >= todayStart);
+
+  const hourMap = new Map<number, { visits: number; orders: number; revenue: number }>();
+  for (let h = 0; h < 24; h++) hourMap.set(h, { visits: 0, orders: 0, revenue: 0 });
+
+  todayBehaviors.forEach(b => {
+    const hour = new Date(b.createdAt).getHours();
+    if (hourMap.has(hour)) {
+      const h = hourMap.get(hour)!;
+      if (b.event === 'page_view') h.visits++;
+    }
+  });
+
+  todayOrdersData.forEach(o => {
+    const hour = new Date(o.createdAt).getHours();
+    if (hourMap.has(hour)) {
+      const h = hourMap.get(hour)!;
+      h.orders++;
+      h.revenue += toUsd(o.amount, o.currency);
+    }
+  });
+
+  const currentHour = new Date().getHours();
+  const daily = Array.from(hourMap.entries())
+    .filter(([h]) => h <= currentHour)
+    .sort((a, b) => a[0] - b[0])
+    .map(([hour, data]) => ({
+      hour,
+      label: `${String(hour).padStart(2, '0')}:00`,
+      ...data,
+    }));
+
+  // Active now (events in last 5 min)
+  const recentBehaviors = await db.select().from(behaviorEvents).where(gte(behaviorEvents.createdAt, new Date(fiveMinAgo)));
+  const uniqueSessions = new Set(recentBehaviors.map(b => b.sessionId).filter(Boolean));
+  const activeNow = uniqueSessions.size;
+
+  const todayVisits = todayBehaviors.filter(b => b.event === 'page_view').length;
+  const todayOrders = todayOrdersData.length;
+
+  return { weekly, daily, activeNow, todayVisits, todayOrders };
+}

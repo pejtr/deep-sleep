@@ -1124,3 +1124,15 @@
 - [ ] Homepage — "Ideální zákazník" sekce (SOK/PŘEKVAPENÍ pattern)
 - [ ] Homepage — newsletter signup s 10% slevovým kódem
 - [ ] Admin dashboard — Leads tab se statistikami funnelu
+
+## Promo Photo Integration
+- [x] Promo photo added to HeroAnimated.tsx (Phase 0 floating badge, desktop only)
+- [x] Promo photo added to SpecialOffer.tsx (floating badge over ASMR video)
+- [x] Promo photo added to FreeGuide.tsx (hero circular avatar with checkmark badge)
+- [x] Promo photo added to NewsletterSection.tsx (replaces Mail icon)
+- [x] Promo photo added to LeadMagnetPopup.tsx (replaces BookOpen icon)
+
+## Live Traffic Widget
+- [x] getLiveTrafficData() function in db.ts (weekly 7-day + hourly today + activeNow)
+- [x] admin.getLiveTraffic tRPC procedure in routers.ts
+- [x] LiveTrafficWidget component in AdminDashboard.tsx (bar chart, 7-day/today toggle, active now badge, auto-refresh 60s)

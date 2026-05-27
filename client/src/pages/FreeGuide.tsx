@@ -112,6 +112,17 @@ export default function FreeGuide() {
         {/* ── HERO ── */}
         <section className="pt-16 pb-12 px-4">
           <div className="max-w-2xl mx-auto text-center">
+            {/* Promo photo brand visual */}
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full overflow-hidden" style={{ border: "3px solid oklch(0.78 0.18 65 / 0.6)", boxShadow: "0 0 32px oklch(0.78 0.18 65 / 0.25)" }}>
+                  <img src="/manus-storage/promo-sleep-model_fc789a56.png" alt="Sleep Guide" className="w-full h-full object-cover object-top" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "oklch(0.65 0.18 145)", border: "2px solid oklch(0.06 0.025 255)" }}>
+                  <span className="text-xs font-bold" style={{ color: "oklch(0.06 0.025 255)" }}>✓</span>
+                </div>
+              </div>
+            </div>
             {/* Shock badge — Nedvěd: PŘEKVAPENÍ */}
             <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6"

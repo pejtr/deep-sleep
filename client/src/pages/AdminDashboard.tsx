@@ -128,7 +128,106 @@ function getDateRange(days: number) {
     endDate: end.toISOString().split("T")[0],
   };
 }
-// ── Overview Tab (Phase 1 — Professional KPIs + Waterfall Funnel) ────────────────
+// ── Live Traffic Widget ────────────────────────────────────────────────────────────────────────────────────
+function LiveTrafficWidget() {
+  const { data: traffic, isLoading } = trpc.admin.getLiveTraffic.useQuery(
+    undefined,
+    { refetchInterval: 60000, refetchOnWindowFocus: true }
+  );
+  const [view, setView] = useState<'weekly' | 'daily'>('weekly');
+
+  const chartData = view === 'weekly' ? (traffic?.weekly ?? []) : (traffic?.daily ?? []);
+  const xKey = view === 'weekly' ? 'label' : 'label';
+
+  return (
+    <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${C.teal}18` }}>
+            <Activity className="w-4 h-4" style={{ color: C.teal }} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold" style={{ color: C.textPrimary }}>Live Traffic</h3>
+            <p className="text-xs" style={{ color: C.textMuted }}>Real-time visitor activity</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          {/* Active now badge */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: `${C.green}18`, border: `1px solid ${C.green}30` }}>
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: C.green }} />
+            <span className="text-xs font-semibold" style={{ color: C.green }}>
+              {isLoading ? '...' : `${traffic?.activeNow ?? 0} active now`}
+            </span>
+          </div>
+          {/* View toggle */}
+          <div className="flex gap-1 p-1 rounded-lg" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+            {(['weekly', 'daily'] as const).map(v => (
+              <button key={v} onClick={() => setView(v)}
+                className="text-xs px-3 py-1 rounded-md capitalize transition-all"
+                style={{ background: view === v ? C.gold : 'transparent', color: view === v ? 'oklch(0.10 0.02 255)' : C.textMuted, fontWeight: view === v ? 700 : 400 }}
+              >{v === 'weekly' ? '7 Days' : 'Today'}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* KPI row */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        {[
+          { label: 'Today Visits', value: isLoading ? '...' : String(traffic?.todayVisits ?? 0), color: C.teal },
+          { label: 'Today Orders', value: isLoading ? '...' : String(traffic?.todayOrders ?? 0), color: C.green },
+          { label: 'Active Now', value: isLoading ? '...' : String(traffic?.activeNow ?? 0), color: C.gold },
+        ].map(item => (
+          <div key={item.label} className="rounded-xl p-3 text-center" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+            <p className="text-xl font-bold" style={{ color: item.color }}>{item.value}</p>
+            <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>{item.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Chart */}
+      {isLoading ? (
+        <div className="h-44 flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full border-2 animate-spin" style={{ borderColor: `${C.teal} transparent transparent transparent` }} />
+        </div>
+      ) : chartData.length > 0 ? (
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+            <defs>
+              <linearGradient id="visitGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.teal} stopOpacity={0.8} />
+                <stop offset="95%" stopColor={C.teal} stopOpacity={0.4} />
+              </linearGradient>
+              <linearGradient id="orderGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={C.green} stopOpacity={0.8} />
+                <stop offset="95%" stopColor={C.green} stopOpacity={0.4} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" />
+            <XAxis dataKey={xKey} tick={{ fill: C.textMuted, fontSize: 9 }} />
+            <YAxis tick={{ fill: C.textMuted, fontSize: 9 }} allowDecimals={false} />
+            <Tooltip
+              contentStyle={{ background: 'oklch(0.11 0.03 265)', border: `1px solid ${C.cardBorder}`, borderRadius: 8, fontSize: 11 }}
+              labelStyle={{ color: C.textPrimary }}
+            />
+            <Legend wrapperStyle={{ fontSize: 10, color: C.textMuted }} />
+            <Bar dataKey="visits" name="Visits" fill="url(#visitGrad)" radius={[3, 3, 0, 0]} />
+            <Bar dataKey="orders" name="Orders" fill="url(#orderGrad)" radius={[3, 3, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-44 gap-2">
+          <Activity className="w-8 h-8" style={{ color: C.textMuted }} />
+          <p className="text-xs" style={{ color: C.textMuted }}>No traffic data yet</p>
+          <p className="text-xs" style={{ color: C.textMuted }}>Widget updates every 60 seconds</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Overview Tab
 type AdminStats = {
   revenue?: number;
   completedOrderCount?: number;
@@ -466,7 +565,10 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
             </div>
           </div>
 
-          {/* ── Secondary Metrics Row ────────────────────────────────────────────────────────────────────────────────────── */}
+          {/* ── Live Traffic Widget ─────────────────────────────────────────────────────────────── */}
+          <LiveTrafficWidget />
+
+          {/* Secondary Metrics Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Traffic Sources */}
             <ChartCard title="Traffic Sources">

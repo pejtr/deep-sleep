@@ -143,13 +143,15 @@ export default function LeadMagnetPopup({ delayMs = 30000, exitIntent = true }: 
         </div>
 
         <div className="px-6 py-6">
-          {/* Icon */}
+          {/* Promo photo + trust visual */}
           <div className="flex justify-center mb-4">
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center"
-              style={{ background: "oklch(0.78 0.18 65 / 0.12)", border: "1px solid oklch(0.78 0.18 65 / 0.35)" }}
-            >
-              <BookOpen className="w-8 h-8" style={{ color: "oklch(0.82 0.16 65)" }} />
+            <div className="relative">
+              <div className="w-20 h-20 rounded-2xl overflow-hidden" style={{ border: "2px solid oklch(0.78 0.18 65 / 0.6)", boxShadow: "0 0 24px oklch(0.78 0.18 65 / 0.20)" }}>
+                <img src="/manus-storage/promo-sleep-model_fc789a56.png" alt="Sleep Guide" className="w-full h-full object-cover object-top" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "oklch(0.65 0.18 145)", border: "2px solid oklch(0.07 0.025 260)" }}>
+                <BookOpen className="w-3.5 h-3.5" style={{ color: "oklch(0.06 0.025 255)" }} />
+              </div>
             </div>
           </div>
 

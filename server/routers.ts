@@ -39,6 +39,7 @@ import {
   getAbTrends,
   getAbExportData,
   getAbRecommendations,
+  getLiveTrafficData,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -958,6 +959,10 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
           return await getDailyMetrics(startDate, now);
         }
       }),
+
+    getLiveTraffic: protectedProcedure.query(async () => {
+      return getLiveTrafficData();
+    }),
 
     getBuyerEmails: protectedProcedure.query(async () => {
       const buyers = await getAllBuyerEmails();

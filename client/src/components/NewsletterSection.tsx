@@ -78,11 +78,8 @@ export default function NewsletterSection() {
 
         <div className="p-6 md:p-8">
           <div className="flex items-start gap-4 mb-5">
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "oklch(0.78 0.18 65 / 0.12)", border: "1px solid oklch(0.78 0.18 65 / 0.30)" }}
-            >
-              <Mail className="w-6 h-6" style={{ color: "oklch(0.82 0.16 65)" }} />
+            <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0" style={{ border: "2px solid oklch(0.78 0.18 65 / 0.50)", boxShadow: "0 4px 16px oklch(0.78 0.18 65 / 0.15)" }}>
+              <img src="/manus-storage/promo-sleep-model_fc789a56.png" alt="" className="w-full h-full object-cover object-top" />
             </div>
             <div>
               {/* Bulvární headline — ZÁVIST pattern */}
