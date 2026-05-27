@@ -87,37 +87,27 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-4">
+              {/* Primary CTA */}
               <button
                 onClick={() => {
                   navigate?.("/quiz");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="border-2 rounded-xl px-6 py-3 text-base font-bold transition-all cursor-pointer"
-                style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
+                className="cta-gold cta-shimmer rounded-xl px-7 py-3.5 text-base font-bold cursor-pointer whitespace-nowrap"
               >
-                FIND MY CHRONOTYPE →
+                START FREE SLEEP QUIZ →
               </button>
+              {/* Secondary CTA */}
               <button
                 onClick={() => {
-                  navigate?.("/quiz");
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 font-bold cursor-pointer"
-              >
-                START MY SLEEP QUIZ — FREE
-              </button>
-              <button
-                onClick={() => {
-                  // Fire custom event so SleepChatBot (in App.tsx) can open
                   window.dispatchEvent(new CustomEvent('open-sleep-chat'));
                   if (onChatOpen) onChatOpen();
                 }}
-                className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all cursor-pointer"
-                style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
+                className="border-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
+                style={{ borderColor: "oklch(0.82 0.16 65 / 0.5)", color: "oklch(0.82 0.16 65)" }}
               >
-                <span style={{fontSize:'0.65em',display:'block',fontWeight:500,opacity:0.8,letterSpacing:'0.05em',marginBottom:'2px'}}>🤖 AI-POWERED · FREE CONSULTING</span>
-                CHAT WITH SLEEP EXPERT
+                <span className="text-base">🤖</span> Chat with Luna — Free
               </button>
             </div>
 
@@ -140,37 +130,77 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
 
           {/* Right: Animated Hero */}
           <div className="relative flex justify-center items-center h-96 lg:h-full min-h-96">
-            {/* Phase 0: ASMR Sleep Guide Video */}
+            {/* Phase 0: Sleep Protocol Card */}
             {animationPhase === 0 && (
               <div className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity duration-1000">
                 <div className="relative w-full max-w-sm">
                   {/* Glow ring */}
-                  <div className="absolute -inset-1 rounded-3xl" style={{ background: "radial-gradient(ellipse, oklch(0.78 0.18 65 / 0.20) 0%, transparent 70%)", filter: "blur(12px)" }} />
-                  <video
-                    src="/manus-storage/sleep-guide-white_7377db27.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="relative w-full rounded-2xl object-cover"
-                    style={{ maxHeight: "380px", border: "1px solid oklch(0.78 0.18 65 / 0.35)", boxShadow: "0 20px 60px oklch(0.06 0.025 255 / 0.8)" }}
-                  />
-                  {/* Luna badge overlay */}
-                  <div
-                    className="absolute bottom-3 left-3 right-3 rounded-xl px-3 py-2 flex items-center gap-2.5"
-                    style={{ background: "oklch(0.06 0.025 255 / 0.90)", backdropFilter: "blur(8px)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}
-                  >
-                    <img
-                      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-ZRuJw2SPLknXZS2RAKU4vn.webp"
-                      alt="Luna"
-                      className="w-7 h-7 rounded-full object-cover flex-shrink-0"
-                      style={{ border: "1.5px solid oklch(0.78 0.18 65 / 0.5)" }}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-xs font-semibold leading-tight" style={{ color: "oklch(0.82 0.16 65)" }}>Luna — Your AI Sleep Guide</span>
-                      <span className="text-xs leading-tight" style={{ color: "oklch(0.55 0.04 265)" }}>AI Coach · Online now</span>
+                  <div className="absolute -inset-4 rounded-3xl" style={{ background: "radial-gradient(ellipse, oklch(0.78 0.18 65 / 0.18) 0%, transparent 70%)", filter: "blur(20px)" }} />
+                  {/* Main card */}
+                  <div className="relative rounded-2xl p-6 space-y-5" style={{ background: "oklch(0.10 0.03 255 / 0.95)", border: "1px solid oklch(0.78 0.18 65 / 0.30)", boxShadow: "0 20px 60px oklch(0.06 0.025 255 / 0.8)" }}>
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: "oklch(0.78 0.18 65)" }}>7-Night Protocol</p>
+                        <p className="text-lg font-black mt-0.5" style={{ color: "oklch(0.95 0.01 265)" }}>Sleep Transformation</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "oklch(0.78 0.18 65 / 0.15)", border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>
+                        <span className="text-2xl">🌙</span>
+                      </div>
                     </div>
-                    <div className="w-2 h-2 rounded-full flex-shrink-0 ml-auto animate-pulse" style={{ background: "oklch(0.65 0.18 145)" }} />
+                    {/* Progress nights */}
+                    <div className="space-y-2">
+                      {[
+                        { night: "Night 1", label: "Sleep Pressure Reset", pct: 100, done: true },
+                        { night: "Night 2", label: "Circadian Anchor", pct: 100, done: true },
+                        { night: "Night 3", label: "Deep Sleep Trigger", pct: 85, done: false },
+                        { night: "Night 4–7", label: "Full Protocol", pct: 0, done: false },
+                      ].map((n, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
+                            style={{ background: n.done ? "oklch(0.55 0.18 145)" : "oklch(0.20 0.04 265)", color: n.done ? "white" : "oklch(0.55 0.04 265)" }}>
+                            {n.done ? "✓" : i + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="text-xs font-semibold" style={{ color: n.done ? "oklch(0.82 0.04 265)" : "oklch(0.55 0.04 265)" }}>{n.night} — {n.label}</span>
+                              {n.pct > 0 && <span className="text-xs" style={{ color: "oklch(0.78 0.18 65)" }}>{n.pct}%</span>}
+                            </div>
+                            <div className="h-1.5 rounded-full" style={{ background: "oklch(0.18 0.04 265)" }}>
+                              <div className="h-full rounded-full transition-all duration-1000"
+                                style={{ width: `${n.pct}%`, background: n.done ? "oklch(0.55 0.18 145)" : "oklch(0.78 0.18 65)" }} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Stats row */}
+                    <div className="grid grid-cols-3 gap-3 pt-2" style={{ borderTop: "1px solid oklch(0.20 0.04 265)" }}>
+                      {[
+                        { val: "94%", label: "Success Rate" },
+                        { val: "7 Nights", label: "Protocol" },
+                        { val: "$4", label: "One-time" },
+                      ].map((s, i) => (
+                        <div key={i} className="text-center">
+                          <p className="text-base font-black" style={{ color: "oklch(0.82 0.16 65)" }}>{s.val}</p>
+                          <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>{s.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Luna badge */}
+                    <div className="flex items-center gap-2.5 rounded-xl px-3 py-2" style={{ background: "oklch(0.06 0.025 255 / 0.80)", border: "1px solid oklch(0.78 0.18 65 / 0.20)" }}>
+                      <img
+                        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663586946788/Z7uhfhzSjok5tWXFuno9PK/luna-avatar-ZRuJw2SPLknXZS2RAKU4vn.webp"
+                        alt="Luna"
+                        className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                        style={{ border: "1.5px solid oklch(0.78 0.18 65 / 0.5)" }}
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-semibold leading-tight" style={{ color: "oklch(0.82 0.16 65)" }}>Luna — Your AI Sleep Guide</span>
+                        <span className="text-xs leading-tight" style={{ color: "oklch(0.55 0.04 265)" }}>AI Coach · Online now</span>
+                      </div>
+                      <div className="w-2 h-2 rounded-full flex-shrink-0 ml-auto animate-pulse" style={{ background: "oklch(0.65 0.18 145)" }} />
+                    </div>
                   </div>
                 </div>
               </div>
