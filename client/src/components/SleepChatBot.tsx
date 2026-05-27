@@ -410,10 +410,13 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
       {(scrolledPast50 || isAdminMode || isAffiliateMode) && (
         <button
           onClick={() => open ? setOpen(false) : openChat("manual")}
-          className="fixed bottom-36 md:bottom-24 right-5 z-40 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-36 md:bottom-24 right-5 z-40 flex items-center justify-center rounded-full shadow-2xl transition-all hover:scale-110 active:scale-95"
           style={{
+            width: "52px",
+            height: "52px",
             background: `linear-gradient(135deg, ${displayColor}, oklch(0.45 0.16 55))`,
             boxShadow: `0 4px 24px color-mix(in oklch, ${displayColor} 50%, transparent)`,
+            animation: open ? undefined : "chat-pulse 2.8s ease-in-out infinite",
           }}
           aria-label="Ask Luna"
         >
@@ -426,8 +429,8 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
               ) : (
                 <Moon className="w-5 h-5 text-white" />
               )}
-              <span className="text-white text-sm font-semibold">{buttonLabel}</span>
-              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-white animate-pulse" />
+              {/* Online dot */}
+              <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white" />
             </>
           )}
         </button>

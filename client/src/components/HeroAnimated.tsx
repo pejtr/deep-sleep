@@ -114,7 +114,8 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
                 className="border-2 rounded-2xl px-10 py-5 text-lg font-bold transition-all cursor-pointer"
                 style={{ borderColor: "oklch(0.82 0.16 65)", color: "oklch(0.82 0.16 65)" }}
               >
-                GET FREE SLEEP TIPS
+                <span style={{fontSize:'0.65em',display:'block',fontWeight:500,opacity:0.8,letterSpacing:'0.05em',marginBottom:'2px'}}>🤖 AI-POWERED · FREE CONSULTING</span>
+                CHAT WITH SLEEP EXPERT
               </button>
             </div>
 

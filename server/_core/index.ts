@@ -15,6 +15,8 @@ import { processPendingEmails } from "../emailScheduler";
 import { registerProtocolPdfRoute } from "../protocolPdf";
 import { registerRedditOAuthRoutes } from "../redditOAuth";
 import { externalApiRouter } from "../externalApi";
+import { registerTelegramWebhook, initTelegramWebhook } from "../telegramWebhook";
+import { scheduleTelegramReports } from "../telegramLuna";
 import { createContext } from "./context";
 import { getBlogPosts, createBlogPost } from "../db";
 import { invokeLLM } from "./llm";
@@ -110,6 +112,8 @@ async function startServer() {
   registerStripeWebhook(app);
   registerProtocolPdfRoute(app);
   registerRedditOAuthRoutes(app);
+  // Telegram Luna webhook — receives commands from @lunadeepsleepbot
+  registerTelegramWebhook(app);
   // External REST API for LeadOS CRM integration
   app.use("/api/external", externalApiRouter);
 
@@ -288,6 +292,11 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
       processPendingEmails().catch(console.error);
     }, 60 * 60 * 1000); // every hour
     console.log("[Email Scheduler] Started — processing every hour");
+    // Start Telegram Luna evening report scheduler (20:00 CET)
+    scheduleTelegramReports();
+    // Register Telegram webhook URL with Telegram API
+    const serverPublicUrl = process.env.SERVER_PUBLIC_URL || `https://fixinsomnia.quest`;
+    initTelegramWebhook(serverPublicUrl).catch(console.error);
   });
 }
 

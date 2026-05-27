@@ -1007,7 +1007,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "channels" | "audience" | "insights">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "channels" | "campaigns" | "audience" | "insights">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -1054,6 +1054,7 @@ export default function AdminDashboard() {
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
     { id: "channels", label: "Ad Channels", icon: TrendingUp },
+    { id: "campaigns", label: "Campaigns", icon: Rocket },
     { id: "audience", label: "Audience & Email", icon: Users },
     { id: "insights", label: "Insights", icon: Sparkles },
   ] as const;
@@ -1147,6 +1148,11 @@ export default function AdminDashboard() {
             <RedditAdsTab />
             <MetaAdsTab />
           </div>
+        )}
+
+        {/* ── Campaigns Tab ─────────────────────────────────────────────────── */}
+        {activeTab === "campaigns" && (
+          <CampaignsTab />
         )}
 
         {/* ── Audience & Email Tab ─────────────────────────────────────────────── */}
@@ -2570,6 +2576,103 @@ function AiInsightsTab() {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+// ── Campaigns Tab ────────────────────────────────────────────────────────────
+function CampaignsTab() {
+  const { data: history, isLoading: histLoading } = trpc.admin.getCampaignHistory.useQuery({ limit: 20 });
+  const { data: stats } = trpc.admin.getCampaignStats.useQuery();
+  const launchMutation = trpc.admin.launchCampaign.useMutation({
+    onSuccess: () => toast.success("Campaign launched!"),
+    onError: (e) => toast.error(e.message),
+  });
+
+  const CAMPAIGN_TYPES = [
+    { type: "FLASH_SALE" as const, label: "Flash Sale", desc: "24h urgency push — 30% off", icon: "⚡" },
+    { type: "REACTIVATION" as const, label: "Reactivation", desc: "Win back inactive leads", icon: "🔄" },
+    { type: "VIP_BUNDLE" as const, label: "VIP Bundle", desc: "Premium upsell sequence", icon: "👑" },
+    { type: "UPSELL_BLAST" as const, label: "Upsell Blast", desc: "Post-purchase upgrade push", icon: "🚀" },
+  ];
+
+  return (
+    <div className="space-y-5">
+      {/* Stats row */}
+      {stats && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: "Total Sent", value: stats.totalSent ?? 0, color: C.blue },
+            { label: "Opened", value: (stats as any).totalOpened ?? 0, color: C.teal },
+            { label: "Converted", value: (stats as any).totalConverted ?? 0, color: C.green },
+            { label: "Revenue", value: `$${((stats.totalRevenue ?? 0) / 100).toFixed(0)}`, color: C.gold },
+          ].map((s) => (
+            <div key={s.label} className="rounded-2xl p-4 flex flex-col gap-1" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <p className="text-lg font-bold" style={{ color: s.color }}>{s.value}</p>
+              <p className="text-xs" style={{ color: C.textSecondary }}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 1-click launch */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Rocket className="w-4 h-4" style={{ color: C.gold }} />
+          <h3 className="text-sm font-semibold" style={{ color: C.textPrimary }}>1-Click Campaign Launch</h3>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {CAMPAIGN_TYPES.map((ct) => (
+            <button
+              key={ct.type}
+              onClick={() => launchMutation.mutate({ type: ct.type })}
+              disabled={launchMutation.isPending}
+              className="rounded-xl p-4 flex flex-col gap-2 text-left transition-all hover:opacity-80 disabled:opacity-50"
+              style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}
+            >
+              <span className="text-2xl">{ct.icon}</span>
+              <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{ct.label}</p>
+              <p className="text-xs" style={{ color: C.textMuted }}>{ct.desc}</p>
+              {launchMutation.isPending && (
+                <Loader2 className="w-3 h-3 animate-spin" style={{ color: C.gold }} />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Campaign history */}
+      <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Campaign History</h3>
+        {histLoading ? (
+          <div className="space-y-2">{[1,2,3].map(i => <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: C.cardInner }} />)}</div>
+        ) : !history || history.length === 0 ? (
+          <p className="text-xs py-4 text-center" style={{ color: C.textMuted }}>No campaigns launched yet. Use the buttons above to start.</p>
+        ) : (
+          <div className="space-y-2">
+            {history.map((c: { id: string; type: string; status: string; sentCount?: number | null; openedCount?: number | null; convertedCount?: number | null; revenueGenerated?: number | null; createdAt: Date }) => (
+              <div key={c.id} className="flex items-center justify-between p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                <div>
+                  <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{c.type.replace(/_/g, ' ')}</p>
+                  <p className="text-xs" style={{ color: C.textMuted }}>
+                    Sent: {c.sentCount ?? 0} · Opened: {c.openedCount ?? 0} · Converted: {c.convertedCount ?? 0}
+                    {c.revenueGenerated ? ` · $${(c.revenueGenerated / 100).toFixed(0)}` : ''}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-0.5 rounded-full"
+                    style={{ background: c.status === 'completed' ? `${C.green}20` : `${C.gold}20`, color: c.status === 'completed' ? C.green : C.gold }}>
+                    {c.status}
+                  </span>
+                  <span className="text-xs" style={{ color: C.textMuted }}>
+                    {new Date(c.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

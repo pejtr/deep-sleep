@@ -419,3 +419,10 @@
 .checkout-reveal-d4  { animation-delay: 0.58s; }
 .checkout-reveal-d5  { animation-delay: 0.72s; }
 .checkout-reveal-d6  { animation-delay: 0.88s; }
+
+/* ── Chat button gentle pulse ──────────────────────────────────────── */
+@keyframes chat-pulse {
+  0%   { box-shadow: 0 4px 24px color-mix(in oklch, oklch(0.78 0.18 65) 40%, transparent); transform: scale(1); }
+  50%  { box-shadow: 0 4px 36px color-mix(in oklch, oklch(0.78 0.18 65) 65%, transparent), 0 0 0 8px color-mix(in oklch, oklch(0.78 0.18 65) 12%, transparent); transform: scale(1.04); }
+  100% { box-shadow: 0 4px 24px color-mix(in oklch, oklch(0.78 0.18 65) 40%, transparent); transform: scale(1); }
+}

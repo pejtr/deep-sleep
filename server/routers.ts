@@ -967,6 +967,32 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
       };
     }),
 
+    // ── Campaign Engine procedures ────────────────────────────────────────────
+    getCampaignHistory: protectedProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(100).default(20) }).optional())
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const { getCampaignHistory } = await import('./campaignEngine');
+        return getCampaignHistory(input?.limit ?? 20);
+      }),
+
+    getCampaignStats: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const { getCampaignStats } = await import('./campaignEngine');
+        return getCampaignStats();
+      }),
+
+    launchCampaign: protectedProcedure
+      .input(z.object({
+        type: z.enum(['FLASH_SALE', 'REACTIVATION', 'VIP_BUNDLE', 'UPSELL_BLAST']),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const { launchCampaign } = await import('./campaignEngine');
+        return launchCampaign(input.type, 'admin_dashboard');
+      }),
+
     sendBroadcast: protectedProcedure
       .input(z.object({
         subject: z.string().min(1).max(200),

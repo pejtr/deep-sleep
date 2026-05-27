@@ -22,11 +22,17 @@ export function useBehaviorTracking() {
     maxScrollDepth: 0,
     timeOnPageStart: Date.now(),
     hasTrackedExit: false,
+    hasTrackedPageView: false,
     deviceType: getDeviceType(),
     utmParams: extractUTMParams(),
   });
 
+  // ✅ Stabilize mutation reference via useRef — prevents infinite re-render loop
   const trackEventMutation = trpc.behavior.trackEvent.useMutation();
+  const mutateRef = useRef(trackEventMutation.mutate);
+  useEffect(() => {
+    mutateRef.current = trackEventMutation.mutate;
+  });
 
   // Track scroll depth
   const handleScroll = useCallback(() => {
@@ -40,7 +46,7 @@ export function useBehaviorTracking() {
       // Track at 25%, 50%, 75%, 100%
       const milestones = [25, 50, 75, 100];
       if (milestones.includes(Math.round(scrollPercent))) {
-        trackEventMutation.mutate({
+        mutateRef.current({
           eventType: 'scroll',
           scrollDepth: Math.round(scrollPercent),
           deviceType: trackingRef.current.deviceType,
@@ -52,7 +58,7 @@ export function useBehaviorTracking() {
         });
       }
     }
-  }, [trackEventMutation]);
+  }, []); // ✅ No deps — uses stable mutateRef
 
   // Track exit intent
   const handleMouseLeave = useCallback((e: MouseEvent) => {
@@ -60,7 +66,7 @@ export function useBehaviorTracking() {
       trackingRef.current.hasTrackedExit = true;
       const timeOnPage = Math.round((Date.now() - trackingRef.current.timeOnPageStart) / 1000);
 
-      trackEventMutation.mutate({
+      mutateRef.current({
         eventType: 'exitIntent',
         timeOnPage,
         deviceType: trackingRef.current.deviceType,
@@ -71,14 +77,14 @@ export function useBehaviorTracking() {
         referrer: document.referrer,
       });
     }
-  }, [trackEventMutation]);
+  }, []); // ✅ No deps — uses stable mutateRef
 
   // Track time on page (every 30 seconds)
   useEffect(() => {
     const interval = setInterval(() => {
       const timeOnPage = Math.round((Date.now() - trackingRef.current.timeOnPageStart) / 1000);
 
-      trackEventMutation.mutate({
+      mutateRef.current({
         eventType: 'timeOnPage',
         timeOnPage,
         scrollDepth: Math.round(trackingRef.current.maxScrollDepth),
@@ -89,32 +95,35 @@ export function useBehaviorTracking() {
         pageUrl: window.location.href,
         referrer: document.referrer,
       });
-    }, 30000); // Track every 30 seconds
+    }, 30000);
 
     return () => clearInterval(interval);
-  }, [trackEventMutation]);
+  }, []); // ✅ Empty deps — runs once on mount
 
-  // Setup event listeners
+  // Setup event listeners + track initial page view (runs once)
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
 
-    // Track initial page view
-    trackEventMutation.mutate({
-      eventType: 'pageView',
-      deviceType: trackingRef.current.deviceType,
-      utmSource: trackingRef.current.utmParams.source,
-      utmMedium: trackingRef.current.utmParams.medium,
-      utmCampaign: trackingRef.current.utmParams.campaign,
-      pageUrl: window.location.href,
-      referrer: document.referrer,
-    });
+    // ✅ Guard: track pageView only once per mount
+    if (!trackingRef.current.hasTrackedPageView) {
+      trackingRef.current.hasTrackedPageView = true;
+      mutateRef.current({
+        eventType: 'pageView',
+        deviceType: trackingRef.current.deviceType,
+        utmSource: trackingRef.current.utmParams.source,
+        utmMedium: trackingRef.current.utmParams.medium,
+        utmCampaign: trackingRef.current.utmParams.campaign,
+        pageUrl: window.location.href,
+        referrer: document.referrer,
+      });
+    }
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [handleScroll, handleMouseLeave, trackEventMutation]);
+  }, [handleScroll, handleMouseLeave]); // ✅ handleScroll/Leave are now stable (no deps)
 
   return {
     maxScrollDepth: trackingRef.current.maxScrollDepth,
@@ -151,7 +160,6 @@ export function extractUTMParams() {
 export function trackClick(elementName: string) {
   const trackingRef = { utmParams: extractUTMParams(), deviceType: getDeviceType() };
 
-  // This would be called via trpc.behavior.trackEvent mutation
   return {
     eventType: 'click',
     elementName,

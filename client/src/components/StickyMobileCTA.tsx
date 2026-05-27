@@ -37,37 +37,59 @@ export default function StickyMobileCTA({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
-      {/* Countdown strip */}
-      <CountdownTimer variant="banner" label="Offer expires:" />
+    <>
+      {/* ── Sticky TOP countdown bar — always visible, above everything ── */}
+      <div
+        className="fixed top-0 left-0 right-0 z-50 md:hidden"
+        style={{
+          background: "oklch(0.07 0.025 255 / 0.97)",
+          borderBottom: "1px solid oklch(0.78 0.18 65 / 0.25)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <CountdownTimer variant="banner" label="Offer expires:" />
+      </div>
 
-      {/* CTA button */}
-      <div className="px-4 pb-4 pt-2"
-        style={{ background: "oklch(0.07 0.025 255)", borderTop: "1px solid oklch(0.78 0.18 65 / 0.1)" }}>
-        <div className="flex gap-2">
-          <button
-            onClick={handleClick}
-            className="flex-1 cta-gold cta-shimmer rounded-xl py-4 flex items-center justify-center gap-2 text-base"
-          >
-            <Lock className="w-4 h-4" />
-            <span>{label}</span>
-            <span className="font-black">— Only {price}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => navigate('/quiz')}
-            className="px-4 py-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
-            title="Start Quiz"
-          >
-            
-          </button>
-        </div>
-        <div className="flex items-center justify-center gap-3 mt-2">
-          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}><Shield className="w-3 h-3" /> Secure</span>
-          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}><Zap className="w-3 h-3" /> Instant access</span>
-          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}><CreditCard className="w-3 h-3" /> All cards</span>
+      {/* ── Sticky BOTTOM CTA ─────────────────────────────────────────── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
+        <div
+          className="px-4 pb-4 pt-2"
+          style={{
+            background: "oklch(0.07 0.025 255)",
+            borderTop: "1px solid oklch(0.78 0.18 65 / 0.1)",
+          }}
+        >
+          <div className="flex gap-2">
+            <button
+              onClick={handleClick}
+              className="flex-1 cta-gold cta-shimmer rounded-xl py-4 flex items-center justify-center gap-2 text-base"
+            >
+              <Lock className="w-4 h-4" />
+              <span>{label}</span>
+              <span className="font-black">— Only {price}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => navigate("/quiz")}
+              className="px-4 py-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
+              title="Start Quiz"
+            >
+              Quiz
+            </button>
+          </div>
+          <div className="flex items-center justify-center gap-3 mt-2">
+            <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}>
+              <Shield className="w-3 h-3" /> Secure
+            </span>
+            <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}>
+              <Zap className="w-3 h-3" /> Instant access
+            </span>
+            <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.04 265)" }}>
+              <CreditCard className="w-3 h-3" /> All cards
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

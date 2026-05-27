@@ -100,7 +100,7 @@ export default function LiveSalesNotification({ enabled = true }: Props) {
 
   return (
     <div
-      className={`fixed bottom-[68px] left-4 z-50 max-w-[300px] ${
+      className={`fixed left-4 z-45 max-w-[calc(100vw-80px)] md:max-w-[300px] bottom-[148px] md:bottom-6 md:left-6 ${
         exiting ? "animate-notification-out" : "animate-notification-in"
       }`}
     >
