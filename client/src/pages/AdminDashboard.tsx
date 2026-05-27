@@ -1363,7 +1363,7 @@ function NedvedRoiPanel() {
   const emailCvr = 0.12; // 12% email → purchase
   const avgOrderValue = 4; // $4 tripwire
   const upsellRate = 0.45; // 45% take upsell1
-  const upsell1Value = 7; // $7 upsell
+  const upsell1Value = 4; // $4 main product
   const ltv = avgOrderValue + upsellRate * upsell1Value; // LTV per buyer
   const buyers = leads * quizCvr * emailCvr;
   const revenue = buyers * ltv;

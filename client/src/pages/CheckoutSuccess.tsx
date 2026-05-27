@@ -49,8 +49,8 @@ export default function CheckoutSuccess() {
       captureLead.mutate({ email: em, sessionId: getSessionId(), source: "stripe_success" });
     }
     // Fire purchase conversion on all platforms
-    const priceMap: Record<string, number> = { entry: 1, main: 7, discount: 7, bump: 11, oto1: 37, oto2: 19, subscription: 8 };
-    const purchaseValue = priceMap[pid] || 7;
+    const priceMap: Record<string, number> = { entry: 1, main: 4, discount: 4, bump: 11, oto1: 37, oto2: 19, subscription: 8 };
+    const purchaseValue = priceMap[pid] || 4;
     const utmData = getUTMData();
     trackPurchase({
       value: purchaseValue,

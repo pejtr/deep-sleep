@@ -90,7 +90,7 @@ export default function Order() {
   useEffect(() => {
     captureUTM();
     track("page_view", { page: "order", value: { chronotype } });
-    trackViewContent({ productId: selectedTier === "discount" ? "discount" : "main", productName: selectedTier === "discount" ? "1-Night Optimizer" : "Deep Sleep Reset Protocol", value: selectedTier === "discount" ? 1 : 7 });
+    trackViewContent({ productId: selectedTier === "discount" ? "discount" : "main", productName: selectedTier === "discount" ? "1-Night Optimizer" : "Deep Sleep Reset Protocol", value: selectedTier === "discount" ? 1 : 4 });
   }, [selectedTier]);
 
   const r = (delay: number) => pageReady ? `checkout-reveal checkout-reveal-d${delay}` : "opacity-0";
@@ -314,8 +314,8 @@ export default function Order() {
 
             <div className="flex items-center gap-2 mb-4">
               <span className="text-sm line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(97)}</span>
-              <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(7)}</span>
-              <div className="badge-popular">89% OFF</div>
+              <span className="font-black text-4xl" style={{ color: "oklch(0.82 0.16 65)" }}>{formatPrice(4)}</span>
+              <div className="badge-popular">96% OFF</div>
             </div>
 
             <p className="text-xs mb-4" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
@@ -409,7 +409,7 @@ export default function Order() {
               <span className="text-sm font-semibold" style={{ color: "oklch(0.70 0.04 265)" }}>Total value:</span>
               <div className="flex items-center gap-2">
                 <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$222</span>
-                <span className="text-xs font-black px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>TODAY ONLY: $7</span>
+                <span className="text-xs font-black px-2 py-0.5 rounded-full" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>TODAY ONLY: $4</span>
               </div>
             </div>
           )}
@@ -420,11 +420,11 @@ export default function Order() {
               <span className="text-base line-through" style={{ color: "oklch(0.40 0.04 265)" }}>{formatPrice(97)}</span>
             )}
             <span className="font-black text-5xl" style={{ color: "oklch(0.82 0.16 65)" }}>
-              {formatPrice(selectedTier === "discount" ? 1 : 7)}
+              {formatPrice(selectedTier === "discount" ? 1 : 4)}
             </span>
             {selectedTier === "main" && (
               <div>
-                <div className="badge-popular">89% OFF</div>
+                <div className="badge-popular">96% OFF</div>
                 <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.04 265)" }}>One-time payment</p>
               </div>
             )}
@@ -536,7 +536,7 @@ export default function Order() {
             <span>
               {selectedTier === "discount" 
                 ? `Get 1-Night Optimizer — ${formatPrice(1)}`
-                : (bumpSelected ? `Get Protocol + Audio Pack — ${formatPrice(7)} + ${formatPrice(11)}` : `Get My ${chronotype} Protocol — ${formatPrice(7)}`)
+                : (bumpSelected ? `Get Protocol + Audio Pack — ${formatPrice(4)} + ${formatPrice(11)}` : `Get My ${chronotype} Protocol — ${formatPrice(4)}`)
               }
             </span>
             <ArrowRight className="w-5 h-5" />

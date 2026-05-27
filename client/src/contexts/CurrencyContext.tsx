@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
+import { useI18n } from "@/contexts/I18nContext";
 
 // ── Supported currencies ──────────────────────────────────────────────────────
 export const SUPPORTED_CURRENCIES = [
@@ -34,8 +35,11 @@ interface CurrencyInfo {
   flag: string;
 }
 
-// Low-tier countries get reduced pricing
+// Low-tier countries get reduced pricing (CZK removed — default to USD for all EU/CZ traffic)
 const LOW_TIER_CURRENCIES: CurrencyCode[] = ["INR", "BRL", "MXN", "ZAR", "PLN", "HUF", "RON"];
+
+// Currencies that should NOT be auto-detected (always show USD instead)
+const SKIP_AUTO_DETECT: CurrencyCode[] = ["CZK", "HUF", "RON", "PLN", "SEK", "NOK", "DKK"];
 
 // Geo-pricing: maps standard USD price to low-tier price
 const GEO_PRICE_MAP: Record<number, number> = {
@@ -91,21 +95,41 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     { staleTime: 1000 * 60 * 30 } // cache 30 min
   );
 
-  // On first load: use saved preference or server-detected currency
+  const { lang } = useI18n();
+
+  // Language-driven currency: cs → CZK, everything else → USD (or major currency by IP)
   useEffect(() => {
     if (!hasLoaded && ratesData) {
       const saved = localStorage.getItem(STORAGE_KEY) as CurrencyCode | null;
       if (saved && SUPPORTED_CURRENCIES.find(c => c.code === saved)) {
         setSelectedCode(saved);
+      } else if (lang === "cs") {
+        // Czech language selected → use CZK
+        setSelectedCode("CZK");
       } else if (ratesData.detectedCurrency) {
         const detected = ratesData.detectedCurrency as CurrencyCode;
-        if (SUPPORTED_CURRENCIES.find(c => c.code === detected)) {
+        // Skip non-major currencies in auto-detect — always show USD for CZK/PLN/HUF etc.
+        if (SUPPORTED_CURRENCIES.find(c => c.code === detected) && !SKIP_AUTO_DETECT.includes(detected as CurrencyCode)) {
           setSelectedCode(detected);
         }
+        // else: keep USD default
       }
       setHasLoaded(true);
     }
-  }, [ratesData, hasLoaded]);
+  }, [ratesData, hasLoaded, lang]);
+
+  // When language changes after initial load — switch currency accordingly
+  useEffect(() => {
+    if (!hasLoaded) return;
+    const saved = localStorage.getItem(STORAGE_KEY) as CurrencyCode | null;
+    if (saved) return; // user manually set currency — don't override
+    if (lang === "cs") {
+      setSelectedCode("CZK");
+    } else if (selectedCode === "CZK") {
+      // Switched away from Czech → reset to USD
+      setSelectedCode("USD");
+    }
+  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setCurrency = useCallback((code: CurrencyCode) => {
     setSelectedCode(code);
