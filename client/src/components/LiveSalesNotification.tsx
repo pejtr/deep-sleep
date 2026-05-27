@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 
 interface Notification {
@@ -8,7 +8,6 @@ interface Notification {
   timeAgo: string;
 }
 
-// Realistic fallback notifications — global locations
 const NOTIFICATIONS: Notification[] = [
   { name: "Sarah M.", location: "New York, US", price: "$4", timeAgo: "just now" },
   { name: "James K.", location: "London, UK", price: "$4", timeAgo: "2 min ago" },
@@ -27,6 +26,9 @@ const NOTIFICATIONS: Notification[] = [
   { name: "Mia C.", location: "Singapore, SG", price: "$4", timeAgo: "just now" },
 ];
 
+// How many px to swipe before dismissing
+const SWIPE_THRESHOLD = 80;
+
 interface Props {
   enabled?: boolean;
 }
@@ -38,7 +40,13 @@ export default function LiveSalesNotification({ enabled = true }: Props) {
   const [index, setIndex] = useState(0);
   const [orders, setOrders] = useState<any[]>([]);
 
-  // Fetch recent orders from DB every 30 seconds
+  // Swipe state
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const [swipeX, setSwipeX] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [swipeDismissed, setSwipeDismissed] = useState(false);
+
   const { data: recentOrders } = trpc.orders.getRecent.useQuery(
     { limit: 15 },
     { refetchInterval: 30000, enabled }
@@ -50,8 +58,17 @@ export default function LiveSalesNotification({ enabled = true }: Props) {
     }
   }, [recentOrders]);
 
+  const dismiss = useCallback(() => {
+    setExiting(true);
+    setTimeout(() => {
+      setVisible(false);
+      setExiting(false);
+      setSwipeX(0);
+      setIsSwiping(false);
+    }, 300);
+  }, []);
+
   const showNext = useCallback(() => {
-    // Mix real orders with fallback notifications
     const combined = [
       ...orders.map((o: any) => ({
         name: o.email?.split("@")[0] || "Customer",
@@ -68,55 +85,121 @@ export default function LiveSalesNotification({ enabled = true }: Props) {
     setCurrent(next ?? null);
     setVisible(true);
     setExiting(false);
+    setSwipeX(0);
+    setIsSwiping(false);
+    setSwipeDismissed(false);
 
-    // Hide after 4 seconds
+    // Auto-hide after 4 seconds
     setTimeout(() => {
-      setExiting(true);
+      dismiss();
+    }, 4000);
+  }, [index, orders, dismiss]);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const t = setTimeout(showNext, 7000);
+    return () => clearTimeout(t);
+  }, [enabled]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!enabled) return;
+    if (!visible && !exiting && !swipeDismissed) {
+      const delay = 18000 + Math.random() * 12000;
+      const t = setTimeout(showNext, delay);
+      return () => clearTimeout(t);
+    }
+    // After swipe-dismiss, resume normal cycle after a longer pause
+    if (!visible && !exiting && swipeDismissed) {
+      const t = setTimeout(() => {
+        setSwipeDismissed(false);
+      }, 30000);
+      return () => clearTimeout(t);
+    }
+  }, [visible, exiting, enabled, swipeDismissed, showNext]);
+
+  // ── Touch handlers ──────────────────────────────────────────────────────────
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    setIsSwiping(false);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.touches[0].clientX - touchStartX.current;
+    const dy = e.touches[0].clientY - touchStartY.current;
+
+    // Only track horizontal swipe (ignore vertical scroll)
+    if (!isSwiping && Math.abs(dy) > Math.abs(dx)) return;
+
+    setIsSwiping(true);
+    setSwipeX(dx);
+  }, [isSwiping]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (Math.abs(swipeX) >= SWIPE_THRESHOLD) {
+      // Snap fully off screen
+      setSwipeX(swipeX > 0 ? 400 : -400);
+      setSwipeDismissed(true);
       setTimeout(() => {
         setVisible(false);
-        setExiting(false);
-      }, 400);
-    }, 4000);
-  }, [index, orders]);
-
-  useEffect(() => {
-    if (!enabled) return;
-    const initialTimer = setTimeout(() => {
-      showNext();
-    }, 7000);
-    return () => clearTimeout(initialTimer);
-  }, [enabled]);
-
-  useEffect(() => {
-    if (!enabled) return;
-    if (!visible && !exiting) {
-      const delay = 18000 + Math.random() * 12000;
-      const timer = setTimeout(showNext, delay);
-      return () => clearTimeout(timer);
+        setSwipeX(0);
+        setIsSwiping(false);
+      }, 250);
+    } else {
+      // Snap back
+      setSwipeX(0);
+      setIsSwiping(false);
     }
-  }, [visible, exiting, enabled, showNext]);
+    touchStartX.current = null;
+    touchStartY.current = null;
+  }, [swipeX]);
 
   if (!visible || !current) return null;
+
+  const opacity = isSwiping ? Math.max(0, 1 - Math.abs(swipeX) / 200) : 1;
 
   return (
     <div
       className={`fixed left-4 z-45 max-w-[calc(100vw-80px)] md:max-w-[300px] bottom-[148px] md:bottom-6 md:left-6 ${
-        exiting ? "animate-notification-out" : "animate-notification-in"
-      }`}
+        !isSwiping && exiting ? "animate-notification-out" : ""
+      } ${!isSwiping && !exiting ? "animate-notification-in" : ""}`}
+      style={{
+        transform: isSwiping ? `translateX(${swipeX}px) rotate(${swipeX * 0.03}deg)` : undefined,
+        opacity,
+        transition: isSwiping ? "none" : "transform 0.25s ease, opacity 0.25s ease",
+        touchAction: "pan-y",
+        cursor: "grab",
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      <div className="glass-card rounded-xl px-4 py-3 shadow-2xl">
+      <div className="glass-card rounded-xl px-4 py-3 shadow-2xl select-none">
         <div className="flex items-center gap-2">
           {/* Green pulse dot */}
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
-          {/* Simple one-line notification */}
-          <p className="text-xs leading-snug" style={{ color: "oklch(0.80 0.04 265)" }}>
+          <p className="text-xs leading-snug flex-1" style={{ color: "oklch(0.80 0.04 265)" }}>
             <span className="font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>{current.name}</span>
             {" "}from {current.location} bought Sleep Reset for{" "}
             <span className="font-bold" style={{ color: "oklch(0.82 0.16 65)" }}>{current.price}</span>
             {" "}<span style={{ color: "oklch(0.45 0.04 265)" }}>· {current.timeAgo}</span>
           </p>
+          {/* Swipe hint — subtle arrow on mobile */}
+          <span className="text-xs md:hidden flex-shrink-0" style={{ color: "oklch(0.35 0.04 265)" }}>
+            ›
+          </span>
         </div>
       </div>
+
+      {/* Swipe hint text — appears when dragging */}
+      {isSwiping && Math.abs(swipeX) > 30 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="text-xs font-semibold" style={{ color: "oklch(0.55 0.04 265)" }}>
+            {swipeX > 0 ? "Dismiss →" : "← Dismiss"}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
