@@ -293,7 +293,7 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
       }),
   }),
 
-  // ── Leads ─────────────────────────────────────────────────────────────────
+  // ── Leads ────────────────────────────────────────────────────────────────
   leads: router({
     capture: publicProcedure
       .input(z.object({
@@ -301,6 +301,21 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
         sessionId: z.string().optional(),
         chronotype: z.enum(["Lion", "Bear", "Wolf", "Dolphin"]).optional(),
         source: z.string().optional(),
+        // Attribution
+        utmSource: z.string().optional(),
+        utmMedium: z.string().optional(),
+        utmCampaign: z.string().optional(),
+        utmContent: z.string().optional(),
+        utmTerm: z.string().optional(),
+        referrer: z.string().optional(),
+        landingPage: z.string().optional(),
+        // Device
+        userAgent: z.string().optional(),
+        language: z.string().optional(),
+        country: z.string().optional(),
+        // Quiz data
+        quizAnswers: z.record(z.string(), z.string()).optional(),
+        sleepIssues: z.array(z.string()).optional(),
       }))
       .mutation(async ({ input }) => {
         const result = await captureEmailLead({
@@ -309,9 +324,29 @@ Length: 600-900 words. Do NOT include the title in the content (it's added separ
           chronotype: input.chronotype,
           source: input.source ?? "quiz_result",
         });
+        const leadId = (result as any)?.insertId ?? 0;
+        // Enrich profile with full attribution + device + quiz data
+        const { enrichLeadProfile } = await import("./userProfileBuilder");
+        enrichLeadProfile(leadId, {
+          email: input.email,
+          sessionId: input.sessionId,
+          chronotype: input.chronotype,
+          source: input.source,
+          utmSource: input.utmSource,
+          utmMedium: input.utmMedium,
+          utmCampaign: input.utmCampaign,
+          utmContent: input.utmContent,
+          utmTerm: input.utmTerm,
+          referrer: input.referrer,
+          landingPage: input.landingPage,
+          userAgent: input.userAgent,
+          language: input.language,
+          country: input.country,
+          quizAnswers: input.quizAnswers as Record<string, string> | undefined,
+          sleepIssues: input.sleepIssues,
+        }).catch(() => {/* non-critical */});
         // Trigger abandon cart + welcome email sequence
         if (input.source === "quiz_result" || input.source === "quiz_funnel_reddit" || input.source === "quiz_funnel_tiktok" || input.source === "quiz_funnel") {
-          const leadId = (result as any)?.insertId ?? 0;
           onQuizComplete(input.email, leadId, input.chronotype ?? "Bear").catch(() => {/* non-critical */});
         }
         return { success: true };
@@ -1580,6 +1615,160 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         await subscribeNewsletter({ email: input.email, firstName: input.firstName, source: input.source });
         return { ok: true };
       }),
+  }),
+  contactIntelligence: router({
+    getStats: protectedProcedure.query(async () => {
+      const { getContactStats } = await import("./contactIntelligence");
+      return getContactStats();
+    }),
+    getLeads: protectedProcedure
+      .input(z.object({ segment: z.string().default("all"), limit: z.number().default(100) }))
+      .query(async ({ input }) => {
+        const { getLeadsBySegment } = await import("./contactIntelligence");
+        const leads = await getLeadsBySegment(input.segment as any);
+        return leads.slice(0, input.limit);
+      }),
+    exportCSV: protectedProcedure
+      .input(z.object({ segment: z.string().default("all") }))
+      .mutation(async ({ input }) => {
+        const { getLeadsBySegment, leadsToCSV } = await import("./contactIntelligence");
+        const leads = await getLeadsBySegment(input.segment as any);
+        const csv = leadsToCSV(leads);
+        return { csv, count: leads.length, segment: input.segment };
+      }),
+    syncScores: protectedProcedure.mutation(async () => {
+      const { syncLeadScores } = await import("./contactIntelligence");
+      return syncLeadScores();
+    }),
+    updateLifecycle: protectedProcedure
+      .input(z.object({ email: z.string().email(), stage: z.enum(["lead", "prospect", "customer", "churned"]) }))
+      .mutation(async ({ input }) => {
+        const { updateLeadLifecycle } = await import("./contactIntelligence");
+        await updateLeadLifecycle(input.email, input.stage);
+        return { ok: true };
+      }),
+    pushToLeados: protectedProcedure
+      .input(z.object({ segment: z.string().default("all") }))
+      .mutation(async ({ input }) => {
+        const { getLeadsBySegment } = await import("./contactIntelligence");
+        const leads = await getLeadsBySegment(input.segment as any);
+        const leadosUrl = process.env.LEADOS_URL || "https://leados.manus.space";
+        const leadosKey = process.env.LEADOS_API_KEY || "";
+        if (!leadosKey) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "LEADOS_API_KEY not set" });
+        let pushed = 0;
+        let failed = 0;
+        for (const lead of leads) {
+          try {
+            const res = await fetch(`${leadosUrl}/api/leads/ingest`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "X-LeadOS-Key": leadosKey },
+              body: JSON.stringify({
+                source: "deep-sleep-reset",
+                email: lead.email,
+                name: lead.firstName || undefined,
+                interest: lead.chronotype ? `Chronotype: ${lead.chronotype}` : undefined,
+                utm_source: lead.utmSource || undefined,
+                utm_medium: lead.utmMedium || undefined,
+                utm_campaign: lead.utmCampaign || undefined,
+                chronotype: lead.chronotype,
+                lead_score: lead.computedScore,
+                lifecycle_stage: lead.lifecycleStage || "lead",
+              }),
+            });
+            if (res.ok) pushed++; else failed++;
+          } catch { failed++; }
+        }
+        return { pushed, failed, total: leads.length };
+      }),
+    pushKpiSnapshot: protectedProcedure.mutation(async () => {
+      const { getContactStats } = await import("./contactIntelligence");
+      const { getOrderStats } = await import("./db");
+      const [stats, orderStats] = await Promise.all([getContactStats(), getOrderStats()]);
+      const leadosUrl = process.env.LEADOS_URL || "https://leados.manus.space";
+      const dsrKey = process.env.LEADOS_DSR_KEY || process.env.DEEP_SLEEP_RESET_API_KEY || "";
+      if (!dsrKey) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "LEADOS_DSR_KEY not set" });
+      const res = await fetch(`${leadosUrl}/api/dsr/ingest`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-API-Key": dsrKey },
+        body: JSON.stringify({
+          source: "deep-sleep-reset",
+          kpis: {
+            totalRevenueUsd: (orderStats.revenue / 25).toFixed(2),
+            todayRevenueUsd: "0",
+            last7DaysRevenueUsd: "0",
+            last30DaysRevenueUsd: "0",
+            totalOrders: orderStats.total,
+            totalLeads: stats.total,
+            convertedLeads: stats.buyers,
+            conversionRatePct: parseFloat(stats.conversionRate),
+          },
+          leads: { total: stats.total, buyers: stats.buyers, highIntent: stats.highIntent },
+          pushedAt: new Date().toISOString(),
+        }),
+      });
+      const body = await res.json();
+      return { ok: res.ok, status: res.status, body };
+    }),
+  }),
+  redditAudience: router({
+    uploadEmails: publicProcedure.mutation(async () => {
+      const crypto = await import("crypto");
+      const { getAllLeads } = await import("./db");
+      try {
+        const leads = await getAllLeads();
+        const emails = leads.map((l: { email: string }) => l.email).filter((e: string) => e && e.includes("@"));
+        console.log(`[Reddit Ads] Uploading ${emails.length} emails to custom audience...`);
+        const hashedEmails = emails.map((email: string) =>
+          crypto.default.createHash("sha256").update(email.toLowerCase().trim()).digest("hex")
+        );
+        const accessToken = process.env.REDDIT_ADS_ACCESS_TOKEN;
+        const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+        if (!accessToken || !accountId) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Missing REDDIT_ADS_ACCESS_TOKEN or REDDIT_ADS_ACCOUNT_ID" });
+        }
+        const payload = {
+          name: `Deep Sleep Leads - ${new Date().toISOString().split("T")[0]}`,
+          description: "Email leads from Deep Sleep Reset quiz funnel",
+          list: hashedEmails,
+          list_type: "EMAIL_SHA256"
+        };
+        const response = await fetch(
+          `https://ads-api.reddit.com/api/v2.0/accounts/${accountId}/audiences`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          }
+        );
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Reddit API ${response.status}: ${errText}` });
+        }
+        const result = await response.json() as { id: string; name: string };
+        console.log(`[Reddit Ads] Audience created: ${result.id}`);
+        return { success: true, audienceId: result.id, emailCount: emails.length, audienceName: result.name };
+      } catch (err) {
+        if (err instanceof TRPCError) throw err;
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: err instanceof Error ? err.message : "Unknown error" });
+      }
+    }),
+    listAudiences: publicProcedure.query(async () => {
+      const accessToken = process.env.REDDIT_ADS_ACCESS_TOKEN;
+      const accountId = process.env.REDDIT_ADS_ACCOUNT_ID;
+      if (!accessToken || !accountId) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Missing Reddit Ads credentials" });
+      }
+      const response = await fetch(
+        `https://ads-api.reddit.com/api/v2.0/accounts/${accountId}/audiences`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Reddit API ${response.status}: ${errText}` });
+      }
+      const result = await response.json() as { data: Array<{ id: string; name: string; size: number; status: string; created_at: string }> };
+      return result.data ?? [];
+    }),
   }),
 });
 export type AppRouter = typeof appRouter;

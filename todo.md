@@ -1006,3 +1006,20 @@
 - [x] Wire pageReady state in Order.tsx tied to isTransitioning from TransitionContext
 - [x] Apply staggered reveal classes to 7 content blocks: header, FOMO badges, TikTok badge, Luna section, pricing tiers, product card, TrustBar
 - [x] TypeScript check passes after checkout fade-in changes (0 errors)
+
+## Honza Nedvěd (Inizio) Principy — "První miliarda je nejtěžší"
+- [ ] Lead tagging: auto-tagy při email capture (utm_source, utm_medium, utm_campaign, utm_content, utm_term, referrer doména, landing page, chronotype)
+- [ ] Lead tagging: rozšíření leads.capture tRPC o UTM parametry z frontendu
+- [ ] Lead tagging: zobrazení tagů v Contact Intelligence tabulce + filter
+- [ ] Brevo sekvence E1: ihned — "Tvůj chronotype [X] — zde je tvůj plán" + cheat sheet
+- [ ] Brevo sekvence E2: +1d — "Proč spíš špatně (věda)" — ohřívání
+- [ ] Brevo sekvence E3: +2d — "3 chyby před spaním" — soft sell $5
+- [ ] Brevo sekvence E4: +3d — social proof (Jan, 7 nocí, 0 prášků) + $5
+- [ ] Brevo sekvence E5: +5d — urgency "cena roste na $7"
+- [ ] Brevo sekvence E6: +7d — downsell "Night 1 za $1"
+- [ ] Brevo sekvence E7: +14d — membership upsell $8/mo
+- [ ] Downsell produkt "Night 1 Only" za $1 — Stripe price + DB záznam
+- [ ] Downsell Stripe checkout session pro "entry" produkt ($1)
+- [ ] Sleep Score PDF: personalizovaný report podle chronotypu (Lion/Bear/Wolf/Dolphin)
+- [ ] Sleep Score PDF: generování na serveru (PDFKit/ReportLab) + Brevo attachment
+- [ ] Sleep Score PDF: odkaz v E1 emailu jako "etický úplatek"

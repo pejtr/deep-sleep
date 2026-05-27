@@ -1,0 +1,19 @@
+{
+  "query": "SELECT COUNT(*) as total_email_leads FROM email_leads; SELECT COUNT(*) as total_orders, SUM(amount) as total_revenue FROM orders WHERE status = 'completed';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute SELECT COUNT(*) as total_email_leads FROM email_leads; SELECT COUNT(*) as total_orders, SUM(amount) as total_revenue FROM orders WHERE status = 'completed';",
+  "rows": [
+    {
+      "total_email_leads": "88"
+    },
+    {
+      "total_email_leads": "total_orders\ttotal_revenue"
+    },
+    {
+      "total_email_leads": "1\t83.08"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_email_leads\n88\ntotal_orders\ttotal_revenue\n1\t83.08\n",
+  "stderr": "",
+  "execution_time_ms": 279
+}

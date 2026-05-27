@@ -72,7 +72,46 @@ export const emailLeads = mysqlTable("email_leads", {
   chronotype: mysqlEnum("chronotype", ["Lion", "Bear", "Wolf", "Dolphin"]),
   source: varchar("source", { length: 64 }).default("quiz_result"), // quiz_result | exit_popup | order
   subscribed: boolean("subscribed").default(true).notNull(),
+  // ── CRM / Contact Intelligence fields ────────────────────────────────────
+  lifecycleStage: mysqlEnum("lifecycleStage", ["lead", "prospect", "customer", "churned"]).default("lead"),
+  leadScore: int("leadScore").default(0), // 0-100 computed score
+  tags: text("tags"), // JSON array: ["insomnia", "wolf", "reddit", "high-intent"]
+  // ── Attribution ────────────────────────────────────────────────────────────────
+  utmSource: varchar("utmSource", { length: 64 }),
+  utmMedium: varchar("utmMedium", { length: 64 }),
+  utmCampaign: varchar("utmCampaign", { length: 128 }),
+  utmContent: varchar("utmContent", { length: 128 }),  // ad set / creative variant
+  utmTerm: varchar("utmTerm", { length: 128 }),         // keyword / ad creative name
+  referrer: varchar("referrer", { length: 512 }),        // full referrer URL
+  referrerDomain: varchar("referrerDomain", { length: 128 }), // e.g. reddit.com, tiktok.com
+  landingPage: varchar("landingPage", { length: 512 }),  // first page visited
+  // ── User Profile ────────────────────────────────────────────────────────────
+  country: varchar("country", { length: 4 }),
+  language: varchar("language", { length: 8 }),
+  firstName: varchar("firstName", { length: 128 }),
+  deviceType: varchar("deviceType", { length: 16 }),    // mobile | desktop | tablet
+  browser: varchar("browser", { length: 32 }),
+  sleepScore: int("sleepScore"),                         // 0-100 computed from quiz answers
+  sleepIssues: text("sleepIssues"),                      // JSON: ["insomnia", "anxiety", "early_waking"]
+  quizAnswers: text("quizAnswers"),                      // JSON: full quiz answer map
+  persona: varchar("persona", { length: 32 }),           // "Luna" | "Petra" | "Lucie"
+  // ── Engagement ──────────────────────────────────────────────────────────────
+  lastActivityAt: timestamp("lastActivityAt").defaultNow(),
+  convertedToCustomer: boolean("convertedToCustomer").default(false),
+  totalRevenue: decimal("totalRevenue", { precision: 10, scale: 2 }).default("0"),
+  emailsOpened: int("emailsOpened").default(0),
+  emailsClicked: int("emailsClicked").default(0),
+  emailSequenceStep: int("emailSequenceStep").default(0), // 0=not started, 1-7=step
+  lastEmailSentAt: timestamp("lastEmailSentAt"),
+  pageViewCount: int("pageViewCount").default(0),
+  timeOnSiteSec: int("timeOnSiteSec").default(0),
+  purchaseAttempts: int("purchaseAttempts").default(0),  // clicked buy but didn't complete
+  // ── Integrations ────────────────────────────────────────────────────────────
+  brevoContactId: varchar("brevoContactId", { length: 64 }),
+  redditAudienceUploaded: boolean("redditAudienceUploaded").default(false),
+  notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow(),
 });
 
 export type EmailLead = typeof emailLeads.$inferSelect;

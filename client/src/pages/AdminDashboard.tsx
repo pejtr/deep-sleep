@@ -582,7 +582,7 @@ function OverviewTab({ stats, isLoading, refetch }: { stats?: AdminStats; isLoad
                         <span className="text-xs font-medium" style={{ color: C.textSecondary }}>{order.product}</span>
                         {order.status && order.status !== 'completed' && (
                           <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: 'oklch(0.78 0.18 65 / 0.15)', color: C.gold }}>{order.status}</span>
-                        )}
+              )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -1007,7 +1007,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "tiktok" | "reddit" | "meta" | "feedback" | "timeline" | "funnel" | "email" | "abtest" | "personas" | "integrations" | "ai">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "channels" | "audience" | "insights">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -1053,18 +1053,9 @@ export default function AdminDashboard() {
 
   const tabs = [
     { id: "overview", label: "Overview", icon: BarChart3 },
-    { id: "campaigns", label: "Campaigns", icon: TrendingUp },
-    { id: "tiktok", label: "TikTok", icon: Zap },
-    { id: "reddit", label: "Reddit Ads", icon: Target },
-    { id: "meta", label: "Meta Ads", icon: Globe },
-    { id: "feedback", label: "Feedback", icon: MessageSquare },
-    { id: "timeline", label: "Timeline", icon: TrendingUp },
-    { id: "funnel", label: "Funnel", icon: Activity },
-    { id: "email", label: "Email", icon: Mail },
-    { id: "abtest", label: "A/B Tests", icon: Sparkles },
-    { id: "personas", label: "Personas", icon: Users },
-    { id: "ai", label: "AI Insights", icon: Sparkles },
-    { id: "integrations", label: "Integrations", icon: Cpu },
+    { id: "channels", label: "Ad Channels", icon: TrendingUp },
+    { id: "audience", label: "Audience & Email", icon: Users },
+    { id: "insights", label: "Insights", icon: Sparkles },
   ] as const;
 
   // Funnel conversion data for bar chart
@@ -1114,169 +1105,73 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        {/* Tabs */}
-        <div className="flex gap-1 mb-6 p-1 rounded-xl overflow-x-auto" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap min-w-fit px-2"
-              style={activeTab === tab.id
-                ? { background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }
-                : { color: C.textSecondary }
-              }
-            >
-              <tab.icon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{tab.label}</span>
-            </button>
-          ))}
+      <div className="max-w-full mx-auto px-4 py-6">
+        {/* Tabs — horizontally scrollable */}
+        <div className="mb-6 rounded-xl overflow-hidden" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <div className="flex gap-1 p-1 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 px-3"
+                style={activeTab === tab.id
+                  ? { background: "linear-gradient(135deg, oklch(0.55 0.18 65), oklch(0.45 0.16 55))", color: "white" }
+                  : { color: C.textSecondary }
+                }
+              >
+                <tab.icon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{tab.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
+        <style>{`
+          div[style*="WebkitOverflowScrolling"]::-webkit-scrollbar { height: 4px; }
+          div[style*="WebkitOverflowScrolling"]::-webkit-scrollbar-track { background: transparent; }
+          div[style*="WebkitOverflowScrolling"]::-webkit-scrollbar-thumb { background: oklch(0.35 0.04 265); border-radius: 2px; }
+        `}</style>
 
         {/* ── Overview Tab (Phase 1 — Professional KPIs + Funnel) ─────────────────── */}
         {activeTab === "overview" && (
           <OverviewTab stats={stats} isLoading={isLoading} refetch={refetch} />
         )}
 
-        {/* ── Campaigns Tab ────────────────────────────────────────────────── */}
-        {activeTab === "campaigns" && (
+        {/* ── Ad Channels Tab ─────────────────────────────────────────────── */}
+        {activeTab === "channels" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-semibold" style={{ color: C.textPrimary }}>Active Ad Campaigns</h2>
+              <h2 className="text-sm font-semibold" style={{ color: C.textPrimary }}>Ad Channels</h2>
               <span className="text-xs px-2 py-1 rounded-full" style={{ background: "oklch(0.55 0.18 145 / 0.15)", color: C.green }}>Live data</span>
             </div>
+            <TikTokAdsTab />
+            <RedditAdsTab />
+            <MetaAdsTab />
+          </div>
+        )}
 
-            {/* TikTok */}
+        {/* ── Audience & Email Tab ─────────────────────────────────────────────── */}
+        {activeTab === "audience" && (
+          <div className="space-y-4">
+            <ContactIntelligenceTab />
             <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base" style={{ background: C.cardInner }}>🎵</div>
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>TikTok Ads</p>
-                    <p className="text-xs" style={{ color: C.textSecondary }}>Deep Sleep Reset — $4</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: C.gold }}>Under Review</span>
-                  <a href="https://ads.tiktok.com/i18n/manage/campaign?aadvid=7631884469462089744" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="w-3.5 h-3.5" style={{ color: C.textSecondary }} />
-                  </a>
-                </div>
-              </div>
-              <div className="grid grid-cols-4 gap-3">
-                {[{ label: "Budget/day", value: "€101/day" }, { label: "Impressions", value: "—" }, { label: "Link clicks", value: "—" }, { label: "CTR", value: "—" }].map(m => (
-                  <div key={m.label}>
-                    <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>{m.value}</p>
-                    <p className="text-xs" style={{ color: C.textMuted }}>{m.label}</p>
-                  </div>
-                ))}
-              </div>
+              <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Email Broadcasts</h3>
+              <EmailBroadcastTab />
             </div>
-
-            {/* Google */}
             <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base" style={{ background: C.cardInner }}>🔍</div>
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>Google Ads</p>
-                    <p className="text-xs" style={{ color: C.textSecondary }}>Deep Sleep Reset — $4</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ background: "oklch(0.55 0.04 265 / 0.15)", color: C.textSecondary }}>Paused</span>
-                  <a href="https://ads.google.com/aw/campaigns" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="w-3.5 h-3.5" style={{ color: C.textSecondary }} />
-                  </a>
-                </div>
-              </div>
-              <div className="grid grid-cols-4 gap-3">
-                {[{ label: "Budget/day", value: "—" }, { label: "Impressions", value: "151" }, { label: "Link clicks", value: "0" }, { label: "CTR", value: "0%" }].map(m => (
-                  <div key={m.label}>
-                    <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>{m.value}</p>
-                    <p className="text-xs" style={{ color: C.textMuted }}>{m.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick actions */}
-            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Quick Actions</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {[
-                  { label: "Open TikTok Ads Manager", link: "https://ads.tiktok.com/i18n/manage/campaign?aadvid=7631884469462089744", icon: "🎵" },
-                  { label: "Open Google Ads", link: "https://ads.google.com/aw/campaigns", icon: "🔍" },
-                  { label: "View Gumroad Sales", link: "https://app.gumroad.com/dashboard", icon: "💰" },
-                  { label: "Reddit Ads Manager", link: "https://ads.reddit.com", icon: "🔴" },
-                ].map(action => (
-                  <a key={action.label} href={action.link} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 p-3 rounded-xl transition-all hover:opacity-80"
-                    style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
-                    <span className="text-base">{action.icon}</span>
-                    <span className="text-xs flex-1" style={{ color: C.textSecondary }}>{action.label}</span>
-                    <ChevronRight className="w-3.5 h-3.5" style={{ color: C.textMuted }} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Checklist */}
-            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Optimization Checklist</h3>
-              <div className="space-y-2">
-                {[
-                  { done: true, text: "TikTok campaign created (TESTHNED) — €101/day" },
-                  { done: false, text: "TikTok campaign under review — wait 1-24h for approval" },
-                  { done: true, text: "Reddit Ads campaign launched — DSR-Traffic-Insomnia-01, €10/day" },
-                  { done: false, text: "Google Ads — create new campaign for deepsleep.mom" },
-                  { done: false, text: "Microsoft Ads — send appeal email to get account unblocked" },
-                  { done: true, text: "Gumroad fixed price $4 set" },
-                  { done: true, text: "14-language support live" },
-                  { done: true, text: "AI chatbot Luna integrated" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    {item.done
-                      ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" style={{ color: C.green }} />
-                      : <Clock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: C.textSecondary }} />
-                    }
-                    <p className="text-xs" style={{ color: item.done ? C.textSecondary : C.textPrimary }}>{item.text}</p>
-                  </div>
-                ))}
-              </div>
+              <h3 className="text-sm font-semibold mb-4" style={{ color: C.textPrimary }}>Customer Feedback</h3>
+              <FeedbackTab stats={stats} />
             </div>
           </div>
         )}
 
-        {/* ── TikTok Ads Tab ───────────────────────────────────────────────── */}
-        {activeTab === "tiktok" && <TikTokAdsTab />}
-        {/* ── Reddit Ads Tab ─────────────────────────────────────────────────── */}
-        {activeTab === "reddit" && <RedditAdsTab />}
-        {/* ── Meta Ads Tab ──────────────────────────────────────────────────── */}
-        {activeTab === "meta" && <MetaAdsTab />}
-        {/* ── Feedback Tab ─────────────────────────────────────────────────── */}
-        {activeTab === "feedback" && <FeedbackTab stats={stats} />}
-
-        {/* ── Email Broadcast Tab ──────────────────────────────────────────────── */}
-        {activeTab === "email" && (
-          <EmailBroadcastTab />
-        )}
-
-        {/* ── Timeline Tab ─────────────────────────────────────────────────────────────────── */}
-        {activeTab === "timeline" && (
-          <div className="space-y-4">
-            <TimelineCharts />
-          </div>
-        )}
-
-        {/* ── A/B Test Tab ────────────────────────────────────────────────────────────────────────────────────── */}
-        {activeTab === "abtest" && (
-          <div className="space-y-4">
+        {/* ── Insights Tab ─────────────────────────────────────────────────────── */}
+        {activeTab === "insights" && (
+          <div className="space-y-6">
             <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
               <h3 className="text-sm font-bold mb-1" style={{ color: C.textPrimary }}>Upsell A/B Test Results</h3>
               <p className="text-xs mb-4" style={{ color: C.textMuted }}>Variant A = original layout · Variant B = new layout · Deterministic 50/50 split by session ID</p>
               {(!abResults || abResults.length === 0) ? (
-                <p className="text-xs" style={{ color: C.textMuted }}>No A/B test data yet. Data appears when users visit upsell pages.</p>
+                <p className="text-xs" style={{ color: C.textMuted }}>No A/B test data yet.</p>
               ) : (
                 <div className="space-y-3">
                   {["upsell1", "upsell2", "upsell3"].map(page => {
@@ -1298,9 +1193,8 @@ export default function AdminDashboard() {
                         </div>
                         {pValue !== undefined && (
                           <div className="flex items-center gap-3 mb-3 p-2 rounded-lg" style={{ background: isSignificant ? `${C.green}08` : `${C.gold}08`, border: `1px solid ${isSignificant ? C.green : C.gold}25` }}>
-                            <span className="text-xs" style={{ color: C.textMuted }}>p-value:</span>
+                            <span className="text-xs" style={{ color: C.textMuted }}>p-value: </span>
                             <span className="text-xs font-bold" style={{ color: isSignificant ? C.green : C.gold }}>{pValue.toFixed(4)}</span>
-                            <span className="text-xs" style={{ color: C.textMuted }}>·</span>
                             <span className="text-xs" style={{ color: isSignificant ? C.green : C.gold }}>{isSignificant ? "95%+ confidence" : "Need more samples"}</span>
                           </div>
                         )}
@@ -1313,9 +1207,6 @@ export default function AdminDashboard() {
                                 <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Converted</span><span className="text-xs font-semibold" style={{ color: C.textPrimary }}>{v.conversions}</span></div>
                                 <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Conv. Rate</span><span className="text-xs font-bold" style={{ color: winner === v.variant && isSignificant ? C.green : C.textPrimary }}>{v.convRate}%</span></div>
                                 <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Revenue</span><span className="text-xs font-semibold" style={{ color: C.gold }}>${v.totalRevenue}</span></div>
-                                {v.uplift !== undefined && v.uplift !== 0 && (
-                                  <div className="flex justify-between"><span className="text-xs" style={{ color: C.textMuted }}>Uplift</span><span className="text-xs font-bold" style={{ color: (v.uplift ?? 0) > 0 ? C.green : C.red }}>{(v.uplift ?? 0) > 0 ? "+" : ""}{v.uplift}%</span></div>
-                                )}
                               </div>
                             </div>
                           ) : null)}
@@ -1326,78 +1217,21 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
-            <div className="rounded-2xl p-5 mt-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>🤖 AI Doporučení</h3>
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>📊 Timeline & Trends</h3>
+              <TimelineCharts />
+            </div>
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>👥 Customer Personas</h3>
+              <PersonaMetricsDashboard />
+            </div>
+            <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>🤖 AI Recommendations</h3>
               <RecommendationsPanel />
             </div>
-          </div>
-        )}
-        {/* ── Funnel Tab ─────────────────────────────────────────────────────────────────── */}
-        {/* ── Personas Tab ─────────────────────────────────────────────────────────────────── */}
-        {activeTab === "personas" && (
-          <PersonaMetricsDashboard />
-        )}
-        {/* ── AI Insights Tab ─────────────────────────────────────────────── */}
-        {activeTab === "ai" && <AiInsightsTab />}
-        {/* ── Integrations Tab ─────────────────────────────────────────────── */}
-        {activeTab === "integrations" && <IntegrationsTab />}
-        {activeTab === "funnel" && (
-          <div className="space-y-4">
-            <ChartCard title="Full Funnel Overview">
-              <div className="space-y-3">
-                {[
-                  { step: "1", label: "Ad Click (TikTok/Reddit/Google)", value: "—", note: "Tracking via ad platforms", color: C.purple },
-                  { step: "2", label: "Landing Page Visit", value: "—", note: "deep-sleep-reset.com", color: C.blue },
-                  { step: "3", label: "Quiz Started", value: String(stats?.quizStarts ?? stats?.quizCount ?? 0), note: "Chronotype assessment", color: C.teal },
-                  { step: "4", label: "Email Captured", value: String(stats?.leadCount ?? 0), note: "Lead magnet", color: C.green },
-                  { step: "5", label: "Order Completed", value: String(stats?.completedOrderCount ?? stats?.orderCount ?? 0), note: "$4 main product", color: C.gold },
-                  { step: "6", label: "Feedback Submitted", value: String(stats?.feedbackCount ?? 0), note: "Post-purchase", color: C.pink },
-                ].map(step => (
-                  <div key={step.step} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0" style={{ background: `${step.color}20`, color: step.color }}>
-                      {step.step}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium" style={{ color: C.textPrimary }}>{step.label}</p>
-                      <p className="text-xs" style={{ color: C.textMuted }}>{step.note}</p>
-                    </div>
-                    <p className="text-sm font-bold shrink-0" style={{ color: step.color }}>{step.value}</p>
-                  </div>
-                ))}
-              </div>
-            </ChartCard>
-
-            {/* Funnel visualization */}
-            <ChartCard title="Funnel Visualization">
-              <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={funnelChartData} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 40 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.18 0.04 265)" horizontal={false} />
-                  <XAxis type="number" tick={{ fill: C.textMuted, fontSize: 10 }} />
-                  <YAxis type="category" dataKey="step" tick={{ fill: C.textSecondary, fontSize: 11 }} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" name="Count" radius={[0, 6, 6, 0]}>
-                    {funnelChartData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={[C.teal, C.purple, C.green, C.gold][index % 4]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartCard>
-
             <div className="rounded-2xl p-5" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
-              <h3 className="text-sm font-semibold mb-3" style={{ color: C.textPrimary }}>Revenue Breakdown</h3>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: "Main ($4)", pct: "100%", color: C.green },
-                  { label: "OTO1 ($7)", pct: "0%", color: C.gold },
-                  { label: "OTO2 ($17)", pct: "0%", color: C.purple },
-                ].map(r => (
-                  <div key={r.label} className="text-center p-3 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
-                    <p className="text-lg font-bold" style={{ color: r.color }}>{r.pct}</p>
-                    <p className="text-xs" style={{ color: C.textMuted }}>{r.label}</p>
-                  </div>
-                ))}
-              </div>
+              <h3 className="text-sm font-bold mb-4" style={{ color: C.textPrimary }}>⚙️ Integrations</h3>
+              <IntegrationsTab />
             </div>
           </div>
         )}
@@ -1685,6 +1519,218 @@ function TikTokAdsTab() {
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Contact Intelligence Tab ─────────────────────────────────────────────────
+function ContactIntelligenceTab() {
+  const [segment, setSegment] = useState("all");
+  const { data: stats, isLoading: statsLoading, refetch: refetchStats } = trpc.contactIntelligence.getStats.useQuery();
+  const { data: leads, isLoading: leadsLoading } = trpc.contactIntelligence.getLeads.useQuery({ segment, limit: 200 });
+  const exportCSV = trpc.contactIntelligence.exportCSV.useMutation();
+  const syncScores = trpc.contactIntelligence.syncScores.useMutation();
+  const pushToLeados = trpc.contactIntelligence.pushToLeados.useMutation();
+  const pushKpi = trpc.contactIntelligence.pushKpiSnapshot.useMutation();
+
+  const segments = [
+    { value: "all", label: "All Leads" },
+    { value: "high_intent", label: "High Intent (70+)" },
+    { value: "buyers", label: "Buyers" },
+    { value: "cold_leads", label: "Cold Leads" },
+    { value: "new_7d", label: "New (7d)" },
+    { value: "reddit", label: "Reddit" },
+    { value: "tiktok", label: "TikTok" },
+    { value: "dolphin", label: "Dolphin" },
+    { value: "wolf", label: "Wolf" },
+    { value: "not_uploaded_reddit", label: "Not on Reddit" },
+  ];
+
+  const handleExport = async () => {
+    const result = await exportCSV.mutateAsync({ segment });
+    const blob = new Blob([result.csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leads-${segment}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-bold" style={{ color: C.textPrimary }}>Contact Intelligence</h2>
+          <p className="text-xs" style={{ color: C.textMuted }}>CRM · Lead Scoring · LEADOS Sync</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => syncScores.mutate()}
+            disabled={syncScores.isPending}
+            className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
+            style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textSecondary }}
+          >{syncScores.isPending ? "Syncing..." : "Sync Scores"}</button>
+          <button
+            onClick={() => pushKpi.mutate()}
+            disabled={pushKpi.isPending}
+            className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
+            style={{ background: `${C.purple}20`, border: `1px solid ${C.purple}40`, color: C.purple }}
+          >{pushKpi.isPending ? "Pushing..." : "Push KPI → LEADOS"}</button>
+        </div>
+      </div>
+
+      {/* Stats */}
+      {statsLoading ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: C.cardInner }} />)}
+        </div>
+      ) : stats && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: "Total Leads", value: stats.total, color: C.blue, sub: `${stats.new7d} new (7d)` },
+            { label: "High Intent", value: stats.highIntent, color: C.green, sub: `Score 70+` },
+            { label: "Buyers", value: stats.buyers, color: C.gold, sub: `${stats.conversionRate}% CVR` },
+            { label: "Avg Score", value: stats.avgScore, color: C.purple, sub: `out of 100` },
+          ].map(s => (
+            <div key={s.label} className="rounded-xl p-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+              <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
+              <p className="text-xs font-medium" style={{ color: C.textPrimary }}>{s.label}</p>
+              <p className="text-xs" style={{ color: C.textMuted }}>{s.sub}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Lifecycle breakdown */}
+      {stats && (
+        <div className="grid grid-cols-4 gap-2">
+          {Object.entries(stats.byLifecycle).map(([stage, count]) => (
+            <div key={stage} className="rounded-lg p-3 text-center" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+              <p className="text-lg font-bold" style={{ color: C.textPrimary }}>{count as number}</p>
+              <p className="text-xs capitalize" style={{ color: C.textMuted }}>{stage}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Segment selector + actions */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <select
+          value={segment}
+          onChange={e => setSegment(e.target.value)}
+          className="text-xs px-3 py-1.5 rounded-lg"
+          style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+        >
+          {segments.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+        </select>
+        <button
+          onClick={handleExport}
+          disabled={exportCSV.isPending}
+          className="text-xs px-3 py-1.5 rounded-lg font-medium"
+          style={{ background: `${C.green}20`, border: `1px solid ${C.green}40`, color: C.green }}
+        >{exportCSV.isPending ? "Exporting..." : `Export CSV (${leads?.length ?? 0})`}</button>
+        <button
+          onClick={() => pushToLeados.mutate({ segment })}
+          disabled={pushToLeados.isPending}
+          className="text-xs px-3 py-1.5 rounded-lg font-medium"
+          style={{ background: `${C.teal}20`, border: `1px solid ${C.teal}40`, color: C.teal }}
+        >{pushToLeados.isPending ? "Pushing..." : `Push to LEADOS (${leads?.length ?? 0})`}</button>
+        {pushToLeados.data && (
+          <span className="text-xs" style={{ color: C.green }}>
+            ✓ {pushToLeados.data.pushed} pushed, {pushToLeados.data.failed} failed
+          </span>
+        )}
+      </div>
+
+      {/* Lead table */}
+      <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.cardBorder}` }}>
+        <table className="w-full text-xs">
+          <thead>
+            <tr style={{ background: C.cardInner }}>
+              {["Email", "Chronotype", "Campaign", "Tags", "Score", "Stage", "Email Step", "Created"].map(h => (
+                <th key={h} className="text-left px-3 py-2 font-semibold" style={{ color: C.textMuted }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {leadsLoading ? (
+              <tr><td colSpan={8} className="px-3 py-8 text-center" style={{ color: C.textMuted }}>Loading leads...</td></tr>
+            ) : !leads?.length ? (
+              <tr><td colSpan={8} className="px-3 py-8 text-center" style={{ color: C.textMuted }}>No leads in this segment</td></tr>
+            ) : leads.slice(0, 50).map((lead, i) => {
+              let tags: string[] = [];
+              try { tags = JSON.parse((lead as any).tags ?? "[]"); } catch { tags = []; }
+              const campaign = (lead as any).utmCampaign ?? (lead as any).utmSource ?? lead.source ?? "organic";
+              const emailStep = (lead as any).emailSequenceStep ?? 0;
+              return (
+                <tr key={lead.id} style={{ background: i % 2 === 0 ? C.card : C.cardInner, borderTop: `1px solid ${C.cardBorder}` }}>
+                  <td className="px-3 py-2" style={{ color: C.textPrimary }}>
+                    <div>{lead.email}</div>
+                    {(lead as any).persona && (
+                      <div className="text-xs" style={{ color: C.purple }}>via {(lead as any).persona}</div>
+                    )}
+                  </td>
+                  <td className="px-3 py-2">
+                    {lead.chronotype ? (
+                      <span className="px-2 py-0.5 rounded-full text-xs" style={{
+                        background: lead.chronotype === "Dolphin" ? `${C.blue}20` : lead.chronotype === "Wolf" ? `${C.purple}20` : lead.chronotype === "Lion" ? `${C.gold}20` : `${C.teal}20`,
+                        color: lead.chronotype === "Dolphin" ? C.blue : lead.chronotype === "Wolf" ? C.purple : lead.chronotype === "Lion" ? C.gold : C.teal,
+                      }}>{lead.chronotype}</span>
+                    ) : <span style={{ color: C.textMuted }}>—</span>}
+                  </td>
+                  <td className="px-3 py-2 max-w-[120px]">
+                    <div className="truncate" style={{ color: C.textSecondary }} title={campaign}>{campaign}</div>
+                    {(lead as any).utmMedium && (
+                      <div className="text-xs" style={{ color: C.textMuted }}>{(lead as any).utmMedium}</div>
+                    )}
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-wrap gap-1 max-w-[160px]">
+                      {tags.slice(0, 4).map((tag: string) => (
+                        <span key={tag} className="px-1.5 py-0.5 rounded text-xs" style={{
+                          background: tag.startsWith("campaign:") ? `${C.purple}20` : tag.startsWith("ref:") ? `${C.blue}20` : tag.startsWith("issue:") ? `${C.red ?? "#ef4444"}20` : `${C.cardInner}`,
+                          color: tag.startsWith("campaign:") ? C.purple : tag.startsWith("ref:") ? C.blue : tag.startsWith("issue:") ? (C.red ?? "#ef4444") : C.textMuted,
+                          border: `1px solid ${C.cardBorder}`,
+                        }}>{tag.length > 18 ? tag.slice(0, 18) + "…" : tag}</span>
+                      ))}
+                      {tags.length > 4 && <span className="text-xs" style={{ color: C.textMuted }}>+{tags.length - 4}</span>}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{
+                      background: lead.computedScore >= 70 ? `${C.green}20` : lead.computedScore >= 40 ? `${C.gold}20` : `${C.textMuted}20`,
+                      color: lead.computedScore >= 70 ? C.green : lead.computedScore >= 40 ? C.gold : C.textMuted,
+                    }}>{lead.computedScore}</span>
+                  </td>
+                  <td className="px-3 py-2" style={{ color: C.textSecondary }}>{lead.lifecycleStage ?? "lead"}</td>
+                  <td className="px-3 py-2">
+                    <div className="flex items-center gap-1">
+                      <div className="flex gap-0.5">
+                        {[1,2,3,4,5,6,7].map(n => (
+                          <div key={n} className="w-2 h-2 rounded-full" style={{
+                            background: n <= emailStep ? C.green : C.cardInner,
+                            border: `1px solid ${n <= emailStep ? C.green : C.cardBorder}`,
+                          }} />
+                        ))}
+                      </div>
+                      <span className="text-xs" style={{ color: C.textMuted }}>{emailStep}/7</span>
+
+                    </div>
+                  </td>
+                  <td className="px-3 py-2" style={{ color: C.textMuted }}>{new Date(lead.createdAt).toLocaleDateString()}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {leads && leads.length > 50 && (
+          <div className="px-3 py-2 text-center text-xs" style={{ color: C.textMuted, background: C.cardInner }}>
+            Showing 50 of {leads.length} leads — export CSV for full list
+          </div>
+        )}
       </div>
     </div>
   );

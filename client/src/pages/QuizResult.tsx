@@ -92,11 +92,42 @@ export default function QuizResult() {
     setEmailError("");
     setIsSubmitting(true);
     try {
+      // Collect attribution data from URL + browser
+      const urlParams = new URLSearchParams(window.location.search);
+      const utmSource = urlParams.get("utm_source") ?? sessionStorage.getItem("utm_source") ?? undefined;
+      const utmMedium = urlParams.get("utm_medium") ?? sessionStorage.getItem("utm_medium") ?? undefined;
+      const utmCampaign = urlParams.get("utm_campaign") ?? sessionStorage.getItem("utm_campaign") ?? undefined;
+      const utmContent = urlParams.get("utm_content") ?? sessionStorage.getItem("utm_content") ?? undefined;
+      const utmTerm = urlParams.get("utm_term") ?? sessionStorage.getItem("utm_term") ?? undefined;
+      const referrer = document.referrer || sessionStorage.getItem("referrer") || undefined;
+      const landingPage = sessionStorage.getItem("landing_page") ?? window.location.pathname;
+      // Quiz answers from sessionStorage
+      let quizAnswers: Record<string, string> | undefined;
+      try { quizAnswers = JSON.parse(sessionStorage.getItem("quiz_answers") ?? "{}"); } catch { quizAnswers = undefined; }
+      // Sleep issues derived from chronotype
+      const sleepIssueMap: Record<string, string[]> = {
+        Lion: ["early_waking", "evening_crash"],
+        Bear: ["social_jet_lag", "monday_grogginess"],
+        Wolf: ["sleep_onset", "morning_difficulty"],
+        Dolphin: ["anxiety", "3am_waking", "racing_mind"],
+      };
+      const sleepIssues = sleepIssueMap[chronotype] ?? [];
       await leadMutation.mutateAsync({
         email,
         sessionId: getSessionId(),
         chronotype,
         source: "quiz_result",
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        utmContent,
+        utmTerm,
+        referrer,
+        landingPage,
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        quizAnswers,
+        sleepIssues,
       });
       // Delay success state for smooth animation
       await new Promise(r => setTimeout(r, 600));
