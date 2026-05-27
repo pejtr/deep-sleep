@@ -938,6 +938,7 @@
 - [x] TypeScript check: 0 chyb po všech změnách
 - [x] 290/290 testů projde
 - [x] Reddit-safe compliance disclaimers on all pages (Home, Order, QuizResult, Upsell1, Upsell2, Upsell3)
+- [x] Email submit: plynulá loading animace + success zpráva s compliance disclaimerem (QuizResult.tsx)
 - [ ] Affiliate outreach email templates (DFY scripts for creators)
 
 ## Quiz Shortening (May 26)

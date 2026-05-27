@@ -70,6 +70,7 @@ export default function QuizResult() {
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [viewers] = useState(() => Math.floor(Math.random() * 40) + 120);
   const { track } = useTrackBehavior();
 
@@ -89,6 +90,7 @@ export default function QuizResult() {
     e.preventDefault();
     if (!email.includes("@")) { setEmailError("Please enter a valid email"); return; }
     setEmailError("");
+    setIsSubmitting(true);
     try {
       await leadMutation.mutateAsync({
         email,
@@ -96,11 +98,15 @@ export default function QuizResult() {
         chronotype,
         source: "quiz_result",
       });
+      // Delay success state for smooth animation
+      await new Promise(r => setTimeout(r, 600));
       setEmailSubmitted(true);
       track("email_capture", { page: "quiz_result", value: { chronotype } });
       trackLead({ email });
     } catch {
       setEmailError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -217,25 +223,48 @@ export default function QuizResult() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm outline-none"
+                disabled={isSubmitting}
+                className="flex-1 rounded-lg px-4 py-2.5 text-sm outline-none transition-opacity"
                 style={{
                   background: "oklch(0.10 0.025 255)",
                   border: "1px solid oklch(0.78 0.18 65 / 0.2)",
                   color: "oklch(0.95 0.01 265)",
+                  opacity: isSubmitting ? 0.6 : 1,
                 }}
               />
-              <button type="submit"
-                className="cta-gold rounded-lg px-5 py-2.5 text-sm font-bold flex-shrink-0">
-                Send Free Sheet
+              <button type="submit" disabled={isSubmitting}
+                className="cta-gold rounded-lg px-5 py-2.5 text-sm font-bold flex-shrink-0 transition-all disabled:opacity-60 relative"
+                style={{
+                  minWidth: isSubmitting ? "140px" : "auto",
+                }}>
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-3 h-3 rounded-full border-2 border-transparent border-t-black border-r-black animate-spin" />
+                    Sending...
+                  </span>
+                ) : (
+                  "Send Free Sheet"
+                )}
               </button>
             </form>
             {emailError && <p className="text-xs mt-2" style={{ color: "oklch(0.65 0.22 25)" }}>{emailError}</p>}
           </div>
         ) : (
-          <div className="rounded-2xl p-4 mb-8 text-center"
-            style={{ background: "oklch(0.55 0.18 145 / 0.1)", border: "1px solid oklch(0.55 0.18 145 / 0.25)" }}>
-            <p className="text-sm font-semibold" style={{ color: "oklch(0.70 0.18 145)" }}>
-              Cheat sheet sent! Check your inbox.
+          <div className="rounded-2xl p-6 mb-8 text-center animate-in fade-in duration-500"
+            style={{ background: "oklch(0.55 0.18 145 / 0.15)", border: "2px solid oklch(0.55 0.18 145 / 0.4)" }}>
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "oklch(0.55 0.18 145)" }}>
+                <span className="text-white font-bold text-sm">✓</span>
+              </div>
+              <p className="text-base font-bold" style={{ color: "oklch(0.70 0.18 145)" }}>
+                Success! Check your inbox.
+              </p>
+            </div>
+            <p className="text-xs" style={{ color: "oklch(0.55 0.18 145)" }}>
+              We've sent your free {chronotype} sleep cheat sheet to <span className="font-semibold">{email}</span>. It should arrive in 1-2 minutes.
+            </p>
+            <p className="text-xs mt-3 pt-3" style={{ color: "oklch(0.40 0.04 265)", borderTop: "1px solid oklch(0.55 0.18 145 / 0.2)" }}>
+              Educational wellness guide based on evidence-informed CBT-I principles. Not medical advice. Results vary.
             </p>
           </div>
         )}
