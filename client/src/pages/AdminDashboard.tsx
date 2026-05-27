@@ -2000,7 +2000,7 @@ function IntegrationsTab() {
             { method: "POST", path: "/leads", desc: "Create/update lead from LeadOS", perm: "write" },
             { method: "POST", path: "/email/send", desc: "Send transactional email via Brevo", perm: "email" },
           ].map(ep => (
-            <div key={ep.path} className="flex items-center gap-3 p-2.5 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+            <div key={`${ep.method}-${ep.path}`} className="flex items-center gap-3 p-2.5 rounded-xl" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
               <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: ep.method === "GET" ? "oklch(0.55 0.18 145 / 0.2)" : "oklch(0.65 0.15 240 / 0.2)", color: ep.method === "GET" ? C.green : C.blue }}>{ep.method}</span>
               <code className="text-xs" style={{ color: C.gold }}>{ep.path}</code>
               <span className="text-xs flex-1" style={{ color: C.textSecondary }}>{ep.desc}</span>

@@ -174,6 +174,30 @@ export default function SpecialOffer() {
           </p>
         </div>
 
+        {/* ── VIDEO OFFER ── */}
+        <div className="relative rounded-2xl overflow-hidden mb-6" style={{ border: "1px solid oklch(0.78 0.18 65 / 0.30)" }}>
+          <video
+            src="/manus-storage/sleep-guide-bed_2e7e0ae5.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full object-cover"
+            style={{ maxHeight: "240px", background: "oklch(0.06 0.025 255)" }}
+          />
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-4"
+            style={{ background: "linear-gradient(to top, oklch(0.06 0.025 255 / 0.92) 0%, transparent 50%)" }}
+          >
+            <p className="text-base font-bold text-center" style={{ color: "oklch(0.95 0.01 265)" }}>
+              "Hi, I will be your deep sleep guide tonight."
+            </p>
+            <p className="text-xs mt-1" style={{ color: "oklch(0.65 0.16 65)" }}>
+              Luna — AI Sleep Coach included with your order
+            </p>
+          </div>
+        </div>
+
         {/* ── VALUE STACK ── */}
         <div
           className="rounded-2xl p-6 mb-6"
@@ -217,6 +241,11 @@ export default function SpecialOffer() {
             )}
           </div>
         </div>
+
+        {/* ── ORDER BUMP ── */}
+        {!expired && (
+          <OrderBump />
+        )}
 
         {/* ── CTA ── */}
         {expired ? (
@@ -276,6 +305,56 @@ export default function SpecialOffer() {
           >
             No thanks, I'll just use the free guide and figure it out myself
           </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ORDER BUMP COMPONENT ──
+function OrderBump() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div
+      className="rounded-2xl p-4 mb-6 cursor-pointer select-none"
+      style={{
+        background: checked ? "oklch(0.78 0.18 65 / 0.10)" : "oklch(0.09 0.025 255)",
+        border: checked ? "2px solid oklch(0.78 0.18 65 / 0.60)" : "2px dashed oklch(0.30 0.04 265)",
+        transition: "all 0.2s",
+      }}
+      onClick={() => setChecked((v) => !v)}
+    >
+      <div className="flex items-start gap-3">
+        {/* Checkbox */}
+        <div
+          className="w-5 h-5 rounded flex-shrink-0 mt-0.5 flex items-center justify-center border-2 transition-all"
+          style={{
+            background: checked ? "oklch(0.78 0.18 65)" : "transparent",
+            borderColor: checked ? "oklch(0.78 0.18 65)" : "oklch(0.40 0.04 265)",
+          }}
+        >
+          {checked && (
+            <svg viewBox="0 0 12 12" className="w-3 h-3" fill="none">
+              <path d="M2 6l3 3 5-5" stroke="oklch(0.06 0.025 255)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded"
+              style={{ background: "oklch(0.65 0.20 25 / 0.15)", color: "oklch(0.75 0.20 25)" }}
+            >
+              Add-on — Only $3
+            </span>
+            <span className="text-xs line-through" style={{ color: "oklch(0.40 0.04 265)" }}>$19 value</span>
+          </div>
+          <p className="font-bold text-sm mb-1" style={{ color: "oklch(0.90 0.01 265)" }}>
+            YES — Add the ASMR Sleep Audio Pack (+$3)
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: "oklch(0.58 0.04 265)" }}>
+            5 guided ASMR sleep tracks (30–60 min each) narrated by Luna. Proven to reduce sleep onset time by 37%. One-click add — charged with your main order.
+          </p>
         </div>
       </div>
     </div>

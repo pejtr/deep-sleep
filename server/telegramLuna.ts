@@ -1,5 +1,5 @@
 /**
- * Telegram Luna — Leila Hormozi Personality
+ * Telegram Luna — Leila Hormozi Personality (CZ)
  * Evening reports + full system control via Telegram commands
  */
 import { getAdminStats } from "./db";
@@ -88,40 +88,40 @@ export async function sendEveningReport(): Promise<void> {
     const roasStatus = revenue > 0 ? (revenue > 50 ? "🟢" : revenue > 20 ? "🟡" : "🔴") : "⚪";
     const cplStatus = parseFloat(cpl) < 1.0 ? "✅" : parseFloat(cpl) < 2.0 ? "⚠️" : "❌";
 
-    const report = `<b>🌙 LUNA EVENING REPORT</b>
+    const report = `<b>🌙 LUNA VEČERNÍ REPORT</b>
 ${new Date().toLocaleDateString("cs-CZ", { weekday: "long", day: "numeric", month: "long" })}
 
-<b>📊 TODAY</b>
-New leads: <b>${todayLeads}</b>
-Total leads: <b>${totalLeads}</b>
-Orders: <b>${orders}</b>
-Revenue: <b>$${revenue.toFixed(0)}</b>
+<b>📊 DNES</b>
+Nové leady: <b>${todayLeads}</b>
+Celkem leadů: <b>${totalLeads}</b>
+Objednávky: <b>${orders}</b>
+Příjmy: <b>$${revenue.toFixed(0)}</b>
 
-<b>⚡ KEY METRICS</b>
+<b>⚡ KLÍČOVÉ METRIKY</b>
 CPL: <b>$${cpl}</b> ${cplStatus}
 AOV: <b>$${aov}</b>
-Conv. rate: <b>${convRate}%</b>
+Konverzní poměr: <b>${convRate}%</b>
 ROAS: ${roasStatus}
 
-<b>🌍 TOP COUNTRIES</b>
-${topCountries || "No data yet"}
+<b>🌍 TOP ZEMĚ</b>
+${topCountries || "Zatím žádná data"}
 
-<b>🎯 OPPORTUNITY</b>
-Dormant leads (30d+): <b>${dormantLeads}</b>
-Est. reactivation revenue: <b>$${Math.round(dormantLeads * 0.08 * 7)}</b>
+<b>🎯 PŘÍLEŽITOST</b>
+Dormantní leady (30d+): <b>${dormantLeads}</b>
+Odh. příjmy z reaktivace: <b>$${Math.round(dormantLeads * 0.08 * 7)}</b>
 
-<b>💬 COMMANDS</b>
-/report — full stats
-/leads — recent leads
-/blast flash — launch Flash Sale
-/blast reactivation — launch Reactivation
-/campaign — campaign history
-/revenue — revenue breakdown`;
+<b>💬 PŘÍKAZY</b>
+/report — plný report
+/leads — poslední leady
+/blast flash — spustit Flash Sale
+/blast reactivation — reaktivace
+/campaign — historie kampaní
+/revenue — přehled příjmů`;
 
     await sendTelegramMessage(report);
   } catch (err) {
     console.error("[TelegramLuna] Evening report error:", err);
-    await sendTelegramMessage("⚠️ Luna report failed. Check server logs.");
+    await sendTelegramMessage("⚠️ Luna report selhal. Zkontroluj server logy.");
   }
 }
 
@@ -130,35 +130,35 @@ Est. reactivation revenue: <b>$${Math.round(dormantLeads * 0.08 * 7)}</b>
 export async function handleTelegramCommand(text: string, chatId: string): Promise<void> {
   // Security: only respond to owner
   if (chatId !== CHAT_ID) {
-    await sendTelegramMessage("🚫 Unauthorized.");
+    await sendTelegramMessage("🚫 Neautorizovaný přístup.");
     return;
   }
 
   const cmd = text.trim().toLowerCase();
 
   if (cmd === "/start" || cmd === "/help") {
-    await sendTelegramMessage(`<b>👋 Luna — Deep Sleep Reset Command Center</b>
+    await sendTelegramMessage(`<b>👋 Luna — Deep Sleep Reset Velitelské centrum</b>
 
-I'm your AI performance marketing analyst. Direct. Data-driven. No fluff.
+Jsem tvoje AI analytička performance marketingu. Přímá. Data-driven. Bez zbytečností.
 
-<b>📊 Data Commands</b>
-/report — full performance report
-/leads — last 10 leads with geo data
-/revenue — revenue breakdown
-/stats — key metrics snapshot
+<b>📊 Datové příkazy</b>
+/report — plný výkonnostní report
+/leads — posledních 10 leadů s geo daty
+/revenue — přehled příjmů
+/stats — snapshot klíčových metrik
 
-<b>🚀 Campaign Commands</b>
-/blast flash — launch 48h Flash Sale
-/blast reactivation — reactivate dormant leads
-/blast vip — VIP Bundle offer
-/blast upsell — upsell past buyers
-/campaign — campaign history + ROI
+<b>🚀 Příkazy kampaní</b>
+/blast flash — spustit 48h Flash Sale
+/blast reactivation — reaktivovat dormantní leady
+/blast vip — VIP Bundle nabídka
+/blast upsell — upsell minulých kupujících
+/campaign — historie kampaní + ROI
 
-<b>⚙️ System Commands</b>
-/status — server health check
-/help — this menu
+<b>⚙️ Systémové příkazy</b>
+/status — zdraví serveru
+/help — toto menu
 
-<i>Let's make money. What do you need?</i>`);
+<i>Pojďme vydělávat. Co potřebuješ?</i>`);
     return;
   }
 
@@ -171,16 +171,16 @@ I'm your AI performance marketing analyst. Direct. Data-driven. No fluff.
     const allLeads: LeadWithScore[] = await getAllLeadsWithScores();
     const leads = allLeads.slice(0, 10);
     if (leads.length === 0) {
-      await sendTelegramMessage("📭 No leads yet.");
+      await sendTelegramMessage("📭 Zatím žádné leady.");
       return;
     }
     const lines = leads.map((l: LeadWithScore, i: number) => {
       const flag = countryFlag(l.country || "??");
       const chron = l.chronotype ? ` · ${l.chronotype}` : "";
-      const score = l.computedScore ? ` · Score: ${l.computedScore}` : "";
+      const score = l.computedScore ? ` · Skóre: ${l.computedScore}` : "";
       return `${i + 1}. ${flag} <b>${l.email}</b>${chron}${score}`;
     });
-    await sendTelegramMessage(`<b>👥 Last 10 Leads</b>\n\n${lines.join("\n")}`);
+    await sendTelegramMessage(`<b>👥 Posledních 10 leadů</b>\n\n${lines.join("\n")}`);
     return;
   }
 
@@ -189,13 +189,13 @@ I'm your AI performance marketing analyst. Direct. Data-driven. No fluff.
     const revenue = stats.revenue || 0;
     const orders = stats.completedOrderCount || 0;
     const aov = orders > 0 ? (revenue / orders).toFixed(2) : "0.00";
-    await sendTelegramMessage(`<b>💰 Revenue Breakdown</b>
+    await sendTelegramMessage(`<b>💰 Přehled příjmů</b>
 
-Total revenue: <b>$${revenue.toFixed(2)}</b>
-Completed orders: <b>${orders}</b>
+Celkové příjmy: <b>$${revenue.toFixed(2)}</b>
+Dokončené objednávky: <b>${orders}</b>
 AOV: <b>$${aov}</b>
-Total leads: <b>${stats.leadCount || 0}</b>
-Revenue/lead: <b>$${stats.leadCount ? (revenue / stats.leadCount).toFixed(2) : "0.00"}</b>`);
+Celkem leadů: <b>${stats.leadCount || 0}</b>
+Příjmy/lead: <b>$${stats.leadCount ? (revenue / stats.leadCount).toFixed(2) : "0.00"}</b>`);
     return;
   }
 
@@ -210,7 +210,7 @@ Revenue/lead: <b>$${stats.leadCount ? (revenue / stats.leadCount).toFixed(2) : "
     };
     const campaignType = campaignTypes[type] || "FLASH_SALE";
 
-    await sendTelegramMessage(`⚡ <b>Launching ${campaignType} campaign...</b>\n\nGenerating AI copy and sending via Brevo. I'll report back with results.`);
+    await sendTelegramMessage(`⚡ <b>Spouštím kampaň ${campaignType}...</b>\n\nGeneruji AI copy a odesílám přes Brevo. Reportuji výsledky.`);
 
     // Trigger campaign via internal API
     try {
@@ -226,41 +226,41 @@ Revenue/lead: <b>$${stats.leadCount ? (revenue / stats.leadCount).toFixed(2) : "
       });
       const data = await res.json() as { success: boolean; sentCount?: number; campaignId?: string; error?: string };
       if (data.success) {
-        await sendTelegramMessage(`✅ <b>${campaignType} launched!</b>\n\nEmails sent: <b>${data.sentCount || 0}</b>\nCampaign ID: ${data.campaignId}\n\nI'll report conversions in tomorrow's evening report.`);
+        await sendTelegramMessage(`✅ <b>${campaignType} spuštěna!</b>\n\nOdesláno emailů: <b>${data.sentCount || 0}</b>\nID kampaně: ${data.campaignId}\n\nKonverze reportuji v zítřejším večerním reportu.`);
       } else {
-        await sendTelegramMessage(`❌ Campaign failed: ${data.error || "Unknown error"}`);
+        await sendTelegramMessage(`❌ Kampaň selhala: ${data.error || "Neznámá chyba"}`);
       }
     } catch (err) {
-      await sendTelegramMessage(`❌ Campaign trigger failed. Check server logs.`);
+      await sendTelegramMessage(`❌ Spuštění kampaně selhalo. Zkontroluj server logy.`);
     }
     return;
   }
 
   if (cmd === "/status") {
-    await sendTelegramMessage(`<b>⚙️ System Status</b>
+    await sendTelegramMessage(`<b>⚙️ Stav systému</b>
 
 Server: 🟢 Online
-Database: 🟢 Connected
-Brevo: 🟢 Active
-Stripe: 🟢 Active
-Telegram: 🟢 Connected
+Databáze: 🟢 Připojena
+Brevo: 🟢 Aktivní
+Stripe: 🟢 Aktivní
+Telegram: 🟢 Připojen
 
-<i>All systems operational.</i>`);
+<i>Všechny systémy fungují.</i>`);
     return;
   }
 
-  // AI-powered free-form response (Leila Hormozi personality)
+  // AI-powered free-form response (Leila Hormozi personality — CZ)
   try {
     const llmRes = await invokeLLM({
       messages: [
         {
           role: "system",
-          content: `You are Luna — an AI performance marketing analyst for Deep Sleep Reset, a $7 sleep protocol product. 
-You have Leila Hormozi's personality: direct, data-driven, no fluff, results-focused, slightly tough-love.
-You're responding via Telegram to the business owner Petr.
-Keep responses SHORT (3-5 sentences max). Use numbers and specifics. No emojis except for emphasis.
-You have access to the system's data and can suggest campaign actions.
-Always end with one specific actionable recommendation.`,
+          content: `Jsi Luna — AI analytička performance marketingu pro Deep Sleep Reset, produkt za $7. 
+Máš osobnost Leily Hormozi: přímá, data-driven, bez zbytečností, zaměřená na výsledky, trochu přísná.
+Odpovídáš přes Telegram majiteli Petrovi.
+Odpovídej VŽDY ČESKY. Odpovědi krátké (3-5 vět max). Používej čísla a konkrétní fakta. Emoji jen pro důraz.
+Máš přístup k datům systému a můžeš navrhovat akce kampaní.
+Vždy konči jedním konkrétním doporučením k akci.`,
         },
         { role: "user", content: text },
       ],
@@ -270,7 +270,7 @@ Always end with one specific actionable recommendation.`,
       await sendTelegramMessage(reply);
     }
   } catch {
-    await sendTelegramMessage("⚠️ I couldn't process that. Try /help for available commands.");
+    await sendTelegramMessage("⚠️ Nepodařilo se zpracovat požadavek. Zkus /help pro dostupné příkazy.");
   }
 }
 
@@ -311,6 +311,6 @@ export function scheduleTelegramReports(): void {
 
   // Send startup notification
   setTimeout(() => {
-    sendTelegramMessage(`🚀 <b>Luna is online.</b>\n\nDeep Sleep Reset system connected. Type /help for commands.\n\n<i>Let's make money, Petr.</i>`).catch(console.error);
+    sendTelegramMessage(`🚀 <b>Luna je online.</b>\n\nDeep Sleep Reset systém připojen. Napiš /help pro příkazy.\n\n<i>Pojďme vydělávat, Petře.</i>`).catch(console.error);
   }, 3000);
 }

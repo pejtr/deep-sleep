@@ -44,10 +44,12 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
               <p className="text-xs md:text-sm font-semibold tracking-[0.2em] uppercase mb-6" style={{ color: "oklch(0.82 0.16 65)" }}>
                 Science-Backed Sleep Protocol
               </p>
-              <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 max-w-5xl" style={{ color: "oklch(0.95 0.01 265)" }}>
-                You're Not Tired.
+              <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 max-w-5xl">
+                <span className="hero-word-float" style={{ color: "oklch(0.95 0.01 265)", animationDelay: "0s" }}>You're</span>{" "}
+                <span className="hero-word-float" style={{ color: "oklch(0.95 0.01 265)", animationDelay: "0.2s" }}>Not</span>{" "}
+                <span className="hero-word-float hero-glow-pulse" style={{ color: "oklch(0.95 0.01 265)", animationDelay: "0.4s" }}>Tired.</span>
                 <br />
-                <span className="text-gradient-gold-italic">You're Sleep-Deprived.</span>
+                <span className="text-gradient-gold-animated-italic">You're Sleep-Deprived.</span>
               </h1>
             </div>
 
@@ -138,47 +140,32 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
 
           {/* Right: Animated Hero */}
           <div className="relative flex justify-center items-center h-96 lg:h-full min-h-96">
-            {/* Phase 0: Before/After Transformation */}
+            {/* Phase 0: ASMR Sleep Guide Video */}
             {animationPhase === 0 && (
               <div className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity duration-1000">
-                <svg viewBox="0 0 400 400" className="w-full max-w-md" style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.3))" }}>
-                  {/* Before: Stressed face */}
-                  <g style={{ opacity: 1, transition: "opacity 1s" }}>
-                    <circle cx="100" cy="100" r="60" fill="oklch(0.60 0.08 30)" />
-                    <circle cx="85" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
-                    <circle cx="115" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
-                    <path d="M 85 110 Q 100 115 115 110" stroke="oklch(0.95 0.01 265)" strokeWidth="3" fill="none" />
-                    <text x="100" y="200" textAnchor="middle" fontSize="20" fill="oklch(0.50 0.04 265)">
-                      INSOMNIA
-                    </text>
-                    <text x="100" y="230" textAnchor="middle" fontSize="14" fill="oklch(0.40 0.04 265)">
-                      Exhausted · Foggy · Anxious
-                    </text>
-                  </g>
-
-                  {/* Arrow */}
-                  <g style={{ opacity: 0.5 }}>
-                    <line x1="200" y1="100" x2="200" y2="300" stroke="oklch(0.82 0.16 65)" strokeWidth="2" strokeDasharray="5,5" />
-                    <polygon points="200,310 195,300 205,300" fill="oklch(0.82 0.16 65)" />
-                  </g>
-
-                  {/* After: Happy face */}
-                  <g style={{ opacity: 1, transition: "opacity 1s" }}>
-                    <circle cx="300" cy="100" r="60" fill="oklch(0.75 0.18 145)" />
-                    <circle cx="285" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
-                    <circle cx="315" cy="85" r="8" fill="oklch(0.95 0.01 265)" />
-                    <path d="M 285 110 Q 300 120 315 110" stroke="oklch(0.95 0.01 265)" strokeWidth="3" fill="none" />
-                    <text x="300" y="200" textAnchor="middle" fontSize="20" fill="oklch(0.82 0.16 65)" fontWeight="bold">
-                      DEEP SLEEP
-                    </text>
-                    <text x="300" y="230" textAnchor="middle" fontSize="14" fill="oklch(0.60 0.04 265)">
-                      Rested · Sharp · Calm
-                    </text>
-                  </g>
-                </svg>
+                <div className="relative w-full max-w-sm">
+                  {/* Glow ring */}
+                  <div className="absolute -inset-1 rounded-3xl" style={{ background: "radial-gradient(ellipse, oklch(0.78 0.18 65 / 0.20) 0%, transparent 70%)", filter: "blur(12px)" }} />
+                  <video
+                    src="/manus-storage/sleep-guide-white_7377db27.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="relative w-full rounded-2xl object-cover"
+                    style={{ maxHeight: "380px", border: "1px solid oklch(0.78 0.18 65 / 0.35)", boxShadow: "0 20px 60px oklch(0.06 0.025 255 / 0.8)" }}
+                  />
+                  {/* Badge overlay */}
+                  <div
+                    className="absolute bottom-3 left-3 right-3 rounded-xl px-3 py-2 flex items-center gap-2"
+                    style={{ background: "oklch(0.06 0.025 255 / 0.88)", backdropFilter: "blur(8px)", border: "1px solid oklch(0.78 0.18 65 / 0.25)" }}
+                  >
+                    <div className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style={{ background: "oklch(0.65 0.18 145)" }} />
+                    <span className="text-xs font-semibold" style={{ color: "oklch(0.82 0.16 65)" }}>Luna — Your AI Sleep Guide</span>
+                  </div>
+                </div>
               </div>
             )}
-
             {/* Phase 1: Brain Wave Visualization */}
             {animationPhase === 1 && (
               <div className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity duration-1000">
