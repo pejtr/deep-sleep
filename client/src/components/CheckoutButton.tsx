@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 import { getUTMData } from "@/hooks/useSession";
 import { trackInitiateCheckout } from "@/lib/conversionTracking";
+import { Lock, ShieldCheck } from "lucide-react";
 
 interface CheckoutButtonProps {
   productId?: "main" | "entry" | "discount" | "oto1" | "oto2" | "subscription" | "bump";
@@ -28,6 +29,20 @@ export function CheckoutButton({
   variant = "primary",
 }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [loadingMsg, setLoadingMsg] = useState("Preparing checkout...");
+
+  useEffect(() => {
+    if (!isLoading) { setProgress(0); setLoadingMsg("Preparing checkout..."); return; }
+    const msgs = ["Securing your order...", "Connecting to Stripe...", "Almost ready..."];
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      setProgress(Math.min(step * 28, 90));
+      if (msgs[step - 1]) setLoadingMsg(msgs[step - 1]);
+    }, 600);
+    return () => clearInterval(interval);
+  }, [isLoading]);
   const { currency, isLowTier } = useCurrency();
 
   const createSession = trpc.checkout.createSession.useMutation({
@@ -85,15 +100,23 @@ export function CheckoutButton({
       className={`${baseClasses} ${variantClasses[variant]} ${className}`}
     >
       {isLoading ? (
-        <>
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <span>Preparing checkout...</span>
-        </>
+        <div className="flex flex-col items-center gap-1 w-full">
+          <div className="flex items-center gap-2">
+            <Lock className="w-4 h-4 animate-pulse" />
+            <span className="text-sm font-semibold">{loadingMsg}</span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-black/20 overflow-hidden mt-1">
+            <div
+              className="h-full rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%`, background: "rgba(255,255,255,0.7)" }}
+            />
+          </div>
+        </div>
       ) : (
-        children
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4" />
+          {children}
+        </div>
       )}
     </button>
   );
