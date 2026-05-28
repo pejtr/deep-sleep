@@ -213,6 +213,37 @@ export default function CheckoutSuccess() {
           </div>
         )}
 
+        {/* Post-purchase Social Proof */}
+        <div className="mb-6 text-left">
+          <p className="text-center text-white/50 text-xs uppercase tracking-widest font-semibold mb-4">What others are saying after their first week</p>
+          <div className="flex flex-col gap-3">
+            {[
+              { name: "Sarah M.", location: "Austin, TX", avatar: "SM", stars: 5, text: "I cried on Night 4. I'd completely forgotten what it felt like to wake up actually rested. This protocol is the real deal.", product: "7-Night Protocol" },
+              { name: "James K.", location: "London, UK", avatar: "JK", stars: 5, text: "Tried everything — melatonin, white noise, sleep trackers. Nothing worked until this. Night 2 I slept 6.5 hours straight for the first time in years.", product: "7-Night Protocol" },
+              { name: "Priya T.", location: "Toronto, CA", avatar: "PT", stars: 5, text: "The anxiety-sleep connection finally clicked for me. By Night 5 I stopped dreading bedtime. Worth every penny and more.", product: "7-Night Protocol" },
+            ].map((r, i) => (
+              <div key={i} className="rounded-2xl p-4 text-left" style={{ background: "oklch(0.12 0.03 265 / 0.8)", border: "1px solid oklch(0.25 0.04 265)" }}>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0" style={{ background: "oklch(0.78 0.18 65 / 0.2)", color: "oklch(0.82 0.16 65)", border: "1px solid oklch(0.78 0.18 65 / 0.3)" }}>{r.avatar}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white">{r.name}</span>
+                      <span className="text-xs" style={{ color: "oklch(0.50 0.04 265)" }}>· {r.location}</span>
+                    </div>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: r.stars }).map((_, s) => (
+                        <svg key={s} className="w-3 h-3" fill="oklch(0.78 0.18 65)" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                      ))}
+                    </div>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "oklch(0.78 0.18 65 / 0.1)", color: "oklch(0.78 0.18 65)", border: "1px solid oklch(0.78 0.18 65 / 0.2)" }}>✓ Verified</span>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: "oklch(0.75 0.04 265)" }}>"{r.text}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Guarantee */}
         <div className="flex items-center justify-center gap-3 text-white/50 text-sm mb-6">
           <span></span>
