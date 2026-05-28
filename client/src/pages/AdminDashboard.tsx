@@ -1109,7 +1109,7 @@ function RedditAdsTab() {
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<"overview" | "channels" | "campaigns" | "audience" | "insights">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "channels" | "campaigns" | "audience" | "insights" | "products">("overview");
   const { data: abResults } = trpc.admin.getAbResults.useQuery();
 
 
@@ -1159,6 +1159,7 @@ export default function AdminDashboard() {
     { id: "campaigns", label: "Campaigns", icon: Rocket },
     { id: "audience", label: "Audience & Email", icon: Users },
     { id: "insights", label: "Insights", icon: Sparkles },
+    { id: "products", label: "Products", icon: Download },
   ] as const;
 
   // Funnel conversion data for bar chart
@@ -1270,6 +1271,11 @@ export default function AdminDashboard() {
               <FeedbackTab stats={stats} />
             </div>
           </div>
+        )}
+
+        {/* ── Products Tab ─────────────────────────────────────────────────────────── */}
+        {activeTab === "products" && (
+          <ProductsTab />
         )}
 
         {/* ── Insights Tab ─────────────────────────────────────────────────────── */}
@@ -2775,6 +2781,428 @@ function CampaignsTab() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ── Products Tab ─────────────────────────────────────────────────────────────
+type DigitalProductRow = {
+  id: number; productKey: string; lang: string; title: string;
+  subtitle?: string | null; content: string; version: string;
+  versionNumber: number; isReleased: boolean; isDraft: boolean;
+  releasedAt?: Date | null; changeNote?: string | null;
+  updatedBy?: string | null; createdAt: Date; updatedAt: Date;
+};
+
+function ProductsTab() {
+  const utils = trpc.useUtils();
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [showEditor, setShowEditor] = useState(false);
+  const [form, setForm] = useState({ productKey: '', lang: 'en', title: '', subtitle: '', content: '', changeNote: '' });
+  const [releaseNote, setReleaseNote] = useState('');
+  const [showReleaseModal, setShowReleaseModal] = useState<number | null>(null);
+
+  const { data: rawProducts, isLoading } = trpc.admin.products.list.useQuery(undefined, { refetchOnWindowFocus: false });
+  const products = rawProducts as DigitalProductRow[] | undefined;
+
+  const saveMutation = trpc.admin.products.save.useMutation({
+    onSuccess: () => {
+      utils.admin.products.list.invalidate();
+      setShowEditor(false);
+      setEditingId(null);
+      toast.success('Product saved');
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const releaseMutation = trpc.admin.products.release.useMutation({
+    onSuccess: () => {
+      utils.admin.products.list.invalidate();
+      setShowReleaseModal(null);
+      setReleaseNote('');
+      toast.success('Version released ✓');
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const createDraftMutation = trpc.admin.products.createDraft.useMutation({
+    onSuccess: () => {
+      utils.admin.products.list.invalidate();
+      toast.success('New draft created');
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const downloadPdfMutation = trpc.admin.products.downloadPdf.useMutation({
+    onSuccess: (data) => {
+      // Open PDF download in new tab
+      window.open(data.downloadUrl, '_blank');
+      toast.success(`Downloading ${data.title} (${data.version})`);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  // Group products by productKey
+  const grouped = useMemo(() => {
+    if (!products) return {} as Record<string, DigitalProductRow[]>;
+    return products.reduce((acc, p) => {
+      if (!acc[p.productKey]) acc[p.productKey] = [];
+      acc[p.productKey].push(p);
+      return acc;
+    }, {} as Record<string, DigitalProductRow[]>);
+  }, [products]);
+
+  const openEditor = (product?: DigitalProductRow) => {
+    if (product) {
+      setEditingId(product.id);
+      setForm({
+        productKey: product.productKey,
+        lang: product.lang,
+        title: product.title,
+        subtitle: product.subtitle ?? '',
+        content: product.content,
+        changeNote: product.changeNote ?? '',
+      });
+    } else {
+      setEditingId(null);
+      setForm({ productKey: '', lang: 'en', title: '', subtitle: '', content: '', changeNote: '' });
+    }
+    setShowEditor(true);
+  };
+
+  const PRODUCT_KEYS = [
+    { key: 'deep-sleep-reset', label: 'Deep Sleep Reset Protocol', price: '$4' },
+    { key: 'pro-toolkit', label: 'Pro Sleep Toolkit', price: '$37' },
+    { key: 'emergency-rescue', label: '3AM Emergency Rescue', price: '$19' },
+    { key: 'audio-pack', label: 'Premium Audio Pack', price: '$11' },
+    { key: 'mastery-program', label: '30-Day Mastery Program', price: '$97' },
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold" style={{ color: C.textPrimary }}>Digital Products</h2>
+          <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>Manage content versions for all digital products</p>
+        </div>
+        <button
+          onClick={() => openEditor()}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
+          style={{ background: `linear-gradient(135deg, ${C.gold}, oklch(0.65 0.20 55))`, color: 'oklch(0.10 0.02 255)' }}
+        >
+          <Plus className="w-3.5 h-3.5" />
+          New Product
+        </button>
+      </div>
+
+      {/* Product list */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: C.gold }} />
+        </div>
+      ) : Object.keys(grouped).length === 0 ? (
+        <div className="rounded-2xl p-8 text-center" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+          <Download className="w-8 h-8 mx-auto mb-3 opacity-40" style={{ color: C.textMuted }} />
+          <p className="text-sm font-semibold mb-1" style={{ color: C.textPrimary }}>No products yet</p>
+          <p className="text-xs mb-4" style={{ color: C.textMuted }}>Create your first digital product to manage content versions</p>
+          <button
+            onClick={() => openEditor()}
+            className="px-4 py-2 rounded-lg text-xs font-semibold"
+            style={{ background: `linear-gradient(135deg, ${C.gold}, oklch(0.65 0.20 55))`, color: 'oklch(0.10 0.02 255)' }}
+          >
+            Create Product
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {PRODUCT_KEYS.map(({ key, label, price }) => {
+            const versions = (grouped[key] ?? []) as Array<{ id: number; productKey: string; lang: string; title: string; subtitle?: string | null; content: string; version: string; versionNumber: number; isReleased: boolean; isDraft: boolean; releasedAt?: Date | null; changeNote?: string | null; updatedBy?: string | null; createdAt: Date; updatedAt: Date }>;
+            if (versions.length === 0) return null;
+            const draft = versions.find(v => v.isDraft);
+            const released = versions.filter(v => v.isReleased).sort((a, b) => b.versionNumber - a.versionNumber);
+            const latest = released[0];
+            return (
+              <div key={key} className="rounded-2xl overflow-hidden" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+                {/* Product header */}
+                <div
+                  className="flex items-center justify-between p-4 cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => setSelectedKey(selectedKey === key ? null : key)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${C.gold}20` }}>
+                      <Download className="w-4 h-4" style={{ color: C.gold }} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>{label}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: `${C.green}20`, color: C.green }}>{price}</span>
+                        {latest && <span className="text-xs" style={{ color: C.textMuted }}>{latest.version} released</span>}
+                        {draft && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: `${C.gold}20`, color: C.gold }}>Draft pending</span>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {draft && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openEditor(draft); }}
+                        className="px-2.5 py-1 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+                        style={{ background: `${C.gold}20`, color: C.gold }}
+                      >
+                        Edit Draft
+                      </button>
+                    )}
+                    {latest && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); downloadPdfMutation.mutate({ id: latest.id }); }}
+                        className="px-2.5 py-1 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+                        style={{ background: `${C.green}15`, color: C.green }}
+                      >
+                        PDF ↓
+                      </button>
+                    )}
+                    <ChevronRight className="w-4 h-4 transition-transform" style={{ color: C.textMuted, transform: selectedKey === key ? 'rotate(90deg)' : 'none' }} />
+                  </div>
+                </div>
+
+                {/* Expanded version history */}
+                {selectedKey === key && (
+                  <div className="border-t px-4 pb-4" style={{ borderColor: C.cardBorder }}>
+                    <div className="pt-3 space-y-2">
+                      {/* Draft section */}
+                      {draft && (
+                        <div className="rounded-xl p-3" style={{ background: `${C.gold}08`, border: `1px solid ${C.gold}30` }}>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-xs font-semibold" style={{ color: C.gold }}>📝 Draft — {draft.version}</p>
+                              <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>{draft.title} · {draft.lang.toUpperCase()}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => openEditor(draft)}
+                                className="px-2.5 py-1 rounded-lg text-xs font-medium"
+                                style={{ background: `${C.gold}20`, color: C.gold }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => setShowReleaseModal(draft.id)}
+                                className="px-2.5 py-1 rounded-lg text-xs font-semibold"
+                                style={{ background: `${C.green}20`, color: C.green }}
+                              >
+                                Release
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Released versions */}
+                      {released.length > 0 && (
+                        <div>
+                          <p className="text-xs font-semibold mb-2 mt-3" style={{ color: C.textSecondary }}>Released Versions</p>
+                          <div className="space-y-1.5">
+                            {released.map(v => (
+                              <div key={v.id} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}` }}>
+                                <div>
+                                  <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{v.version} · {v.lang.toUpperCase()}</p>
+                                  <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>
+                                    {v.releasedAt ? new Date(v.releasedAt).toLocaleDateString() : 'N/A'}
+                                    {v.updatedBy ? ` · by ${v.updatedBy}` : ''}
+                                    {v.changeNote ? ` · ${v.changeNote}` : ''}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: `${C.green}20`, color: C.green }}>✓ Released</span>
+                                  <button
+                                    onClick={() => downloadPdfMutation.mutate({ id: v.id })}
+                                    className="p-1.5 rounded-lg transition-all hover:opacity-80"
+                                    style={{ background: `${C.green}15`, color: C.green }}
+                                    title="Download PDF"
+                                  >
+                                    <Download className="w-3 h-3" />
+                                  </button>
+                                  {!draft && (
+                                    <button
+                                      onClick={() => createDraftMutation.mutate({ id: v.id })}
+                                      className="px-2 py-1 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+                                      style={{ background: `${C.gold}15`, color: C.gold }}
+                                      title="Create new draft from this version"
+                                    >
+                                      + Draft
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Show any products not in the predefined list */}
+          {Object.keys(grouped).filter(k => !PRODUCT_KEYS.find(p => p.key === k)).map(key => {
+            const versions = (grouped[key] ?? []) as Array<{ id: number; productKey: string; lang: string; title: string; subtitle?: string | null; content: string; version: string; versionNumber: number; isReleased: boolean; isDraft: boolean; releasedAt?: Date | null; changeNote?: string | null; updatedBy?: string | null; createdAt: Date; updatedAt: Date }>;
+            const draft = versions.find(v => v.isDraft);
+            const released = versions.filter(v => v.isReleased).sort((a, b) => b.versionNumber - a.versionNumber);
+            return (
+              <div key={key} className="rounded-2xl p-4" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>{key}</p>
+                    <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>{versions.length} version(s) · {released.length} released</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {draft && (
+                      <button onClick={() => openEditor(draft)} className="px-2.5 py-1 rounded-lg text-xs" style={{ background: `${C.gold}20`, color: C.gold }}>Edit Draft</button>
+                    )}
+                    {released[0] && (
+                      <button onClick={() => downloadPdfMutation.mutate({ id: released[0].id })} className="px-2.5 py-1 rounded-lg text-xs" style={{ background: `${C.green}15`, color: C.green }}>PDF ↓</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Editor Modal */}
+      {showEditor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'oklch(0 0 0 / 0.7)' }}>
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold" style={{ color: C.textPrimary }}>{editingId ? 'Edit Product' : 'New Product'}</h3>
+              <button onClick={() => setShowEditor(false)} className="text-xs px-3 py-1.5 rounded-lg" style={{ background: C.cardInner, color: C.textSecondary }}>Cancel</button>
+            </div>
+            <div className="space-y-3">
+              {!editingId && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Product Key</label>
+                    <select
+                      value={form.productKey}
+                      onChange={e => setForm(f => ({ ...f, productKey: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-lg text-xs"
+                      style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+                    >
+                      <option value="">Select product...</option>
+                      {PRODUCT_KEYS.map(p => <option key={p.key} value={p.key}>{p.label}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Language</label>
+                    <select
+                      value={form.lang}
+                      onChange={e => setForm(f => ({ ...f, lang: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-lg text-xs"
+                      style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+                    >
+                      <option value="en">English</option>
+                      <option value="cs">Czech</option>
+                      <option value="de">German</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Title</label>
+                <input
+                  value={form.title}
+                  onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                  placeholder="Product title..."
+                  className="w-full px-3 py-2 rounded-lg text-xs"
+                  style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Subtitle</label>
+                <input
+                  value={form.subtitle}
+                  onChange={e => setForm(f => ({ ...f, subtitle: e.target.value }))}
+                  placeholder="Short description..."
+                  className="w-full px-3 py-2 rounded-lg text-xs"
+                  style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Content (Markdown)</label>
+                <textarea
+                  value={form.content}
+                  onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+                  placeholder="Product content in Markdown format..."
+                  rows={12}
+                  className="w-full px-3 py-2 rounded-lg text-xs font-mono resize-y"
+                  style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Change Note</label>
+                <input
+                  value={form.changeNote}
+                  onChange={e => setForm(f => ({ ...f, changeNote: e.target.value }))}
+                  placeholder="What changed in this version..."
+                  className="w-full px-3 py-2 rounded-lg text-xs"
+                  style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+                />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button
+                  onClick={() => saveMutation.mutate({ id: editingId ?? undefined, ...form })}
+                  disabled={saveMutation.isPending || !form.title || !form.content || (!editingId && !form.productKey)}
+                  className="flex-1 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 disabled:opacity-50"
+                  style={{ background: `linear-gradient(135deg, ${C.gold}, oklch(0.65 0.20 55))`, color: 'oklch(0.10 0.02 255)' }}
+                >
+                  {saveMutation.isPending ? 'Saving...' : 'Save Draft'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Release Modal */}
+      {showReleaseModal !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'oklch(0 0 0 / 0.7)' }}>
+          <div className="w-full max-w-md rounded-2xl p-6" style={{ background: C.card, border: `1px solid ${C.cardBorder}` }}>
+            <h3 className="text-sm font-bold mb-2" style={{ color: C.textPrimary }}>Release Version</h3>
+            <p className="text-xs mb-4" style={{ color: C.textMuted }}>Once released, this version becomes immutable. A new draft can be created for future changes.</p>
+            <div className="mb-4">
+              <label className="text-xs font-medium block mb-1" style={{ color: C.textSecondary }}>Release Note (optional)</label>
+              <input
+                value={releaseNote}
+                onChange={e => setReleaseNote(e.target.value)}
+                placeholder="What's new in this version..."
+                className="w-full px-3 py-2 rounded-lg text-xs"
+                style={{ background: C.cardInner, border: `1px solid ${C.cardBorder}`, color: C.textPrimary }}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowReleaseModal(null)}
+                className="flex-1 py-2 rounded-lg text-xs font-medium"
+                style={{ background: C.cardInner, color: C.textSecondary }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => releaseMutation.mutate({ id: showReleaseModal, changeNote: releaseNote })}
+                disabled={releaseMutation.isPending}
+                className="flex-1 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 disabled:opacity-50"
+                style={{ background: `${C.green}25`, color: C.green, border: `1px solid ${C.green}40` }}
+              >
+                {releaseMutation.isPending ? 'Releasing...' : '✓ Release Version'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

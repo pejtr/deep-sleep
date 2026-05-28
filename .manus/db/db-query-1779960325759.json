@@ -1,0 +1,9 @@
+{
+  "query": "\nALTER TABLE `digital_products` ADD COLUMN `version` varchar(16) NOT NULL DEFAULT 'v1.0';\nALTER TABLE `digital_products` ADD COLUMN `versionNumber` int NOT NULL DEFAULT 1;\nALTER TABLE `digital_products` ADD COLUMN `isReleased` tinyint(1) NOT NULL DEFAULT 0;\nALTER TABLE `digital_products` ADD COLUMN `isDraft` tinyint(1) NOT NULL DEFAULT 1;\nALTER TABLE `digital_products` ADD COLUMN `releasedAt` timestamp NULL;\nALTER TABLE `digital_products` ADD COLUMN `changeNote` varchar(512) NULL;\nALTER TABLE `digital_products` ADD COLUMN `createdAt` timestamp NOT NULL DEFAULT (now());\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \nALTER TABLE `digital_products` ADD COLUMN `version` varchar(16) NOT NULL DEFAULT 'v1.0';\nALTER TABLE `digital_products` ADD COLUMN `versionNumber` int NOT NULL DEFAULT 1;\nALTER TABLE `digital_products` ADD COLUMN `isReleased` tinyint(1) NOT NULL DEFAULT 0;\nALTER TABLE `digital_products` ADD COLUMN `isDraft` tinyint(1) NOT NULL DEFAULT 1;\nALTER TABLE `digital_products` ADD COLUMN `releasedAt` timestamp NULL;\nALTER TABLE `digital_products` ADD COLUMN `changeNote` varchar(512) NULL;\nALTER TABLE `digital_products` ADD COLUMN `createdAt` timestamp NOT NULL DEFAULT (now());\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1693
+}

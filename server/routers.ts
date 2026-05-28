@@ -40,6 +40,14 @@ import {
   getAbExportData,
   getAbRecommendations,
   getLiveTrafficData,
+  getDigitalProducts,
+  getDigitalProductById,
+  getReleasedVersionsByKey,
+  getLatestDraftByKey,
+  createDigitalProduct,
+  updateDigitalProduct,
+  releaseDigitalProduct,
+  createDraftFromReleased,
 } from "./db";
 
 // ── Chronotype scoring ────────────────────────────────────────────────────────
@@ -999,6 +1007,109 @@ Personality: Warm, empathetic, Hormozi-style directness. Answer first, mention p
         const { launchCampaign } = await import('./campaignEngine');
         return launchCampaign(input.type, 'admin_dashboard');
       }),
+
+    // ── Digital Products management ──────────────────────────────────────────
+    products: router({
+      list: protectedProcedure
+        .input(z.object({ lang: z.string().optional() }).optional())
+        .query(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          return getDigitalProducts(input?.lang);
+        }),
+
+      get: protectedProcedure
+        .input(z.object({ id: z.number().int() }))
+        .query(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          const product = await getDigitalProductById(input.id);
+          if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
+          return product;
+        }),
+
+      save: protectedProcedure
+        .input(z.object({
+          id: z.number().int().optional(),
+          productKey: z.string().min(1).max(100),
+          lang: z.string().min(2).max(10).default('en'),
+          title: z.string().min(1).max(300),
+          subtitle: z.string().max(500).optional().default(''),
+          content: z.string().min(1),
+          changeNote: z.string().max(500).optional().default(''),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          if (input.id) {
+            // Update existing draft
+            await updateDigitalProduct(input.id, {
+              title: input.title,
+              subtitle: input.subtitle ?? '',
+              content: input.content,
+              changeNote: input.changeNote ?? '',
+              updatedBy: ctx.user.name ?? ctx.user.openId,
+            });
+            return getDigitalProductById(input.id);
+          } else {
+            // Create new draft
+            await createDigitalProduct({
+              productKey: input.productKey,
+              lang: input.lang,
+              title: input.title,
+              subtitle: input.subtitle ?? '',
+              content: input.content,
+              version: 'v0.1',
+              versionNumber: 1,
+              isReleased: false,
+              isDraft: true,
+              changeNote: input.changeNote ?? '',
+              updatedBy: ctx.user.name ?? ctx.user.openId,
+            });
+            return getLatestDraftByKey(input.productKey);
+          }
+        }),
+
+      release: protectedProcedure
+        .input(z.object({
+          id: z.number().int(),
+          changeNote: z.string().max(500).optional().default(''),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          return releaseDigitalProduct(input.id, input.changeNote ?? '', ctx.user.name ?? ctx.user.openId);
+        }),
+
+      createDraft: protectedProcedure
+        .input(z.object({ id: z.number().int() }))
+        .mutation(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          return createDraftFromReleased(input.id, ctx.user.name ?? ctx.user.openId);
+        }),
+
+      history: protectedProcedure
+        .input(z.object({ productKey: z.string().min(1) }))
+        .query(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          return getReleasedVersionsByKey(input.productKey);
+        }),
+
+      downloadPdf: protectedProcedure
+        .input(z.object({ id: z.number().int() }))
+        .mutation(async ({ ctx, input }) => {
+          if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+          const product = await getDigitalProductById(input.id);
+          if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
+          // Return product data for client-side PDF generation
+          return {
+            id: product.id,
+            productKey: product.productKey,
+            lang: product.lang,
+            title: product.title,
+            subtitle: product.subtitle,
+            content: product.content,
+            version: product.version,
+            downloadUrl: `/api/protocol/download?lang=${product.lang}`,
+          };
+        }),
+    }),
 
     sendBroadcast: protectedProcedure
       .input(z.object({

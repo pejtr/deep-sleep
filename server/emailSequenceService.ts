@@ -55,7 +55,8 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
           </ul>
           <p>The 7-Night Protocol fixes all three — in sequence, night by night.</p>
           <p>It's based on CBT-I (Cognitive Behavioral Therapy for Insomnia) — the gold standard treatment that outperforms sleeping pills in clinical trials.</p>
-          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #1a1a2e; color: #f59e0b; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">See the Full Protocol ($7) →</a></p>
+          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #1a1a2e; color: #f59e0b; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Get Your {{chronotype}} Protocol ($5) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
           <p>— Luna</p>
           <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
         </div>
@@ -75,7 +76,8 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
           <blockquote style="border-left: 4px solid #f59e0b; padding-left: 16px; margin: 20px 0; color: #555; font-style: italic;">
             "I was skeptical. But Night 3 was different. I woke up at 6am without an alarm and actually felt rested. First time in 2 years."
           </blockquote>
-          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Fix All 3 — Get the Protocol ($7) →</a></p>
+          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Fix All 3 — Get the Protocol ($5) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
           <p>— Luna</p>
           <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
         </div>
@@ -93,8 +95,10 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
             "I thought I just needed to 'push through it.' The protocol showed me I was fighting my own biology. Night 4 changed everything."
           </blockquote>
           <p>The difference? He followed the <strong>Night 4 Cortisol Reset</strong> — a specific technique in the protocol for {{chronotype}}s who wake in the early morning hours.</p>
-          <p>The $7 price ends this week. After that it's back to $19.</p>
-          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Get the Protocol Before Price Rises ($7) →</a></p>
+          <p>If you already have the protocol, you can also deepen your results with the <strong>Emergency 3AM Rescue Toolkit</strong> — designed specifically for people who wake at 3am and can't fall back asleep.</p>
+          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Get the Protocol ($5) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/order?productId=oto2" style="display: inline-block; background: #1a1a2e; color: #f59e0b; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">🌙 Add 3AM Rescue Toolkit ($19) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
           <p>— Luna</p>
           <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
         </div>
@@ -117,8 +121,9 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
             <li>✅ 30-Day Sleep Tracker</li>
             <li>✅ 30-Day Money-Back Guarantee</li>
           </ul>
-          <p>That's $7 for 7 nights of better sleep. Less than one coffee.</p>
-          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #dc2626; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Claim $7 Price Before Midnight →</a></p>
+          <p>That's $5 for 7 nights of better sleep. Less than one coffee.</p>
+          <p><a href="https://{{domain}}/order?chronotype={{chronotype}}" style="display: inline-block; background: #dc2626; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Get the Protocol ($5) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
           <p>— Luna</p>
           <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
         </div>
@@ -141,23 +146,25 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
         </div>
       `,
     },
-    // E7: +14d — Membership upsell $8/mo
+    // E7: +14d — Upsell: 30-Day Mastery Program
     7: {
-      subject: "1,200 people sleep better every night. Here's how.",
+      subject: "Two weeks in — ready to go deeper?",
       htmlBody: `
         <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #1a1a2e; line-height: 1.7;">
           <h2 style="color: #f59e0b;">Hi {{firstName}},</h2>
-          <p>Two weeks ago you discovered you're a {{chronotype}}.</p>
-          <p>1,200 people in our community have used that knowledge to transform their sleep. They get:</p>
+          <p>Two weeks ago you discovered you're a <strong>{{chronotype}}</strong>.</p>
+          <p>The 7-Night Protocol gives you the foundation. But real, lasting sleep transformation happens over 30 days — when your body fully recalibrates its circadian rhythm.</p>
+          <p>That's why we created the <strong>30-Day Deep Sleep Mastery Program</strong>:</p>
           <ul>
-            <li>🌙 Monthly new sleep protocols (updated with latest research)</li>
-            <li>📊 Personalized sleep tracking templates</li>
-            <li>🎵 New ASMR tracks every month</li>
-            <li>💬 Private community of {{chronotype}}s</li>
-            <li>🔬 Early access to new chronotype tools</li>
+            <li>🌙 Night-by-night guidance for 30 full days</li>
+            <li>📊 Weekly sleep quality assessments</li>
+            <li>🎵 Premium Sleep Audio Library (12 tracks, {{chronotype}}-optimized)</li>
+            <li>🧠 Advanced CBT-I techniques for chronic insomnia</li>
+            <li>📖 Chronotype-specific lifestyle optimization guide</li>
           </ul>
-          <p>All for <strong>$8/month</strong>. Cancel anytime.</p>
-          <p><a href="https://{{domain}}/upsell/3?chronotype={{chronotype}}" style="display: inline-block; background: #7c3aed; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Join the Community ($8/mo) →</a></p>
+          <p>One-time investment. No subscription. No recurring charges.</p>
+          <p><a href="https://{{domain}}/order?productId=backend" style="display: inline-block; background: #7c3aed; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Upgrade to 30-Day Mastery ($97) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
           <p>— Luna</p>
           <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
         </div>
@@ -168,51 +175,71 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
     1: {
       subject: "📊 How's Your Sleep? (Day 1 Check-In)",
       htmlBody: `
-        <h2>Hi {{firstName}},</h2>
-        <p>It's been 24 hours since you started the 7-Night Deep Sleep Reset.</p>
-        <p><strong>Quick check-in:</strong> How are you feeling?</p>
-        <ul>
-          <li>✅ Already sleeping better?</li>
-          <li>⏳ Still adjusting?</li>
-          <li>❓ Have questions?</li>
-        </ul>
-        <p>Reply to this email — I read every message.</p>
-        <p>— Luna</p>
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #1a1a2e; line-height: 1.7;">
+          <h2 style="color: #f59e0b;">Hi {{firstName}},</h2>
+          <p>It's been 24 hours since you started the 7-Night Deep Sleep Reset.</p>
+          <p><strong>Quick check-in:</strong> How are you feeling?</p>
+          <ul>
+            <li>✅ Already sleeping better?</li>
+            <li>⏳ Still adjusting?</li>
+            <li>❓ Have questions?</li>
+          </ul>
+          <p>Reply to this email — I read every message.</p>
+          <p style="margin-top: 16px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">📖 Open Your Protocol →</a></p>
+          <p>— Luna</p>
+          <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
+        </div>
       `,
     },
     4: {
-      subject: "🎁 Exclusive: Chronotype Optimizer ({{chronotype}} Edition) — $17 → $3",
+      subject: "Night 4 — time to add the soundtrack 🎵",
       htmlBody: `
-        <h2>Hi {{firstName}},</h2>
-        <p>You're halfway through the 7-Night Protocol. How's it going?</p>
-        <p>Many {{chronotype}}s ask: "How do I optimize my sleep even more?"</p>
-        <p><strong>That's why we created the Chronotype Optimizer.</strong></p>
-        <p>Normally $17 — but because you're already part of our community, it's just <strong>$3 today</strong>.</p>
-        <p><a href="https://{{domain}}/upsell/1?chronotype={{chronotype}}" style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">See What's Included</a></p>
-        <p>This offer expires in 24 hours.</p>
-        <p>— Luna</p>
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #1a1a2e; line-height: 1.7;">
+          <h2 style="color: #f59e0b;">Hi {{firstName}},</h2>
+          <p>You're halfway through the 7-Night Protocol. How's it going?</p>
+          <p>Many {{chronotype}}s find that adding sleep audio on Night 4-7 dramatically speeds up results. The right sounds help your nervous system downregulate faster — especially for {{chronotype}}s whose cortisol stays elevated in the evening.</p>
+          <p><strong>The Premium Sleep Audio Pack includes 12 tracks:</strong></p>
+          <ul>
+            <li>🌧 Rain on Rooftop (30 min)</li>
+            <li>🌲 Forest Ambience (45 min)</li>
+            <li>🌊 Ocean Waves (60 min)</li>
+            <li>⛈ Thunderstorm (60 min)</li>
+            <li>🔥 Fireplace Crackle (45 min)</li>
+            <li>🧠 Binaural Beats — Delta waves (30 min)</li>
+            <li>+ 6 more {{chronotype}}-optimized tracks</li>
+          </ul>
+          <p><a href="https://{{domain}}/order?productId=bump" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">Add Premium Audio Pack ($11) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
+          <p>— Luna</p>
+          <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
+        </div>
       `,
     },
   },
   upsell: {
     1: {
-      subject: "🎵 Premium Sleep Sounds: 7 ASMR Tracks ({{chronotype}} Optimized) — $7",
+      subject: "🎵 Premium Sleep Audio Pack — 12 Tracks ({{chronotype}} Optimized)",
       htmlBody: `
-        <h2>Hi {{firstName}},</h2>
-        <p>The protocol is working. Now let's add the soundtrack.</p>
-        <p><strong>The ASMR Sleep Pack includes:</strong></p>
-        <ul>
-          <li>Rain on Rooftop (30 min)</li>
-          <li>Forest Ambience (45 min)</li>
-          <li>Ocean Waves (1 hour)</li>
-          <li>Thunderstorm (1 hour)</li>
-          <li>Fireplace Crackle (45 min)</li>
-          <li>Binaural Beats (30 min)</li>
-          <li>Guided Sleep Meditation (20 min)</li>
-        </ul>
-        <p>All scientifically optimized for {{chronotype}} sleep cycles.</p>
-        <p><a href="https://{{domain}}/upsell/2?chronotype={{chronotype}}" style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Add ASMR Pack ($7)</a></p>
-        <p>— Luna</p>
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #1a1a2e; line-height: 1.7;">
+          <h2 style="color: #f59e0b;">Hi {{firstName}},</h2>
+          <p>The protocol is working. Now let's add the soundtrack.</p>
+          <p><strong>The Premium Sleep Audio Pack includes 12 tracks:</strong></p>
+          <ul>
+            <li>🌧 Rain on Rooftop (30 min)</li>
+            <li>🌲 Forest Ambience (45 min)</li>
+            <li>🌊 Ocean Waves (60 min)</li>
+            <li>⛈ Thunderstorm (60 min)</li>
+            <li>🔥 Fireplace Crackle (45 min)</li>
+            <li>🧠 Binaural Beats — Delta waves (30 min)</li>
+            <li>🧘 Guided Sleep Meditation (20 min)</li>
+            <li>+ 5 more {{chronotype}}-optimized tracks</li>
+          </ul>
+          <p>All scientifically optimized for {{chronotype}} sleep cycles. One-time purchase — yours forever.</p>
+          <p><a href="https://{{domain}}/order?productId=bump" style="display: inline-block; background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">Add Premium Audio Pack ($11) →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f3f4f6; color: #1a1a2e; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">📖 Access Your Protocol →</a></p>
+          <p>— Luna</p>
+          <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Educational wellness content. Not medical advice.</p>
+        </div>
       `,
     },
   },
@@ -274,18 +301,23 @@ const EMAIL_TEMPLATES: Record<SequenceType, Record<number, EmailTemplate>> = {
     1: {
       subject: "🎉 Welcome to Deep Sleep Reset — Start Tonight",
       htmlBody: `
-        <h2>Hi {{firstName}},</h2>
-        <p>Your payment is confirmed. Your 7-Night Protocol is ready.</p>
-        <p><strong>What to do now:</strong></p>
-        <ol>
-          <li>Download your personalized protocol (attached)</li>
-          <li>Read Night 1 instructions</li>
-          <li>Set up your sleep environment</li>
-          <li>Start tonight</li>
-        </ol>
-        <p><a href="https://{{domain}}/protocol" style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">View Your Protocol</a></p>
-        <p>Sleep better or your money back.</p>
-        <p>— Luna & the Deep Sleep Reset Team</p>
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #1a1a2e; line-height: 1.7;">
+          <h2 style="color: #f59e0b;">Hi {{firstName}},</h2>
+          <p>Your payment is confirmed. Your 7-Night {{chronotype}} Protocol is ready.</p>
+          <p><strong>What to do now:</strong></p>
+          <ol>
+            <li>Click the button below to access your personal protocol page</li>
+            <li>Download your personalized PDF</li>
+            <li>Read Night 1 instructions (takes 5 minutes)</li>
+            <li>Set up your sleep environment tonight</li>
+          </ol>
+          <p style="background: #fff8e7; padding: 16px; border-left: 4px solid #f59e0b; border-radius: 4px;"><strong>Your protocol includes:</strong> 7-Night Protocol PDF · Sleep Environment Checklist · Chronotype Guide · 4 ASMR Sleep Tracks · 30-Day Tracker</p>
+          <p><a href="https://{{domain}}/my-protocol" style="display: inline-block; background: #f59e0b; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">📖 Open Your Personal Protocol Page →</a></p>
+          <p style="margin-top: 8px;"><a href="https://{{domain}}/api/protocol/download?lang=en" style="display: inline-block; background: #1a1a2e; color: #f59e0b; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">⬇️ Download PDF Directly →</a></p>
+          <p>Sleep better or your money back — 30-day guarantee, no questions asked.</p>
+          <p>— Luna & the Deep Sleep Reset Team</p>
+          <p style="font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">Questions? Reply to this email. Educational wellness content. Not medical advice.</p>
+        </div>
       `,
     },
   },

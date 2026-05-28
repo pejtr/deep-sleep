@@ -1150,3 +1150,12 @@
 - [x] ThankYou: Buyer remorse prevence (94% stats, 47min faster sleep, 30-day guarantee grid)
 - [x] ThankYou: Identity reinforcement ("Welcome to the [Chronotype] Tribe" + "You are now a X Sleep Optimizer")
 - [x] ThankYou: Fix upsell3 route → /upsell/3 (konzistence s App.tsx)
+
+## Digital Products & Admin (May 28, 2026)
+- [x] Fix TypeScript errors in server/db.ts — getDb() called without await in digital product read functions (getDigitalProducts, getDigitalProductById, getReleasedVersionsByKey, getLatestDraftByKey)
+- [x] Add tRPC procedures for digital products: admin.products.list, get, save, release, createDraft, history, downloadPdf
+- [x] Add admin Products tab in AdminDashboard.tsx — product list, version history, editor modal, release modal, PDF download
+- [x] Create /my-protocol page for customers — shows purchased products, download buttons, upsell section
+- [x] Register /my-protocol route in App.tsx
+- [x] All 290 tests passing (pnpm test)
+- [x] TypeScript: 0 errors

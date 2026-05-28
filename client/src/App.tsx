@@ -48,6 +48,7 @@ const InsomniaLanding = lazy(() => import("./pages/InsomniaLanding"));
 const FreeGuide = lazy(() => import("./pages/FreeGuide"));
 const SpecialOffer = lazy(() => import("./pages/SpecialOffer"));
 const LeadMagnetPopup = lazy(() => import("./components/LeadMagnetPopup"));
+const MyProtocol = lazy(() => import("./pages/MyProtocol"));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
@@ -95,6 +96,7 @@ function Router() {
         <Route path="/ab-testing" component={AbTestingDashboard} />
         <Route path="/checkout/success" component={CheckoutSuccess} />
         <Route path="/protocol" component={Protocol} />
+        <Route path="/my-protocol" component={MyProtocol} />
         <Route path="/squeeze" component={Squeeze} />
         <Route path="/bridge" component={Bridge} />
         <Route path="/3am-wake-up" component={SegmentLanding} />

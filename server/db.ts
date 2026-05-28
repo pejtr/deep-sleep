@@ -1045,3 +1045,94 @@ export async function getLiveTrafficData() {
 
   return { weekly, daily, activeNow, todayVisits, todayOrders };
 }
+
+// ── Digital Products helpers ──────────────────────────────────────────────────
+import { digitalProducts, DigitalProduct, InsertDigitalProduct } from "../drizzle/schema";
+import { ne, sql } from "drizzle-orm";
+
+export async function getDigitalProducts(lang?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const q = db.select().from(digitalProducts).orderBy(desc(digitalProducts.createdAt));
+  if (lang) return q.where(eq(digitalProducts.lang, lang));
+  return q;
+}
+
+export async function getDigitalProductById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const rows = await db.select().from(digitalProducts).where(eq(digitalProducts.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getReleasedVersionsByKey(productKey: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.select().from(digitalProducts)
+    .where(and(eq(digitalProducts.productKey, productKey), eq(digitalProducts.isReleased, true)))
+    .orderBy(desc(digitalProducts.versionNumber));
+}
+
+export async function getLatestDraftByKey(productKey: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const rows = await db.select().from(digitalProducts)
+    .where(and(eq(digitalProducts.productKey, productKey), eq(digitalProducts.isDraft, true)))
+    .orderBy(desc(digitalProducts.versionNumber)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function createDigitalProduct(data: InsertDigitalProduct) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(digitalProducts).values(data);
+  return result;
+}
+
+export async function updateDigitalProduct(id: number, data: Partial<InsertDigitalProduct>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(digitalProducts).set(data).where(eq(digitalProducts.id, id));
+}
+
+export async function releaseDigitalProduct(id: number, changeNote: string, releasedBy: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Get current record
+  const current = await getDigitalProductById(id);
+  if (!current) throw new Error("Product not found");
+  // Mark as released (no longer draft)
+  await db.update(digitalProducts).set({
+    isReleased: true,
+    isDraft: false,
+    releasedAt: new Date(),
+    changeNote,
+    updatedBy: releasedBy,
+  }).where(eq(digitalProducts.id, id));
+  return current;
+}
+
+export async function createDraftFromReleased(id: number, createdBy: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const source = await getDigitalProductById(id);
+  if (!source) throw new Error("Source product not found");
+  // Compute next version number
+  const allVersions = await getReleasedVersionsByKey(source.productKey);
+  const maxVer = allVersions.reduce((m: number, r: { versionNumber: number }) => Math.max(m, r.versionNumber), source.versionNumber);
+  const nextNum = maxVer + 1;
+  const nextVer = `v${Math.floor(nextNum / 10)}.${nextNum % 10}` ;
+  const result = await db.insert(digitalProducts).values({
+    productKey: source.productKey,
+    lang: source.lang,
+    title: source.title,
+    subtitle: source.subtitle ?? "",
+    content: source.content,
+    version: nextVer,
+    versionNumber: nextNum,
+    isReleased: false,
+    isDraft: true,
+    updatedBy: createdBy,
+  });
+  return result;
+}

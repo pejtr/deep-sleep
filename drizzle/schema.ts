@@ -477,3 +477,25 @@ export const campaigns = mysqlTable("campaigns", {
 });
 export type Campaign = typeof campaigns.$inferSelect;
 export type InsertCampaign = typeof campaigns.$inferInsert;
+
+// ── Digital Products (editable content with versioning) ──────────────────────
+export const digitalProducts = mysqlTable("digital_products", {
+  id: int("id").autoincrement().primaryKey(),
+  productKey: varchar("productKey", { length: 64 }).notNull(), // e.g. "protocol-en-v1"
+  lang: varchar("lang", { length: 8 }).notNull().default("en"),
+  title: varchar("title", { length: 256 }).notNull(),
+  subtitle: varchar("subtitle", { length: 512 }),
+  content: text("content").notNull(), // JSON stringified full content
+  version: varchar("version", { length: 16 }).notNull().default("v1.0"),
+  versionNumber: int("versionNumber").notNull().default(1),
+  isReleased: boolean("isReleased").notNull().default(false),
+  isDraft: boolean("isDraft").notNull().default(true),
+  releasedAt: timestamp("releasedAt"),
+  changeNote: varchar("changeNote", { length: 512 }),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedBy: varchar("updatedBy", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DigitalProduct = typeof digitalProducts.$inferSelect;
+export type InsertDigitalProduct = typeof digitalProducts.$inferInsert;

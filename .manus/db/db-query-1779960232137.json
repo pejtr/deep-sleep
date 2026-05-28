@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `digital_products` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`productKey` varchar(64) NOT NULL,\n\t`lang` varchar(8) NOT NULL DEFAULT 'en',\n\t`title` varchar(256) NOT NULL,\n\t`subtitle` varchar(512),\n\t`content` text NOT NULL,\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\t`updatedBy` varchar(128),\n\tCONSTRAINT `digital_products_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `digital_products_productKey_unique` UNIQUE(`productKey`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute CREATE TABLE `digital_products` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`productKey` varchar(64) NOT NULL,\n\t`lang` varchar(8) NOT NULL DEFAULT 'en',\n\t`title` varchar(256) NOT NULL,\n\t`subtitle` varchar(512),\n\t`content` text NOT NULL,\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\t`updatedBy` varchar(128),\n\tCONSTRAINT `digital_products_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `digital_products_productKey_unique` UNIQUE(`productKey`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 397
+}
