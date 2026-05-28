@@ -1,0 +1,115 @@
+{
+  "query": "SELECT id, email, status, createdAt, stripeSessionId \nFROM orders \nWHERE status = 'pending' \nORDER BY createdAt DESC\nLIMIT 15;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute SELECT id, email, status, createdAt, stripeSessionId \nFROM orders \nWHERE status = 'pending' \nORDER BY createdAt DESC\nLIMIT 15;",
+  "rows": [
+    {
+      "id": "1020002",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-28 09:12:28",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "1020001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-28 09:12:10",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "990001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-27 13:26:01",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "960001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-26 19:21:58",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "930002",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-26 14:51:00",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "930001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-26 14:50:25",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "900002",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-26 14:03:10",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "900001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-26 14:00:56",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "870001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-26 13:45:23",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "840001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-18 23:54:04",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "810003",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-18 15:38:14",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "810002",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-18 15:37:46",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "810001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-18 15:28:59",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "780001",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-17 19:24:34",
+      "stripeSessionId": "NULL"
+    },
+    {
+      "id": "750005",
+      "email": "NULL",
+      "status": "pending",
+      "createdAt": "2026-05-17 17:00:46",
+      "stripeSessionId": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tstatus\tcreatedAt\tstripeSessionId\n1020002\tNULL\tpending\t2026-05-28 09:12:28\tNULL\n1020001\tNULL\tpending\t2026-05-28 09:12:10\tNULL\n990001\tNULL\tpending\t2026-05-27 13:26:01\tNULL\n960001\tNULL\tpending\t2026-05-26 19:21:58\tNULL\n930002\tNULL\tpending\t2026-05-26 14:51:00\tNULL\n930001\tNULL\tpending\t2026-05-26 14:50:25\tNULL\n900002\tNULL\tpending\t2026-05-26 14:03:10\tNULL\n900001\tNULL\tpending\t2026-05-26 14:00:56\tNULL\n870001\tNULL\tpending\t2026-05-26 13:45:23\tNULL\n840001\tNULL\tpending\t2026-05-18 23:54:04\tNULL\n810003\tNULL\tpending\t2026-05-18 15:38:14\tNULL\n810002\tNULL\tpending\t2026-05-18 15:37:46\tNULL\n810001\tNULL\tpending\t2026-05-18 15:28:59\tNULL\n780001\tNULL\tpending\t2026-05-17 19:24:34\tNULL\n750005\tNULL\tpending\t2026-05-17 17:00:46\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 266
+}

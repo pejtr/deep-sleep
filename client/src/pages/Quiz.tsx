@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Moon, ArrowLeft, Zap, Shield, Lock, Mail, ChevronRight } from "lucide-react";
+import { Moon, ArrowLeft, ArrowRight, Zap, Shield, Lock, Mail, ChevronRight } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { getSessionId, getAbVariant, setChronotype, useTrackBehavior } from "@/hooks/useSession";
 import { setMetaTags } from "@/lib/metaTags";
@@ -364,14 +364,33 @@ export default function Quiz() {
 
           <h2 className="font-display font-bold text-2xl md:text-3xl text-center mb-3 leading-tight"
             style={{ color: "oklch(0.95 0.01 265)" }}>
-            Where should we send<br />your results?
+            Your sleep profile<br />is ready
           </h2>
 
-          <p className="text-sm text-center mb-6" style={{ color: "oklch(0.55 0.04 265)" }}>
-            Get your personalized chronotype profile + a free 3 AM Rescue Protocol
+          <p className="text-sm text-center mb-8" style={{ color: "oklch(0.55 0.04 265)" }}>
+            See your personalized chronotype profile + free 3 AM Rescue Protocol
           </p>
 
-          <form onSubmit={handleEmailSubmit} className="w-full space-y-3">
+          {/* PRIMARY CTA: See Results First (no friction) */}
+          <button
+            onClick={handleSkipEmail}
+            className="w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] mb-4"
+            style={{
+              background: "linear-gradient(135deg, oklch(0.78 0.18 65), oklch(0.7 0.2 45))",
+              color: "oklch(0.1 0.01 265)",
+              boxShadow: "0 4px 20px oklch(0.78 0.18 65 / 0.3)",
+            }}
+          >
+            <span>See My Results Now</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+
+          {/* SECONDARY: Email for free bonus */}
+          <p className="text-xs text-center mb-3" style={{ color: "oklch(0.55 0.04 265)" }}>
+            Get the free cheat sheet:
+          </p>
+
+          <form onSubmit={handleEmailSubmit} className="w-full space-y-2">
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "oklch(0.50 0.04 265)" }} />
               <input
@@ -379,42 +398,26 @@ export default function Quiz() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm outline-none transition-all"
+                className="w-full pl-11 pr-4 py-3 rounded-lg text-sm outline-none transition-all"
                 style={{
                   background: "oklch(0.12 0.02 255)",
-                  border: "1px solid oklch(0.78 0.18 65 / 0.3)",
+                  border: "1px solid oklch(0.78 0.18 65 / 0.2)",
                   color: "oklch(0.95 0.01 265)",
                 }}
-                autoFocus
-                required
               />
             </div>
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-2.5 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 transition-all hover:bg-white/5"
               style={{
-                background: "linear-gradient(135deg, oklch(0.78 0.18 65), oklch(0.7 0.2 45))",
-                color: "oklch(0.1 0.01 265)",
-                boxShadow: "0 4px 20px oklch(0.78 0.18 65 / 0.3)",
+                background: "oklch(0.20 0.04 265)",
+                color: "oklch(0.78 0.18 65)",
               }}
             >
-              <span>See My Sleep Score</span>
-              <ChevronRight className="w-4 h-4" />
+              <span>Send Me the Free Cheat Sheet</span>
+              <ChevronRight className="w-3 h-3" />
             </button>
           </form>
-
-          <div className="mt-4 flex flex-col gap-2">
-            <button
-              onClick={handleSkipEmail}
-              className="text-xs font-semibold py-2 px-3 rounded-lg transition-all hover:bg-white/5"
-              style={{ color: "oklch(0.55 0.04 265)" }}
-            >
-              Skip for now — I'll get results without email
-            </button>
-            <p className="text-xs text-center" style={{ color: "oklch(0.35 0.04 265)" }}>
-              (You can always add your email later to get the free cheat sheet)
-            </p>
-          </div>
 
           {/* Trust signals */}
           <div className="mt-8 flex items-center justify-center gap-4 text-xs" style={{ color: "oklch(0.35 0.04 265)" }}>

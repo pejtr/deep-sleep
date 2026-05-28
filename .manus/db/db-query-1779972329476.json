@@ -1,0 +1,16 @@
+{
+  "query": "SELECT COUNT(*) as total_orders, \n       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,\n       SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,\n       SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed\nFROM orders;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute SELECT COUNT(*) as total_orders, \n       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,\n       SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,\n       SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed\nFROM orders;",
+  "rows": [
+    {
+      "total_orders": "51",
+      "completed": "1",
+      "pending": "50",
+      "failed": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_orders\tcompleted\tpending\tfailed\n51\t1\t50\t0\n",
+  "stderr": "",
+  "execution_time_ms": 310
+}

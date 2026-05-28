@@ -379,22 +379,25 @@ export default function Home() {
           <div className="max-w-2xl mx-auto rounded-2xl p-8 md:p-10 text-center relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, oklch(0.20 0.08 280), oklch(0.15 0.06 260))" }}>
             <div className="text-xs font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: "oklch(0.65 0.04 265)" }}>LION &middot; BEAR &middot; WOLF &middot; DOLPHIN</div>
-            <h2 className="font-display font-bold text-2xl md:text-3xl mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
+            <h2 className="font-display font-bold text-2xl md:text-3xl mb-3" style={{ color: "oklch(0.95 0.01 265)" }}>
               Why Can't <em>You</em> Sleep? <span className="text-gradient-gold">Your Chronotype Knows.</span>
             </h2>
-            <p className="text-sm mb-4 max-w-md mx-auto" style={{ color: "oklch(0.65 0.04 265)" }}>
+            <p className="text-sm mb-2 max-w-md mx-auto" style={{ color: "oklch(0.65 0.04 265)" }}>
               5 questions. 60 seconds. Discover your sleep type and get a personalized protocol.
+            </p>
+            <p className="text-xs mb-6 max-w-md mx-auto font-semibold" style={{ color: "oklch(0.78 0.18 65)" }}>
+              ⏰ 47 people already discovered their sleep type today
             </p>
             <button
               onClick={handleStartQuiz}
-              className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-bold transition-all hover:scale-105 animate-pulse-glow"
-              style={{ background: "oklch(0.55 0.22 290)", color: "white" }}
+              className="inline-flex items-center gap-2 rounded-xl px-8 py-4 text-base font-bold transition-all hover:scale-105 active:scale-95 animate-pulse-glow shadow-lg"
+              style={{ background: "linear-gradient(135deg, oklch(0.78 0.18 65), oklch(0.7 0.2 45))", color: "oklch(0.1 0.01 265)", boxShadow: "0 4px 24px oklch(0.78 0.18 65 / 0.4)" }}
             >
-              Take the 60-Second Quiz
+              🎯 Find My Chronotype
               <ArrowRight className="w-4 h-4" />
             </button>
-            <p className="text-xs mt-2" style={{ color: "oklch(0.45 0.04 265)" }}>
-              Free · Instant results · No email required
+            <p className="text-xs mt-3" style={{ color: "oklch(0.45 0.04 265)" }}>
+              Free · Instant results · No email required · Takes 60 seconds
             </p>
           </div>
         </section>
