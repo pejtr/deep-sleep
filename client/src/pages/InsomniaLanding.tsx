@@ -239,6 +239,13 @@ export default function InsomniaLanding() {
         <div className="space-y-4">
           {[
             {
+              name: "Sofia R.",
+              loc: "Los Angeles, CA",
+              text: "I was skeptical at first, but after just 10 days following the Deep Sleep Reset protocol, I'm finally waking up feeling genuinely rested. No more lying awake for hours — I fall asleep within 20 minutes now.",
+              context: "Sleep onset insomnia",
+              photo: "/manus-storage/customer_review_woman_46805796.png",
+            },
+            {
               name: "Marcus T.",
               loc: "Portland, OR",
               text: "I was skeptical — I've had insomnia for 6 years and tried everything. The sleep restriction part was hard at first, but by Night 4 I was sleeping 6.5 hours straight. That hadn't happened in years.",
@@ -265,9 +272,16 @@ export default function InsomniaLanding() {
               </div>
               <p className="text-sm leading-relaxed mb-3" style={{ color: C.text }}>"{r.text}"</p>
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold" style={{ color: C.text }}>{r.name}</p>
-                  <p className="text-xs" style={{ color: C.textMuted }}>{r.loc}</p>
+                <div className="flex items-center gap-2">
+                  {(r as any).photo ? (
+                    <img src={(r as any).photo} alt={r.name}
+                      className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                      style={{ border: `1.5px solid ${C.gold}40` }} />
+                  ) : null}
+                  <div>
+                    <p className="text-xs font-semibold" style={{ color: C.text }}>{r.name}</p>
+                    <p className="text-xs" style={{ color: C.textMuted }}>{r.loc}</p>
+                  </div>
                 </div>
                 <span className="text-xs px-2 py-1 rounded-full" style={{ background: "oklch(0.72 0.16 240 / 0.1)", color: C.blue, border: `1px solid ${C.borderBlue}` }}>
                   {r.context}

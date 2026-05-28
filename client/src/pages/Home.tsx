@@ -73,6 +73,13 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 
 const TESTIMONIALS = [
   {
+    text: "I was skeptical at first, but after just 10 days following the Deep Sleep Reset protocol, I'm finally waking up feeling genuinely rested. No more lying awake for hours — I fall asleep within 20 minutes now.",
+    name: "Sofia R.",
+    location: "Los Angeles, CA",
+    stars: 5,
+    photo: "/manus-storage/customer_review_woman_46805796.png",
+  },
+  {
     text: "I've had insomnia for 10 years. Night 4 of this program, I fell asleep in 15 minutes. I cried the next morning.",
     name: "Sarah M.",
     location: "Austin, TX",
@@ -208,10 +215,16 @@ export default function Home() {
                   "{t.text}"
                 </p>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{ background: "oklch(0.78 0.18 65 / 0.12)", color: "oklch(0.82 0.16 65)" }}>
-                    {t.name[0]}
-                  </div>
+                  {(t as any).photo ? (
+                    <img src={(t as any).photo} alt={t.name}
+                      className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                      style={{ border: "1.5px solid oklch(0.78 0.18 65 / 0.3)" }} />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                      style={{ background: "oklch(0.78 0.18 65 / 0.12)", color: "oklch(0.82 0.16 65)" }}>
+                      {t.name[0]}
+                    </div>
+                  )}
                   <div>
                     <p className="text-xs font-semibold" style={{ color: "oklch(0.90 0.01 265)" }}>{t.name}</p>
                     <p className="text-xs" style={{ color: "oklch(0.45 0.04 265)" }}>{t.location}</p>

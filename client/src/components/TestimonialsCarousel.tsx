@@ -10,9 +10,19 @@ interface Testimonial {
   text: string;
   result: string;
   avatar: string;
+  photo?: string;
 }
 
 const TESTIMONIALS: Testimonial[] = [
+  {
+    name: "Sofia R.",
+    location: "Los Angeles, USA",
+    chronotype: "Bear",
+    text: "I was skeptical at first, but after just 10 days following the Deep Sleep Reset protocol, I'm finally waking up feeling genuinely rested. No more lying awake for hours — I fall asleep within 20 minutes now.",
+    result: "Asleep in under 20 minutes",
+    avatar: "SR",
+    photo: "/manus-storage/customer_review_woman_46805796.png",
+  },
   {
     name: "Sarah M.",
     location: "New York, USA",
@@ -148,10 +158,16 @@ export default function TestimonialsCarousel({
 
         {/* Author */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-            style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: "oklch(0.82 0.16 65)" }}>
-            {t.avatar}
-          </div>
+          {t.photo ? (
+            <img src={t.photo} alt={t.name}
+              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+              style={{ border: "2px solid oklch(0.78 0.18 65 / 0.3)" }} />
+          ) : (
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+              style={{ background: "oklch(0.78 0.18 65 / 0.15)", color: "oklch(0.82 0.16 65)" }}>
+              {t.avatar}
+            </div>
+          )}
           <div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold" style={{ color: "oklch(0.95 0.01 265)" }}>{t.name}</span>
