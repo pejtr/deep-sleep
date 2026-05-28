@@ -1,0 +1,190 @@
+{
+  "query": "\n-- Funnel events by page\nSELECT \n  event,\n  page,\n  COUNT(*) as count,\n  COUNT(DISTINCT sessionId) as unique_sessions\nFROM behavior_events\nGROUP BY event, page\nORDER BY unique_sessions DESC\nLIMIT 80;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \n-- Funnel events by page\nSELECT \n  event,\n  page,\n  COUNT(*) as count,\n  COUNT(DISTINCT sessionId) as unique_sessions\nFROM behavior_events\nGROUP BY event, page\nORDER BY unique_sessions DESC\nLIMIT 80;\n",
+  "rows": [
+    {
+      "event": "page_view",
+      "page": "home",
+      "count": "4297",
+      "unique_sessions": "1219"
+    },
+    {
+      "event": "page_view",
+      "page": "order",
+      "count": "377",
+      "unique_sessions": "240"
+    },
+    {
+      "event": "time_on_page",
+      "page": "home",
+      "count": "532",
+      "unique_sessions": "129"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "count": "458",
+      "unique_sessions": "102"
+    },
+    {
+      "event": "page_view",
+      "page": "quiz",
+      "count": "99",
+      "unique_sessions": "61"
+    },
+    {
+      "event": "exit_intent",
+      "page": "home",
+      "count": "31",
+      "unique_sessions": "30"
+    },
+    {
+      "event": "checkout_click",
+      "page": "order",
+      "count": "539",
+      "unique_sessions": "30"
+    },
+    {
+      "event": "cta_click",
+      "page": "home",
+      "count": "33",
+      "unique_sessions": "22"
+    },
+    {
+      "event": "rage_click",
+      "page": "home",
+      "count": "441",
+      "unique_sessions": "13"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "count": "49",
+      "unique_sessions": "12"
+    },
+    {
+      "event": "cta_click",
+      "page": "home_variant_b",
+      "count": "4",
+      "unique_sessions": "4"
+    },
+    {
+      "event": "page_view",
+      "page": "quiz_result",
+      "count": "44",
+      "unique_sessions": "4"
+    },
+    {
+      "event": "quiz_complete",
+      "page": "quiz",
+      "count": "5",
+      "unique_sessions": "4"
+    },
+    {
+      "event": "page_view",
+      "page": "quiz_funnel",
+      "count": "10",
+      "unique_sessions": "4"
+    },
+    {
+      "event": "cta_click",
+      "page": "quiz",
+      "count": "6",
+      "unique_sessions": "3"
+    },
+    {
+      "event": "page_view",
+      "page": "upsell1",
+      "count": "7",
+      "unique_sessions": "3"
+    },
+    {
+      "event": "cta_click",
+      "page": "quiz_result",
+      "count": "3",
+      "unique_sessions": "3"
+    },
+    {
+      "event": "email_capture",
+      "page": "quiz_result",
+      "count": "2",
+      "unique_sessions": "2"
+    },
+    {
+      "event": "page_view",
+      "page": "thankyou",
+      "count": "4",
+      "unique_sessions": "2"
+    },
+    {
+      "event": "ab_impression",
+      "page": "upsell1",
+      "count": "3",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz_funnel",
+      "count": "5",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "email_capture",
+      "page": "quiz",
+      "count": "1",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "quiz_funnel",
+      "count": "7",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "page_view",
+      "page": "upsell3",
+      "count": "1",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "email_skip",
+      "page": "quiz_funnel",
+      "count": "1",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "time_on_page",
+      "page": "quiz_funnel",
+      "count": "4",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "page_view",
+      "page": "upsell2",
+      "count": "1",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "upsell_accept",
+      "page": "upsell1",
+      "count": "1",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "quiz_complete",
+      "page": "quiz_funnel",
+      "count": "1",
+      "unique_sessions": "1"
+    },
+    {
+      "event": "page_view",
+      "page": "insomnia_landing",
+      "count": "3",
+      "unique_sessions": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "event\tpage\tcount\tunique_sessions\npage_view\thome\t4297\t1219\npage_view\torder\t377\t240\ntime_on_page\thome\t532\t129\nscroll_depth\thome\t458\t102\npage_view\tquiz\t99\t61\nexit_intent\thome\t31\t30\ncheckout_click\torder\t539\t30\ncta_click\thome\t33\t22\nrage_click\thome\t441\t13\nquiz_answer\tquiz\t49\t12\ncta_click\thome_variant_b\t4\t4\npage_view\tquiz_result\t44\t4\nquiz_complete\tquiz\t5\t4\npage_view\tquiz_funnel\t10\t4\ncta_click\tquiz\t6\t3\npage_view\tupsell1\t7\t3\ncta_click\tquiz_result\t3\t3\nemail_capture\tquiz_result\t2\t2\npage_view\tthankyou\t4\t2\nab_impression\tupsell1\t3\t1\nquiz_answer\tquiz_funnel\t5\t1\nemail_capture\tquiz\t1\t1\nscroll_depth\tquiz_funnel\t7\t1\npage_view\tupsell3\t1\t1\nemail_skip\tquiz_funnel\t1\t1\ntime_on_page\tquiz_funnel\t4\t1\npage_view\tupsell2\t1\t1\nupsell_accept\tupsell1\t1\t1\nquiz_complete\tquiz_funnel\t1\t1\npage_view\tinsomnia_landing\t3\t1\n",
+  "stderr": "",
+  "execution_time_ms": 278
+}

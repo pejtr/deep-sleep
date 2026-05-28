@@ -139,13 +139,13 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
             className="font-display font-bold text-2xl text-center mb-2"
             style={{ color: "oklch(0.95 0.01 265)" }}
           >
-            Before you go...
+            Wait — One Last Thing
           </h2>
-          <p className="text-center text-sm mb-1" style={{ color: "oklch(0.65 0.04 265)" }}>
-            You came here because your sleep is broken.
+          <p className="text-center text-sm mb-1 font-medium" style={{ color: "oklch(0.82 0.16 65)" }}>
+            Tonight is another bad night... unless you act now.
           </p>
           <p className="text-center text-sm mb-5" style={{ color: "oklch(0.65 0.04 265)" }}>
-            We're not going to let you leave without fixing it.
+            We're cutting the price to <strong style={{ color: "oklch(0.82 0.16 65)" }}>$4</strong> — less than a coffee — so you have zero excuse.
           </p>
 
           {/* Price callout */}
@@ -163,7 +163,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
                 className="text-xs font-bold px-2 py-1 rounded-full"
                 style={{ background: "oklch(0.78 0.18 65 / 0.2)", color: "oklch(0.82 0.16 65)" }}
               >
-                SAVE 20%
+                SAVE 93%
               </span>
             </div>
             <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 265)" }}>
@@ -197,14 +197,15 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
           <button
             onClick={handleClaim}
             disabled={loading}
-            className="w-full rounded-xl py-3.5 font-bold text-base transition-all"
+            className="w-full rounded-xl py-4 font-bold text-base transition-all"
             style={{
               background: loading ? "oklch(0.55 0.12 65)" : "linear-gradient(135deg, oklch(0.78 0.18 65), oklch(0.65 0.20 55))",
               color: "oklch(0.10 0.02 255)",
-              boxShadow: loading ? "none" : "0 4px 20px oklch(0.78 0.18 65 / 0.35)",
+              boxShadow: loading ? "none" : "0 4px 24px oklch(0.78 0.18 65 / 0.45)",
+              fontSize: "1.05rem",
             }}
           >
-            {loading ? "Opening checkout..." : `Claim ${formatPrice(4)} Access — Tonight Only →`}
+            {loading ? "Opening checkout..." : `🔒 Fix My Sleep Tonight — ${formatPrice(4)}`}
           </button>
 
           {/* Trust */}

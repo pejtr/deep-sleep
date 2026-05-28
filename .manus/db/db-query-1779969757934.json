@@ -1,0 +1,166 @@
+{
+  "query": "\nSELECT event, page, value, createdAt FROM behavior_events \nWHERE sessionId IN ('eK_7rU8b-HNjrg4sS9P3', '81eazF9t0vNJk5c0hpNv')\nORDER BY createdAt ASC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \nSELECT event, page, value, createdAt FROM behavior_events \nWHERE sessionId IN ('eK_7rU8b-HNjrg4sS9P3', '81eazF9t0vNJk5c0hpNv')\nORDER BY createdAt ASC;\n",
+  "rows": [
+    {
+      "event": "page_view",
+      "page": "home",
+      "value": "{\"variant\":\"C\"}",
+      "createdAt": "2026-04-28 04:01:50"
+    },
+    {
+      "event": "page_view",
+      "page": "home",
+      "value": "{\"device\":\"mobile\",\"referrer\":\"direct\"}",
+      "createdAt": "2026-04-28 04:01:50"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":25}",
+      "createdAt": "2026-04-28 04:02:19"
+    },
+    {
+      "event": "time_on_page",
+      "page": "home",
+      "value": "{\"seconds\":30}",
+      "createdAt": "2026-04-28 04:02:50"
+    },
+    {
+      "event": "page_view",
+      "page": "quiz",
+      "value": "NULL",
+      "createdAt": "2026-04-28 04:03:26"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":1,\"answer\":1}",
+      "createdAt": "2026-04-28 04:03:35"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":2,\"answer\":3}",
+      "createdAt": "2026-04-28 04:03:50"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":3,\"answer\":2}",
+      "createdAt": "2026-04-28 04:04:06"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":4,\"answer\":1}",
+      "createdAt": "2026-04-28 04:04:24"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":5,\"answer\":2}",
+      "createdAt": "2026-04-28 04:04:39"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":6,\"answer\":3}",
+      "createdAt": "2026-04-28 04:04:48"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":7,\"answer\":0}",
+      "createdAt": "2026-04-28 04:05:01"
+    },
+    {
+      "event": "quiz_answer",
+      "page": "quiz",
+      "value": "{\"question\":8,\"answer\":2}",
+      "createdAt": "2026-04-28 04:05:15"
+    },
+    {
+      "event": "page_view",
+      "page": "quiz_result",
+      "value": "{\"chronotype\":\"Bear\"}",
+      "createdAt": "2026-04-28 04:05:16"
+    },
+    {
+      "event": "quiz_complete",
+      "page": "quiz",
+      "value": "{\"chronotype\":\"Bear\"}",
+      "createdAt": "2026-04-28 04:05:16"
+    },
+    {
+      "event": "email_capture",
+      "page": "quiz_result",
+      "value": "{\"chronotype\":\"Bear\"}",
+      "createdAt": "2026-04-28 04:05:54"
+    },
+    {
+      "event": "cta_click",
+      "page": "quiz_result",
+      "value": "{\"chronotype\":\"Bear\"}",
+      "createdAt": "2026-04-28 04:06:53"
+    },
+    {
+      "event": "page_view",
+      "page": "order",
+      "value": "{\"chronotype\":\"Bear\"}",
+      "createdAt": "2026-04-28 04:06:53"
+    },
+    {
+      "event": "page_view",
+      "page": "home",
+      "value": "NULL",
+      "createdAt": "2026-05-28 01:41:34"
+    },
+    {
+      "event": "page_view",
+      "page": "home",
+      "value": "{\"device\":\"desktop\",\"referrer\":\"direct\",\"utm_source\":\"reddit\",\"utm_medium\":\"paid\",\"utm_campaign\":\"sleep-reset-protocol\",\"utm_content\":\"v2-solution\"}",
+      "createdAt": "2026-05-28 01:41:34"
+    },
+    {
+      "event": "exit_intent",
+      "page": "home",
+      "value": "{\"timeSpent\":3}",
+      "createdAt": "2026-05-28 01:41:36"
+    },
+    {
+      "event": "rage_click",
+      "page": "home",
+      "value": "{\"count\":3}",
+      "createdAt": "2026-05-28 01:41:44"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":75}",
+      "createdAt": "2026-05-28 01:41:46"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":50}",
+      "createdAt": "2026-05-28 01:41:46"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":25}",
+      "createdAt": "2026-05-28 01:41:46"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":100}",
+      "createdAt": "2026-05-28 01:41:47"
+    }
+  ],
+  "messages": [],
+  "stdout": "event\tpage\tvalue\tcreatedAt\npage_view\thome\t{\"variant\":\"C\"}\t2026-04-28 04:01:50\npage_view\thome\t{\"device\":\"mobile\",\"referrer\":\"direct\"}\t2026-04-28 04:01:50\nscroll_depth\thome\t{\"percent\":25}\t2026-04-28 04:02:19\ntime_on_page\thome\t{\"seconds\":30}\t2026-04-28 04:02:50\npage_view\tquiz\tNULL\t2026-04-28 04:03:26\nquiz_answer\tquiz\t{\"question\":1,\"answer\":1}\t2026-04-28 04:03:35\nquiz_answer\tquiz\t{\"question\":2,\"answer\":3}\t2026-04-28 04:03:50\nquiz_answer\tquiz\t{\"question\":3,\"answer\":2}\t2026-04-28 04:04:06\nquiz_answer\tquiz\t{\"question\":4,\"answer\":1}\t2026-04-28 04:04:24\nquiz_answer\tquiz\t{\"question\":5,\"answer\":2}\t2026-04-28 04:04:39\nquiz_answer\tquiz\t{\"question\":6,\"answer\":3}\t2026-04-28 04:04:48\nquiz_answer\tquiz\t{\"question\":7,\"answer\":0}\t2026-04-28 04:05:01\nquiz_answer\tquiz\t{\"question\":8,\"answer\":2}\t2026-04-28 04:05:15\npage_view\tquiz_result\t{\"chronotype\":\"Bear\"}\t2026-04-28 04:05:16\nquiz_complete\tquiz\t{\"chronotype\":\"Bear\"}\t2026-04-28 04:05:16\nemail_capture\tquiz_result\t{\"chronotype\":\"Bear\"}\t2026-04-28 04:05:54\ncta_click\tquiz_result\t{\"chronotype\":\"Bear\"}\t2026-04-28 04:06:53\npage_view\torder\t{\"chronotype\":\"Bear\"}\t2026-04-28 04:06:53\npage_view\thome\tNULL\t2026-05-28 01:41:34\npage_view\thome\t{\"device\":\"desktop\",\"referrer\":\"direct\",\"utm_source\":\"reddit\",\"utm_medium\":\"paid\",\"utm_campaign\":\"sleep-reset-protocol\",\"utm_content\":\"v2-solution\"}\t2026-05-28 01:41:34\nexit_intent\thome\t{\"timeSpent\":3}\t2026-05-28 01:41:36\nrage_click\thome\t{\"count\":3}\t2026-05-28 01:41:44\nscroll_depth\thome\t{\"percent\":75}\t2026-05-28 01:41:46\nscroll_depth\thome\t{\"percent\":50}\t2026-05-28 01:41:46\nscroll_depth\thome\t{\"percent\":25}\t2026-05-28 01:41:46\nscroll_depth\thome\t{\"percent\":100}\t2026-05-28 01:41:47\n",
+  "stderr": "",
+  "execution_time_ms": 277
+}

@@ -1,0 +1,28 @@
+{
+  "query": "\nSELECT email, sessionId, utmSource, utmMedium, utmCampaign, chronotype, createdAt \nFROM email_leads \nWHERE email NOT LIKE '%petr%' AND email NOT LIKE '%manus%' AND email NOT LIKE '%test%'\nORDER BY createdAt DESC LIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \nSELECT email, sessionId, utmSource, utmMedium, utmCampaign, chronotype, createdAt \nFROM email_leads \nWHERE email NOT LIKE '%petr%' AND email NOT LIKE '%manus%' AND email NOT LIKE '%test%'\nORDER BY createdAt DESC LIMIT 20;\n",
+  "rows": [
+    {
+      "email": "v.vignesh.udayakumar@reddit.com",
+      "sessionId": "eK_7rU8b-HNjrg4sS9P3",
+      "utmSource": "NULL",
+      "utmMedium": "NULL",
+      "utmCampaign": "NULL",
+      "chronotype": "NULL",
+      "createdAt": "2026-05-28 01:41:44"
+    },
+    {
+      "email": "singh.gursimr28@gmail.com",
+      "sessionId": "81eazF9t0vNJk5c0hpNv",
+      "utmSource": "NULL",
+      "utmMedium": "NULL",
+      "utmCampaign": "NULL",
+      "chronotype": "Bear",
+      "createdAt": "2026-04-28 04:05:54"
+    }
+  ],
+  "messages": [],
+  "stdout": "email\tsessionId\tutmSource\tutmMedium\tutmCampaign\tchronotype\tcreatedAt\nv.vignesh.udayakumar@reddit.com\teK_7rU8b-HNjrg4sS9P3\tNULL\tNULL\tNULL\tNULL\t2026-05-28 01:41:44\nsingh.gursimr28@gmail.com\t81eazF9t0vNJk5c0hpNv\tNULL\tNULL\tNULL\tBear\t2026-04-28 04:05:54\n",
+  "stderr": "",
+  "execution_time_ms": 265
+}

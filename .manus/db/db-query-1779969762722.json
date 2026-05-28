@@ -1,0 +1,58 @@
+{
+  "query": "\nSELECT event, page, value, createdAt FROM behavior_events \nWHERE sessionId = 'eK_7rU8b-HNjrg4sS9P3'\nORDER BY createdAt ASC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \nSELECT event, page, value, createdAt FROM behavior_events \nWHERE sessionId = 'eK_7rU8b-HNjrg4sS9P3'\nORDER BY createdAt ASC;\n",
+  "rows": [
+    {
+      "event": "page_view",
+      "page": "home",
+      "value": "NULL",
+      "createdAt": "2026-05-28 01:41:34"
+    },
+    {
+      "event": "page_view",
+      "page": "home",
+      "value": "{\"device\":\"desktop\",\"referrer\":\"direct\",\"utm_source\":\"reddit\",\"utm_medium\":\"paid\",\"utm_campaign\":\"sleep-reset-protocol\",\"utm_content\":\"v2-solution\"}",
+      "createdAt": "2026-05-28 01:41:34"
+    },
+    {
+      "event": "exit_intent",
+      "page": "home",
+      "value": "{\"timeSpent\":3}",
+      "createdAt": "2026-05-28 01:41:36"
+    },
+    {
+      "event": "rage_click",
+      "page": "home",
+      "value": "{\"count\":3}",
+      "createdAt": "2026-05-28 01:41:44"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":75}",
+      "createdAt": "2026-05-28 01:41:46"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":50}",
+      "createdAt": "2026-05-28 01:41:46"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":25}",
+      "createdAt": "2026-05-28 01:41:46"
+    },
+    {
+      "event": "scroll_depth",
+      "page": "home",
+      "value": "{\"percent\":100}",
+      "createdAt": "2026-05-28 01:41:47"
+    }
+  ],
+  "messages": [],
+  "stdout": "event\tpage\tvalue\tcreatedAt\npage_view\thome\tNULL\t2026-05-28 01:41:34\npage_view\thome\t{\"device\":\"desktop\",\"referrer\":\"direct\",\"utm_source\":\"reddit\",\"utm_medium\":\"paid\",\"utm_campaign\":\"sleep-reset-protocol\",\"utm_content\":\"v2-solution\"}\t2026-05-28 01:41:34\nexit_intent\thome\t{\"timeSpent\":3}\t2026-05-28 01:41:36\nrage_click\thome\t{\"count\":3}\t2026-05-28 01:41:44\nscroll_depth\thome\t{\"percent\":75}\t2026-05-28 01:41:46\nscroll_depth\thome\t{\"percent\":50}\t2026-05-28 01:41:46\nscroll_depth\thome\t{\"percent\":25}\t2026-05-28 01:41:46\nscroll_depth\thome\t{\"percent\":100}\t2026-05-28 01:41:47\n",
+  "stderr": "",
+  "execution_time_ms": 260
+}

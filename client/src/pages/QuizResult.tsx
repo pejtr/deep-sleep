@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
-import { ArrowRight, Lock, Mail, Users } from "lucide-react";
+import { ArrowRight, Lock, Mail, Users, ShieldCheck, Zap } from "lucide-react";
+import { CheckoutButton } from "@/components/CheckoutButton";
 import CountdownTimer from "@/components/CountdownTimer";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import TrustBar from "@/components/TrustBar";
@@ -10,6 +11,7 @@ import { trpc } from "@/lib/trpc";
 import { getSessionId, useTrackBehavior } from "@/hooks/useSession";
 import { trackQuizComplete, trackLead, trackViewContent } from "@/lib/conversionTracking";
 import { useTransition } from "@/contexts/TransitionContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 type Chronotype = "Lion" | "Bear" | "Wolf" | "Dolphin";
 
@@ -73,6 +75,7 @@ export default function QuizResult() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [viewers] = useState(() => Math.floor(Math.random() * 40) + 120);
   const { track } = useTrackBehavior();
+  const { formatPrice } = useCurrency();
 
   const leadMutation = trpc.leads.capture.useMutation();
   const abMutation = trpc.abTest.markConverted.useMutation();
@@ -361,13 +364,26 @@ export default function QuizResult() {
             Less than a coffee — for sleep that changes everything
           </p>
 
-          <button
-            onClick={handleGetProtocol}
-            className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg flex items-center justify-center gap-3 relative z-10"
+          {/* INLINE CHECKOUT — skip Order page entirely for max conversion */}
+          <CheckoutButton
+            productId="main"
+            sessionId={getSessionId()}
+            email={emailSubmitted ? email : undefined}
+            chronotype={chronotype}
+            className="w-full cta-gold cta-shimmer rounded-2xl py-5 text-lg"
+            variant="primary"
           >
             <Lock className="w-5 h-5" />
-            <span>Get My {chronotype} Protocol — $4</span>
+            <span>Get My {chronotype} Protocol — {formatPrice(4)}</span>
             <ArrowRight className="w-5 h-5" />
+          </CheckoutButton>
+          {/* Secondary: see full order page */}
+          <button
+            onClick={handleGetProtocol}
+            className="w-full mt-2 text-xs underline underline-offset-2 opacity-50 hover:opacity-80 transition-opacity relative z-10"
+            style={{ color: "oklch(0.55 0.04 265)" }}
+          >
+            See full order details →
           </button>
           {/* NEURO: Loss aversion micro-copy */}
           <p className="text-xs mt-2 relative z-10 font-medium" style={{ color: "oklch(0.65 0.18 25)" }}>
@@ -399,7 +415,7 @@ export default function QuizResult() {
       {/* Sticky mobile CTA */}
       <StickyMobileCTA
         label={`Get My ${chronotype} Protocol`}
-        price="$4"
+        price={formatPrice(4)}
         onClick={handleGetProtocol}
       />
 

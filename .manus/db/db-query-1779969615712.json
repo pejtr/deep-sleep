@@ -1,0 +1,50 @@
+{
+  "query": "\nSELECT 'orders_total' as metric, COUNT(*) as value FROM orders\nUNION ALL\nSELECT 'orders_completed', COUNT(*) FROM orders WHERE status='completed'\nUNION ALL\nSELECT 'orders_pending', COUNT(*) FROM orders WHERE status='pending'\nUNION ALL\nSELECT 'email_leads', COUNT(*) FROM email_leads\nUNION ALL\nSELECT 'quiz_results', COUNT(*) FROM quiz_results\nUNION ALL\nSELECT 'rage_clicks_home', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='rage_click' AND page='home'\nUNION ALL\nSELECT 'exit_intent_home', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='exit_intent' AND page='home'\nUNION ALL\nSELECT 'scroll_50pct', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='scroll_depth' AND value LIKE '%50%'\nUNION ALL\nSELECT 'scroll_75pct', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='scroll_depth' AND value LIKE '%75%'\nUNION ALL\nSELECT 'scroll_100pct', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='scroll_depth' AND value LIKE '%100%';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \nSELECT 'orders_total' as metric, COUNT(*) as value FROM orders\nUNION ALL\nSELECT 'orders_completed', COUNT(*) FROM orders WHERE status='completed'\nUNION ALL\nSELECT 'orders_pending', COUNT(*) FROM orders WHERE status='pending'\nUNION ALL\nSELECT 'email_leads', COUNT(*) FROM email_leads\nUNION ALL\nSELECT 'quiz_results', COUNT(*) FROM quiz_results\nUNION ALL\nSELECT 'rage_clicks_home', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='rage_click' AND page='home'\nUNION ALL\nSELECT 'exit_intent_home', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='exit_intent' AND page='home'\nUNION ALL\nSELECT 'scroll_50pct', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='scroll_depth' AND value LIKE '%50%'\nUNION ALL\nSELECT 'scroll_75pct', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='scroll_depth' AND value LIKE '%75%'\nUNION ALL\nSELECT 'scroll_100pct', COUNT(DISTINCT sessionId) FROM behavior_events WHERE event='scroll_depth' AND value LIKE '%100%';\n",
+  "rows": [
+    {
+      "metric": "orders_total",
+      "value": "51"
+    },
+    {
+      "metric": "email_leads",
+      "value": "5"
+    },
+    {
+      "metric": "orders_pending",
+      "value": "50"
+    },
+    {
+      "metric": "quiz_results",
+      "value": "575"
+    },
+    {
+      "metric": "orders_completed",
+      "value": "1"
+    },
+    {
+      "metric": "exit_intent_home",
+      "value": "30"
+    },
+    {
+      "metric": "scroll_50pct",
+      "value": "60"
+    },
+    {
+      "metric": "rage_clicks_home",
+      "value": "13"
+    },
+    {
+      "metric": "scroll_75pct",
+      "value": "46"
+    },
+    {
+      "metric": "scroll_100pct",
+      "value": "32"
+    }
+  ],
+  "messages": [],
+  "stdout": "metric\tvalue\norders_total\t51\nemail_leads\t5\norders_pending\t50\nquiz_results\t575\norders_completed\t1\nexit_intent_home\t30\nscroll_50pct\t60\nrage_clicks_home\t13\nscroll_75pct\t46\nscroll_100pct\t32\n",
+  "stderr": "",
+  "execution_time_ms": 281
+}

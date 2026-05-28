@@ -403,13 +403,18 @@ export default function Quiz() {
             </button>
           </form>
 
-          <button
-            onClick={handleSkipEmail}
-            className="mt-4 text-xs underline underline-offset-2 opacity-50 hover:opacity-80 transition-opacity"
-            style={{ color: "oklch(0.55 0.04 265)" }}
-          >
-            Skip — show results without email
-          </button>
+          <div className="mt-4 flex flex-col gap-2">
+            <button
+              onClick={handleSkipEmail}
+              className="text-xs font-semibold py-2 px-3 rounded-lg transition-all hover:bg-white/5"
+              style={{ color: "oklch(0.55 0.04 265)" }}
+            >
+              Skip for now — I'll get results without email
+            </button>
+            <p className="text-xs text-center" style={{ color: "oklch(0.35 0.04 265)" }}>
+              (You can always add your email later to get the free cheat sheet)
+            </p>
+          </div>
 
           {/* Trust signals */}
           <div className="mt-8 flex items-center justify-center gap-4 text-xs" style={{ color: "oklch(0.35 0.04 265)" }}>

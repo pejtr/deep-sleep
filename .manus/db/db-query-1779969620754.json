@@ -1,0 +1,35 @@
+{
+  "query": "\nSELECT productId, status, COUNT(*) as count FROM orders GROUP BY productId, status ORDER BY count DESC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Ex3VpA477nfrimG.root --database Z7uhfhzSjok5tWXFuno9PK --execute \nSELECT productId, status, COUNT(*) as count FROM orders GROUP BY productId, status ORDER BY count DESC;\n",
+  "rows": [
+    {
+      "productId": "main",
+      "status": "pending",
+      "count": "26"
+    },
+    {
+      "productId": "main+oto1",
+      "status": "pending",
+      "count": "15"
+    },
+    {
+      "productId": "discount",
+      "status": "pending",
+      "count": "8"
+    },
+    {
+      "productId": "oto1",
+      "status": "pending",
+      "count": "1"
+    },
+    {
+      "productId": "discount",
+      "status": "completed",
+      "count": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "productId\tstatus\tcount\nmain\tpending\t26\nmain+oto1\tpending\t15\ndiscount\tpending\t8\noto1\tpending\t1\ndiscount\tcompleted\t1\n",
+  "stderr": "",
+  "execution_time_ms": 258
+}
