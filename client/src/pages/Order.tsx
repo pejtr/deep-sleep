@@ -485,7 +485,7 @@ export default function Order() {
           {/* Express Checkout — Apple Pay / Google Pay / Link */}
           <div className="mb-4">
             <ExpressCheckout
-              productId={selectedTier}
+              productId={selectedTier === "discount" ? "entry" : selectedTier}
               includeUpsell={selectedTier === "main" && bumpSelected ? "bump" : undefined}
               sessionId={getSessionId()}
               chronotype={chronotype}
@@ -525,7 +525,7 @@ export default function Order() {
 
           {/* CTA — Native Stripe Checkout */}
           <CheckoutButton
-            productId={selectedTier}
+            productId={selectedTier === "discount" ? "entry" : selectedTier}
             includeUpsell={selectedTier === "main" && bumpSelected ? "bump" : undefined}
             sessionId={getSessionId()}
             chronotype={chronotype}
