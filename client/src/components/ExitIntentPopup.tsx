@@ -205,7 +205,7 @@ export default function ExitIntentPopup({ onClose }: ExitIntentPopupProps) {
               fontSize: "1.05rem",
             }}
           >
-            {loading ? "Opening checkout..." : `🔒 Fix My Sleep Tonight — ${formatPrice(4)}`}
+            {loading ? "Opening checkout..." : `🔒 Try for $1 — Only $1`}
           </button>
 
           {/* Trust */}

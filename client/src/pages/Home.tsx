@@ -423,7 +423,7 @@ export default function Home() {
             onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
           >
-            <span>TRY FOR $1 — 1-DAY DEMO</span>
+            <span>TRY FOR $1 — ONLY $1</span>
           </button>
 
           <p className="text-xs italic mt-6 max-w-md mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>
