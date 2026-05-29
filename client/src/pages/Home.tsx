@@ -336,7 +336,7 @@ export default function Home() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-base font-bold" style={{ color: "oklch(0.95 0.01 265)" }}>Your Price:</span>
-                <span className="font-display font-bold text-2xl text-gradient-gold">Just ${mainPrice}</span>
+                <span className="font-display font-bold text-2xl text-gradient-gold">Just $1 (Demo)</span>
               </div>
             </div>
 
@@ -412,23 +412,23 @@ export default function Home() {
         <section className="relative z-10 container py-14 text-center">
           <div className="section-divider mb-10" />
           <h2 className="font-display font-bold text-2xl md:text-4xl mb-4 max-w-2xl mx-auto" style={{ color: "oklch(0.95 0.01 265)" }}>
-            One Coffee. Seven Nights.{" "}
-            <span className="text-gradient-gold-italic">A Different Life.</span>
+            Demo for 1 day.{" "}
+            <span className="text-gradient-gold-italic">Just $1.</span>
           </h2>
           <p className="text-sm mb-8 max-w-lg mx-auto" style={{ color: "oklch(0.55 0.04 265)" }}>
-            More energy. Sharper thinking. Better mood. The version of yourself that shows up when you're not running on empty. <strong style={{ color: "oklch(0.82 0.16 65)" }}>All for ${mainPrice}.</strong>
+            Try the Deep Sleep Reset protocol for just $1. Get 1-day access to see if it works for you. <strong style={{ color: "oklch(0.82 0.16 65)" }}>Money-back guarantee.</strong>
           </p>
 
           <button
             onClick={handleBuyNow}
             className="cta-gold cta-shimmer rounded-2xl px-10 py-5 text-lg inline-flex items-center gap-3 animate-pulse-glow"
           >
-            <span>GET MY SLEEP PROTOCOL — ${mainPrice}</span>
+            <span>TRY FOR $1 — 1-DAY DEMO</span>
           </button>
 
           <p className="text-xs italic mt-6 max-w-md mx-auto" style={{ color: "oklch(0.45 0.04 265)" }}>
             <strong style={{ color: "oklch(0.55 0.04 265)" }}>P.S.</strong>{" "}
-            You've spent more than ${mainPrice} on a coffee that made you more anxious. This is ${mainPrice} to permanently change how you sleep.
+            You've spent more than $1 on a coffee. This is $1 to try the protocol that changed 10,000+ lives.
           </p>
         </section>
       </AnimatedSection>
