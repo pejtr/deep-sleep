@@ -130,7 +130,7 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
               <div className="space-y-2">
                 {[
                   { name: "Sandra", loc: "Prague, CZ", text: "Night 3 I finally slept through. No more 3am wake-ups. I cried.", type: "Wolf", avatar: "/manus-storage/sandra-review_33b4b475.webp" },
-                  { name: "Yolana", loc: "Barcelona, ES", text: "Quiz took 2 min and nailed my chronotype. Fell asleep in 14 min.", type: "Bear", avatar: "/manus-storage/yolana-review_a5cb1a1e.webp" },
+                  { name: "Yolana", loc: "Barcelona, ES", text: "Quiz took 2 min and nailed my chronotype. Fell asleep in 14 min.", type: "Bear", avatar: null },
                   { name: "James K.", loc: "London, UK", text: "Finally understood WHY I wake at 3am every night.", type: "Lion", avatar: null },
                 ].map((r, i) => (
                   <div
