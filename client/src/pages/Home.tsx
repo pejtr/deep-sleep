@@ -471,7 +471,9 @@ export default function Home() {
       <FloatingSocialProofBar />
       <ExitIntentPopup />
       <SupportButton />
-      <StickyMobileCTA label="Find My Chronotype" onClick={handleStartQuiz} />
+      <StickyMobileCTA label="Try for $1" price="$1" onClick={handleStartQuiz} onSelectProduct={(productId) => {
+        track("sticky_cta_click", { page: "home", element: productId });
+      }} />
     </div>
   );
 }

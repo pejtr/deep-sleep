@@ -9,14 +9,16 @@ interface Props {
   onClick?: () => void;
   href?: string;
   show?: boolean;
+  onSelectProduct?: (productId: string) => void;
 }
 
 export default function StickyMobileCTA({
   label = "Get Instant Access",
-  price = "$4",
+  price = "$1",
   onClick,
   href,
   show = true,
+  onSelectProduct,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const [, navigate] = useLocation();
@@ -32,6 +34,7 @@ export default function StickyMobileCTA({
   if (!show || !visible) return null;
 
   const handleClick = () => {
+    if (onSelectProduct) onSelectProduct('entry');
     if (onClick) onClick();
     else if (href) window.location.href = href;
   };
