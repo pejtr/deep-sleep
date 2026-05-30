@@ -55,6 +55,35 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'AW-968712546');
+      
+      // Google Ads conversion tracking
+      window.gtag_conversion_id = 'AW-968712546';
+      window.gtag_conversion_label = 'purchase';
+    </script>
+    <!-- Google Ads Conversion Tracking -->
+    <script>
+      // Track purchase conversions
+      function trackPurchaseConversion(value, currency = 'USD') {
+        gtag('event', 'conversion', {
+          'allow_custom_scripts': true,
+          'value': value,
+          'currency': currency,
+          'transaction_id': Date.now()
+        });
+      }
+      
+      // Track lead conversions
+      function trackLeadConversion() {
+        gtag('event', 'conversion', {
+          'allow_custom_scripts': true,
+          'value': 0,
+          'currency': 'USD'
+        });
+      }
+      
+      // Expose globally for use in React
+      window.trackPurchaseConversion = trackPurchaseConversion;
+      window.trackLeadConversion = trackLeadConversion;
     </script>
     <!-- Reddit Pixel with Advanced Matching -->
     <script>

@@ -125,10 +125,12 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   const isAdminPage = location === "/admin";
   const isAffiliatePage = location === "/affiliates";
   const isQuizPage = location === "/quiz";
+  const isSuccessPage = location === "/checkout/success";
   const isAdminMode = isAdminPage && user?.role === "admin";
   const isAffiliateMode = isAffiliatePage;
   // On landing page and all other pages: always use sales persona, never admin
-  const isSalesMode = !isAdminMode && !isAffiliateMode && !isQuizPage;
+  const isPostPurchaseMode = isSuccessPage || forceMode === "post_purchase";
+  const isSalesMode = !isAdminMode && !isAffiliateMode && !isQuizPage && !isPostPurchaseMode;
   
   // Don't render on quiz page
   if (isQuizPage) return null;
@@ -206,6 +208,11 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
     if (isAffiliateMode) {
       return `💰 Hey! I'm Luna — your Affiliate Guide 🌙 Ask me anything about the program: commissions, conversion rates, best promo strategies, or how to maximize your earnings with Deep Sleep Reset!`;
     }
+    if (isPostPurchaseMode) {
+      return lang === "cs"
+        ? "🌙 Gratulace! Tvůj Deep Sleep Reset je připraven. Začni dnes v noci a budíš se zítra osvěžený/á. Mám pro tebe nějaké otázky o protokolu?"
+        : "🌙 Congratulations! Your Deep Sleep Reset is ready. Start tonight and wake up refreshed tomorrow. Any questions about your protocol?";
+    }
     // Sales mode — use persona
     if (triggerType === "exit_intent") {
       return lang === "cs" ? persona.exitCs : persona.exitEn;
@@ -214,7 +221,7 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
       return lang === "cs" ? persona.proactiveCs : persona.proactiveEn;
     }
     return lang === "cs" ? persona.welcomeCs : persona.welcomeEn;
-  }, [isAdminMode, isAffiliateMode, lang, persona, user?.name]);
+  }, [isAdminMode, isAffiliateMode, isPostPurchaseMode, lang, persona, user?.name]);
 
   // ── Open chat ──────────────────────────────────────────────────────────────
   const openChat = useCallback((triggerType: "manual" | "proactive" | "exit_intent" = "manual") => {
