@@ -468,18 +468,7 @@ export default function Quiz() {
             Deep Sleep Reset
           </span>
         </div>
-        <button
-          onClick={() => { track("cta_click", { page: "quiz", element: "skip_quiz" }); navigate("/order"); }}
-          className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full font-semibold"
-          style={{
-            color: "oklch(0.78 0.18 65)",
-            background: "oklch(0.78 0.18 65 / 0.12)",
-            border: "1px solid oklch(0.78 0.18 65 / 0.35)",
-          }}
-        >
-          <Zap className="w-3 h-3" />
-          Buy $4
-        </button>
+
       </div>
 
       {/* Progress bar */}

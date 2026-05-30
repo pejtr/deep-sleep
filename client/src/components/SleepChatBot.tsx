@@ -124,10 +124,14 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   // Mode detection
   const isAdminPage = location === "/admin";
   const isAffiliatePage = location === "/affiliates";
+  const isQuizPage = location === "/quiz";
   const isAdminMode = isAdminPage && user?.role === "admin";
   const isAffiliateMode = isAffiliatePage;
   // On landing page and all other pages: always use sales persona, never admin
-  const isSalesMode = !isAdminMode && !isAffiliateMode;
+  const isSalesMode = !isAdminMode && !isAffiliateMode && !isQuizPage;
+  
+  // Don't render on quiz page
+  if (isQuizPage) return null;
 
   // Persona (stable per session, only for sales mode)
   const [personaId] = useState<PersonaId>(() => getSessionPersona());
