@@ -46,52 +46,8 @@ async function startServer() {
   app.set('trust proxy', 1); // Trust first proxy (Cloud Run / Manus gateway)
   const server = createServer(app);
 
-  // Domain Redirect Middleware - redirect all non-primary domains to deep-sleep-reset.com
-  const PRIMARY_DOMAIN = 'deep-sleep-reset.com';
-  const ALLOWED_DOMAINS = [
-    'deep-sleep-reset.com',
-    'www.deep-sleep-reset.com',
-    'deepsleep-z7uhfhzs.manus.space',
-    'deepsleep.manus.space',
-    'localhost',
-    // Dev server domains (Manus sandbox) - allow subdomains with dots
-    /^[a-z0-9.-]+\.manus\.space$/,
-    /^[a-z0-9.-]+\.manus\.computer$/,
-    // Additional custom domains
-    'fixinsomnia.quest',
-    'www.fixinsomnia.quest',
-    'deepsleep.my',
-    'www.deepsleep.my',
-  ];
-
-  app.use((req, res, next) => {
-    const host = req.headers.host || '';
-    const hostname = host.split(':')[0];
-    
-    console.log(`[Domain Check] host=${host}, hostname=${hostname}`);
-    
-    // Check if hostname is in allowed domains (exact match or regex)
-    const isAllowed = ALLOWED_DOMAINS.some(domain => {
-      if (domain instanceof RegExp) {
-        const match = domain.test(hostname);
-        console.log(`[Domain Check] Regex ${domain} vs ${hostname}: ${match}`);
-        return match;
-      }
-      const match = hostname === domain;
-      if (match) console.log(`[Domain Check] Exact match: ${hostname}`);
-      return match;
-    });
-    
-    if (isAllowed) {
-      console.log(`[Domain Check] ALLOWED: ${hostname}`);
-      return next();
-    }
-    
-    const protocol = req.protocol || 'https';
-    const redirectUrl = `${protocol}://${PRIMARY_DOMAIN}${req.path}`;
-    console.log(`[Domain Redirect] BLOCKED: ${host}${req.originalUrl} -> ${redirectUrl}`);
-    return res.redirect(301, redirectUrl);
-  });
+  // Domain redirect middleware disabled - Manus platform handles domain routing at the edge
+  // All domains are served by the same application instance
 
   // ── Security: Helmet (HTTP security headers) ──────────────────────────────
   app.use(helmet({
