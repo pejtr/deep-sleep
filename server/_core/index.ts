@@ -46,6 +46,30 @@ async function startServer() {
   app.set('trust proxy', 1); // Trust first proxy (Cloud Run / Manus gateway)
   const server = createServer(app);
 
+  // Domain Redirect Middleware - redirect all non-primary domains to deep-sleep-reset.com
+  const PRIMARY_DOMAIN = 'deep-sleep-reset.com';
+  const ALLOWED_DOMAINS = [
+    'deep-sleep-reset.com',
+    'www.deep-sleep-reset.com',
+    'deepsleep-z7uhfhzs.manus.space',
+    'deepsleep.manus.space',
+    'localhost',
+  ];
+
+  app.use((req, res, next) => {
+    const host = req.headers.host || '';
+    const hostname = host.split(':')[0];
+    
+    if (ALLOWED_DOMAINS.some(domain => host.includes(domain) || hostname === domain)) {
+      return next();
+    }
+    
+    const protocol = req.protocol || 'https';
+    const redirectUrl = `${protocol}://${PRIMARY_DOMAIN}${req.originalUrl}`;
+    console.log(`[Domain Redirect] ${host} -> ${PRIMARY_DOMAIN}`);
+    return res.redirect(301, redirectUrl);
+  });
+
   // ── Security: Helmet (HTTP security headers) ──────────────────────────────
   app.use(helmet({
     contentSecurityPolicy: {
