@@ -471,7 +471,7 @@ export default function Home() {
       <FloatingSocialProofBar />
       <ExitIntentPopup />
       <SupportButton />
-      <StickyMobileCTA label="Get 1 Night Demo for" price="$1" onClick={handleStartQuiz} onSelectProduct={(productId) => {
+      <StickyMobileCTA label="1 NIGHT DEMO" price="$1" onClick={handleStartQuiz} onSelectProduct={(productId) => {
         track("sticky_cta_click", { page: "home", element: productId });
       }} />
     </div>

@@ -81,7 +81,7 @@ export default function StickyMobileCTA({
               }}
               title="Get Free Tips"
             >
-              FREE TIPS
+              GET FREE TIPS
             </button>
           </div>
           <div className="flex items-center justify-center gap-3 mt-2">
