@@ -231,15 +231,12 @@ export default function Order() {
             
             <div className="badge-popular mb-3" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>BEST VALUE</div>
             
-            <div className="flex items-center gap-2 mb-3">
-              <Zap className="w-6 h-6" style={{ color: "oklch(0.78 0.18 65)" }} />
-              <h2 className="font-display font-bold text-2xl" style={{ color: "oklch(0.95 0.01 265)" }}>
-                Lepší spánek
-              </h2>
-            </div>
+            <h2 className="font-display font-bold text-3xl mb-2" style={{ color: "oklch(0.95 0.01 265)" }}>
+              1 NIGHT DEMO
+            </h2>
 
-            <p className="text-sm font-semibold mb-4" style={{ color: "oklch(0.78 0.18 65)" }}>
-              Jen za $1 — 1 noc
+            <p className="text-2xl font-black" style={{ color: "oklch(0.78 0.18 65)" }}>
+              Only $1
             </p>
 
             <div className="flex flex-col gap-2 mb-4">

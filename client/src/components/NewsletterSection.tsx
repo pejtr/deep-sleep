@@ -145,7 +145,7 @@ export default function NewsletterSection() {
                   boxShadow: loading ? "none" : "0 4px 16px oklch(0.78 0.18 65 / 0.35)",
                 }}
               >
-                {loading ? "..." : <><Zap className="w-4 h-4" /> Get 10% Off</>}
+                {loading ? "..." : <><Zap className="w-4 h-4" /> Get FREE Tips</>}
               </button>
             </form>
           )}
