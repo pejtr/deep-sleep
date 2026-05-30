@@ -65,8 +65,9 @@ async function startServer() {
     }
     
     const protocol = req.protocol || 'https';
-    const redirectUrl = `${protocol}://${PRIMARY_DOMAIN}${req.originalUrl}`;
-    console.log(`[Domain Redirect] ${host} -> ${PRIMARY_DOMAIN}`);
+    // Redirect to primary domain without query string
+    const redirectUrl = `${protocol}://${PRIMARY_DOMAIN}${req.path}`;
+    console.log(`[Domain Redirect] ${host}${req.originalUrl} -> ${redirectUrl}`);
     return res.redirect(301, redirectUrl);
   });
 
