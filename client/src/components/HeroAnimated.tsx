@@ -87,24 +87,36 @@ export function HeroAnimated({ onChatOpen, navigate: navProp }: HeroAnimatedProp
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-4">
-              {/* Primary CTA */}
+            <div className="flex flex-col gap-3 pt-4">
+              {/* Mobile-first: Demo CTA */}
+              <button
+                onClick={() => {
+                  navigate?.("/order");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="md:hidden cta-gold cta-shimmer rounded-xl px-6 py-3.5 text-base font-bold cursor-pointer whitespace-nowrap w-full text-center"
+              >
+                🚀 Get 1 Night Demo for $1
+              </button>
+              
+              {/* Desktop: Quiz CTA */}
               <button
                 onClick={() => {
                   navigate?.("/quiz");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="cta-gold cta-shimmer rounded-xl px-7 py-3.5 text-base font-bold cursor-pointer whitespace-nowrap"
+                className="hidden md:inline-block cta-gold cta-shimmer rounded-xl px-7 py-3.5 text-base font-bold cursor-pointer whitespace-nowrap"
               >
                 START FREE SLEEP QUIZ →
               </button>
-              {/* Secondary CTA */}
+              
+              {/* Secondary CTA - visible on both */}
               <button
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent('open-sleep-chat'));
                   if (onChatOpen) onChatOpen();
                 }}
-                className="border-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
+                className="hidden md:inline-flex border-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition-all cursor-pointer whitespace-nowrap items-center gap-2"
                 style={{ borderColor: "oklch(0.82 0.16 65 / 0.5)", color: "oklch(0.82 0.16 65)" }}
               >
                 <span className="text-base">🌙</span> Chat with Luna — Free
