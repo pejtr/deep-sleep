@@ -229,17 +229,17 @@ export default function Order() {
           >
             <div className="orb orb-gold w-32 h-32 opacity-10" style={{ top: "-20%", right: "-10%" }} />
             
-            <div className="badge-popular mb-3">Quick Start</div>
+            <div className="badge-popular mb-3" style={{ background: "oklch(0.78 0.18 65)", color: "black" }}>BEST VALUE</div>
             
             <div className="flex items-center gap-2 mb-3">
               <Zap className="w-6 h-6" style={{ color: "oklch(0.78 0.18 65)" }} />
-              <h2 className="font-display font-bold text-lg" style={{ color: "oklch(0.95 0.01 265)" }}>
-                1-Night Optimizer
+              <h2 className="font-display font-bold text-2xl" style={{ color: "oklch(0.95 0.01 265)" }}>
+                Lepší spánek
               </h2>
             </div>
 
-            <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
-              Perfect for testing what works for your {chronotype} chronotype
+            <p className="text-sm font-semibold mb-4" style={{ color: "oklch(0.78 0.18 65)" }}>
+              Jen za $1 — 1 noc
             </p>
 
             <div className="flex flex-col gap-2 mb-4">
@@ -284,17 +284,17 @@ export default function Order() {
           >
             <div className="orb orb-gold w-32 h-32 opacity-10" style={{ top: "-20%", right: "-10%" }} />
             
-            <div className="badge-popular mb-3">Most Popular</div>
+            <div className="badge-popular mb-3" style={{ background: "oklch(0.78 0.18 65 / 0.3)", color: "oklch(0.78 0.18 65)" }}>Upgrade</div>
             
             <div className="flex items-center gap-2 mb-3">
               <IconComponent className="w-6 h-6" style={{ color: "oklch(0.78 0.18 65)" }} />
               <h2 className="font-display font-bold text-lg" style={{ color: "oklch(0.95 0.01 265)" }}>
-                7-Night Full Protocol
+                7-Night Protocol
               </h2>
             </div>
 
             <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 265)" }}>
-              Complete {chronotype} sleep transformation system
+              Úplný {chronotype} systém
             </p>
 
             <div className="flex flex-col gap-2 mb-4">
