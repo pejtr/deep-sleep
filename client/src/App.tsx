@@ -47,6 +47,7 @@ const TikTokLanding = lazy(() => import("./pages/TikTokLanding"));
 const InsomniaLanding = lazy(() => import("./pages/InsomniaLanding"));
 const FreeGuide = lazy(() => import("./pages/FreeGuide"));
 const SpecialOffer = lazy(() => import("./pages/SpecialOffer"));
+const LeadMagnet = lazy(() => import("./pages/LeadMagnet"));
 const LeadMagnetPopup = lazy(() => import("./components/LeadMagnetPopup"));
 const MyProtocol = lazy(() => import("./pages/MyProtocol"));
 
@@ -112,6 +113,7 @@ function Router() {
         <Route path="/affiliates/join" component={AffiliateJoin} />
         <Route path="/affiliates/dashboard" component={AffiliateDashboard} />
         <Route path="/quiz-funnel" component={QuizFunnel} />
+        <Route path="/lead-magnet" component={LeadMagnet} />
         <Route path="/sleep-quiz" component={QuizFunnel} />
         <Route path="/free-guide" component={FreeGuide} />
         <Route path="/special-offer" component={SpecialOffer} />

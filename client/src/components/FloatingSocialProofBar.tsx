@@ -109,7 +109,7 @@ export default function FloatingSocialProofBar() {
           onClick={() => navigate("/order")}
           className="cta-gold cta-shimmer rounded-lg px-4 py-2 text-xs font-bold inline-flex items-center gap-1.5 flex-shrink-0"
         >
-          Try for $4
+          Try for $1
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>

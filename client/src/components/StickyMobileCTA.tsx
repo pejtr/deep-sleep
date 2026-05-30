@@ -73,11 +73,15 @@ export default function StickyMobileCTA({
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
-              onClick={() => navigate("/quiz")}
-              className="px-4 py-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
-              title="Start Quiz"
+              onClick={() => navigate("/lead-magnet")}
+              className="px-4 py-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+              style={{
+                background: "oklch(0.50 0.04 265)",
+                color: "oklch(0.95 0.01 265)",
+              }}
+              title="Get Free Tips"
             >
-              Quiz
+              FREE TIPS
             </button>
           </div>
           <div className="flex items-center justify-center gap-3 mt-2">
