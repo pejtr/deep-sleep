@@ -54,20 +54,42 @@ async function startServer() {
     'deepsleep-z7uhfhzs.manus.space',
     'deepsleep.manus.space',
     'localhost',
+    // Dev server domains (Manus sandbox) - allow subdomains with dots
+    /^[a-z0-9.-]+\.manus\.space$/,
+    /^[a-z0-9.-]+\.manus\.computer$/,
+    // Additional custom domains
+    'fixinsomnia.quest',
+    'www.fixinsomnia.quest',
+    'deepsleep.my',
+    'www.deepsleep.my',
   ];
 
   app.use((req, res, next) => {
     const host = req.headers.host || '';
     const hostname = host.split(':')[0];
     
-    if (ALLOWED_DOMAINS.some(domain => host.includes(domain) || hostname === domain)) {
+    console.log(`[Domain Check] host=${host}, hostname=${hostname}`);
+    
+    // Check if hostname is in allowed domains (exact match or regex)
+    const isAllowed = ALLOWED_DOMAINS.some(domain => {
+      if (domain instanceof RegExp) {
+        const match = domain.test(hostname);
+        console.log(`[Domain Check] Regex ${domain} vs ${hostname}: ${match}`);
+        return match;
+      }
+      const match = hostname === domain;
+      if (match) console.log(`[Domain Check] Exact match: ${hostname}`);
+      return match;
+    });
+    
+    if (isAllowed) {
+      console.log(`[Domain Check] ALLOWED: ${hostname}`);
       return next();
     }
     
     const protocol = req.protocol || 'https';
-    // Redirect to primary domain without query string, add flag for loader
     const redirectUrl = `${protocol}://${PRIMARY_DOMAIN}${req.path}`;
-    console.log(`[Domain Redirect] ${host}${req.originalUrl} -> ${redirectUrl}`);
+    console.log(`[Domain Redirect] BLOCKED: ${host}${req.originalUrl} -> ${redirectUrl}`);
     return res.redirect(301, redirectUrl);
   });
 
