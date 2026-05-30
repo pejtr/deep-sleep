@@ -126,33 +126,11 @@ function Router() {
 }
 
 function App() {
-  const [showRedirectLoader, setShowRedirectLoader] = useState(false);
-
-  useEffect(() => {
-    // Show loader if redirected from another domain
-    const urlParams = new URLSearchParams(window.location.search);
-    const wasRedirected = urlParams.get('from_redirect') === '1' || 
-                         sessionStorage.getItem('domain_redirect_in_progress');
-    
-    if (wasRedirected) {
-      setShowRedirectLoader(true);
-      sessionStorage.removeItem('domain_redirect_in_progress');
-      
-      // Hide loader after 2 seconds
-      const timer = setTimeout(() => {
-        setShowRedirectLoader(false);
-      }, 2000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
   return (
     <ErrorBoundary>
       <I18nProvider>
         <ThemeProvider defaultTheme="dark">
           <TooltipProvider>
-            {showRedirectLoader && <DomainRedirectLoader />}
             <Toaster />
             <Router />
             <Suspense fallback={null}>
