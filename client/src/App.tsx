@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { I18nProvider } from "./contexts/I18nContext";
 import { DomainRedirectLoader } from "./components/DomainRedirectLoader";
+import { LoadingScreen } from "./components/LoadingScreen";
 
 // ── Critical path: eager load (LCP pages) ─────────────────────────────────
 import Home from "./pages/Home";
@@ -54,14 +55,7 @@ const MyProtocol = lazy(() => import("./pages/MyProtocol"));
 
 // ── Page loading fallback ──────────────────────────────────────────────────
 function PageLoader() {
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-muted-foreground">Loading...</p>
-      </div>
-    </div>
-  );
+  return <LoadingScreen />;
 }
 
 function Router() {
