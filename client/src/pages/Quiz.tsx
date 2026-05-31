@@ -167,16 +167,10 @@ export default function Quiz() {
       });
       setChronotype(result.chronotype);
       track("quiz_complete", { page: "quiz", value: { chronotype: result.chronotype, questions: finalAnswers.length } });
-      navigateWithTransition(
-        () => navigate(`/result?chronotype=${result.chronotype}`),
-        {
-          message: "Analyzing your sleep profile...",
-          subMessage: `Calculating your ${result.chronotype} chronotype score`,
-          delay: 1600,
-        }
-      );
+      // Redirect to production domain after quiz completion
+      window.location.href = 'https://deep-sleep-reset.com/quiz';
     } catch (err) {
-      console.error(err);
+      console.error('[Quiz Submit Error]', err);
       setSubmitting(false);
       setPhase("core");
     }
