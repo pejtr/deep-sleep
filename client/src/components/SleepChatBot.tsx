@@ -131,9 +131,6 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   // On landing page and all other pages: always use sales persona, never admin
   const isPostPurchaseMode = isSuccessPage || forceMode === "post_purchase";
   const isSalesMode = !isAdminMode && !isAffiliateMode && !isQuizPage && !isPostPurchaseMode;
-  
-  // Don't render on quiz page
-  if (isQuizPage) return null;
 
   // Persona (stable per session, only for sales mode)
   const [personaId] = useState<PersonaId>(() => getSessionPersona());
@@ -153,6 +150,9 @@ export default function SleepChatBot({ forceMode }: SleepChatBotProps = {}) {
   const [showQuizCta, setShowQuizCta] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Don't render on quiz page - AFTER all hooks
+  if (isQuizPage) return null;
 
   const chatMutation = trpc.chat.message.useMutation({
     onSuccess: (data) => {
